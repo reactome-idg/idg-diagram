@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.reactome.web</groupId>
+  <artifactId>idgdiagram</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Idg extension for Diagram project</name>
+
+  <description>
+  	A GWT widget to display pathway functional interactions using cytoscape.js
+  </description>
+
+  <organization>
+    <name>Oregon Health and Science University</name>
+    <url>http://www.ohsu.edu/</url>
+  </organization>
+  
+  <developers>
+  	<developer>
+  		<id>brunsont</id>
+  		<name>Tim Brunson</name>
+  		<email>brunsont@ohsu.edu</email>
+  		<organization>http://www.ohsu.edu/</organization>
+  	</developer>
+  </developers>
+
+  <properties>
+
+    <!-- Setting maven.compiler.source to something different to 1.8
+         needs that you configure the sourceLevel in gwt-maven-plugin since
+         GWT compiler 2.8 requires 1.8 (see gwt-maven-plugin block below) -->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    
+    <gwtVersion>2.8.2</gwtVersion>
+    <gwtStyle>OBF</gwtStyle> <!-- OBF | PRETTY | DETAILED -->
+    <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+    
+    <reactome.web.analysis-client>1.5.0</reactome.web.analysis-client>
+    <reactome.web.model>2.1.19</reactome.web.model>
+    <reactome.web.carrousel>1.0.2</reactome.web.carrousel>
+    <reactome.web.scroller>1.0.2</reactome.web.scroller>
+    
+	<appModule>org.reactome.web.idgDiagram.IdgDiagram</appModule>
+    <appName>${appModule}</appName>
+	
+    <!-- Don't let your Mac use a crazy non-standard encoding -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt</artifactId>
+        <version>${gwt.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <appModule>org.reactome.web.WidgetTest</appModule>
+        <appName>widgettest</appName>
+      </properties>
+    </profile>
+  </profiles>
+
+  <dependencies>
+  
+  	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-math3</artifactId>
+		<version>3.6.1</version>
+	</dependency>
+  
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-servlet</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+	   	<groupId>org.reactome.web</groupId>
+	   	<artifactId>fiview</artifactId>
+	   	<version>1.0-SNAPSHOT</version>
+    </dependency>
+    
+  </dependencies>
+
+ <build>
+    <!-- Output classes directly into the webapp, so that IDEs and "mvn process-classes" update them in DevMode -->
+    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+
+    <plugins>
+
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-jar-plugin</artifactId>
+         <version>2.6</version>
+         <configuration>
+             <excludes>
+                 <!-- Here we exclude the packages and files that we do NOT want to add to the jar file -->
+                 <!-- This excludes are either for deprecated modules or test components -->
+                 <exclude>**/test/**</exclude>
+                 <exclude>**/WidgetTest.*</exclude>
+                 <!--<exclude>**/*.java</exclude>-->
+             </excludes>
+         </configuration>
+      </plugin>
+      
+      <plugin>
+          <groupId>net.ltgt.gwt.maven</groupId>
+          <artifactId>gwt-maven-plugin</artifactId>
+          <version>1.0-rc-6</version>
+          <executions>
+              <execution>
+                  <goals>
+                      <goal>import-sources</goal>
+                      <goal>compile</goal>
+                  </goals>
+              </execution>
+          </executions>
+          <configuration>
+              <moduleName>${appModule}</moduleName>
+              <moduleShortName>${appName}</moduleShortName>
+              <failOnError>true</failOnError>
+              <compilerArgs>
+                  <arg>-compileReport</arg>
+                  <arg>-XcompilerMetrics</arg>
+                  <arg>-optimize</arg>
+                  <arg>9</arg>
+                  <arg>-style</arg>
+                  <arg>${gwtStyle}</arg>
+              </compilerArgs>
+              <devmodeArgs>
+                  <arg>-bindAddress</arg>
+                  <arg>0.0.0.0</arg>
+              </devmodeArgs>
+              <codeserverArgs>
+                  <arg>-bindAddress</arg>
+                  <arg>0.0.0.0</arg>
+                  <arg>-gen</arg>
+                  <arg>${project.build.directory}/.generated</arg>
+              </codeserverArgs>
+              <warDir>${project.build.directory}/${project.build.finalName}</warDir>
+              <classpathScope>compile+runtime</classpathScope>
+              <startupUrls>
+                  <startupUrl>idgDiagram.html</startupUrl>
+              </startupUrls>
+          </configuration>
+      </plugin>
+      
+      <!-- Copy static web files before executing gwt:run -->
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>2.1.1</version>
+          <executions>
+              <execution>
+                  <phase>compile</phase>
+                  <goals>
+                      <goal>exploded</goal>
+                  </goals>
+              </execution>
+          </executions>
+          <configuration>
+              <webappDirectory>${webappDirectory}</webappDirectory>
+          </configuration>
+      </plugin>
+      
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.4</version>
+          <executions>
+              <execution>
+                  <id>attach-sources</id>
+                  <goals>
+                      <goal>jar</goal>
+                  </goals>
+              </execution>
+          </executions>
+      </plugin>
+
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <extensions>true</extensions>
+          <version>2.8.2</version>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <repositories>
+     <!-- EBI repo -->
+     <repository>
+         <id>nexus-ebi-repo</id>
+         <name>The EBI internal repository</name>
+         <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
+         <releases>
+             <enabled>true</enabled>
+         </releases>
+         <snapshots>
+             <enabled>false</enabled>
+         </snapshots>
+     </repository>
+     <!-- EBI SNAPSHOT repo -->
+     <repository>
+         <id>nexus-ebi-snapshot-repo</id>
+         <name>The EBI internal snapshot repository</name>
+         <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-snapshots/</url>
+         <releases>
+             <enabled>false</enabled>
+         </releases>
+         <snapshots>
+             <enabled>true</enabled>
+         </snapshots>
+     </repository>
+
+     <repository>
+         <id>central</id>
+         <name>Central Repository</name>
+         <url>http://repo.maven.apache.org/maven2</url>
+         <layout>default</layout>
+         <snapshots>
+             <enabled>false</enabled>
+         </snapshots>
+     </repository>
+        
+    </repositories>
+
+</project>

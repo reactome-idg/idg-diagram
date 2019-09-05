@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='widgettest'>
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.gwt.user.User' />
+
+  <!-- Inherit the default GWT style sheet.  You can change       -->
+  <!-- the theme of your GWT application by uncommenting          -->
+  <!-- any one of the following lines.                            -->
+  <inherits name='com.google.gwt.user.theme.standard.Standard' />
+  
+
+  <!-- Other module inherits                                      -->
+  <inherits name='org.reactome.web.idgDiagram.IDGDiagram' />
+
+  <!-- Specify the app entry point class.                         -->
+  <entry-point class='org.reactome.web.test.WidgetTest' />
+
+  <!-- Specify the paths for translatable code                    -->
+  <source path='test' />
+  <source path='idgDiagram' />
+
+</module>
