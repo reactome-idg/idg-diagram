@@ -41,8 +41,6 @@
     <gwtStyle>OBF</gwtStyle> <!-- OBF | PRETTY | DETAILED -->
     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
     
-    <reactome.web.analysis-client>1.5.0</reactome.web.analysis-client>
-    <reactome.web.model>2.1.19</reactome.web.model>
     
 	<appModule>org.reactome.web.idgDiagram.IDGDiagram</appModule>
     <appName>${appModule}</appName>
