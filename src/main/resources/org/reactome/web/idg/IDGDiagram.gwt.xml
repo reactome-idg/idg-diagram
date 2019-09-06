@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module rename-to='idgDiagram'>
+<module rename-to="idg_diagram">
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User' />
+  <inherits name="com.google.gwt.resources.Resources" />
+  
 
   <!-- Other module inherits                                      -->
   <inherits name='org.reactome.web.diagram.DiagramViewer' />
+  <inherits name='org.reactome.web.fiview.FIView' />
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client' />
   
     <!-- allow Super Dev Mode -->
   <add-linker name="xsiframe"/>
-
 </module>

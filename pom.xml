@@ -6,7 +6,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.reactome.web</groupId>
-  <artifactId>idgdiagram</artifactId>
+  <artifactId>idgDiagram</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>Idg extension for Diagram project</name>
@@ -42,7 +42,7 @@
     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
     
     
-	<appModule>org.reactome.web.idgDiagram.IDGDiagram</appModule>
+	<appModule>org.reactome.web.idg.IDGDiagram</appModule>
     <appName>${appModule}</appName>
 	
     <!-- Don't let your Mac use a crazy non-standard encoding -->
