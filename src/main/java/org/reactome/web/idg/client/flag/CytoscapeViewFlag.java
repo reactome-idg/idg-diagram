@@ -7,7 +7,10 @@ public class CytoscapeViewFlag {
 		return cytoscapeViewFlag;
 	}
 
-	public static void setCytoscapeViewFlag(boolean cytoscapeViewFlag) {
-		CytoscapeViewFlag.cytoscapeViewFlag = cytoscapeViewFlag;
+	public static void toggleCytoscapeViewFlag() {
+		if (cytoscapeViewFlag == true)
+			cytoscapeViewFlag = false;
+		else if(cytoscapeViewFlag == false)
+			cytoscapeViewFlag = true;
 	}
 }
