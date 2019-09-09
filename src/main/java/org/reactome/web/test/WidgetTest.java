@@ -6,6 +6,7 @@ import org.reactome.web.diagram.client.DiagramViewer;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.diagram.handlers.ContentLoadedHandler;
 import org.reactome.web.diagram.util.Console;
+import org.reactome.web.idg.client.IdgDiagramViewerImpl;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;
@@ -54,7 +55,7 @@ public class WidgetTest implements EntryPoint{
         DiagramFactory.CONSOLE_VERBOSE = true;
         DiagramFactory.EVENT_BUS_VERBOSE = true;
 //      DiagramFactory.SHOW_INFO = true;
-        diagram = DiagramFactory.createDiagramViewer();
+        diagram = new IdgDiagramViewerImpl();
     }
 
     @Override

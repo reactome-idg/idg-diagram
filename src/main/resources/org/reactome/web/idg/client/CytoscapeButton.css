@@ -1,3 +1,4 @@
+
 .cytoscape {
     float: left;
     background-color: #58C3E5;
@@ -44,7 +45,7 @@
     cursor: pointer !important;
 }
 
-.cytoscape:disabled, .fireworks:disabled:hover, .fireworks:disabled:active{
+.cytoscape:disabled, .cytoscape:disabled:hover, .cytoscape:disabled:active{
     background-color: #9a9c9e;
     cursor: default !important;
 }
