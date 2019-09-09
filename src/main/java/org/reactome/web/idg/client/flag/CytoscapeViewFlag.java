@@ -10,7 +10,7 @@ public class CytoscapeViewFlag {
 	public static void toggleCytoscapeViewFlag() {
 		if (cytoscapeViewFlag == true)
 			cytoscapeViewFlag = false;
-		else if(cytoscapeViewFlag == false)
+		else
 			cytoscapeViewFlag = true;
 	}
 }
