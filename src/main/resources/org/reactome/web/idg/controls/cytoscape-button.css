@@ -1,0 +1,50 @@
+.cytoscape-button {
+    float: left;
+    background-color: #58C3E5;
+    border: none;
+    outline: none;
+    border-radius: 16px;
+    color: white;
+    margin: 0 0 0 20px;
+    padding: 0;
+    border: 0;
+
+    -webkit-box-shadow: 3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow:    3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Firefox 3.5 - 3.6 */
+    box-shadow:         3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+}
+
+.cytoscape-button>div {
+    margin: 0;
+    position: relative;
+}
+
+.cytoscape-button span {
+    display: none;
+}
+
+.cytoscape-button img {
+    display: block;
+    height: 32px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    -webkit-user-drag: none; /* Prevents dragging of images/divs etc */
+}
+
+.cytoscape-button:hover {
+    background-color: #1E95CF;
+    cursor: pointer !important;
+}
+
+.cytoscape-button:active:hover {
+    background-color: #066B9E;
+    cursor: pointer !important;
+}
+
+.cytoscape-button:disabled, .fireworks:disabled:hover, .fireworks:disabled:active{
+    background-color: #9a9c9e;
+    cursor: default !important;
+}
