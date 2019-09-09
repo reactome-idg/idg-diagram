@@ -108,13 +108,13 @@
     <dependency>
 	   	<groupId>org.reactome.web</groupId>
 	   	<artifactId>fiview</artifactId>
-	   	<version>0.0.1</version>
+	   	<version>0.0.2-SNAPSHOT</version>
     </dependency>
     
     <dependency>
 	   	<groupId>org.reactome.web</groupId>
 	   	<artifactId>diagram</artifactId>
-	   	<version>3.6.7</version>
+	   	<version>3.6.8-SNAPSHOT</version>
     </dependency>
     
   </dependencies>
