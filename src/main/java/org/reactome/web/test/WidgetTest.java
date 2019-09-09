@@ -30,7 +30,11 @@ import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-
+/**
+ * 
+ * @author EBI Group
+ *
+ */
 public class WidgetTest implements EntryPoint{
 
     private final DiagramViewer diagram;
