@@ -2,6 +2,8 @@ package org.reactome.web.idg.client;
 
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.common.IconButton;
+import org.reactome.web.diagram.data.Context;
+import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.idg.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.idg.client.flag.CytoscapeViewFlag;
 
@@ -15,11 +17,13 @@ import com.google.gwt.resources.client.ImageResource;
 
 
 public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
-	
+
 	private IconButton fiviewButton;
+	private FIViewVisualiser fIViewVisualiser;
 	
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
+		fIViewVisualiser = new FIViewVisualiser(eventBus);
 		
 	}
 
@@ -30,8 +34,7 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 		fiviewButton = new IconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View", this);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
 		
-		
-		this.add(new FIViewVisualiser(eventBus));
+		this.add(fIViewVisualiser);
 		
 	}
 	
@@ -40,6 +43,20 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 		CytoscapeViewFlag.toggleCytoscapeViewFlag();
 	}
 	
+	@Override
+	protected void setActiveVisualiser(Context context) {
+		super.setActiveVisualiser(context);
+		if(context.getContent().getType() == Content.Type.SVG && CytoscapeViewFlag.isCytoscapeViewFlag()) {
+			visualisers.get(context.getContent().getType()).asWidget().setVisible(false);
+			fIViewVisualiser.asWidget().setVisible(true);
+			activeVisualiser = fIViewVisualiser;
+		}
+	}
+	
+	
+	/**
+	 * Everything below here is for resource loading for the cytoscape view button.
+	 */
     public static IDGResources IDGRESOURCES;
     static {
         IDGRESOURCES = GWT.create(IDGResources.class);
