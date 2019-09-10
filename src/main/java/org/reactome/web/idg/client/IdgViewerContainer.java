@@ -23,7 +23,6 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 	
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
-		fIViewVisualiser = new FIViewVisualiser(eventBus);
 		
 	}
 
@@ -34,13 +33,15 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 		fiviewButton = new IconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View", this);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
 		
-		this.add(fIViewVisualiser);
+		fIViewVisualiser = new FIViewVisualiser(eventBus);
+		super.add(fIViewVisualiser);
 		
 	}
 	
 	@Override
 	public void onClick(ClickEvent event) {
 		CytoscapeViewFlag.toggleCytoscapeViewFlag();
+		setActiveVisualiser(super.context);
 	}
 	
 	@Override

@@ -8,22 +8,30 @@ import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.fiview.client.PathwayFIViewerImpl;
+import org.reactome.web.fiview.events.CyControlActionEvent;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Label;
 
-public class FIViewVisualiser extends SimplePanel implements Visualiser {
+public class FIViewVisualiser extends AbsolutePanel implements Visualiser{
 	
 	EventBus eventBus;
+	PathwayFIViewerImpl fIView;
 	
 	public FIViewVisualiser(EventBus eventBus) {
 		this.eventBus = eventBus;
+		fIView = new PathwayFIViewerImpl(eventBus);
+		
+		this.add(new Label("Hello world"));
 	}
 
 	@Override
-	public void fitDiagram(boolean animation) {
-		// TODO Auto-generated method stub
-		
+	public void fitDiagram(boolean animation) { /* Nothing Here */}
+	
+	public void fitDiagram() {
+		eventBus.fireEventFromSource(new CyControlActionEvent(), this);
 	}
 
 	@Override
