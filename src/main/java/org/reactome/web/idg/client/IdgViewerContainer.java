@@ -3,6 +3,7 @@ package org.reactome.web.idg.client;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.common.IconButton;
 import org.reactome.web.idg.client.visualisers.fiview.FIViewVisualiser;
+import org.reactome.web.idg.client.flag.CytoscapeViewFlag;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -36,8 +37,7 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 	
 	@Override
 	public void onClick(ClickEvent event) {
-		// TODO Auto-generated method stub
-		
+		CytoscapeViewFlag.toggleCytoscapeViewFlag();
 	}
 	
     public static IDGResources IDGRESOURCES;
