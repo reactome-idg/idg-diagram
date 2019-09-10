@@ -10,6 +10,7 @@ import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.fiview.client.PathwayFIViewerImpl;
 import org.reactome.web.fiview.events.CyControlActionEvent;
+import org.reactome.web.fiview.controls.navigation.CyControlAction;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -31,7 +32,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser{
 	public void fitDiagram(boolean animation) { /* Nothing Here */}
 	
 	public void fitDiagram() {
-		eventBus.fireEventFromSource(new CyControlActionEvent(), this);
+		eventBus.fireEventFromSource(new CyControlActionEvent(CyControlAction.FIT_ALL), this);
 	}
 
 	@Override
@@ -42,20 +43,24 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser{
 
 	@Override
 	public void zoomIn() {
-		// TODO Auto-generated method stub
-		
+		eventBus.fireEventFromSource(new CyControlActionEvent(CyControlAction.ZOOM_IN), this);
 	}
 
 	@Override
 	public void zoomOut() {
-		// TODO Auto-generated method stub
-		
+		eventBus.fireEventFromSource(new CyControlActionEvent(CyControlAction.ZOOM_OUT), this);
 	}
 
 	@Override
-	public void padding(int dX, int dY) {
-		// TODO Auto-generated method stub
-		
+	public void padding(int dX, int dY) { 
+		if(dX == 0 && dY > 0) 
+			eventBus.fireEventFromSource(new CyControlActionEvent(CyControlAction.PAN_UP), this);
+		else if(dX == 0 && dY < 0)
+			eventBus.fireEventFromSource(new CyControlActionEvent(CyControlAction.PAN_DOWN), this);
+		else if(dX > 0 && dY == 0)
+			eventBus.fireEventFromSource(new CyControlActionEvent(CyControlAction.PAN_RIGHT), this);
+		else if(dX < 0 && dY == 0)
+			eventBus.fireEventFromSource(new CyControlActionEvent(CyControlAction.PAN_LEFT), this);
 	}
 
 	@Override
