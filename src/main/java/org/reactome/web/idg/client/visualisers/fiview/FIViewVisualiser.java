@@ -22,6 +22,11 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler{
 	

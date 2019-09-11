@@ -22,6 +22,11 @@ import com.google.gwt.json.client.JSONValue;
 
 import uk.ac.ebi.pwp.structures.quadtree.client.Box;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class FIViewContent extends GenericContent{
 	
 	private Set<String> existingProteins;
