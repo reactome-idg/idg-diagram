@@ -1,6 +1,7 @@
 package org.reactome.web.idg.client;
 
 import org.reactome.web.diagram.client.ViewerContainer;
+import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.common.IconButton;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.content.Content;
@@ -15,7 +16,11 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 
-
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 
 	private IconButton fiviewButton;
@@ -46,12 +51,15 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 	
 	@Override
 	protected void setActiveVisualiser(Context context) {
-		super.setActiveVisualiser(context);
-		if(getContext().getContent().getType() == Content.Type.SVG && CytoscapeViewFlag.isCytoscapeViewFlag()) {
-			visualisers.get(getContext().getContent().getType()).asWidget().setVisible(false);
+		if(getContext().getContent().getType() == Content.Type.DIAGRAM && CytoscapeViewFlag.isCytoscapeViewFlag()) {
+			for (Visualiser vis : visualisers.values()) {
+				vis.asWidget().setVisible(false);
+			}
 			fIViewVisualiser.asWidget().setVisible(true);
 			activeVisualiser = fIViewVisualiser;
+			return;
 		}
+		super.setActiveVisualiser(context);
 	}
 	
 	
