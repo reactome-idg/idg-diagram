@@ -7,10 +7,12 @@
 
   <!-- Other module inherits                                      -->
   <inherits name='org.reactome.web.diagram.DiagramViewer' />
-  <inherits name='org.reactome.web.fiview.FIView' />
+  <inherits name='org.reactome.web.gwtCytoscapeJs.GWTCyJs' />
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client' />
+  <source path='events' />
+  <source path='handlers' />
   
     <!-- allow Super Dev Mode -->
   <add-linker name="xsiframe"/>

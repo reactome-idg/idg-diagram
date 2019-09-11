@@ -41,14 +41,14 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 	@Override
 	public void onClick(ClickEvent event) {
 		CytoscapeViewFlag.toggleCytoscapeViewFlag();
-		setActiveVisualiser(super.context);
+		setActiveVisualiser(getContext());
 	}
 	
 	@Override
 	protected void setActiveVisualiser(Context context) {
 		super.setActiveVisualiser(context);
-		if(context.getContent().getType() == Content.Type.SVG && CytoscapeViewFlag.isCytoscapeViewFlag()) {
-			visualisers.get(context.getContent().getType()).asWidget().setVisible(false);
+		if(getContext().getContent().getType() == Content.Type.SVG && CytoscapeViewFlag.isCytoscapeViewFlag()) {
+			visualisers.get(getContext().getContent().getType()).asWidget().setVisible(false);
 			fIViewVisualiser.asWidget().setVisible(true);
 			activeVisualiser = fIViewVisualiser;
 		}

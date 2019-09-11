@@ -1,13 +1,171 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd">
-
-<web-app>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
 	<!-- Default Page to Serve -->
 	<welcome-file-list>
 		<welcome-file>idgDiagram.html</welcome-file>
 	</welcome-file-list>
+	
+	<!-- Reactome Content Service Configuration (ONLY USED IN DEV MODE) -->
+    <servlet>
+        <servlet-name>ContentServiceProxy</servlet-name>
+        <servlet-class>org.reactome.server.utils.proxy.ProxyServlet</servlet-class>
+        <init-param>
+            <param-name>proxyHost</param-name>
+            <!--<param-value>localhost</param-value>-->
+            <!--<param-value>reactome.org</param-value>-->
+            <param-value>dev.reactome.org</param-value>
+            <!--<param-value>reactomerelease.oicr.on.ca</param-value>-->
+        </init-param>
+        <init-param>
+            <param-name>proxyPort</param-name>
+            <!--<param-value>8686</param-value>-->
+            <param-value>80</param-value>
+        </init-param>
+        <init-param>
+            <param-name>proxyPath</param-name>
+            <!--<param-value>/</param-value>-->
+            <param-value>/ContentService</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ContentServiceProxy</servlet-name>
+        <url-pattern>/ContentService/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Reactome RestFul Service Configuration (ONLY USED IN DEV MODE) -->
+    <servlet>
+        <servlet-name>RestFulServiceProxy</servlet-name>
+        <servlet-class>org.reactome.server.utils.proxy.ProxyServlet</servlet-class>
+        <init-param>
+            <param-name>proxyHost</param-name>
+            <!--<param-value>localhost</param-value>-->
+            <!--<param-value>reactome.org</param-value>-->
+            <param-value>reactomedev.oicr.on.ca</param-value>
+            <!--<param-value>reactomerelease.oicr.on.ca</param-value>-->
+        </init-param>
+        <init-param>
+            <param-name>proxyPort</param-name>
+            <!--<param-value>8686</param-value>-->
+            <param-value>80</param-value>
+        </init-param>
+        <init-param>
+            <param-name>proxyPath</param-name>
+            <!--<param-value>/</param-value>-->
+            <param-value>/ReactomeRESTfulAPI</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RestFulServiceProxy</servlet-name>
+        <url-pattern>/ReactomeRESTfulAPI/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Analysis WS PROXY Configuration (ONLY USED IN DEV MODE) -->
+    <servlet>
+        <servlet-name>ReactomeAnalysis</servlet-name>
+        <servlet-class>org.reactome.server.utils.proxy.ProxyServlet</servlet-class>
+        <init-param>
+            <param-name>proxyHost</param-name>
+            <!--<param-value>localhost</param-value>-->
+            <param-value>dev.reactome.org</param-value>
+            <!--<param-value>reactome.org</param-value>-->
+            <!--<param-value>reactomerelease.oicr.on.ca</param-value>-->
+        </init-param>
+        <init-param>
+            <param-name>proxyPort</param-name>
+            <!--<param-value>8080</param-value>-->
+            <param-value>80</param-value>
+            <!--<param-value>7080</param-value>-->
+        </init-param>
+        <init-param>
+            <param-name>proxyPath</param-name>
+            <!--<param-value>/</param-value>-->
+            <param-value>/AnalysisService</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReactomeAnalysis</servlet-name>
+        <url-pattern>/AnalysisService/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- static files local server (ONLY USED IN DEV MODE) -->
+    <!-- Please note a "reactome" user (or a symlink) needs to be set up -->
+    <servlet>
+        <servlet-name>DiagramProxy</servlet-name>
+        <servlet-class>org.reactome.server.utils.proxy.StaticFilesProxyServlet</servlet-class>
+        <init-param>
+            <param-name>proxyFilePath</param-name>
+            <param-value>/Users/reactome/Reactome/diagram/static</param-value>
+            <!--<param-value>/Users/reactome/Reactome/diagram/slice</param-value>-->
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DiagramProxy</servlet-name>
+        <url-pattern>/download/current/diagram/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Reactome IMAGES (ONLY USED IN DEV MODE) -->
+    <servlet>
+        <servlet-name>FiguresProxy</servlet-name>
+        <servlet-class>org.reactome.server.utils.proxy.ProxyServlet</servlet-class>
+        <init-param>
+            <param-name>proxyHost</param-name>
+            <param-value>reactome.org</param-value>
+        </init-param>
+        <init-param>
+            <param-name>proxyPort</param-name>
+            <param-value>80</param-value>
+        </init-param>
+        <init-param>
+            <param-name>proxyPath</param-name>
+            <param-value>/figures</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FiguresProxy</servlet-name>
+        <url-pattern>/figures/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- static SVG files local server (ONLY USED IN DEV MODE) -->
+    <servlet>
+        <servlet-name>SVGProxy</servlet-name>
+        <servlet-class>org.reactome.server.utils.proxy.StaticFilesProxyServlet</servlet-class>
+        <init-param>
+            <param-name>proxyFilePath</param-name>
+            <param-value>/Users/reactome/Reactome/diagram/svg</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SVGProxy</servlet-name>
+        <url-pattern>/download/current/ehld/*</url-pattern>
+    </servlet-mapping>
+    
+    <!-- Reactome RestFul Service Configuration (ONLY USED IN DEV MODE) -->
+    <servlet>
+        <servlet-name>ConvertToFIsProxy</servlet-name>
+        <servlet-class>org.reactome.server.utils.proxy.ProxyServlet</servlet-class>
+        <init-param>
+            <param-name>proxyHost</param-name>
+            <param-value>localhost</param-value>
+            <!--<param-value>reactome.org</param-value>-->
+           <!--  <param-value>reactomedev.oicr.on.ca</param-value> -->
+            <!--<param-value>reactomerelease.oicr.on.ca</param-value>-->
+        </init-param>
+        <init-param>
+            <param-name>proxyPort</param-name>
+            <param-value>8080</param-value>
+           <!--  <param-value>80</param-value> -->
+        </init-param>
+        <init-param>
+            <param-name>prefixPath</param-name>
+            <param-value></param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ConvertToFIsProxy</servlet-name>
+        <url-pattern>/FIService/*</url-pattern>
+    </servlet-mapping>
 
 </web-app>

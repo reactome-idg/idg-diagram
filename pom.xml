@@ -106,9 +106,9 @@
     </dependency>
     
     <dependency>
-	   	<groupId>org.reactome.web</groupId>
-	   	<artifactId>fiview</artifactId>
-	   	<version>0.0.2-SNAPSHOT</version>
+    	<groupId>org.reactome.web</groupId>
+    	<artifactId>gwtCytoscapeJs</artifactId>
+    	<version>0.1.0</version>
     </dependency>
     
     <dependency>
