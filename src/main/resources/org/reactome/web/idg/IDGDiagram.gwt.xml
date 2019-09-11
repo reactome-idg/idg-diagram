@@ -3,6 +3,7 @@
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User' />
   <inherits name="com.google.gwt.resources.Resources" />
+  <inherits name='com.google.gwt.json.JSON'/>
   
 
   <!-- Other module inherits                                      -->
@@ -13,6 +14,7 @@
   <source path='client' />
   <source path='events' />
   <source path='handlers' />
+  <source path='data'/>
   
     <!-- allow Super Dev Mode -->
   <add-linker name="xsiframe"/>
