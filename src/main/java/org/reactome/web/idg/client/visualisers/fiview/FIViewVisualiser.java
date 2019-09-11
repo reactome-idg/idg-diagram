@@ -8,14 +8,22 @@ import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.idg.events.EdgeClickedEvent;
+import org.reactome.web.idg.events.EdgeHoveredEvent;
+import org.reactome.web.idg.events.EdgeMouseOutEvent;
+import org.reactome.web.idg.events.NodeClickedEvent;
+import org.reactome.web.idg.handlers.EdgeClickedHandler;
+import org.reactome.web.idg.handlers.EdgeHoveredHandler;
+import org.reactome.web.idg.handlers.EdgeMouseOutHandler;
+import org.reactome.web.idg.handlers.NodeClickedHandler;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public class FIViewVisualiser extends AbsolutePanel implements Visualiser {
+public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
+	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -28,14 +36,23 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser {
 	
 	public FIViewVisualiser(EventBus eventBus) {
 		super();
-		this.getElement().addClassName("cy");
+		this.getElement().addClassName("pwp-FIViz");
 		this.eventBus = eventBus;
-		cy = new CytoscapeEntity(this.eventBus);
+		
+		initHandlers();
 	}
 	
 	protected void initialise() {
 		if(!initialised) {
 			this.initialised = true;
+			
+			cy = new CytoscapeEntity(this.eventBus);
+			
+			SimplePanel cyView =  new SimplePanel();
+			cyView.getElement().setId("cy");
+			cyView.setSize("100%", "100%");
+			
+			this.add(cyView);
 			
 			this.viewportWidth = getParent().getOffsetWidth();
 			this.viewportHeight = getParent().getOffsetHeight();
@@ -43,6 +60,13 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser {
 			this.setHeight(viewportHeight+ "px");
 			
 		}
+	}
+	
+	private void initHandlers() {
+		eventBus.addHandler(EdgeClickedEvent.TYPE, this);
+		eventBus.addHandler(EdgeHoveredEvent.TYPE, this);
+		eventBus.addHandler(EdgeMouseOutEvent.TYPE, this);
+		eventBus.addHandler(NodeClickedEvent.TYPE, this);
 	}
 
 	@Override
@@ -84,9 +108,20 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser {
     }
 	
 	@Override
-	public void contentLoaded(Context context) {
+	public void setContext(Context context) {
+		this.context = context;
+		
+	}
+
+	@Override
+	public void resetContext() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void contentLoaded(Context context) {
+		setContext(context);
 	}
 
 	@Override
@@ -144,18 +179,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser {
 	}
 
 	@Override
-	public void setContext(Context context) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void resetContext() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void expressionColumnChanged() {
 		// TODO Auto-generated method stub
 		
@@ -205,6 +228,30 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser {
 
 	@Override
 	public void resetFlag() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onNodeClicked(NodeClickedEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEdgeMouseOut(EdgeMouseOutEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEdgeHovered(EdgeHoveredEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEdgeClicked(EdgeClickedEvent event) {
 		// TODO Auto-generated method stub
 		
 	}
