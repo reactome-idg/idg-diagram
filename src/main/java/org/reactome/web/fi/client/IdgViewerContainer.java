@@ -21,7 +21,7 @@ import com.google.gwt.resources.client.ImageResource;
  * @author brunsont
  *
  */
-public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
+public class IdgViewerContainer extends ViewerContainer{
 
 	private IconButton fiviewButton;
 	private FIViewVisualiser fIViewVisualiser;
@@ -35,18 +35,25 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 	protected void initialise() {
 		super.initialise();
 		
-		fiviewButton = new IconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View", this);
+		fiviewButton = new IconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View", (ClickHandler) this);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
 		
 		fIViewVisualiser = new FIViewVisualiser(eventBus);
 		super.add(fIViewVisualiser);
+		bind();
 		
 	}
 	
-	@Override
-	public void onClick(ClickEvent event) {
-		CytoscapeViewFlag.toggleCytoscapeViewFlag();
-		setActiveVisualiser(getContext());
+	private void bind() {
+		fiviewButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				CytoscapeViewFlag.toggleCytoscapeViewFlag();
+				setActiveVisualiser(getContext());
+			}
+			
+		});
 	}
 	
 	@Override
