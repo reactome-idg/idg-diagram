@@ -7,7 +7,7 @@ import com.google.gwt.http.client.*;
  * @author brunsont
  *
  */
-public class FiViewLoader implements RequestCallback{
+public class FIViewLoader implements RequestCallback{
 	
 	public interface Handler{
 		void onFIViewLoaded(String stId, String fIJsonPathway);
@@ -20,7 +20,7 @@ public class FiViewLoader implements RequestCallback{
 	private Request request;
 	private String stId;
 	
-	FiViewLoader(Handler handler){
+	FIViewLoader(Handler handler){
 		this.handler = handler;
 	}
 	

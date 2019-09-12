@@ -32,12 +32,14 @@ public class FIViewContent extends GenericContent{
 	private Set<String> existingProteins;
 	private JSONArray proteinArray;
 	private JSONArray fIArray;
+	private String fiJson;
 	
 	
-	private FIViewContent() {
+	public FIViewContent(String stId, String fiJson) {
 		existingProteins = new HashSet<>();
 		proteinArray = new JSONArray();
 		fIArray = new JSONArray();
+		this.fiJson = fiJson;
 	}
 	
 	@Override
