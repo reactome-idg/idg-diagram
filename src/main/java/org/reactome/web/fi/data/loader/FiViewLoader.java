@@ -1,4 +1,4 @@
-package org.reactome.web.idg.data.loader;
+package org.reactome.web.fi.data.loader;
 
 import com.google.gwt.http.client.*;
 

@@ -1,6 +1,6 @@
-package org.reactome.web.idg.events;
+package org.reactome.web.fi.events;
 
-import org.reactome.web.idg.handlers.EdgeMouseOutHandler;
+import org.reactome.web.fi.handlers.EdgeMouseOutHandler;
 
 import com.google.gwt.event.shared.GwtEvent;
 

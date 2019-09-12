@@ -1,4 +1,4 @@
-package org.reactome.web.idg.data.content;
+package org.reactome.web.fi.data.content;
 
 import java.util.Collection;
 import java.util.List;

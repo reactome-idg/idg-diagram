@@ -1,6 +1,6 @@
-package org.reactome.web.idg.handlers;
+package org.reactome.web.fi.handlers;
 
-import org.reactome.web.idg.events.NodeClickedEvent;
+import org.reactome.web.fi.events.NodeClickedEvent;
 
 import com.google.gwt.event.shared.EventHandler;
 

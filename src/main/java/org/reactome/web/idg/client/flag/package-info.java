@@ -1,1 +1,0 @@
-package org.reactome.web.idg.client.flag;

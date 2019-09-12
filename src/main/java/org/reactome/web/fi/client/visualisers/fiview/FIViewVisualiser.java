@@ -1,4 +1,4 @@
-package org.reactome.web.idg.client.visualisers.fiview;
+package org.reactome.web.fi.client.visualisers.fiview;
 
 import java.util.Set;
 
@@ -8,14 +8,14 @@ import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
-import org.reactome.web.idg.events.EdgeClickedEvent;
-import org.reactome.web.idg.events.EdgeHoveredEvent;
-import org.reactome.web.idg.events.EdgeMouseOutEvent;
-import org.reactome.web.idg.events.NodeClickedEvent;
-import org.reactome.web.idg.handlers.EdgeClickedHandler;
-import org.reactome.web.idg.handlers.EdgeHoveredHandler;
-import org.reactome.web.idg.handlers.EdgeMouseOutHandler;
-import org.reactome.web.idg.handlers.NodeClickedHandler;
+import org.reactome.web.fi.events.EdgeClickedEvent;
+import org.reactome.web.fi.events.EdgeHoveredEvent;
+import org.reactome.web.fi.events.EdgeMouseOutEvent;
+import org.reactome.web.fi.events.NodeClickedEvent;
+import org.reactome.web.fi.handlers.EdgeClickedHandler;
+import org.reactome.web.fi.handlers.EdgeHoveredHandler;
+import org.reactome.web.fi.handlers.EdgeMouseOutHandler;
+import org.reactome.web.fi.handlers.NodeClickedHandler;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;

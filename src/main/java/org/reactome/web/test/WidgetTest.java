@@ -6,7 +6,7 @@ import org.reactome.web.diagram.client.DiagramViewer;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.diagram.handlers.ContentLoadedHandler;
 import org.reactome.web.diagram.util.Console;
-import org.reactome.web.idg.client.IdgDiagramViewerImpl;
+import org.reactome.web.fi.client.IdgDiagramViewerImpl;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.Scheduler;

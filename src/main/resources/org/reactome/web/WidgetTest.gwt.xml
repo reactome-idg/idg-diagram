@@ -2,7 +2,7 @@
 <module rename-to='idg_diagram'>
   <inherits name='com.google.gwt.user.User' />
   
-  <inherits name='org.reactome.web.idg.IDGDiagram' />
+  <inherits name='org.reactome.web.fi.IDGDiagram' />
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='org.reactome.web.test.WidgetTest' />

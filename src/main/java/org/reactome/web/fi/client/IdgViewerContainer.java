@@ -1,12 +1,12 @@
-package org.reactome.web.idg.client;
+package org.reactome.web.fi.client;
 
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.common.IconButton;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.content.Content;
-import org.reactome.web.idg.client.visualisers.fiview.FIViewVisualiser;
-import org.reactome.web.idg.client.flag.CytoscapeViewFlag;
+import org.reactome.web.fi.client.flag.CytoscapeViewFlag;
+import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

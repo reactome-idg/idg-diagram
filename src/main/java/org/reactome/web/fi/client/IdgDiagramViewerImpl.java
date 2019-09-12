@@ -1,4 +1,4 @@
-package org.reactome.web.idg.client;
+package org.reactome.web.fi.client;
 
 import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;

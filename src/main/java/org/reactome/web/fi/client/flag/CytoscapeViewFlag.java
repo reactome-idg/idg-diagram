@@ -1,4 +1,4 @@
-package org.reactome.web.idg.client.flag;
+package org.reactome.web.fi.client.flag;
 
 public class CytoscapeViewFlag {
 	private static boolean cytoscapeViewFlag = false;
