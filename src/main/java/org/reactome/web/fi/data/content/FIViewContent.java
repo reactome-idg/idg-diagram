@@ -40,6 +40,7 @@ public class FIViewContent extends GenericContent{
 		proteinArray = new JSONArray();
 		fIArray = new JSONArray();
 		this.fiJson = fiJson;
+		parseFIPathway(this.fiJson);
 	}
 	
 	@Override
