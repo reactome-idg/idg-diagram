@@ -102,7 +102,7 @@ public class IdgViewerContainer extends ViewerContainer{
         /**
          * The path to the default CSS styles used by this resource.
          */
-        String CSS = "org/reactome/web/idg/client/CytoscapeButton.css";
+        String CSS = "org/reactome/web/fi/client/CytoscapeButton.css";
 
         String cytoscape();
     }
