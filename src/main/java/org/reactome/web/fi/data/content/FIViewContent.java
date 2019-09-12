@@ -3,6 +3,7 @@ package org.reactome.web.fi.data.content;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 
 import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.content.GenericContent;
@@ -13,7 +14,6 @@ import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.util.MapSet;
 
-import com.google.gwt.dev.util.collect.HashSet;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
