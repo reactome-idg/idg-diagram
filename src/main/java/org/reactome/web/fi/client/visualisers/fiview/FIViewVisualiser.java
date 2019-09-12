@@ -4,10 +4,14 @@ import java.util.Set;
 
 import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.data.Context;
+import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.fi.client.IdgViewerContainer.IDGResourceCSS;
+import org.reactome.web.fi.client.IdgViewerContainer.IDGResources;
+import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.events.EdgeClickedEvent;
 import org.reactome.web.fi.events.EdgeHoveredEvent;
 import org.reactome.web.fi.events.EdgeMouseOutEvent;
@@ -17,8 +21,14 @@ import org.reactome.web.fi.handlers.EdgeHoveredHandler;
 import org.reactome.web.fi.handlers.EdgeMouseOutHandler;
 import org.reactome.web.fi.handlers.NodeClickedHandler;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.TextResource;
+import com.google.gwt.resources.client.ClientBundle.Source;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -115,6 +125,11 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void setContext(Context context) {
 		this.context = context;
+		Content content = context.getContent();
+		cy.cytoscapeInit(((FIViewContent)content).getProteinArray(), 
+						 ((FIViewContent)content).getFIArray(), 
+						 FIVIEWPORTRESOURCES.fiviewStyle().getText(), 
+						 "cose");
 		
 	}
 
@@ -260,5 +275,25 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		// TODO Auto-generated method stub
 		
 	}
+	
+	/**
+	 * Everything below here is for resource loading for the cytoscape view button.
+	 */
+    public static FIViewportResources FIVIEWPORTRESOURCES;
+    static {
+        FIVIEWPORTRESOURCES = GWT.create(FIViewportResources.class);
+    }
 
+    /**
+     * A ClientBundle of resources used by this widget.
+     */
+    public interface FIViewportResources extends ClientBundle {
+        /**
+         * The styles used in this widget.
+         */
+        @Source("org/reactome/web/fi/client/visualisers/fiview/cytoscape-style.json")
+        public TextResource fiviewStyle();
+
+
+    }
 }
