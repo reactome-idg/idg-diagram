@@ -42,7 +42,7 @@
     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
     
     
-	<appModule>org.reactome.web.idg.IDGDiagram</appModule>
+	<appModule>org.reactome.web.fi.IDGDiagram</appModule>
     <appName>${appModule}</appName>
 	
     <!-- Don't let your Mac use a crazy non-standard encoding -->
