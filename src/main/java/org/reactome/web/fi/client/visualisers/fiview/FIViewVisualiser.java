@@ -9,8 +9,6 @@ import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
-import org.reactome.web.fi.client.IdgViewerContainer.IDGResourceCSS;
-import org.reactome.web.fi.client.IdgViewerContainer.IDGResources;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.events.EdgeClickedEvent;
 import org.reactome.web.fi.events.EdgeHoveredEvent;
@@ -20,16 +18,16 @@ import org.reactome.web.fi.handlers.EdgeClickedHandler;
 import org.reactome.web.fi.handlers.EdgeHoveredHandler;
 import org.reactome.web.fi.handlers.EdgeMouseOutHandler;
 import org.reactome.web.fi.handlers.NodeClickedHandler;
+import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
-import com.google.gwt.resources.client.ClientBundle.Source;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
@@ -48,7 +46,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	private boolean initialised;
     private int viewportWidth = 0;
     private int viewportHeight = 0;
-	
+	private FIViewInfoPopup infoPopup;
+    
 	public FIViewVisualiser(EventBus eventBus) {
 		super();
 		this.getElement().addClassName("pwp-FIViz");
@@ -73,6 +72,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			this.viewportHeight = getParent().getOffsetHeight();
 			this.setWidth(viewportWidth + "px");
 			this.setHeight(viewportHeight+ "px");
+			
+			infoPopup = new FIViewInfoPopup();
 			
 		}
 	}
@@ -107,6 +108,14 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public void padding(int dX, int dY) { 
+		if(dX == 10)
+			cy.panLeft(dX);
+		else if(dX == -10)
+			cy.panRight(dX);
+		else if (dY == 10)
+			cy.panUp(dY);
+		else if(dY == -10)
+			cy.panDown(dY);
 		
 	}
 
@@ -133,6 +142,49 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		
 	}
 
+	@Override
+	public void onNodeClicked(NodeClickedEvent event) {
+		infoPopup.hide();
+		HTML html = new HTML(new SafeHtmlBuilder()
+				.appendEscapedLines("Protein Short Name: " + event.getShortName() +
+									"\n" +
+									"Protein Accession: " + event.getNodeId())
+				.toSafeHtml());
+		infoPopup.setHtmlLabel(html);
+		infoPopup.show();
+		
+	}
+
+	@Override
+	public void onEdgeMouseOut(EdgeMouseOutEvent event) {
+		infoPopup.hide();
+		
+	}
+
+	@Override
+	public void onEdgeHovered(EdgeHoveredEvent event) {
+		infoPopup.hide();
+		HTML html = new HTML(new SafeHtmlBuilder()
+				.appendEscapedLines("Edge interaction: " + event.getInteractionDirection())
+				.toSafeHtml());
+		infoPopup.setHtmlLabel(html);
+		infoPopup.show();
+	}
+
+	@Override
+	public void onEdgeClicked(EdgeClickedEvent event) {
+		infoPopup.hide();
+		HTML html = new HTML(new SafeHtmlBuilder()
+				.appendEscapedLines("Protein One Name: " + event.getSourceName() + "\n"
+									+ "Protein Two Name: " + event.getTargetName() + "\n"
+									+ "Interaction Direction: " + event.getDirection() + "\n"
+									+ "Reactome Sources Id List: " + event.getReactomeSources())
+				.toSafeHtml());
+		infoPopup.setHtmlLabel(html);
+		infoPopup.show();
+		
+	}
+	
 	@Override
 	public void resetContext() {
 		// TODO Auto-generated method stub
@@ -248,30 +300,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public void resetFlag() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onNodeClicked(NodeClickedEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onEdgeMouseOut(EdgeMouseOutEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onEdgeHovered(EdgeHoveredEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onEdgeClicked(EdgeClickedEvent event) {
 		// TODO Auto-generated method stub
 		
 	}
