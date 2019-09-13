@@ -3,12 +3,13 @@ package org.reactome.web.fi.client;
 import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.data.loader.LoaderManager;
-
+import org.reactome.web.fi.client.flag.CytoscapeViewFlag;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 
 public class IdgDiagramViewerImpl extends DiagramViewerImpl implements CytoscapeToggledHandler{
 	
@@ -32,6 +33,9 @@ public class IdgDiagramViewerImpl extends DiagramViewerImpl implements Cytoscape
 
 	@Override
 	public void onCytoscapeToggled(CytoscapeToggledEvent event) {
-		load(event.getContext().getContent().getStableId());
+		if (CytoscapeViewFlag.isCytoscapeViewFlag())
+			load(event.getContext().getContent().getStableId());
+		else
+			loadDiagram(event.getContext().getContent().getStableId());
 	}
 }

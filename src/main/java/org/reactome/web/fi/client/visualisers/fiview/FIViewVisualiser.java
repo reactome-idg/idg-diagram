@@ -196,7 +196,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	}
 	
 	@Override
-	public void onNodeHovered(NodeHoveredEvent event) {
+	public void onNodeHovered(NodeHoveredEvent event) { //TODO: fix so it displays correct Popup
 		infoPopup.hide();
 		HTML html = new HTML(new SafeHtmlBuilder()
 				.appendEscapedLines("Node Accession number: " + event.getNodeId())
@@ -221,8 +221,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public void contentRequested() {
-		// TODO Auto-generated method stub
-		
+		context = null;
+		cy = null;
 	}
 
 	@Override
