@@ -18,6 +18,10 @@ import org.reactome.web.fi.handlers.EdgeClickedHandler;
 import org.reactome.web.fi.handlers.EdgeHoveredHandler;
 import org.reactome.web.fi.handlers.EdgeMouseOutHandler;
 import org.reactome.web.fi.handlers.NodeClickedHandler;
+import org.reactome.web.gwtCytoscapeJs.events.NodeHoveredEvent;
+import org.reactome.web.gwtCytoscapeJs.events.NodeMouseOutEvent;
+import org.reactome.web.gwtCytoscapeJs.handlers.NodeHoveredHandler;
+import org.reactome.web.gwtCytoscapeJs.handlers.NodeMouseOutHandler;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 
 import com.google.gwt.core.client.GWT;
@@ -38,7 +42,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
  *
  */
 public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
-	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler{
+	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler,
+	NodeHoveredHandler, NodeMouseOutHandler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -75,7 +80,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			this.viewportWidth = getParent().getOffsetWidth();
 			this.viewportHeight = getParent().getOffsetHeight();
 			this.setWidth(viewportWidth + "px");
-			this.setHeight(viewportHeight+ "px");
+			this.setHeight(viewportHeight + "px");
 			
 			infoPopup = new FIViewInfoPopup();
 			
@@ -87,6 +92,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		eventBus.addHandler(EdgeHoveredEvent.TYPE, this);
 		eventBus.addHandler(EdgeMouseOutEvent.TYPE, this);
 		eventBus.addHandler(NodeClickedEvent.TYPE, this);
+		
 	}
 
 	@Override
@@ -187,6 +193,19 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
 		
+	}
+	
+	@Override
+	public void onNodeHovered(NodeHoveredEvent event) {
+		infoPopup.hide();
+		HTML html = new HTML(new SafeHtmlBuilder()
+				.appendEscapedLines("Node Accession number: " + event.getNodeId())
+				.toSafeHtml());
+	}
+	
+	@Override
+	public void onMouseOut(NodeMouseOutEvent event) {
+		infoPopup.hide();
 	}
 	
 	@Override
