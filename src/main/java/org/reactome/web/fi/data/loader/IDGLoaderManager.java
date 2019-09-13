@@ -6,6 +6,7 @@ import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.fi.client.flag.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 
@@ -31,10 +32,9 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 	
 	@Override
 	public void load(String identifier) {
-		
-		if(!CytoscapeViewFlag.isCytoscapeViewFlag())
+		if(!CytoscapeViewFlag.isCytoscapeViewFlag()) 
 			super.load(identifier);
-		else if(CytoscapeViewFlag.isCytoscapeViewFlag())
+		else if(CytoscapeViewFlag.isCytoscapeViewFlag()) 
 			fIViewLoader.load(identifier.substring(identifier.lastIndexOf("-")+1)); //TODO: update to support multiple species
 	}
 

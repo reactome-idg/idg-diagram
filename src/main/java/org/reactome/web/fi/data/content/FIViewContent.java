@@ -39,10 +39,10 @@ public class FIViewContent extends GenericContent{
 	
 	
 	public FIViewContent(String stId, String fiJson) {
+		setStableId(stId);
 		existingProteins = new HashSet<>();
 		proteinArray = new JSONArray();
 		fIArray = new JSONArray();
-		GWT.log(proteinArray.toString());
 		this.fiJson = fiJson;
 		parseFIPathway(this.fiJson);
 	}

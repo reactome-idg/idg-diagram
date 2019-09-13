@@ -7,6 +7,7 @@ import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.fi.client.flag.CytoscapeViewFlag;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
+import org.reactome.web.fi.events.CytoscapeToggledEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -60,7 +61,7 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 	@Override
 	public void onClick(ClickEvent event) {
 		CytoscapeViewFlag.toggleCytoscapeViewFlag();
-		
+		eventBus.fireEventFromSource(new CytoscapeToggledEvent(getContext()), this);
 	}
 	
 	/**
