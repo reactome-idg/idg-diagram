@@ -1,6 +1,7 @@
 package org.reactome.web.fi.data.content;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
@@ -14,11 +15,13 @@ import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.util.MapSet;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Window;
 
 import uk.ac.ebi.pwp.structures.quadtree.client.Box;
 
@@ -39,6 +42,7 @@ public class FIViewContent extends GenericContent{
 		existingProteins = new HashSet<>();
 		proteinArray = new JSONArray();
 		fIArray = new JSONArray();
+		GWT.log(proteinArray.toString());
 		this.fiJson = fiJson;
 		parseFIPathway(this.fiJson);
 	}
@@ -49,7 +53,7 @@ public class FIViewContent extends GenericContent{
 	}
 	
 	private void parseFIPathway(String fiJson) {
-		
+				
 		//setup Json to be manipulated
     	JSONValue value = JSONParser.parseStrict(fiJson);
     	JSONObject fiInteraction = value.isObject();
@@ -205,13 +209,12 @@ public class FIViewContent extends GenericContent{
 
 	@Override
 	public Collection<DiagramObject> getHoveredTarget(Coordinate p, double factor) {
-		// TODO Auto-generated method stub
-		return null;
+        return Collections.EMPTY_LIST;
 	}
 
 	@Override
 	public Set<GraphPathway> getEncapsulatedPathways() {
-		// TODO Auto-generated method stub
+//        return encapsulatedPathways;
 		return null;
 	}
 
@@ -301,8 +304,7 @@ public class FIViewContent extends GenericContent{
 
 	@Override
 	public Type getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return Type.DIAGRAM;
 	}
 
 }

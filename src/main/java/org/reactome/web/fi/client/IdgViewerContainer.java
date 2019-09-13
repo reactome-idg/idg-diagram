@@ -15,13 +15,14 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.Window;
 
 /**
  * 
  * @author brunsont
  *
  */
-public class IdgViewerContainer extends ViewerContainer{
+public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 
 	private IconButton fiviewButton;
 	private FIViewVisualiser fIViewVisualiser;
@@ -35,30 +36,17 @@ public class IdgViewerContainer extends ViewerContainer{
 	protected void initialise() {
 		super.initialise();
 		
-		fiviewButton = new IconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View", (ClickHandler) this);
+		fiviewButton = new IconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View", this);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
 		
 		fIViewVisualiser = new FIViewVisualiser(eventBus);
 		super.add(fIViewVisualiser);
-		bind();
 		
-	}
-	
-	private void bind() {
-		fiviewButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				CytoscapeViewFlag.toggleCytoscapeViewFlag();
-				setActiveVisualiser(getContext());
-			}
-			
-		});
 	}
 	
 	@Override
 	protected void setActiveVisualiser(Context context) {
-		if(getContext().getContent().getType() == Content.Type.DIAGRAM && CytoscapeViewFlag.isCytoscapeViewFlag()) {
+		if(context.getContent().getType() == Content.Type.DIAGRAM && CytoscapeViewFlag.isCytoscapeViewFlag()) {
 			for (Visualiser vis : visualisers.values()) {
 				vis.asWidget().setVisible(false);
 			}
@@ -69,6 +57,11 @@ public class IdgViewerContainer extends ViewerContainer{
 		super.setActiveVisualiser(context);
 	}
 	
+	@Override
+	public void onClick(ClickEvent event) {
+		CytoscapeViewFlag.toggleCytoscapeViewFlag();
+		
+	}
 	
 	/**
 	 * Everything below here is for resource loading for the cytoscape view button.

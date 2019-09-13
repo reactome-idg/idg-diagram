@@ -1,6 +1,8 @@
 package org.reactome.web.fi.data.loader;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
+import com.google.gwt.user.client.Window;
 
 /**
  * 
@@ -32,6 +34,8 @@ public class FIViewLoader implements RequestCallback{
 	}
 	
 	public void load(String stId) {
+		
+		
 		this.stId = stId;
 		
 		String url = BASE_URL + stId;

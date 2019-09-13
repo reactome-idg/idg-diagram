@@ -22,10 +22,12 @@ import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -59,6 +61,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	protected void initialise() {
 		if(!initialised) {
 			this.initialised = true;
+			
+			ScriptInjector.fromString(FIVIEWPORTRESOURCES.cytoscapeLibrary().getText()).inject();
 			
 			cy = new CytoscapeEntity(this.eventBus);
 			
@@ -133,6 +137,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	@Override
 	public void setContext(Context context) {
+		Window.alert("CONTEXT SET");
 		this.context = context;
 		Content content = context.getContent();
 		cy.cytoscapeInit(((FIViewContent)content).getProteinArray(), 
@@ -321,6 +326,9 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
          */
         @Source("org/reactome/web/fi/client/visualisers/fiview/cytoscape-style.json")
         public TextResource fiviewStyle();
+        
+        @Source("org/reactome/web/fi/client/visualisers/fiview/cytoscape.min.js")
+        public TextResource cytoscapeLibrary();
 
 
     }
