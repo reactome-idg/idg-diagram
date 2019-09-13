@@ -38,7 +38,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     
     <gwtVersion>2.8.2</gwtVersion>
-    <gwtStyle>OBF</gwtStyle> <!-- OBF | PRETTY | DETAILED -->
+    <gwtStyle>DETAILED</gwtStyle> <!-- OBF | PRETTY | DETAILED -->
     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
     
     
@@ -188,7 +188,7 @@
           <artifactId>maven-war-plugin</artifactId>
           <version>2.1.1</version>
           <executions>
-              <execution>
+     		<execution>
                   <phase>compile</phase>
                   <goals>
                       <goal>exploded</goal>
