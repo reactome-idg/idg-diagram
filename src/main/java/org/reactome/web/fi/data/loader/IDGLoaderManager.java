@@ -3,6 +3,7 @@ package org.reactome.web.fi.data.loader;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
+import org.reactome.web.diagram.events.ContentRequestedEvent;
 import org.reactome.web.fi.client.flag.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 
@@ -35,6 +36,7 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 		if(!CytoscapeViewFlag.isCytoscapeViewFlag()) 
 			super.load(identifier);
 		else if(CytoscapeViewFlag.isCytoscapeViewFlag()) 
+	        eventBus.fireEventFromSource(new ContentRequestedEvent(identifier), this);
 			fIViewLoader.load(identifier.substring(identifier.lastIndexOf("-")+1)); //TODO: update to support multiple species
 	}
 
