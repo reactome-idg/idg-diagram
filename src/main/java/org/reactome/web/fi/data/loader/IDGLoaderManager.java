@@ -36,7 +36,6 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 		if(!CytoscapeViewFlag.isCytoscapeViewFlag()) 
 			super.load(identifier);
 		else if(CytoscapeViewFlag.isCytoscapeViewFlag()) 
-	        eventBus.fireEventFromSource(new ContentRequestedEvent(identifier), this);
 			fIViewLoader.load(identifier.substring(identifier.lastIndexOf("-")+1)); //TODO: update to support multiple species
 	}
 
