@@ -62,7 +62,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		if(!initialised) {
 			this.initialised = true;
 			
-			ScriptInjector.fromString(FIVIEWPORTRESOURCES.cytoscapeLibrary().getText()).inject();
+			ScriptInjector.fromString(FIVIEWPORTRESOURCES.cytoscapeLibrary().getText()).setWindow(ScriptInjector.TOP_WINDOW).inject();
 			
 			cy = new CytoscapeEntity(this.eventBus);
 			
@@ -137,7 +137,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	@Override
 	public void setContext(Context context) {
-		Window.alert("CONTEXT SET");
 		this.context = context;
 		Content content = context.getContent();
 		cy.cytoscapeInit(((FIViewContent)content).getProteinArray(), 
