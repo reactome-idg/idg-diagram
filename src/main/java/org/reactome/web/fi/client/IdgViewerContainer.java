@@ -40,11 +40,16 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 		fiviewButton = new IconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View", this);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
 		
-		fIViewVisualiser = new FIViewVisualiser(eventBus);
-		super.add(fIViewVisualiser);
-		
 	}
 	
+	
+	
+	@Override
+	protected void addExternalVisualisers() {
+		fIViewVisualiser = new FIViewVisualiser(eventBus);
+		super.add(fIViewVisualiser);//TODO: move this so that buttons are accessible over it
+	}
+
 	@Override
 	protected void setActiveVisualiser(Context context) {
 		if(context.getContent().getType() == Content.Type.DIAGRAM && CytoscapeViewFlag.isCytoscapeViewFlag()) {
