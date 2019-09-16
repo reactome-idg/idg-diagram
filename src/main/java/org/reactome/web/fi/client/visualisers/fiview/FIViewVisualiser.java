@@ -201,6 +201,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		HTML html = new HTML(new SafeHtmlBuilder()
 				.appendEscapedLines("Node Accession number: " + event.getNodeId())
 				.toSafeHtml());
+		infoPopup.setHtmlLabel(html);
+		infoPopup.show();
 	}
 	
 	@Override
