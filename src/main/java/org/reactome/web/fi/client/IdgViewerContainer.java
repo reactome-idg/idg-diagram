@@ -7,6 +7,7 @@ import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.fi.client.flag.CytoscapeViewFlag;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
+import org.reactome.web.fi.common.IDGIconButton;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 
 import com.google.gwt.core.client.GWT;
@@ -23,9 +24,9 @@ import com.google.gwt.user.client.Window;
  * @author brunsont
  *
  */
-public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
+public class IdgViewerContainer extends ViewerContainer {
 
-	private IconButton fiviewButton;
+	private IDGIconButton fiviewButton;
 	private FIViewVisualiser fIViewVisualiser;
 	
 	public IdgViewerContainer(EventBus eventBus) {
@@ -37,9 +38,9 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 	protected void initialise() {
 		super.initialise();
 		
-		fiviewButton = new IconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View", this);
+		fiviewButton = new IDGIconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View");
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
-		
+		bind();
 	}
 	
 	
@@ -63,13 +64,15 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 		super.setActiveVisualiser(context);
 	}
 	
-	@Override
-	public void onClick(ClickEvent event) {
-		CytoscapeViewFlag.toggleCytoscapeViewFlag();
-		eventBus.fireEventFromSource(new CytoscapeToggledEvent(getContext()), this);
+	private void bind() {
+		fiviewButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				CytoscapeViewFlag.toggleCytoscapeViewFlag();
+				eventBus.fireEventFromSource(new CytoscapeToggledEvent(getContext()), this);
+			}			
+		});
 	}
-	
-	
 	
 	/**
 	 * Everything below here is for resource loading for the cytoscape view button.

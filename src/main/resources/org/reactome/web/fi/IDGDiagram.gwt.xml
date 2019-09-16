@@ -15,6 +15,7 @@
   <source path='events' />
   <source path='handlers' />
   <source path='data'/>
+  <source path='common' />
   
     <!-- allow Super Dev Mode -->
   <add-linker name="xsiframe"/>
