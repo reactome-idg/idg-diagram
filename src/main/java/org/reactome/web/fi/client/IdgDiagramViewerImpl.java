@@ -3,6 +3,7 @@ package org.reactome.web.fi.client;
 import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.data.loader.LoaderManager;
+import org.reactome.web.diagram.events.ContentRequestedEvent;
 import org.reactome.web.fi.client.flag.CytoscapeViewFlag;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
@@ -35,7 +36,8 @@ public class IdgDiagramViewerImpl extends DiagramViewerImpl implements Cytoscape
 	public void onCytoscapeToggled(CytoscapeToggledEvent event) {
 		if (CytoscapeViewFlag.isCytoscapeViewFlag())
 			load(event.getContext().getContent().getStableId());
-		else
-			loadDiagram(event.getContext().getContent().getStableId());
+		else {
+			eventBus.fireEventFromSource(new ContentRequestedEvent(event.getContext().getContent().getStableId()), this);
+		}
 	}
 }

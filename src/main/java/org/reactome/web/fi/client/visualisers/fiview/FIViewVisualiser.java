@@ -210,8 +210,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	@Override
 	public void resetContext() {
-		// TODO Auto-generated method stub
-		
+		this.context = null;
 	}
 	
 	@Override
