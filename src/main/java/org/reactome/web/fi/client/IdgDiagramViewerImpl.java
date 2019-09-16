@@ -9,9 +9,11 @@ import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
-
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class IdgDiagramViewerImpl extends DiagramViewerImpl implements CytoscapeToggledHandler{
 	
 	public IdgDiagramViewerImpl() {

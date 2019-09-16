@@ -3,15 +3,16 @@ package org.reactome.web.fi.data.loader;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
-import org.reactome.web.diagram.events.ContentRequestedEvent;
 import org.reactome.web.fi.client.flag.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
 
-
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Handler{
 
 	private EventBus eventBus;

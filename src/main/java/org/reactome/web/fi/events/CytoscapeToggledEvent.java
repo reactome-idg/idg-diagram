@@ -6,6 +6,11 @@ import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 
 import com.google.gwt.event.shared.GwtEvent;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class CytoscapeToggledEvent extends GwtEvent<CytoscapeToggledHandler>{
     public static Type<CytoscapeToggledHandler> TYPE = new Type<>();
 

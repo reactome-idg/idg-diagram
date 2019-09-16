@@ -1,5 +1,10 @@
 package org.reactome.web.fi.client.flag;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class CytoscapeViewFlag {
 	private static boolean cytoscapeViewFlag = false;
 	

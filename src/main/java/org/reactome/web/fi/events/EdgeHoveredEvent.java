@@ -4,6 +4,11 @@ import org.reactome.web.fi.handlers.EdgeHoveredHandler;
 
 import com.google.gwt.event.shared.GwtEvent;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class EdgeHoveredEvent extends GwtEvent<EdgeHoveredHandler>{
     public static Type<EdgeHoveredHandler> TYPE = new Type<>();
 

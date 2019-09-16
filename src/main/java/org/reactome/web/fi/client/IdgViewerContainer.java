@@ -2,7 +2,6 @@ package org.reactome.web.fi.client;
 
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.client.visualisers.Visualiser;
-import org.reactome.web.diagram.common.IconButton;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.fi.client.flag.CytoscapeViewFlag;
@@ -17,7 +16,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.Window;
 
 /**
  * 

@@ -1,6 +1,5 @@
 package org.reactome.web.fi.common;
 
-
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -9,6 +8,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class IDGIconButton extends Button{
 	private FlowPanel fp;
 	private Image image;

@@ -1,8 +1,6 @@
 package org.reactome.web.fi.data.loader;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
-import com.google.gwt.user.client.Window;
 
 /**
  * 
