@@ -34,6 +34,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
@@ -84,6 +85,16 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			this.setHeight(viewportHeight + "px");
 			
 			infoPopup = new FIViewInfoPopup();
+			infoPopup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
+				
+				@Override
+				public void setPosition(int offsetWidth, int offsetHeight) {
+					int left = (getParent().getParent().getOffsetWidth() - offsetWidth)/12;
+					int top = (getParent().getParent().getOffsetHeight() - offsetHeight)/7;
+					infoPopup.setPopupPosition(left, top);
+				}
+			});
+			infoPopup.hide();
 			
 			cytoscapeInitialised = false;
 			
@@ -170,6 +181,15 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		infoPopup.show();
 		
 	}
+	@Override
+	public void onNodeHovered(NodeHoveredEvent event) {
+		infoPopup.hide();
+		HTML html = new HTML(new SafeHtmlBuilder()
+				.appendEscapedLines("Node Accession number: " + event.getNodeId())
+				.toSafeHtml());
+		infoPopup.setHtmlLabel(html);
+		infoPopup.show();
+	}
 
 	@Override
 	public void onEdgeMouseOut(EdgeMouseOutEvent event) {
@@ -199,16 +219,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
 		
-	}
-	
-	@Override
-	public void onNodeHovered(NodeHoveredEvent event) {
-		infoPopup.hide();
-		HTML html = new HTML(new SafeHtmlBuilder()
-				.appendEscapedLines("Node Accession number: " + event.getNodeId())
-				.toSafeHtml());
-		infoPopup.setHtmlLabel(html);
-		infoPopup.show();
 	}
 	
 	@Override
