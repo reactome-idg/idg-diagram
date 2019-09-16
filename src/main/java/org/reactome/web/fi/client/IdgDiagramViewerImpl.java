@@ -37,7 +37,7 @@ public class IdgDiagramViewerImpl extends DiagramViewerImpl implements Cytoscape
 		if (CytoscapeViewFlag.isCytoscapeViewFlag())
 			load(event.getContext().getContent().getStableId());
 		else {
-			eventBus.fireEventFromSource(new ContentRequestedEvent(event.getContext().getContent().getStableId()), this);
+			eventBus.fireEventFromSource(new ContentRequestedEvent("R-HSA-" + event.getContext().getContent().getStableId()), this);
 		}
 	}
 }

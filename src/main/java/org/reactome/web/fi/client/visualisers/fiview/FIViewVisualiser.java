@@ -51,6 +51,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	private Context context;
 	
 	private boolean initialised;
+	private boolean cytoscapeInitialised;
     private int viewportWidth = 0;
     private int viewportHeight = 0;
 	private FIViewInfoPopup infoPopup;
@@ -83,6 +84,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			this.setHeight(viewportHeight + "px");
 			
 			infoPopup = new FIViewInfoPopup();
+			
+			cytoscapeInitialised = false;
 			
 		}
 	}
@@ -145,10 +148,13 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	public void setContext(Context context) {
 		this.context = context;
 		Content content = context.getContent();
-		cy.cytoscapeInit(((FIViewContent)content).getProteinArray(), 
-						 ((FIViewContent)content).getFIArray(), 
-						 FIVIEWPORTRESOURCES.fiviewStyle().getText(), 
-						 "cose");
+		if(!cytoscapeInitialised) {
+			cy.cytoscapeInit(((FIViewContent)content).getProteinArray(), 
+							 ((FIViewContent)content).getFIArray(), 
+							 FIVIEWPORTRESOURCES.fiviewStyle().getText(), 
+							 "cose");
+			cytoscapeInitialised = true;
+		}
 		
 	}
 
@@ -213,6 +219,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void resetContext() {
 		this.context = null;
+		cytoscapeInitialised = false;
 	}
 	
 	@Override
@@ -223,7 +230,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void contentRequested() {
 		context = null;
-		cy = null;
+		cy.clearCytoscapeGraph();
 	}
 
 	@Override
