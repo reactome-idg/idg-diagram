@@ -69,6 +69,8 @@ public class IdgViewerContainer extends ViewerContainer implements ClickHandler{
 		eventBus.fireEventFromSource(new CytoscapeToggledEvent(getContext()), this);
 	}
 	
+	
+	
 	/**
 	 * Everything below here is for resource loading for the cytoscape view button.
 	 */
