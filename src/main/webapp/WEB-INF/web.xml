@@ -318,6 +318,7 @@
         <servlet-name>Templates</servlet-name>
         <url-pattern>/templates/*</url-pattern>
     </servlet-mapping>
+    
     <!-- Reactome RestFul Service Configuration (ONLY USED IN DEV MODE) -->
     <servlet>
         <servlet-name>ConvertToFIsProxy</servlet-name>

@@ -9,6 +9,6 @@
 
   <!-- Specify the paths for translatable code                    -->
   <source path='test' />
-  <source path='idgDiagram' />
+  <source path='fi' />
   
 </module>
