@@ -77,7 +77,7 @@
         <servlet-class>org.reactome.server.utils.proxy.StaticFilesProxyServlet</servlet-class>
         <init-param>
             <param-name>proxyFilePath</param-name>
-            <param-value>/Users/brunsont/Documents/reactome_web/fireworks/fireworks_layouts</param-value>
+            <param-value>/Users/wug/Documents/reactome_web/fireworks/static</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
@@ -92,7 +92,7 @@
         <servlet-class>org.reactome.server.utils.proxy.StaticFilesProxyServlet</servlet-class>
         <init-param>
             <param-name>proxyFilePath</param-name>
-            <param-value>/Users/brunsont/Documents/reactome_web/diagram/diagram-converter</param-value>
+            <param-value>/Users/wug/Documents/reactome_web/diagram/static</param-value>
             <!--<param-value>/Users/reactome/Reactome/diagram/slice</param-value>-->
         </init-param>
     </servlet>
@@ -108,7 +108,7 @@
         <servlet-class>org.reactome.server.utils.proxy.StaticFilesProxyServlet</servlet-class>
         <init-param>
             <param-name>proxyFilePath</param-name>
-            <param-value>/Users/brunsont/Documents/reactome_web/diagram/svg</param-value>
+            <param-value>/Users/wug/Documents/reactome_web/diagram/svg</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
@@ -312,7 +312,6 @@
         <servlet-name>Templates</servlet-name>
         <url-pattern>/templates/*</url-pattern>
     </servlet-mapping>
-    
     <!-- Reactome RestFul Service Configuration (ONLY USED IN DEV MODE) -->
     <servlet>
         <servlet-name>ConvertToFIsProxy</servlet-name>

@@ -1,4 +1,4 @@
-package org.reactome.web.fi.client.flag;
+package org.reactome.web.fi.common;
 
 /**
  * 
