@@ -3,7 +3,7 @@ package org.reactome.web.fi.data.loader;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
-import org.reactome.web.fi.client.flag.CytoscapeViewFlag;
+import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 
 import com.google.gwt.event.shared.EventBus;
