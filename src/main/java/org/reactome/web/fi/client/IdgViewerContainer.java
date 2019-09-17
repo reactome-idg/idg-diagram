@@ -16,6 +16,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.Window;
 
 /**
  * 
@@ -25,6 +26,7 @@ import com.google.gwt.resources.client.ImageResource;
 public class IdgViewerContainer extends ViewerContainer {
 
 	private IDGIconButton fiviewButton;
+	private IDGIconButton diagramButton;
 	private FIViewVisualiser fIViewVisualiser;
 	
 	public IdgViewerContainer(EventBus eventBus) {
@@ -37,7 +39,12 @@ public class IdgViewerContainer extends ViewerContainer {
 		super.initialise();
 		
 		fiviewButton = new IDGIconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View");
+		diagramButton = new IDGIconButton(IDGRESOURCES.diagramIcon(), IDGRESOURCES.getCSS().diagram(), "Diagram View");
+		
+		//CytoscapeViewFlag is false by default so set button to fiviewButton by default
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
+		
+		
 		bind();
 	}
 	
@@ -66,14 +73,40 @@ public class IdgViewerContainer extends ViewerContainer {
 		fiviewButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				CytoscapeViewFlag.toggleCytoscapeViewFlag();
-				eventBus.fireEventFromSource(new CytoscapeToggledEvent(getContext()), this);
+				cytoscapeButtonPressed();
+				
 			}			
+		});
+		diagramButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				cytoscapeButtonPressed();
+			}
 		});
 	}
 	
+	private void cytoscapeButtonPressed() {
+		CytoscapeViewFlag.toggleCytoscapeViewFlag();
+		switchCytoscapeToggleButtons();
+		eventBus.fireEventFromSource(new CytoscapeToggledEvent(getContext()), this);
+	}
+	
+	private void switchCytoscapeToggleButtons() {
+		if(CytoscapeViewFlag.isCytoscapeViewFlag()) {
+			super.leftTopLauncher.getMainControlPanel().remove(
+					super.leftTopLauncher.getMainControlPanel().getWidgetIndex(fiviewButton));
+			super.leftTopLauncher.getMainControlPanel().add(diagramButton);
+			return;
+		}
+		super.leftTopLauncher.getMainControlPanel().remove(
+				super.leftTopLauncher.getMainControlPanel().getWidgetIndex(diagramButton));
+		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
+
+	}
+	
 	/**
-	 * Everything below here is for resource loading for the cytoscape view button.
+	 * Everything below here is for resources.
 	 */
     public static IDGResources IDGRESOURCES;
     static {
@@ -93,6 +126,11 @@ public class IdgViewerContainer extends ViewerContainer {
 
         @Source("images/Cytoscape.png")
         ImageResource cytoscapeIcon();
+        
+        @Source("images/EHLDPathway.png")
+        ImageResource diagramIcon();
+        
+        
 
     }
 
@@ -107,5 +145,7 @@ public class IdgViewerContainer extends ViewerContainer {
         String CSS = "org/reactome/web/fi/client/CytoscapeButton.css";
 
         String cytoscape();
+        
+        String diagram();
     }
 }

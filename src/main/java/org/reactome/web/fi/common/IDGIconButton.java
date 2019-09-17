@@ -41,6 +41,10 @@ public class IDGIconButton extends Button{
 		
 	}
 	
+	public void setButtonImage(ImageResource imageResource) {
+		image.setResource(imageResource);
+	}
+	
 	private void updateHTML() {
 		SafeHtml safeHtml = SafeHtmlUtils.fromSafeConstant(fp.toString());
 		this.setHTML(safeHtml);
