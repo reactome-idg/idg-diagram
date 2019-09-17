@@ -7,12 +7,6 @@
 	<welcome-file-list>
 		<welcome-file>idgDiagram.html</welcome-file>
 	</welcome-file-list>
-	
-<!-- Default page to serve -->
-    <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-    </welcome-file-list>
-
 
     <!-- Reactome Content Service Configuration (ONLY USED IN DEV MODE) -->
     <servlet>
