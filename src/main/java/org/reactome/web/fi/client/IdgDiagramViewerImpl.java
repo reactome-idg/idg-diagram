@@ -1,5 +1,7 @@
 package org.reactome.web.fi.client;
 
+import org.reactome.web.diagram.client.DiagramFactory;
+import org.reactome.web.diagram.client.DiagramViewerCreator;
 import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.data.loader.LoaderManager;
@@ -15,6 +17,10 @@ import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
  *
  */
 public class IdgDiagramViewerImpl extends DiagramViewerImpl implements CytoscapeToggledHandler{
+    
+    static {
+        DiagramFactory.setDiagramViewerCreator(() -> new IdgDiagramViewerImpl());
+    }
 	
 	public IdgDiagramViewerImpl() {
 		super();
