@@ -4,11 +4,18 @@ import java.util.Set;
 
 import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.data.Context;
+import org.reactome.web.diagram.data.GraphObjectFactory;
 import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
+import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
+import org.reactome.web.diagram.data.graph.raw.EntityNode;
+import org.reactome.web.diagram.data.graph.raw.Graph;
+import org.reactome.web.diagram.data.graph.raw.factory.GraphFactory;
 import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.diagram.data.layout.factory.DiagramObjectException;
+import org.reactome.web.diagram.events.GraphObjectSelectedEvent;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.events.EdgeClickedEvent;
 import org.reactome.web.fi.events.EdgeHoveredEvent;
@@ -28,6 +35,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -177,9 +188,9 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 									"Protein Accession: " + event.getNodeId())
 				.toSafeHtml());
 		infoPopup.setHtmlLabel(html);
-		infoPopup.show();
-		
+		infoPopup.show();		
 	}
+	
 	@Override
 	public void onNodeHovered(NodeHoveredEvent event) {
 		infoPopup.hide();
@@ -208,12 +219,14 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public void onEdgeClicked(EdgeClickedEvent event) {
+		
+		GraphObject graphObj = sortGraphObject(event.getReactomeSources());
+		
 		infoPopup.hide();
 		HTML html = new HTML(new SafeHtmlBuilder()
 				.appendEscapedLines("Protein One Name: " + event.getSourceName() + "\n"
-									+ "Protein Two Name: " + event.getTargetName() + "\n"
 									+ "Interaction Direction: " + event.getDirection() + "\n"
-									+ "Reactome Sources Id List: " + event.getReactomeSources())
+									+ "Protein Two Name: " + event.getTargetName())
 				.toSafeHtml());
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
@@ -240,6 +253,68 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	public void contentRequested() {
 		context = null;
 		cy.clearCytoscapeGraph();
+	}
+	
+	private GraphObject sortGraphObject(String reactomeSources) {
+		
+		JSONValue value = JSONParser.parseStrict(reactomeSources);
+		JSONObject valueObj = value.isObject();
+		JSONArray sourcesArray = value.isArray();
+		
+		JSONObject smallestReaction = null;
+		JSONObject smallestComplex = null;
+		
+		//if reactomeSources is array, get smallest reaction and complex in array
+		if(sourcesArray != null) {
+			for(int i=0; i < sourcesArray.size(); i++) {
+				JSONValue val = sourcesArray.get(i);
+				JSONObject obj = val.isObject();
+				
+				//cases where first reaction or complex object is being set
+				if(smallestReaction == null && obj.get("sourceType").isString().stringValue().toUpperCase() == "REACTION") {
+					smallestReaction = obj;
+				}
+				else if(smallestComplex == null && obj.get("sourceType").isString().stringValue().toUpperCase() == "COMPLEX") {
+					smallestComplex = obj;
+				}
+				
+				//cases where a smaller reaction or complex were found than as set in smallestReaction or smallestComplex
+				if(smallestReaction != null && obj.get("sourceType").isString().stringValue().toUpperCase() == "REACTION" 
+						&& Integer.parseInt(obj.get("reactomeId").toString()) < Integer.parseInt(smallestReaction.get("reactomeId").toString())) {
+					smallestReaction = obj;
+				}
+				else if(smallestReaction != null && obj.get("sourceType").isString().stringValue().toUpperCase() == "COMPLEX" 
+						&& Integer.parseInt(obj.get("reactomeId").toString()) < Integer.parseInt(smallestReaction.get("reactomeId").toString())) {
+					smallestComplex = obj;
+				}
+			}
+			//TODO: make GraphObject from smallest reaction or smallest complex if reaction is still null and return
+			if(smallestReaction != null) 
+				return createGraphObject(smallestReaction);
+			else if(smallestReaction == null && smallestComplex != null)
+				return createGraphObject(smallestComplex);
+			else
+				return null;
+		}
+		
+		return createGraphObject(valueObj);
+	}
+	
+	private GraphObject createGraphObject(JSONObject valueObj) {
+		//if reactomeSources is not an array
+		JSONObject source = new JSONObject();
+		source.put("dbId", valueObj.get("reactomeId"));
+		source.put("sourceType", valueObj.get("sourceType"));
+		EntityNode node = null;
+		try {
+			node = GraphFactory.getGraphObject(EntityNode.class, source.isString().stringValue());
+		} catch (DiagramObjectException e) {
+			GWT.log("graph object could not be created with dbId: " + source.get("dbId").isString().stringValue() 
+					+ "and sourceType of: " + source.get("sourceType").isString().stringValue());
+		}
+		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(node);
+		
+		return graphObject;
 	}
 
 	@Override
@@ -268,8 +343,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public boolean selectGraphObject(GraphObject graphObject, boolean notify) {
-		// TODO Auto-generated method stub
-		return false;
+		return cy.selectObject(graphObject.getStId()); //TODO: Finish selecting item based on passed in graph object
 	}
 
 	@Override
