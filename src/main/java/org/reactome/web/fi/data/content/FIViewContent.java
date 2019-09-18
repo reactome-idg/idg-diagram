@@ -83,7 +83,7 @@ public class FIViewContent extends GenericContent{
 	    				annotationDirection = annotation.get("direction").isString().stringValue();
 	    			}
 	    			else if(annotation.get("direction") == null)
-	    				annotationDirection = "unknown";
+	    				annotationDirection = "none";
 	    			
 	    			//send interaction to be added to cytoscape.js network
 	    				makeFI(shortNameOne, accessionOne, shortNameTwo, accessionTwo, annotationDirection, reactomeSources);
