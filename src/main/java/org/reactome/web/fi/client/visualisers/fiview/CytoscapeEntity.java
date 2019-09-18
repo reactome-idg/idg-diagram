@@ -41,7 +41,7 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 			var targetNode = $wnd.cy.elements('node#' +evt.target.json().data.target);
 			var targetName = targetNode.json().data.shortName
 			var direction = evt.target.json().data.direction;
-			var reactomeSources = evt.target.json().data.reactomeSources.reactomeId; //TODO: check if this returns multiple if reactomeSources is an array
+			var reactomeSources = JSON.stringify(evt.target.json().data.reactomeSources);
 			that.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::fireEdgeClickedEvent(*)(sourceName, targetName, direction, reactomeSources);
 		});
 	}-*/;
@@ -65,6 +65,10 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 			that.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::fireEdgeMouseOutEvent(*)();
 		});
 	}-*/;
+	
+	public native boolean selectObject(String stId) /*-{
+		
+	}-*/;
 
 	private void fireNodeClickedEvent(String id, String shortName) {
 		eventBus.fireEventFromSource(new NodeClickedEvent(id, shortName), this);
@@ -81,6 +85,7 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 	private void fireEdgeMouseOutEvent() {
 		eventBus.fireEventFromSource(new EdgeMouseOutEvent(), this);
 	}
+
 	
 
 	
