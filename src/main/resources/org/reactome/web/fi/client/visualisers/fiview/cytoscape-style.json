@@ -28,6 +28,12 @@
   }
 },
 {
+	"selector": "edge:selected",
+	"style": {
+		"line-color": "#FF0000"
+	}
+},
+{
 	"selector": "edge[direction=\"->\"]",
 	"style": {
     	"target-arrow-shape": "vee",

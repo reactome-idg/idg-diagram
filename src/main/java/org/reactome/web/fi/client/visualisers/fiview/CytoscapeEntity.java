@@ -37,7 +37,7 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 	@Override
 	protected native void edgeSelected() /*-{
 		var that = this;
-		$wnd.cy.elements('edge').on('tap', function(evt){
+		$wnd.cy.elements('edge').on('tap', function(evt){			
 			var sourceNode = $wnd.cy.elements('node#' + evt.target.json().data.source);
 			var sourceName = sourceNode.json().data.shortName;
 			var targetNode = $wnd.cy.elements('node#' +evt.target.json().data.target);
@@ -67,7 +67,7 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 		$wnd.cy.elements('edge').on('mouseout', function(evt){
 			that.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::fireEdgeMouseOutEvent(*)();
 		});
-	}-*/;
+	}-*/; 
 	
 	//reset so no nodes are selected
 	public native void resetSelection() /*-{
