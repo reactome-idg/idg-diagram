@@ -1,5 +1,7 @@
 package org.reactome.web.fi.client.visualisers.fiview;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.reactome.web.diagram.client.visualisers.Visualiser;
@@ -30,6 +32,7 @@ import org.reactome.web.gwtCytoscapeJs.events.NodeMouseOutEvent;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeHoveredHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeMouseOutHandler;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
+import org.reactome.web.fi.data.model.*;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -42,6 +45,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -219,7 +223,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public void onEdgeClicked(EdgeClickedEvent event) {
-		
 		GraphObject graphObj = sortGraphObject(event.getReactomeSources());
 		
 		infoPopup.hide();
@@ -256,51 +259,23 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	}
 	
 	private GraphObject sortGraphObject(String reactomeSources) {
-		
-		JSONValue value = JSONParser.parseStrict(reactomeSources);
-		JSONObject valueObj = value.isObject();
-		JSONArray sourcesArray = value.isArray();
-		
-		JSONObject smallestReaction = null;
-		JSONObject smallestComplex = null;
-		
-		//if reactomeSources is array, get smallest reaction and complex in array
-		if(sourcesArray != null) {
-			for(int i=0; i < sourcesArray.size(); i++) {
-				JSONValue val = sourcesArray.get(i);
-				JSONObject obj = val.isObject();
-				
-				//cases where first reaction or complex object is being set
-				if(smallestReaction == null && obj.get("sourceType").isString().stringValue().toUpperCase() == "REACTION") {
-					smallestReaction = obj;
-				}
-				else if(smallestComplex == null && obj.get("sourceType").isString().stringValue().toUpperCase() == "COMPLEX") {
-					smallestComplex = obj;
-				}
-				
-				//cases where a smaller reaction or complex were found than as set in smallestReaction or smallestComplex
-				if(smallestReaction != null && obj.get("sourceType").isString().stringValue().toUpperCase() == "REACTION" 
-						&& Integer.parseInt(obj.get("reactomeId").toString()) < Integer.parseInt(smallestReaction.get("reactomeId").toString())) {
-					smallestReaction = obj;
-				}
-				else if(smallestReaction != null && obj.get("sourceType").isString().stringValue().toUpperCase() == "COMPLEX" 
-						&& Integer.parseInt(obj.get("reactomeId").toString()) < Integer.parseInt(smallestReaction.get("reactomeId").toString())) {
-					smallestComplex = obj;
-				}
-			}
-			//TODO: make GraphObject from smallest reaction or smallest complex if reaction is still null and return
-			if(smallestReaction != null) 
-				return createGraphObject(smallestReaction);
-			else if(smallestReaction == null && smallestComplex != null)
-				return createGraphObject(smallestComplex);
-			else
-				return null;
+
+		SourcesEntity sources = null;
+		try {
+			sources = SourceFactory.getSourceEntity(SourcesEntity.class, reactomeSources);
+		} catch (DiagramObjectException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		return createGraphObject(valueObj);
+
+		GWT.log(sources.getSchemaClass() + "");
+		
+	
+		return null;
 	}
 	
-	private GraphObject createGraphObject(JSONObject valueObj) {
+	private GraphObject generateGraphObject(JSONObject valueObj) {
 		//if reactomeSources is not an array
 		JSONObject source = new JSONObject();
 		source.put("dbId", valueObj.get("reactomeId"));
