@@ -58,7 +58,6 @@ public class EdgeClickedEvent extends GwtEvent<EdgeClickedHandler> {
 				"source: " + getSourceName() +
 				"direction: " + getDirection() +
 				"target: " + getTargetName() + 
-				"Reactome Sources: " + getReactomeSources() +
 				"}";
 	}
 

@@ -59,7 +59,8 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 			var targetName = targetNode.json().data.shortName
 			var direction = evt.target.json().data.direction;
 			var interactionDirection = sourceName + ' ' + direction + ' ' + targetName;
-			that.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::fireEdgeHoveredEvent(*)(interactionDirection);
+			var reactomeSources = JSON.stringify(evt.target.json().data.reactomeSources);
+			that.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::fireEdgeHoveredEvent(*)(interactionDirection, reactomeSources);
 		});
 		$wnd.cy.elements('edge').on('mouseout', function(evt){
 			that.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::fireEdgeMouseOutEvent(*)();
@@ -78,8 +79,8 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 		eventBus.fireEventFromSource(new EdgeClickedEvent(sourceName, targetName, direction, reactomeSources), this);
 	}
 	
-	private void fireEdgeHoveredEvent(String interactionDirection) {
-		eventBus.fireEventFromSource(new EdgeHoveredEvent(interactionDirection), this);
+	private void fireEdgeHoveredEvent(String interactionDirection, String reactomeSources) {
+		eventBus.fireEventFromSource(new EdgeHoveredEvent(interactionDirection, reactomeSources), this);
 	}
 	
 	private void fireEdgeMouseOutEvent() {

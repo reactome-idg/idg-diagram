@@ -19,6 +19,7 @@ import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.data.layout.factory.DiagramObjectException;
+import org.reactome.web.diagram.events.GraphObjectHoveredEvent;
 import org.reactome.web.diagram.events.GraphObjectSelectedEvent;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.events.EdgeClickedEvent;
@@ -222,6 +223,11 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 				.toSafeHtml());
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
+		
+		SourcesEntity source = sortGraphObject(event.getReactomeSources());
+		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
+		eventBus.fireEventFromSource(new GraphObjectHoveredEvent(graphObject), this);
+		
 	}
 
 	@Override
