@@ -224,6 +224,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
 		
+		//Fire GraphObjectHoveredEvent
 		SourcesEntity source = sortGraphObject(event.getReactomeSources());
 		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
 		eventBus.fireEventFromSource(new GraphObjectHoveredEvent(graphObject), this);
@@ -242,6 +243,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
 		
+		//Fire GraphObjectSelectedEvent
 		SourcesEntity source = sortGraphObject(event.getReactomeSources());
 		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
@@ -318,6 +320,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			
 		}
 		
+		//Sends first COMPLEX when iterating over arroay from low to high DbId if reaction hasnt been returned
 		for(SourcesEntity src: sourcesList) {
 			if(src.getSchemaClass().toUpperCase().contentEquals("COMPLEX"))
 				return src;
