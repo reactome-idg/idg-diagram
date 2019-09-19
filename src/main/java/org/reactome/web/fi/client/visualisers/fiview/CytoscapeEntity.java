@@ -69,14 +69,6 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 		});
 	}-*/;
 	
-	//select node based on passed in accession dbId
-	public native boolean selectNode(String dbId) /*-{
-		var styleJSON = $wnd.JSON.parse(this.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::baseStyle);
-		$wnd.cy.style().fromJson(styleJSON).update();
-		$wnd.cy.style().selector('node#' + dbId).style({'background-color': '#FFFF66'}).update();
-		$wnd.cy.style().selector('edge[target = "'+dbId+'"], edge[source="'+node+'"]').style({'line-color':'red'}).update();
-	}-*/;
-	
 	//reset so no nodes are selected
 	public native void resetSelection() /*-{
 		var styleJSON = $wnd.JSON.parse(this.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::baseStyle);
