@@ -1,6 +1,8 @@
 package org.reactome.web.fi.client.visualisers.fiview;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -224,7 +226,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public void onEdgeClicked(EdgeClickedEvent event) {
-		GraphObject graphObj = sortGraphObject(event.getReactomeSources());
 		
 		infoPopup.hide();
 		HTML html = new HTML(new SafeHtmlBuilder()
@@ -234,6 +235,11 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 				.toSafeHtml());
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
+		
+		SourcesEntity source = sortGraphObject(event.getReactomeSources());
+		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
+		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
+		
 		
 	}
 	
@@ -259,13 +265,14 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		cy.clearCytoscapeGraph();
 	}
 	
-	private GraphObject sortGraphObject(String reactomeSources) {
+	private SourcesEntity sortGraphObject(String reactomeSources) {
 
 		List<SourcesEntity> sourcesList = new ArrayList<>();
 		
 		JSONValue value = JSONParser.parseStrict(reactomeSources);
 		JSONArray jsonArray = value.isArray();
 		
+		//parse over jsonArray, convert each source to a SourcesEntity, and adds to a SourcesEntity array list
 		if(jsonArray != null) {
 			for(int i=0; i<jsonArray.size(); i++) {
 				JSONObject obj = jsonArray.get(i).isObject();
@@ -280,24 +287,23 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			}
 		}
 		
-		return null;
-	}
-	
-	private GraphObject generateGraphObject(JSONObject valueObj) {
-		//if reactomeSources is not an array
-		JSONObject source = new JSONObject();
-		source.put("dbId", valueObj.get("reactomeId"));
-		source.put("sourceType", valueObj.get("sourceType"));
-		EntityNode node = null;
-		try {
-			node = GraphFactory.getGraphObject(EntityNode.class, source.isString().stringValue());
-		} catch (DiagramObjectException e) {
-			GWT.log("graph object could not be created with dbId: " + source.get("dbId").isString().stringValue() 
-					+ "and sourceType of: " + source.get("sourceType").isString().stringValue());
-		}
-		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(node);
+		//Sorts sourcesList by dbId
+		Collections.sort(sourcesList, new Comparator<SourcesEntity>() {
+			@Override
+			public int compare(SourcesEntity o1, SourcesEntity o2) {
+				return o1.getDbId().compareTo(o2.getDbId());
+			}
+		});
 		
-		return graphObject;
+		//Sends first reaction when iterating over array from low to high DbId
+		for (SourcesEntity src : sourcesList) {
+			if (src.getSchemaClass().toUpperCase().contentEquals("REACTION")) {
+				return src;
+			}
+		}
+		
+		//If no SourceEntity has a sourceType of reaction, send first Complex, which will have lowest DbId after sorting above.
+		return sourcesList.get(0);
 	}
 
 	@Override
