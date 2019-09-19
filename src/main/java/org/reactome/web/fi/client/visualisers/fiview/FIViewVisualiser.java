@@ -42,6 +42,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -260,18 +261,25 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	private GraphObject sortGraphObject(String reactomeSources) {
 
-		SourcesEntity sources = null;
-		try {
-			sources = SourceFactory.getSourceEntity(SourcesEntity.class, reactomeSources);
-		} catch (DiagramObjectException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		List<SourcesEntity> sourcesList = new ArrayList<>();
+		
+		JSONValue value = JSONParser.parseStrict(reactomeSources);
+		JSONArray jsonArray = value.isArray();
+		
+		if(jsonArray != null) {
+			for(int i=0; i<jsonArray.size(); i++) {
+				JSONObject obj = jsonArray.get(i).isObject();
+				SourcesEntity source = null;
+				try {
+					source = SourceFactory.getSourceEntity(SourcesEntity.class, obj.toString());
+					sourcesList.add(source);
+				} catch (DiagramObjectException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		
-
-		GWT.log(sources.getSchemaClass() + "");
-		
-	
 		return null;
 	}
 	

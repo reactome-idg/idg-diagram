@@ -12,8 +12,8 @@ import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 public interface SourcesEntity {
 	
 	@PropertyName("reactomeId")
-	List<Long> getDbId();
+	Long getDbId();
 	
 	@PropertyName("sourceType")
-	List<String> getSchemaClass();
+	String getSchemaClass();
 }
