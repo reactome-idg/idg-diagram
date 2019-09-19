@@ -1,6 +1,6 @@
 package org.reactome.web.fi.data.model;
 
-import java.util.List;
+import org.reactome.web.diagram.data.graph.raw.GraphNode;
 
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 
@@ -9,7 +9,7 @@ import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
  * @author brunsont
  *
  */
-public interface SourcesEntity {
+public interface SourcesEntity extends GraphNode {
 	
 	@PropertyName("reactomeId")
 	Long getDbId();
