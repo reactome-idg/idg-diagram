@@ -16,10 +16,12 @@ import com.google.gwt.event.shared.EventBus;
 public class CytoscapeEntity extends CytoscapeWrapper{
 
 	EventBus eventBus;
+	String baseStyle;
 	
-	public CytoscapeEntity(EventBus eventBus) {
+	public CytoscapeEntity(EventBus eventBus, String baseStyle) {
 		super(eventBus);
 		this.eventBus = eventBus;
+		this.baseStyle = baseStyle;
 	}
 
 	@Override
@@ -68,19 +70,19 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 	}-*/;
 	
 	//select node based on passed in accession dbId
-	public native boolean selectNode(String dbId, String baseStyle) /*-{
-		var styleJSON = $wnd.JSON.parse(baseStyle);
+	public native boolean selectNode(String dbId) /*-{
+		var styleJSON = $wnd.JSON.parse(this.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::baseStyle);
 		$wnd.cy.style().fromJson(styleJSON).update();
 		$wnd.cy.style().selector('node#' + dbId).style({'background-color': '#FFFF66'}).update();
 		$wnd.cy.style().selector('edge[target = "'+dbId+'"], edge[source="'+node+'"]').style({'line-color':'red'}).update();
 	}-*/;
 	
 	//reset so no nodes are selected
-	public native void resetNodeSelection(String baseStyle) /*-{
-		var styleJSON = $wnd.JSON.parse(baseStyle);
+	public native void resetSelection() /*-{
+		var styleJSON = $wnd.JSON.parse(this.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::baseStyle);
 		$wnd.cy.style().fromJson(styleJSON).update();
 	}-*/;
-
+	
 	private void fireNodeClickedEvent(String id, String shortName) {
 		eventBus.fireEventFromSource(new NodeClickedEvent(id, shortName), this);
 	}

@@ -95,7 +95,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			
 			ScriptInjector.fromString(FIVIEWPORTRESOURCES.cytoscapeLibrary().getText()).setWindow(ScriptInjector.TOP_WINDOW).inject();
 			
-			cy = new CytoscapeEntity(this.eventBus);
+			cy = new CytoscapeEntity(this.eventBus, FIVIEWPORTRESOURCES.fiviewStyle().getText());
 			
 			SimplePanel cyView =  new SimplePanel();
 			cyView.getElement().setId("cy");
@@ -190,11 +190,13 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 							 "cose");
 			cytoscapeInitialised = true;
 		}
-		
 	}
 
 	@Override
 	public void onNodeClicked(NodeClickedEvent event) {
+		
+		cy.highlightSelectedEdgeGroup(event.getNodeId(), FIVIEWPORTRESOURCES.fiviewStyle().getText());
+		
 		infoPopup.hide();
 		HTML html = new HTML(new SafeHtmlBuilder()
 				.appendEscapedLines("Protein Short Name: " + event.getShortName() +
@@ -239,6 +241,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public void onEdgeClicked(EdgeClickedEvent event) {
+		
+		cy.resetSelection();
 		
 		infoPopup.hide();
 		HTML html = new HTML(new SafeHtmlBuilder()
@@ -362,7 +366,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public boolean selectGraphObject(GraphObject graphObject, boolean notify) {
-		return cy.selectNode(graphObject.getDbId().toString(), FIVIEWPORTRESOURCES.fiviewStyle().getText()); //TODO: Finish selecting item based on passed in graph object
+		return cy.selectNode(graphObject.getDbId().toString()); //TODO: Finish selecting item based on passed in graph object
 	}
 
 	@Override
@@ -431,14 +435,14 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	public void flagItems(Set<DiagramObject> flaggedItems, Boolean includeInteractors) {
 		resetFlag();
 		for(DiagramObject diagramObject : flaggedItems) {
-			cy.selectNode(diagramObject.getId().toString(), FIVIEWPORTRESOURCES.fiviewStyle().getText());
+			cy.selectNode(diagramObject.getId().toString());
 		}
 		
 	}
 
 	@Override
 	public void resetFlag() {
-		cy.resetNodeSelection(FIVIEWPORTRESOURCES.fiviewStyle().getText());
+		cy.resetSelection();
 	}
 	
 	/**
