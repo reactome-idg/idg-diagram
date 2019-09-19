@@ -313,9 +313,14 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		
 		//Sends first reaction when iterating over array from low to high DbId
 		for (SourcesEntity src : sourcesList) {
-			if (src.getSchemaClass().toUpperCase().contentEquals("REACTION")) {
+			if (src.getSchemaClass().toUpperCase().contentEquals("REACTION"))
 				return src;
-			}
+			
+		}
+		
+		for(SourcesEntity src: sourcesList) {
+			if(src.getSchemaClass().toUpperCase().contentEquals("COMPLEX"))
+				return src;
 		}
 		
 		//If no SourceEntity has a sourceType of reaction, send first Complex, which will have lowest DbId after sorting above.
