@@ -67,8 +67,18 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 		});
 	}-*/;
 	
-	public native boolean selectObject(String stId) /*-{
-		
+	//select node based on passed in accession dbId
+	public native boolean selectNode(String dbId, String baseStyle) /*-{
+		var styleJSON = $wnd.JSON.parse(baseStyle);
+		$wnd.cy.style().fromJson(styleJSON).update();
+		$wnd.cy.style().selector('node#' + dbId).style({'background-color': '#FFFF66'}).update();
+		$wnd.cy.style().selector('edge[target = "'+dbId+'"], edge[source="'+node+'"]').style({'line-color':'red'}).update();
+	}-*/;
+	
+	//reset so no nodes are selected
+	public native void resetNodeSelection(String baseStyle) /*-{
+		var styleJSON = $wnd.JSON.parse(baseStyle);
+		$wnd.cy.style().fromJson(styleJSON).update();
 	}-*/;
 
 	private void fireNodeClickedEvent(String id, String shortName) {
