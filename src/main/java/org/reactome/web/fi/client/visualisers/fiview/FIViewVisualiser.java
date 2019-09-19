@@ -6,7 +6,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import org.reactome.web.analysis.client.model.ExpressionSummary;
 import org.reactome.web.diagram.client.visualisers.Visualiser;
+import org.reactome.web.diagram.data.AnalysisStatus;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
 import org.reactome.web.diagram.data.content.Content;
@@ -68,6 +70,10 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	private CytoscapeEntity cy;
 	
 	private Context context;
+	
+	private AnalysisStatus analysisStatus;
+    private ExpressionSummary expressionSummary;
+    private int selectedExpCol = 0;
 	
 	private boolean initialised;
 	private boolean cytoscapeInitialised;
@@ -356,7 +362,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public boolean selectGraphObject(GraphObject graphObject, boolean notify) {
-		return cy.selectObject(graphObject.getStId()); //TODO: Finish selecting item based on passed in graph object
+		return cy.selectNode(graphObject.getDbId().toString(), FIVIEWPORTRESOURCES.fiviewStyle().getText()); //TODO: Finish selecting item based on passed in graph object
 	}
 
 	@Override
@@ -367,14 +373,16 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public void loadAnalysis() {
-		// TODO Auto-generated method stub
-		
+		analysisStatus = context.getAnalysisStatus();
+        expressionSummary = analysisStatus.getExpressionSummary();
+        selectedExpCol = 0;
 	}
 
 	@Override
 	public void resetAnalysis() {
-		// TODO Auto-generated method stub
-		
+		analysisStatus = null;
+        expressionSummary = null;
+        selectedExpCol = 0;
 	}
 
 	@Override
@@ -421,14 +429,16 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public void flagItems(Set<DiagramObject> flaggedItems, Boolean includeInteractors) {
-		// TODO Auto-generated method stub
+		resetFlag();
+		for(DiagramObject diagramObject : flaggedItems) {
+			cy.selectNode(diagramObject.getId().toString(), FIVIEWPORTRESOURCES.fiviewStyle().getText());
+		}
 		
 	}
 
 	@Override
 	public void resetFlag() {
-		// TODO Auto-generated method stub
-		
+		cy.resetNodeSelection(FIVIEWPORTRESOURCES.fiviewStyle().getText());
 	}
 	
 	/**
