@@ -287,6 +287,16 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			}
 		}
 		
+		if(sourcesList.isEmpty()) {
+			try {
+				SourcesEntity source;
+				source = SourceFactory.getSourceEntity(SourcesEntity.class, value.toString());
+				return source;
+			} catch(DiagramObjectException e) {
+				e.printStackTrace();
+			}
+		}
+			
 		//Sorts sourcesList by dbId
 		Collections.sort(sourcesList, new Comparator<SourcesEntity>() {
 			@Override
