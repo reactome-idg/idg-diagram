@@ -366,7 +366,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public boolean selectGraphObject(GraphObject graphObject, boolean notify) {
-		return cy.selectNode(graphObject.getDbId().toString()); //TODO: Finish selecting item based on passed in graph object
+		eventBus.fireEventFromSource(new NodeClickedEvent(graphObject.getDbId().toString(), graphObject.getDisplayName()), this);
+		return true;
 	}
 
 	@Override
@@ -435,7 +436,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	public void flagItems(Set<DiagramObject> flaggedItems, Boolean includeInteractors) {
 		resetFlag();
 		for(DiagramObject diagramObject : flaggedItems) {
-			cy.selectNode(diagramObject.getId().toString());
+			eventBus.fireEventFromSource(new NodeClickedEvent(diagramObject.getId().toString(), diagramObject.getDisplayName()), this);
 		}
 		
 	}
