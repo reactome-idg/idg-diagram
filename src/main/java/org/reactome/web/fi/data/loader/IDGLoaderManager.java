@@ -6,6 +6,7 @@ import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
 /**
@@ -42,15 +43,15 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 
 	@Override
 	public void onFIViewLoaded(String stId, String fIJsonPathway) {
-		Context context = new Context(new FIViewContent(stId, fIJsonPathway));
+		Context context = new Context(new FIViewContent(fIJsonPathway));
+		context.getContent().setStableId(stId);
 		this.context = context;
 		eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
 	}
 
 	@Override
 	public void onFIViewLoadedError(String stId, Throwable exception) {
-		// TODO Auto-generated method stub
-		
+		GWT.log("Error loading FIView interaction data");
 	}
 
 }

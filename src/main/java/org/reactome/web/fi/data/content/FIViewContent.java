@@ -33,11 +33,9 @@ public class FIViewContent extends GenericContent{
 	private Set<String> existingProteins;
 	private JSONArray proteinArray;
 	private JSONArray fIArray;
-	private String fiJson;
+	private String fiJson;	
 	
-	
-	public FIViewContent(String stId, String fiJson) {
-		setStableId(stId);
+	public FIViewContent(String fiJson) {
 		existingProteins = new HashSet<>();
 		proteinArray = new JSONArray();
 		fIArray = new JSONArray();
@@ -180,7 +178,7 @@ public class FIViewContent extends GenericContent{
 	public String getFIArray() {
 		return fIArray.toString();
 	}
-
+	
 	@Override
 	public void cache(GraphObject dbObject) {
 		// TODO Auto-generated method stub

@@ -42,7 +42,7 @@ public class FIViewLoader implements RequestCallback{
 		try {
 			this.request = requestBuilder.sendRequest(null, this);
 		} catch(RequestException e) {
-			this.handler.onFIViewLoadedError(stId, e);
+			this.handler.onFIViewLoadedError(this.stId, e);
 		}
 	}
 	
@@ -51,10 +51,10 @@ public class FIViewLoader implements RequestCallback{
 	public void onResponseReceived(Request request, Response response) {
 		switch(response.getStatusCode()) {
 		case Response.SC_OK:
-			this.handler.onFIViewLoaded(stId, response.getText());
+			this.handler.onFIViewLoaded(this.stId, response.getText());
 			break;
 		default:
-			this.handler.onFIViewLoadedError(stId, new Exception(response.getStatusText()));
+			this.handler.onFIViewLoadedError(this.stId, new Exception(response.getStatusText()));
 		}
 		
 	}
