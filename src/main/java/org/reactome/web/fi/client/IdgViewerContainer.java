@@ -127,7 +127,7 @@ public class IdgViewerContainer extends ViewerContainer {
         @Source("images/Cytoscape.png")
         ImageResource cytoscapeIcon();
         
-        @Source("images/EHLDPathway.png")
+        @Source("images/EHLDIcon.png")
         ImageResource diagramIcon();
         
         
