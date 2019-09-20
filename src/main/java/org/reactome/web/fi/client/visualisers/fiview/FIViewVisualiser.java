@@ -74,6 +74,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
     private int viewportWidth = 0;
     private int viewportHeight = 0;
 	private FIViewInfoPopup infoPopup;
+	
+	SimplePanel cyView;
     
 	public FIViewVisualiser(EventBus eventBus) {
 		super();
@@ -91,7 +93,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			
 			cy = new CytoscapeEntity(this.eventBus, FIVIEWPORTRESOURCES.fiviewStyle().getText());
 			
-			SimplePanel cyView =  new SimplePanel();
+			cyView =  new SimplePanel();
 			cyView.getElement().setId("cy");
 			cyView.setSize("100%", "100%");
 			
@@ -422,7 +424,13 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public void setSize(int width, int height) {
-		// TODO Auto-generated method stub
+		this.setWidth(width + "px");
+		this.setHeight(height + "px");
+		this.cyView.setWidth(width + "px");
+		this.cyView.setHeight(height + "px");
+		this.viewportWidth = width;
+		this.viewportHeight = height;
+//		cy.centerCytoscape(); action lags until next resize
 		
 	}
 
