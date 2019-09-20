@@ -6,7 +6,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.reactome.web</groupId>
-  <artifactId>idg-diagram</artifactId>
+  <artifactId>idgDiagram</artifactId>
   <packaging>jar</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>Idg extension for Diagram project</name>
@@ -74,12 +74,6 @@
 
   <dependencies>
   
-  	<dependency>
-		<groupId>org.apache.commons</groupId>
-		<artifactId>commons-math3</artifactId>
-		<version>3.6.1</version>
-	</dependency>
-  
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
@@ -107,7 +101,7 @@
     
     <dependency>
     	<groupId>org.reactome.web</groupId>
-    	<artifactId>gwtCytoscapeJs</artifactId>
+    	<artifactId>gwt-cytoscape-js</artifactId>
     	<version>0.1.0</version>
     </dependency>
     
