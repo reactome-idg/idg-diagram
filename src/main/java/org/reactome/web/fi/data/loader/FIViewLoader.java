@@ -32,10 +32,7 @@ public class FIViewLoader implements RequestCallback{
 	}
 	
 	public void load(String stId) {
-		
-		
 		this.stId = stId;
-		
 		String url = BASE_URL + stId;
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
 		requestBuilder.setHeader("Accept", "application/json");
