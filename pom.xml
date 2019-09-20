@@ -6,7 +6,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.reactome.web</groupId>
-  <artifactId>idgDiagram</artifactId>
+  <artifactId>idg-diagram</artifactId>
   <packaging>jar</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>Idg extension for Diagram project</name>
