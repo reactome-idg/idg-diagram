@@ -1,5 +1,7 @@
 package org.reactome.web.fi.data.loader;
 
+import org.reactome.web.fi.common.CytoscapeViewFlag;
+
 import com.google.gwt.http.client.*;
 
 /**
@@ -51,6 +53,7 @@ public class FIViewLoader implements RequestCallback{
 			this.handler.onFIViewLoaded(this.stId, response.getText());
 			break;
 		default:
+			CytoscapeViewFlag.ensureCytoscapeViewFlagFalse();
 			this.handler.onFIViewLoadedError(this.stId, new Exception(response.getStatusText()));
 		}
 		

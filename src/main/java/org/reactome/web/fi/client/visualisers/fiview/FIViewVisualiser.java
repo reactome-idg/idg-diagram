@@ -321,14 +321,14 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		
 		//Sends first reaction when iterating over array from low to high DbId
 		for (SourcesEntity src : sourcesList) {
-			if (src.getSchemaClass().toUpperCase().contentEquals("REACTION"))
+			if (src.getSchemaClass()!= null && src.getSchemaClass().toUpperCase().contentEquals("REACTION"))
 				return src;
 			
 		}
 		
 		//Sends first COMPLEX when iterating over arroay from low to high DbId if reaction hasnt been returned
 		for(SourcesEntity src: sourcesList) {
-			if(src.getSchemaClass().toUpperCase().contentEquals("COMPLEX"))
+			if(src.getSchemaClass()!= null && src.getSchemaClass().toUpperCase().contentEquals("COMPLEX"))
 				return src;
 		}
 		

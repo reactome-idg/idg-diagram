@@ -20,4 +20,8 @@ public class CytoscapeViewFlag {
 		else
 			cytoscapeViewFlag = true;
 	}
+	
+	public static void ensureCytoscapeViewFlagFalse() {
+		cytoscapeViewFlag = false;
+	}
 }

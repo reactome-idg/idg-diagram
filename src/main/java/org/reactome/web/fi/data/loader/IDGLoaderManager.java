@@ -8,6 +8,7 @@ import org.reactome.web.fi.data.content.FIViewContent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
 
 /**
  * 
