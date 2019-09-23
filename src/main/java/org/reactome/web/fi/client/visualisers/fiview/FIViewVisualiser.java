@@ -46,6 +46,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -69,7 +70,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
     private ExpressionSummary expressionSummary;
     private int selectedExpCol = 0;
 	
-	private boolean initialised;
+	private boolean initialised = false;
 	private boolean cytoscapeInitialised;
     private int viewportWidth = 0;
     private int viewportHeight = 0;
@@ -79,7 +80,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
     
 	public FIViewVisualiser(EventBus eventBus) {
 		super();
-		this.getElement().addClassName("pwp-FIViz");
+		this.getElement().addClassName("pwp-FIViz"); //IMPORTANT!
 		this.eventBus = eventBus;
 		
 		initHandlers();
@@ -90,8 +91,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			this.initialised = true;
 			this.viewportWidth = getParent().getOffsetWidth();
 			this.viewportHeight = getParent().getOffsetHeight();
-			this.setWidth(this.viewportWidth + "px");
-			this.setHeight(this.viewportHeight + "px" );
 			ScriptInjector.fromString(FIVIEWPORTRESOURCES.cytoscapeLibrary().getText()).setWindow(ScriptInjector.TOP_WINDOW).inject();
 			
 			cy = new CytoscapeEntity(this.eventBus, FIVIEWPORTRESOURCES.fiviewStyle().getText());
@@ -113,6 +112,8 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 				}
 			});
 			infoPopup.hide();
+			
+			setSize(viewportWidth, viewportHeight);
 			
 			cytoscapeInitialised = false;
 			
@@ -422,6 +423,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public void setSize(int width, int height) {
+				
 		this.setWidth(width + "px");
 		this.setHeight(height + "px");
 		this.cyView.setWidth(width + "px");

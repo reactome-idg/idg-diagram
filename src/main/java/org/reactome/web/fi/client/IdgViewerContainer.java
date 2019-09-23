@@ -105,6 +105,12 @@ public class IdgViewerContainer extends ViewerContainer {
 
 	}
 	
+	@Override
+	public void onResize() {
+		super.onResize();
+		fIViewVisualiser.setSize(this.getOffsetWidth(), this.getOffsetHeight());
+	}
+	
 	/**
 	 * Everything below here is for resources.
 	 */
