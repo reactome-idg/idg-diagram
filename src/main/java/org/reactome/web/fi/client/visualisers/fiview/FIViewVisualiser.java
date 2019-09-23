@@ -83,6 +83,8 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		this.getElement().addClassName("pwp-FIViz"); //IMPORTANT!
 		this.eventBus = eventBus;
 		
+		cyView =  new SimplePanel();
+		
 		initHandlers();
 	}
 	
@@ -95,7 +97,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			
 			cy = new CytoscapeEntity(this.eventBus, FIVIEWPORTRESOURCES.fiviewStyle().getText());
 			
-			cyView =  new SimplePanel();
 			cyView.getElement().setId("cy");
 			
 			this.add(cyView);
@@ -251,6 +252,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		//Fire GraphObjectSelectedEvent
 		SourcesEntity source = sortGraphObject(event.getReactomeSources());
 		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
+		Window.alert(graphObject.getDbId() + "");
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
 		
 		
