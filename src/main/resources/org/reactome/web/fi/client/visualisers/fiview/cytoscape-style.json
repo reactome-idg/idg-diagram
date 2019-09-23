@@ -60,4 +60,22 @@
     	"source-arrow-shape": "tee",
    		"source-arrow-color": "#000000"
   }
+},
+{
+	"selector": "edge[direction=\"|->\"]",
+	"style": {
+    	"source-arrow-shape": "tee",
+   		"source-arrow-color": "#000000",
+			"target-arrow-shape": "vee",
+			"target-arrow-color": "#000000"
+  }
+},
+{
+	"selector": "edge[direction=\"<-|\"]",
+	"style": {
+			"source-arrow-shape": "vee",
+			"source-arrow-color": "#000000",
+			"target-arrow-shape": "tee",
+			"target-arrow-color": "#000000"
+	}
 }]
