@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @author brunsont
  *
  */
-public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
+public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler,
 	NodeHoveredHandler, NodeMouseOutHandler{
 	
@@ -88,21 +88,19 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	protected void initialise() {
 		if(!initialised) {
 			this.initialised = true;
-			
+			this.viewportWidth = getParent().getOffsetWidth();
+			this.viewportHeight = getParent().getOffsetHeight();
+			this.setWidth(this.viewportWidth + "px");
+			this.setHeight(this.viewportHeight + "px" );
 			ScriptInjector.fromString(FIVIEWPORTRESOURCES.cytoscapeLibrary().getText()).setWindow(ScriptInjector.TOP_WINDOW).inject();
 			
 			cy = new CytoscapeEntity(this.eventBus, FIVIEWPORTRESOURCES.fiviewStyle().getText());
 			
 			cyView =  new SimplePanel();
 			cyView.getElement().setId("cy");
-			cyView.setSize("100%", "100%");
 			
 			this.add(cyView);
-			
-			this.viewportWidth = getParent().getOffsetWidth();
-			this.viewportHeight = getParent().getOffsetHeight();
-			this.setWidth(viewportWidth + "px");
-			this.setHeight(viewportHeight + "px");
+			this.cyView.setSize(viewportWidth+"px", viewportHeight+"px");
 			
 			infoPopup = new FIViewInfoPopup();
 			infoPopup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
