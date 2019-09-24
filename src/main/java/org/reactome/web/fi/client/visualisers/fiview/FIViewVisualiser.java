@@ -192,7 +192,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	@Override
 	public void onNodeClicked(NodeClickedEvent event) {
 		
-		cy.highlightSelectedEdgeGroup(event.getNodeId(), FIVIEWPORTRESOURCES.fiviewStyle().getText());
+		cy.highlightSelectedEdgeGroup(event.getNodeId());
 		
 		infoPopup.hide();
 		HTML html = new HTML(new SafeHtmlBuilder()

@@ -30,7 +30,16 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 		$wnd.cy.elements('node').on('tap', function(evt){
 			var id = evt.target.id();
 			var shortName = evt.target.json().data.shortName;
+			var ele = evt.target;
+			
+			$wnd.cy.style().selector('edge[target = "'+id+'"], edge[source="'+id+'"]').style({'line-color': 'red'}).update();
+			
 			that.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::fireNodeClickedEvent(*)(id, shortName);
+		});
+		
+		$wnd.cy.elements('node').on('tapunselect', function(evt){
+			var id = evt.target.id();
+			$wnd.cy.style().selector('edge[target = "'+id+'"], edge[source="'+id+'"]').style({'line-color': 'black'}).update();
 		});
 	}-*/;
 	
@@ -74,10 +83,10 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 		var styleJSON = $wnd.JSON.parse(this.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::baseStyle);
 		$wnd.cy.style().fromJson(styleJSON).update();
 	}-*/;
-	
+
 	public native void hierarchySelect(String id) /*-{
 		$wnd.cy.edges().unselect();
-		$wnd.cy.edges('[reactomeId = "' + '177750' +'"]').select();
+		$wnd.cy.edges('[reactomeId = "' + id +'"]').select();
 		
 	}-*/;
 	
