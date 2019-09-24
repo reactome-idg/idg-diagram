@@ -185,6 +185,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 							 FIVIEWPORTRESOURCES.fiviewStyle().getText(), 
 							 "cose");
 			cytoscapeInitialised = true;
+			
 		}
 	}
 
@@ -252,7 +253,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		//Fire GraphObjectSelectedEvent
 		SourcesEntity source = sortGraphObject(event.getReactomeSources());
 		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
-		Window.alert(graphObject.getDbId() + "");
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
 		
 		
@@ -363,7 +363,8 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public boolean selectGraphObject(GraphObject graphObject, boolean notify) {
-		eventBus.fireEventFromSource(new NodeClickedEvent(graphObject.getDbId().toString(), graphObject.getDisplayName()), this);
+		
+		cy.hierarchySelect(graphObject.getDbId().toString());
 		return true;
 	}
 
@@ -468,7 +469,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
         @Source("org/reactome/web/fi/client/visualisers/fiview/cytoscape-style.json")
         public TextResource fiviewStyle();
         
-        @Source("org/reactome/web/fi/client/visualisers/fiview/cytoscape.min.js")
+        @Source("org/reactome/web/fi/client/visualisers/fiview/cytoscape.umd.js")
         public TextResource cytoscapeLibrary();
 
 

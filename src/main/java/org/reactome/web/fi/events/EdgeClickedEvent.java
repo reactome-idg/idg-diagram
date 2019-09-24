@@ -50,7 +50,7 @@ public class EdgeClickedEvent extends GwtEvent<EdgeClickedHandler> {
 	public String getReactomeSources() {
 		return reactomeSources;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "EdgeClickedEvent{" +

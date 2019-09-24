@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
+import org.reactome.web.diagram.data.GraphObjectFactory;
 import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.content.GenericContent;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
@@ -13,7 +14,10 @@ import org.reactome.web.diagram.data.graph.model.GraphPathway;
 import org.reactome.web.diagram.data.graph.model.GraphSubpathway;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.diagram.data.layout.factory.DiagramObjectException;
 import org.reactome.web.diagram.util.MapSet;
+import org.reactome.web.fi.data.model.SourceFactory;
+import org.reactome.web.fi.data.model.SourcesEntity;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -158,16 +162,37 @@ public class FIViewContent extends GenericContent{
 			String proteinTwoAccession,
 			String annotationDirection, 
 			JSONValue reactomeSources) {
-
+		
 		JSONObject fi = new JSONObject();
 		fi.put("id", new JSONString(fIArray.size()+""));
 		fi.put("source", new JSONString(proteinOneAccession));
 		fi.put("target", new JSONString(proteinTwoAccession));
 		fi.put("direction", new JSONString(annotationDirection));
 		fi.put("reactomeSources", reactomeSources);
+		
+		JSONArray idA = new JSONArray();
+		
+		JSONArray jsonA = reactomeSources.isArray();
+		if(jsonA != null) {
+			for (int i=0; i<jsonA.size(); i++) {
+				JSONObject obj = jsonA.get(i).isObject();
+				JSONValue id = obj.get("reactomeId");
+				idA.set(idA.size(), id);
+			}
+			fi.put("reactomeId", idA);			
+		}
+		else if(jsonA == null) {
+			JSONObject obj = reactomeSources.isObject();
+			JSONObject idOb = new JSONObject();
+			idOb.put("reactomeId", obj.get("reactomeId"));
+			
+			fi.put("reactomeId", obj.get("reactomeId"));
+		}
+		
 		JSONObject fiData = new JSONObject();
 		fiData.put("group", new JSONString("edges"));
 		fiData.put("data", fi);
+
 		return fiData;		
 	}
 	
@@ -216,14 +241,23 @@ public class FIViewContent extends GenericContent{
 
 	@Override
 	public GraphObject getDatabaseObject(String identifier) {
-		// TODO Auto-generated method stub
-		return null;
+		Long dbId = Long.parseLong(identifier.substring(identifier.lastIndexOf("-"+1)));
+		return getDatabaseObject(dbId);
 	}
 
 	@Override
 	public GraphObject getDatabaseObject(Long dbId) {
-		// TODO Auto-generated method stub
-		return null;
+		JSONObject obj = new JSONObject();
+		obj.put("reactomeId", new JSONString(dbId.toString()));
+		SourcesEntity source = null;
+		try {
+			source = SourceFactory.getSourceEntity(SourcesEntity.class, obj.toString());
+		} catch (DiagramObjectException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
+		return graphObject;
 	}
 
 	@Override

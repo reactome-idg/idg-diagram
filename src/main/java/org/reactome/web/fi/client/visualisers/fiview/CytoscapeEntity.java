@@ -75,6 +75,12 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 		$wnd.cy.style().fromJson(styleJSON).update();
 	}-*/;
 	
+	public native void hierarchySelect(String id) /*-{
+		$wnd.cy.edges().unselect();
+		$wnd.cy.edges('[reactomeId = "' + '177750' +'"]').select();
+		
+	}-*/;
+	
 	private void fireNodeClickedEvent(String id, String shortName) {
 		eventBus.fireEventFromSource(new NodeClickedEvent(id, shortName), this);
 	}
@@ -89,9 +95,5 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 	
 	private void fireEdgeMouseOutEvent() {
 		eventBus.fireEventFromSource(new EdgeMouseOutEvent(), this);
-	}
-
-	
-
-	
+	}	
 }
