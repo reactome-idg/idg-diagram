@@ -64,8 +64,12 @@ public class IdgViewerContainer extends ViewerContainer {
 			}
 			fIViewVisualiser.asWidget().setVisible(true);
 			activeVisualiser = fIViewVisualiser;
+			setDiagramButton();
 			return;
 		}
+//		else if(context.getContent().getType() == Content.Type.DIAGRAM && !CytoscapeViewFlag.isCytoscapeViewFlag())
+//			setCytoscapeButton();
+//		
 		super.setActiveVisualiser(context);
 	}
 	
@@ -81,6 +85,7 @@ public class IdgViewerContainer extends ViewerContainer {
 
 			@Override
 			public void onClick(ClickEvent event) {
+				setCytoscapeButton();
 				cytoscapeButtonPressed();
 			}
 		});
@@ -88,21 +93,19 @@ public class IdgViewerContainer extends ViewerContainer {
 	
 	private void cytoscapeButtonPressed() {
 		CytoscapeViewFlag.toggleCytoscapeViewFlag();
-		switchCytoscapeToggleButtons();
 		eventBus.fireEventFromSource(new CytoscapeToggledEvent(getContext()), this);
+
 	}
 	
-	private void switchCytoscapeToggleButtons() {
-		if(CytoscapeViewFlag.isCytoscapeViewFlag()) {
-			super.leftTopLauncher.getMainControlPanel().remove(
-					super.leftTopLauncher.getMainControlPanel().getWidgetIndex(fiviewButton));
-			super.leftTopLauncher.getMainControlPanel().add(diagramButton);
-			return;
-		}
+	private void setCytoscapeButton() {
 		super.leftTopLauncher.getMainControlPanel().remove(
 				super.leftTopLauncher.getMainControlPanel().getWidgetIndex(diagramButton));
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
-
+	}
+	private void setDiagramButton() {
+		super.leftTopLauncher.getMainControlPanel().remove(
+				super.leftTopLauncher.getMainControlPanel().getWidgetIndex(fiviewButton));
+		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
 	}
 	
 	@Override
