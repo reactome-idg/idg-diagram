@@ -19,7 +19,7 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 	String baseStyle;
 	
 	public CytoscapeEntity(EventBus eventBus, String baseStyle) {
-		super(eventBus);
+		super(eventBus, baseStyle);
 		this.eventBus = eventBus;
 		this.baseStyle = baseStyle;
 	}
@@ -82,12 +82,6 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 	public native void resetSelection() /*-{
 		var styleJSON = $wnd.JSON.parse(this.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::baseStyle);
 		$wnd.cy.style().fromJson(styleJSON).update();
-	}-*/;
-
-	public native void hierarchySelect(String id) /*-{
-		$wnd.cy.edges().unselect();
-		$wnd.cy.edges('[reactomeId = "' + id +'"]').select();
-		
 	}-*/;
 	
 	private void fireNodeClickedEvent(String id, String shortName) {

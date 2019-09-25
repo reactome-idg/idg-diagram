@@ -181,8 +181,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		Content content = context.getContent();
 		if(!cytoscapeInitialised) {
 			cy.cytoscapeInit(((FIViewContent)content).getProteinArray(), 
-							 ((FIViewContent)content).getFIArray(), 
-							 FIVIEWPORTRESOURCES.fiviewStyle().getText(), 
+							 ((FIViewContent)content).getFIArray(),  
 							 "cose");
 			cytoscapeInitialised = true;
 			
@@ -364,7 +363,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	@Override
 	public boolean selectGraphObject(GraphObject graphObject, boolean notify) {
 		
-		cy.hierarchySelect(graphObject.getDbId().toString());
+		cy.hierarchySelect("reactomeId", graphObject.getDbId().toString());
 		return true;
 	}
 
