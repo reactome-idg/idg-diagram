@@ -186,6 +186,11 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			cytoscapeInitialised = true;
 			
 		}
+		if(cytoscapeInitialised) {
+			cy.clearCytoscapeGraph();
+			cy.addCytoscapeNodes(((FIViewContent)content).getProteinArray());
+			cy.addCytoscapeEdge(((FIViewContent)content).getFIArray());
+		}
 	}
 
 	@Override

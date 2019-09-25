@@ -19,6 +19,7 @@ import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.fi.data.model.SourceFactory;
 import org.reactome.web.fi.data.model.SourcesEntity;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -247,14 +248,15 @@ public class FIViewContent extends GenericContent{
 
 	@Override
 	public GraphObject getDatabaseObject(Long dbId) {
+		
 		JSONObject obj = new JSONObject();
 		obj.put("reactomeId", new JSONString(dbId.toString()));
 		SourcesEntity source = null;
 		try {
 			source = SourceFactory.getSourceEntity(SourcesEntity.class, obj.toString());
 		} catch (DiagramObjectException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			GWT.log("Could not create GraphObject from:" + obj.toString());
 		}
 		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
 		return graphObject;
