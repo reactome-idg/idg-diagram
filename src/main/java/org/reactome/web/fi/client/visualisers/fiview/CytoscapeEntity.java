@@ -71,9 +71,15 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 			var direction = evt.target.json().data.direction;
 			var interactionDirection = sourceName + ' ' + direction + ' ' + targetName;
 			var reactomeSources = JSON.stringify(evt.target.json().data.reactomeSources);
+			
+			$wnd.cy.style().selector('edge[id = "'+evt.target.id()+'"]').style({'line-color': 'yellow'}).update();
+			
 			that.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::fireEdgeHoveredEvent(*)(interactionDirection, reactomeSources);
 		});
 		$wnd.cy.elements('edge').on('mouseout', function(evt){
+			$wnd.cy.style().selector('edge[id = "'+evt.target.id()+'"]').style({'line-color': 'black'}).update();
+			
+			
 			that.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::fireEdgeMouseOutEvent(*)();
 		});
 	}-*/; 
