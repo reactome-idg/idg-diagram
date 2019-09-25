@@ -84,12 +84,6 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 		});
 	}-*/; 
 	
-	//reset so no nodes are selected
-	public native void resetSelection() /*-{
-		var styleJSON = $wnd.JSON.parse(this.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::baseStyle);
-		$wnd.cy.style().fromJson(styleJSON).update();
-	}-*/;
-	
 	private void fireNodeClickedEvent(String id, String shortName) {
 		eventBus.fireEventFromSource(new NodeClickedEvent(id, shortName), this);
 	}

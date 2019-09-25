@@ -69,6 +69,8 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	private AnalysisStatus analysisStatus;
     private ExpressionSummary expressionSummary;
     private int selectedExpCol = 0;
+    private GraphObject hierarchySelectedObject;
+    private GraphObject hierarchyHoveredObject;
 	
 	private boolean initialised = false;
 	private boolean cytoscapeInitialised;
@@ -186,7 +188,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			cytoscapeInitialised = true;
 			
 		}
-		if(cytoscapeInitialised) {
+		else if(cytoscapeInitialised) {
 			cy.clearCytoscapeGraph();
 			cy.addCytoscapeNodes(((FIViewContent)content).getProteinArray());
 			cy.addCytoscapeEdge(((FIViewContent)content).getFIArray());
@@ -341,7 +343,8 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public boolean highlightGraphObject(GraphObject graphObject, boolean notify) {
-		// TODO Auto-generated method stub
+//		this.hierarchyHoveredObject = graphObject;
+//		cy.hierarchyHover("reactomeId", hierarchyHoveredObject.getDbId().toString());
 		return false;
 	}
 
@@ -353,14 +356,15 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public boolean resetHighlight(boolean notify) {
-		// TODO Auto-generated method stub
-		return false;
+//		cy.resetHierarchySelection("reactomeId", this.hierarchyHoveredObject.getDbId().toString());
+//		this.hierarchyHoveredObject = null;
+		return true;
 	}
 
 	@Override
 	public boolean resetSelection(boolean notify) {
-		// TODO Auto-generated method stub
-		return false;
+		cy.resetSelection();
+		return true;
 	}
 
 	@Override
