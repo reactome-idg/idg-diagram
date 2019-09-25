@@ -72,7 +72,7 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 			var interactionDirection = sourceName + ' ' + direction + ' ' + targetName;
 			var reactomeSources = JSON.stringify(evt.target.json().data.reactomeSources);
 			
-			$wnd.cy.style().selector('edge[id = "'+evt.target.id()+'"]').style({'line-color': 'yellow'}).update();
+			$wnd.cy.style().selector('edge[id = "'+evt.target.id()+'"]').style({'line-color': 'red'}).update();
 			
 			that.@org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity::fireEdgeHoveredEvent(*)(interactionDirection, reactomeSources);
 		});
