@@ -46,6 +46,7 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 	public void onFIViewLoaded(String stId, String fIJsonPathway) {
 		Context context = new Context(new FIViewContent(fIJsonPathway));
 		context.getContent().setStableId(stId);
+		contextMap.put(context.getContent().getStableId(), context);
 		this.context = context;
 		eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
 	}

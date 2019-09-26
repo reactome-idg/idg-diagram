@@ -185,6 +185,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			cy.cytoscapeInit(((FIViewContent)content).getProteinArray(), 
 							 ((FIViewContent)content).getFIArray(),  
 							 "cose");
+			cy.resetCytoscapeLayout();
 			cytoscapeInitialised = true;
 			
 		}
@@ -192,6 +193,9 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			cy.clearCytoscapeGraph();
 			cy.addCytoscapeNodes(((FIViewContent)content).getProteinArray());
 			cy.addCytoscapeEdge(((FIViewContent)content).getFIArray());
+			cy.resetSelection();
+			cy.resetCytoscapeLayout();
+			GWT.log(((FIViewContent)content).getFIArray());
 		}
 	}
 
@@ -345,7 +349,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	public boolean highlightGraphObject(GraphObject graphObject, boolean notify) {
 		this.hierarchyHoveredObject = graphObject;
 		cy.hierarchyHover("reactomeId", hierarchyHoveredObject.getDbId().toString());
-		return false;
+		return true;
 	}
 
 	@Override
@@ -368,6 +372,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public boolean selectGraphObject(GraphObject graphObject, boolean notify) {
+		
 		cy.hierarchySelect("reactomeId", graphObject.getDbId().toString());
 		return true;
 	}

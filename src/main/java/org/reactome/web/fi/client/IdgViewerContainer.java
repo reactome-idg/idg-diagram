@@ -64,7 +64,6 @@ public class IdgViewerContainer extends ViewerContainer {
 			}
 			fIViewVisualiser.asWidget().setVisible(true);
 			activeVisualiser = fIViewVisualiser;
-			setDiagramButton();
 			return;
 		}
 //		else if(context.getContent().getType() == Content.Type.DIAGRAM && !CytoscapeViewFlag.isCytoscapeViewFlag())
@@ -77,6 +76,7 @@ public class IdgViewerContainer extends ViewerContainer {
 		fiviewButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				setDiagramButton();
 				cytoscapeButtonPressed();
 				
 			}			
