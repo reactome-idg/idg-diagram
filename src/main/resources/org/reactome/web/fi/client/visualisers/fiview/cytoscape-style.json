@@ -30,7 +30,9 @@
 {
 	"selector": "edge:selected",
 	"style": {
-		"line-color": "#FF0000"
+		"line-color": "#FF0000",
+		"target-arrow-color": "#FF0000",
+		"source-arrow-color": "#FF0000"
 	}
 },
 {
