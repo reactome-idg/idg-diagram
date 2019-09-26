@@ -343,8 +343,8 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public boolean highlightGraphObject(GraphObject graphObject, boolean notify) {
-//		this.hierarchyHoveredObject = graphObject;
-//		cy.hierarchyHover("reactomeId", hierarchyHoveredObject.getDbId().toString());
+		this.hierarchyHoveredObject = graphObject;
+		cy.hierarchyHover("reactomeId", hierarchyHoveredObject.getDbId().toString());
 		return false;
 	}
 
@@ -356,8 +356,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public boolean resetHighlight(boolean notify) {
-//		cy.resetHierarchySelection("reactomeId", this.hierarchyHoveredObject.getDbId().toString());
-//		this.hierarchyHoveredObject = null;
+		cy.resetSelection();
 		return true;
 	}
 
@@ -369,7 +368,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public boolean selectGraphObject(GraphObject graphObject, boolean notify) {
-		
 		cy.hierarchySelect("reactomeId", graphObject.getDbId().toString());
 		return true;
 	}
