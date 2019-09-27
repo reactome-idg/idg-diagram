@@ -18,8 +18,9 @@ import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.data.layout.factory.DiagramObjectException;
 import org.reactome.web.diagram.util.MapSet;
-import org.reactome.web.fi.data.model.SourceFactory;
-import org.reactome.web.fi.data.model.SourcesEntity;
+import org.reactome.web.fi.data.model.FIEntityFactory;
+import org.reactome.web.fi.data.model.FIEntityNode;
+import org.reactome.web.fi.data.model.FIEventNode;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -136,7 +137,7 @@ public class FIViewContent extends GenericContent{
 		fIMap.put(fIArray.size() + "", interaction);
 		
 		//create graph object from reactomeSources and add to cache
-		createFIEdgeGraphObject(reactomeSources);
+		convertSourcesToGraphObjects(reactomeSources);
 
 	}
 	
@@ -214,7 +215,7 @@ public class FIViewContent extends GenericContent{
 	 * parses reactomeSources if necessary and sends to cache for processing
 	 * @param reactomeSources
 	 */
-	private void createFIEdgeGraphObject(JSONValue reactomeSources) {
+	private void convertSourcesToGraphObjects(JSONValue reactomeSources) {
 		
 		JSONArray jsonArray = reactomeSources.isArray();
 		
@@ -222,26 +223,42 @@ public class FIViewContent extends GenericContent{
 			for(int i=0; i<jsonArray.size(); i++) {
 			
 				JSONObject obj = jsonArray.get(i).isObject();
-				makeSource(obj);
+				makeGraphObject(obj);
 			}
 		}
 		else if(jsonArray == null) {
 			JSONObject obj = reactomeSources.isObject();
-			makeSource(obj);	
+			makeGraphObject(obj);	
 		}
 	}
 
-	protected void makeSource(JSONObject obj) {
-		if(!graphObjectCache.containsKey(Long.parseLong(obj.get("reactomeId").isString().stringValue()))) {
-			JSONObject sourceObj = new JSONObject();
-			sourceObj.put("reactomeId", obj.get("reactomeId"));
+	protected void makeGraphObject(JSONObject obj) {
+		if(graphObjectCache.containsKey(Long.parseLong(obj.get("reactomeId").isString().stringValue())))
+			return;
+		
+		JSONObject sourceObj = new JSONObject();
+		sourceObj.put("reactomeId", obj.get("reactomeId"));
+		
+		//choose sourceType for graph object based on passed in sourceType
+		sourceObj.put("sourceType", extractSourceType(obj));
+		
+		//makes graphObject from source and stores in graphObjectCache
+		try {
+			if(sourceObj.get("sourceType").isString().stringValue().contentEquals("Complex")) {
+				FIEntityNode source = FIEntityFactory.getSourceEntity(FIEntityNode.class, sourceObj.toString());
+				GraphObject graphObj = GraphObjectFactory.getOrCreateDatabaseObject(source);
+				graphObjectCache.put(graphObj.getDbId(), graphObj);
+			}
+			else if(sourceObj.get("sourceType").isString().stringValue().contentEquals("Reaction")){
+				FIEventNode source = FIEntityFactory.getSourceEntity(FIEventNode.class, sourceObj.toString());
+				GraphObject graphObj = GraphObjectFactory.getOrCreateDatabaseObject(source);
+				graphObjectCache.put(graphObj.getDbId(), graphObj);
+			}
 			
-			//choose sourceType for graph object based on passed in sourceType
-			sourceObj.put("sourceType", extractSourceType(obj));
-			
-			//convert sourceObj to GraphObject and add to graphObjectCache
-			cache(sourceObj);
+		} catch(DiagramObjectException e) {
+			e.printStackTrace();
 		}
+		
 	}
 	
 	/**
@@ -250,7 +267,7 @@ public class FIViewContent extends GenericContent{
 	 * @return
 	 */
 	private JSONString extractSourceType(JSONObject obj) {
-		String name = obj.get("sourceType").toString();
+		String name = obj.get("sourceType").isString().stringValue();
 		name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 		return new JSONString(name);
 	}
@@ -265,21 +282,6 @@ public class FIViewContent extends GenericContent{
 
 	public JSONObject getFIMap(String id) {
 		return fIMap.get(id);
-	}
-	
-	/**
-	 * makes graphObject from passed in source and stores in graphObjectCache
-	 * @param sourceObj
-	 */
-	public void cache(JSONObject sourceObj) {
-		SourcesEntity source = null;
-		try {
-			source = SourceFactory.getSourceEntity(SourcesEntity.class, sourceObj.toString());
-			GraphObject graphObj = GraphObjectFactory.getOrCreateDatabaseObject(source);
-			graphObjectCache.put(graphObj.getDbId(), graphObj);
-		} catch(DiagramObjectException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	@Override
@@ -327,9 +329,9 @@ public class FIViewContent extends GenericContent{
 		return graphObjectCache.get(dbId);
 //		JSONObject obj = new JSONObject();
 //		obj.put("reactomeId", new JSONString(dbId.toString()));
-//		SourcesEntity source = null;
+//		FIEntityNode source = null;
 //		try {
-//			source = SourceFactory.getSourceEntity(SourcesEntity.class, obj.toString());
+//			source = FIEntityFactory.getSourceEntity(FIEntityNode.class, obj.toString());
 //		} catch (DiagramObjectException e) {
 //			
 //			GWT.log("Could not create GraphObject from:" + obj.toString());

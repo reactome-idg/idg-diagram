@@ -241,7 +241,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		infoPopup.show();
 		
 		//Fire GraphObjectHoveredEvent
-		SourcesEntity source = sortGraphObject(fi.get("reactomeSources"));
+		FIEntityNode source = sortGraphObject(fi.get("reactomeSources"));
 		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
 		eventBus.fireEventFromSource(new GraphObjectHoveredEvent(graphObject), this);
 		
@@ -263,7 +263,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		infoPopup.show();
 		
 		//Fire GraphObjectSelectedEvent
-		SourcesEntity source = sortGraphObject(fi.get("reactomeSources"));
+		FIEntityNode source = sortGraphObject(fi.get("reactomeSources"));
 		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
 		
@@ -292,19 +292,19 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		cy.clearCytoscapeGraph();
 	}
 	
-	private SourcesEntity sortGraphObject(JSONValue reactomeSources) {
+	private FIEntityNode sortGraphObject(JSONValue reactomeSources) {
 
-		List<SourcesEntity> sourcesList = new ArrayList<>();
+		List<FIEntityNode> sourcesList = new ArrayList<>();
 		
 		JSONArray jsonArray = reactomeSources.isArray();
 		
-		//parse over jsonArray, convert each source to a SourcesEntity, and adds to a SourcesEntity array list
+		//parse over jsonArray, convert each source to a FIEntityNode, and adds to a FIEntityNode array list
 		if(jsonArray != null) {
 			for(int i=0; i<jsonArray.size(); i++) {
 				JSONObject obj = jsonArray.get(i).isObject();
-				SourcesEntity source = null;
+				FIEntityNode source = null;
 				try {
-					source = SourceFactory.getSourceEntity(SourcesEntity.class, obj.toString());
+					source = FIEntityFactory.getSourceEntity(FIEntityNode.class, obj.toString());
 					sourcesList.add(source);
 				} catch (DiagramObjectException e) {
 					// TODO Auto-generated catch block
@@ -315,8 +315,8 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		
 		if(sourcesList.isEmpty()) {
 			try {
-				SourcesEntity source;
-				source = SourceFactory.getSourceEntity(SourcesEntity.class, reactomeSources.toString());
+				FIEntityNode source;
+				source = FIEntityFactory.getSourceEntity(FIEntityNode.class, reactomeSources.toString());
 				return source;
 			} catch(DiagramObjectException e) {
 				e.printStackTrace();
@@ -324,22 +324,22 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		}
 			
 		//Sorts sourcesList by dbId
-		Collections.sort(sourcesList, new Comparator<SourcesEntity>() {
+		Collections.sort(sourcesList, new Comparator<FIEntityNode>() {
 			@Override
-			public int compare(SourcesEntity o1, SourcesEntity o2) {
+			public int compare(FIEntityNode o1, FIEntityNode o2) {
 				return o1.getDbId().compareTo(o2.getDbId());
 			}
 		});
 		
 		//Sends first reaction when iterating over array from low to high DbId
-		for (SourcesEntity src : sourcesList) {
+		for (FIEntityNode src : sourcesList) {
 			if (src.getSchemaClass()!= null && src.getSchemaClass().toUpperCase().contentEquals("REACTION"))
 				return src;
 			
 		}
 		
 		//Sends first COMPLEX when iterating over array from low to high DbId if reaction hasnt been returned
-		for(SourcesEntity src: sourcesList) {
+		for(FIEntityNode src: sourcesList) {
 			if(src.getSchemaClass()!= null && src.getSchemaClass().toUpperCase().contentEquals("COMPLEX"))
 				return src;
 		}

@@ -1,10 +1,11 @@
 package org.reactome.web.fi.data.model;
 
+import org.reactome.web.diagram.data.layout.factory.DiagramObjectException;
+
 import com.google.gwt.core.client.GWT;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
-import org.reactome.web.diagram.data.layout.factory.DiagramObjectException;
 
 
 /**
@@ -12,10 +13,11 @@ import org.reactome.web.diagram.data.layout.factory.DiagramObjectException;
  * @author brunsont
  *
  */
-public class SourceFactory {
+public class FIEntityFactory {
 
 	interface ModelAutoBeanFactory extends AutoBeanFactory{
-		AutoBean<SourcesEntity> sourcesEntity();
+		AutoBean<FIEntityNode> fIEntityNode();
+		AutoBean<FIEventNode> fIEventNode();
 	}
 	
 	public static <T> T getSourceEntity(Class<T> cls, String json) throws DiagramObjectException{
