@@ -20,16 +20,16 @@ import org.reactome.web.diagram.data.layout.factory.DiagramObjectException;
 import org.reactome.web.diagram.events.GraphObjectHoveredEvent;
 import org.reactome.web.diagram.events.GraphObjectSelectedEvent;
 import org.reactome.web.fi.data.content.FIViewContent;
-import org.reactome.web.fi.events.EdgeClickedEvent;
-import org.reactome.web.fi.events.EdgeHoveredEvent;
-import org.reactome.web.fi.events.EdgeMouseOutEvent;
-import org.reactome.web.fi.events.NodeClickedEvent;
-import org.reactome.web.fi.handlers.EdgeClickedHandler;
-import org.reactome.web.fi.handlers.EdgeHoveredHandler;
-import org.reactome.web.fi.handlers.EdgeMouseOutHandler;
-import org.reactome.web.fi.handlers.NodeClickedHandler;
+import org.reactome.web.gwtCytoscapeJs.events.EdgeClickedEvent;
+import org.reactome.web.gwtCytoscapeJs.events.EdgeHoveredEvent;
+import org.reactome.web.gwtCytoscapeJs.events.EdgeMouseOutEvent;
+import org.reactome.web.gwtCytoscapeJs.events.NodeClickedEvent;
 import org.reactome.web.gwtCytoscapeJs.events.NodeHoveredEvent;
 import org.reactome.web.gwtCytoscapeJs.events.NodeMouseOutEvent;
+import org.reactome.web.gwtCytoscapeJs.handlers.EdgeClickedHandler;
+import org.reactome.web.gwtCytoscapeJs.handlers.EdgeHoveredHandler;
+import org.reactome.web.gwtCytoscapeJs.handlers.EdgeMouseOutHandler;
+import org.reactome.web.gwtCytoscapeJs.handlers.NodeClickedHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeHoveredHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeMouseOutHandler;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
@@ -41,13 +41,10 @@ import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -204,7 +201,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 				
 		infoPopup.hide();
 		HTML html = new HTML(new SafeHtmlBuilder()
-				.appendEscapedLines("Protein Short Name: " + event.getShortName() +
+				.appendEscapedLines("Protein Short Name: " + ((FIViewContent)context.getContent()).getProteinMap(event.getNodeId()).get("data").isObject().get("shortName") +
 									"\n" +
 									"Protein Accession: " + event.getNodeId())
 				.toSafeHtml());
@@ -231,14 +228,20 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	@Override
 	public void onEdgeHovered(EdgeHoveredEvent event) {
 		infoPopup.hide();
+		
+		JSONObject fi = ((FIViewContent)context.getContent()).getFIMap(event.getEdgeId()).get("data").isObject();
+		
 		HTML html = new HTML(new SafeHtmlBuilder()
-				.appendEscapedLines("Edge interaction: " + event.getInteractionDirection())
+				.appendEscapedLines("Functional interaction: " + 
+									 fi.get("source") + " " +
+									 fi.get("annotationDirection") + " " +
+									 fi.get("target"))
 				.toSafeHtml());
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
 		
 		//Fire GraphObjectHoveredEvent
-		SourcesEntity source = sortGraphObject(event.getReactomeSources());
+		SourcesEntity source = sortGraphObject(fi.get("reactomeSources"));
 		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
 		eventBus.fireEventFromSource(new GraphObjectHoveredEvent(graphObject), this);
 		
@@ -246,20 +249,21 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public void onEdgeClicked(EdgeClickedEvent event) {
-		
 		cy.resetSelection();
-		
 		infoPopup.hide();
+		
+		JSONObject fi = ((FIViewContent)context.getContent()).getFIMap(event.getEdgeId()).get("data").isObject();
+		
 		HTML html = new HTML(new SafeHtmlBuilder()
-				.appendEscapedLines("Protein One Name: " + event.getSourceName() + "\n"
-									+ "Interaction Direction: " + event.getDirection() + "\n"
-									+ "Protein Two Name: " + event.getTargetName())
+				.appendEscapedLines("Protein One Name: " + fi.get("source") + "\n"
+									+ "Interaction Direction: " + fi.get("annotationDirection") + "\n"
+									+ "Protein Two Name: " + fi.get("target"))
 				.toSafeHtml());
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
 		
 		//Fire GraphObjectSelectedEvent
-		SourcesEntity source = sortGraphObject(event.getReactomeSources());
+		SourcesEntity source = sortGraphObject(fi.get("reactomeSources"));
 		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
 		
@@ -267,7 +271,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	}
 	
 	@Override
-	public void onMouseOut(NodeMouseOutEvent event) {
+	public void onNodeMouseOut(NodeMouseOutEvent event) {
 		infoPopup.hide();
 	}
 	
@@ -288,12 +292,11 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		cy.clearCytoscapeGraph();
 	}
 	
-	private SourcesEntity sortGraphObject(String reactomeSources) {
+	private SourcesEntity sortGraphObject(JSONValue reactomeSources) {
 
 		List<SourcesEntity> sourcesList = new ArrayList<>();
 		
-		JSONValue value = JSONParser.parseStrict(reactomeSources);
-		JSONArray jsonArray = value.isArray();
+		JSONArray jsonArray = reactomeSources.isArray();
 		
 		//parse over jsonArray, convert each source to a SourcesEntity, and adds to a SourcesEntity array list
 		if(jsonArray != null) {
@@ -313,7 +316,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		if(sourcesList.isEmpty()) {
 			try {
 				SourcesEntity source;
-				source = SourceFactory.getSourceEntity(SourcesEntity.class, value.toString());
+				source = SourceFactory.getSourceEntity(SourcesEntity.class, reactomeSources.toString());
 				return source;
 			} catch(DiagramObjectException e) {
 				e.printStackTrace();
@@ -335,13 +338,13 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			
 		}
 		
-		//Sends first COMPLEX when iterating over arroay from low to high DbId if reaction hasnt been returned
+		//Sends first COMPLEX when iterating over array from low to high DbId if reaction hasnt been returned
 		for(SourcesEntity src: sourcesList) {
 			if(src.getSchemaClass()!= null && src.getSchemaClass().toUpperCase().contentEquals("COMPLEX"))
 				return src;
 		}
 		
-		//If no SourceEntity has a sourceType of reaction, send first Complex, which will have lowest DbId after sorting above.
+		//If no SourceEntity has a sourceType of reaction, send first entry, which will have lowest DbId after sorting above.
 		return sourcesList.get(0);
 	}
 
@@ -450,7 +453,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	public void flagItems(Set<DiagramObject> flaggedItems, Boolean includeInteractors) {
 		resetFlag();
 		for(DiagramObject diagramObject : flaggedItems) {
-			eventBus.fireEventFromSource(new NodeClickedEvent(diagramObject.getId().toString(), diagramObject.getDisplayName()), this);
+			eventBus.fireEventFromSource(new NodeClickedEvent(diagramObject.getId().toString()), this);
 		}
 		
 	}

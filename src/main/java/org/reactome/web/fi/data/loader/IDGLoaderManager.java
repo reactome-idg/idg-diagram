@@ -34,6 +34,7 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 		super.cancel();
 	}
 	
+	//TODO: check if in context map before performing loading
 	@Override
 	public void load(String identifier) {
 		if(!CytoscapeViewFlag.isCytoscapeViewFlag()) 
@@ -46,7 +47,6 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 	public void onFIViewLoaded(String stId, String fIJsonPathway) {
 		Context context = new Context(new FIViewContent(fIJsonPathway));
 		context.getContent().setStableId(stId);
-		contextMap.put(context.getContent().getStableId(), context);
 		this.context = context;
 		eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
 	}
