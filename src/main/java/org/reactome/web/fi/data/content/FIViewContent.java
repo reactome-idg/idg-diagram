@@ -2,7 +2,9 @@ package org.reactome.web.fi.data.content;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -36,12 +38,18 @@ import uk.ac.ebi.pwp.structures.quadtree.client.Box;
 public class FIViewContent extends GenericContent{
 	
 	private Set<String> existingProteins;
+	private Map<Long, GraphObject>graphObjectCache;
 	private JSONArray proteinArray;
 	private JSONArray fIArray;
+	private Map<String, JSONObject> proteinMap;
+	private Map<String, JSONObject> fIMap;
 	private String fiJson;	
 	
 	public FIViewContent(String fiJson) {
 		existingProteins = new HashSet<>();
+		this.graphObjectCache = new HashMap<>();
+		this.proteinMap = new HashMap<>();
+		this.fIMap = new HashMap<>();
 		proteinArray = new JSONArray();
 		fIArray = new JSONArray();
 		this.fiJson = fiJson;
@@ -100,11 +108,13 @@ public class FIViewContent extends GenericContent{
 	/**
 	 * directs generation of a passed in proteins and interaction 
 	 * Use when starting CytoscapeVisualizer with multiple nodes
+	 * Also creates GraphObjects from reactomeSources and adds to graphObjectCache.
 	 * @param proteinOneShortName
 	 * @param proteinOneAccession
 	 * @param proteinTwoShortName
 	 * @param proteinTwoAccession
 	 * @param annotationDirection
+	 * @param reactomeSources
 	 */
 	public void makeFI(String proteinOneShortName, 
 			String proteinOneAccession,
@@ -123,7 +133,12 @@ public class FIViewContent extends GenericContent{
 				annotationDirection, 
 				reactomeSources);
 
+		//add each edge to fi array
 		fIArray.set(fIArray.size(), interaction);
+		fIMap.put(fIArray.size() + "", interaction);
+		
+		//create graph object from reactomeSources and add to cache
+		createFIEdgeGraphObject(reactomeSources);
 
 	}
 	
@@ -149,6 +164,7 @@ public class FIViewContent extends GenericContent{
 		proteinData.put("data", protein);
 		proteinArray.set(proteinArray.size(), proteinData);
 		existingProteins.add(accession);
+		proteinMap.put(accession, proteinData);
 	}
 	
 	/**
@@ -197,12 +213,78 @@ public class FIViewContent extends GenericContent{
 		return fiData;		
 	}
 	
+	/**
+	 * parses reactomeSources if necessary and sends to cache for processing
+	 * @param reactomeSources
+	 */
+	private void createFIEdgeGraphObject(JSONValue reactomeSources) {
+		
+		JSONArray jsonArray = reactomeSources.isArray();
+		
+		if(jsonArray != null) {
+			for(int i=0; i<jsonArray.size(); i++) {
+			
+				JSONObject obj = jsonArray.get(i).isObject();
+				makeSource(obj);
+			}
+		}
+		else if(jsonArray == null) {
+			JSONObject obj = reactomeSources.isObject();
+			makeSource(obj);	
+		}
+	}
+
+	protected void makeSource(JSONObject obj) {
+		if(!graphObjectCache.containsKey(Long.parseLong(obj.get("reactomeId").isString().stringValue()))) {
+			JSONObject sourceObj = new JSONObject();
+			sourceObj.put("reactomeId", obj.get("reactomeId"));
+			
+			//choose sourceType for graph object based on passed in sourceType
+			sourceObj.put("sourceType", extractSourceType(obj));
+			
+			//convert sourceObj to GraphObject and add to graphObjectCache
+			cache(sourceObj);
+		}
+	}
+	
+	/**
+	 * Determines sourceType for each reactomeSource added to graphObjectCache
+	 * @param obj
+	 * @return
+	 */
+	private JSONString extractSourceType(JSONObject obj) {
+		String name = obj.get("sourceType").toString();
+		name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+		return new JSONString(name);
+	}
+	
 	public String getProteinArray() {
 		return proteinArray.toString();
 	}
 	
 	public String getFIArray() {
 		return fIArray.toString();
+	}
+	public JSONObject getProteinMap(String accession) {
+		return proteinMap.get(accession);
+	}
+	public JSONObject getFIMap(String id) {
+		return fIMap.get(id);
+	}
+	
+	/**
+	 * makes graphObject from passed in source and stores in graphObjectCache
+	 * @param sourceObj
+	 */
+	public void cache(JSONObject sourceObj) {
+		SourcesEntity source = null;
+		try {
+			source = SourceFactory.getSourceEntity(SourcesEntity.class, sourceObj.toString());
+			GraphObject graphObj = GraphObjectFactory.getOrCreateDatabaseObject(source);
+			graphObjectCache.put(graphObj.getDbId(), graphObj);
+		} catch(DiagramObjectException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -242,24 +324,23 @@ public class FIViewContent extends GenericContent{
 
 	@Override
 	public GraphObject getDatabaseObject(String identifier) {
-		Long dbId = Long.parseLong(identifier.substring(identifier.lastIndexOf("-"+1)));
-		return getDatabaseObject(dbId);
+		return null;
 	}
 
 	@Override
 	public GraphObject getDatabaseObject(Long dbId) {
-		
-		JSONObject obj = new JSONObject();
-		obj.put("reactomeId", new JSONString(dbId.toString()));
-		SourcesEntity source = null;
-		try {
-			source = SourceFactory.getSourceEntity(SourcesEntity.class, obj.toString());
-		} catch (DiagramObjectException e) {
-			
-			GWT.log("Could not create GraphObject from:" + obj.toString());
-		}
-		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
-		return graphObject;
+		return graphObjectCache.get(dbId);
+//		JSONObject obj = new JSONObject();
+//		obj.put("reactomeId", new JSONString(dbId.toString()));
+//		SourcesEntity source = null;
+//		try {
+//			source = SourceFactory.getSourceEntity(SourcesEntity.class, obj.toString());
+//		} catch (DiagramObjectException e) {
+//			
+//			GWT.log("Could not create GraphObject from:" + obj.toString());
+//		}
+//		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
+//		return graphObject;
 	}
 
 	@Override
