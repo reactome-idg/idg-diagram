@@ -201,7 +201,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 				
 		infoPopup.hide();
 		HTML html = new HTML(new SafeHtmlBuilder()
-				.appendEscapedLines("Protein Short Name: " + ((FIViewContent)context.getContent()).getProteinMap(event.getNodeId()).get("data").isObject().get("shortName") +
+				.appendEscapedLines("Protein Short Name: " + event.getName() +
 									"\n" +
 									"Protein Accession: " + event.getNodeId())
 				.toSafeHtml());
@@ -453,7 +453,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	public void flagItems(Set<DiagramObject> flaggedItems, Boolean includeInteractors) {
 		resetFlag();
 		for(DiagramObject diagramObject : flaggedItems) {
-			eventBus.fireEventFromSource(new NodeClickedEvent(diagramObject.getId().toString()), this);
+			eventBus.fireEventFromSource(new NodeClickedEvent(diagramObject.getId().toString(), diagramObject.getDisplayName()), this);
 		}
 		
 	}

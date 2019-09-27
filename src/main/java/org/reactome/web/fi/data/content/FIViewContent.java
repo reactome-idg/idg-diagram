@@ -41,14 +41,12 @@ public class FIViewContent extends GenericContent{
 	private Map<Long, GraphObject>graphObjectCache;
 	private JSONArray proteinArray;
 	private JSONArray fIArray;
-	private Map<String, JSONObject> proteinMap;
 	private Map<String, JSONObject> fIMap;
 	private String fiJson;	
 	
 	public FIViewContent(String fiJson) {
 		existingProteins = new HashSet<>();
 		this.graphObjectCache = new HashMap<>();
-		this.proteinMap = new HashMap<>();
 		this.fIMap = new HashMap<>();
 		proteinArray = new JSONArray();
 		fIArray = new JSONArray();
@@ -156,7 +154,7 @@ public class FIViewContent extends GenericContent{
 		//make JSONObject for protein
 		JSONObject protein = new JSONObject();
 		protein.put("id", new JSONString(accession));
-		protein.put("shortName", new JSONString(shortName));
+		protein.put("name", new JSONString(shortName));
 
 		//add protein to proteinArray of nodes
 		JSONObject proteinData = new JSONObject();
@@ -164,7 +162,6 @@ public class FIViewContent extends GenericContent{
 		proteinData.put("data", protein);
 		proteinArray.set(proteinArray.size(), proteinData);
 		existingProteins.add(accession);
-		proteinMap.put(accession, proteinData);
 	}
 	
 	/**
@@ -265,9 +262,7 @@ public class FIViewContent extends GenericContent{
 	public String getFIArray() {
 		return fIArray.toString();
 	}
-	public JSONObject getProteinMap(String accession) {
-		return proteinMap.get(accession);
-	}
+
 	public JSONObject getFIMap(String id) {
 		return fIMap.get(id);
 	}
