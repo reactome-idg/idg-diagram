@@ -1,7 +1,7 @@
 package org.reactome.web.fi.data.loader;
 
 import org.reactome.web.diagram.data.Context;
-import org.reactome.web.diagram.data.content.DiagramContent;
+import org.reactome.web.diagram.data.GraphObjectFactory;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.data.loader.SVGLoader;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
@@ -10,7 +10,6 @@ import org.reactome.web.fi.data.content.FIViewContent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
 
 /**
  * 
@@ -64,6 +63,7 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 		context.getContent().setDbId(Long.parseLong(dbId));
         contextMap.put(context.getContent().getStableId() + ".fi", context);
 		super.context = context;
+		GraphObjectFactory.content = context.getContent();
 		eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
 	}
 
