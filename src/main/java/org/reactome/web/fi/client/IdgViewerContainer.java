@@ -66,9 +66,6 @@ public class IdgViewerContainer extends ViewerContainer {
 			activeVisualiser = fIViewVisualiser;
 			return;
 		}
-//		else if(context.getContent().getType() == Content.Type.DIAGRAM && !CytoscapeViewFlag.isCytoscapeViewFlag())
-//			setCytoscapeButton();
-//		
 		super.setActiveVisualiser(context);
 	}
 	

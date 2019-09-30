@@ -12,7 +12,7 @@ import com.google.gwt.http.client.*;
 public class FIViewLoader implements RequestCallback{
 	
 	public interface Handler{
-		void onFIViewLoaded(String stId, String fIJsonPathway);
+		void onFIViewLoaded(String stId, String dbId, String fIJsonPathway);
 		void onFIViewLoadedError(String stId, Throwable exception);
 	}
 	
@@ -21,6 +21,7 @@ public class FIViewLoader implements RequestCallback{
 	private Handler handler;
 	private Request request;
 	private String stId;
+	private String dbId;
 	
 	FIViewLoader(Handler handler){
 		this.handler = handler;
@@ -33,9 +34,10 @@ public class FIViewLoader implements RequestCallback{
 		}
 	}
 	
-	public void load(String stId) {
+	public void load(String stId, String dbId) {
 		this.stId = stId;
-		String url = BASE_URL + stId;
+		this.dbId = dbId;
+		String url = BASE_URL + dbId;
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
 		requestBuilder.setHeader("Accept", "application/json");
 		try {
@@ -50,7 +52,7 @@ public class FIViewLoader implements RequestCallback{
 	public void onResponseReceived(Request request, Response response) {
 		switch(response.getStatusCode()) {
 		case Response.SC_OK:
-			this.handler.onFIViewLoaded(this.stId, response.getText());
+			this.handler.onFIViewLoaded(this.stId, this.dbId, response.getText());
 			break;
 		default:
 			CytoscapeViewFlag.ensureCytoscapeViewFlagFalse();

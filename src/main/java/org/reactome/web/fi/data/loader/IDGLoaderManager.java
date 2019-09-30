@@ -1,7 +1,9 @@
 package org.reactome.web.fi.data.loader;
 
 import org.reactome.web.diagram.data.Context;
+import org.reactome.web.diagram.data.content.DiagramContent;
 import org.reactome.web.diagram.data.loader.LoaderManager;
+import org.reactome.web.diagram.data.loader.SVGLoader;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
@@ -19,7 +21,6 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 
 	private EventBus eventBus;
 	private FIViewLoader fIViewLoader;
-	private Context context;
 	
 	public IDGLoaderManager(EventBus eventBus) {
 		super(eventBus);
@@ -37,17 +38,32 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 	//TODO: check if in context map before performing loading
 	@Override
 	public void load(String identifier) {
-		if(!CytoscapeViewFlag.isCytoscapeViewFlag()) 
+		if (isFIViewNeeded(identifier)) {
+			context = contextMap.get(identifier + ".fi");
+			if(context != null) 
+				eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
+			else
+				fIViewLoader.load(identifier, identifier.substring(identifier.lastIndexOf("-")+1));
+		}
+		else
 			super.load(identifier);
-		else if(CytoscapeViewFlag.isCytoscapeViewFlag()) 
-			fIViewLoader.load(identifier.substring(identifier.lastIndexOf("-")+1)); //TODO: update to support multiple species
+	}
+	
+	private boolean isFIViewNeeded(String identifier) {
+		if (SVGLoader.isSVGAvailable(identifier))
+			return false;
+		if (!CytoscapeViewFlag.isCytoscapeViewFlag())
+			return false;
+		return true;
 	}
 
 	@Override
-	public void onFIViewLoaded(String stId, String fIJsonPathway) {
+	public void onFIViewLoaded(String stId, String dbId, String fIJsonPathway) {
 		Context context = new Context(new FIViewContent(fIJsonPathway));
 		context.getContent().setStableId(stId);
-		this.context = context;
+		context.getContent().setDbId(Long.parseLong(dbId));
+        contextMap.put(context.getContent().getStableId() + ".fi", context);
+		super.context = context;
 		eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
 	}
 

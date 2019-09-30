@@ -35,10 +35,6 @@ public class IdgDiagramViewerImpl extends DiagramViewerImpl implements Cytoscape
 
 	@Override
 	public void onCytoscapeToggled(CytoscapeToggledEvent event) {
-		if (CytoscapeViewFlag.isCytoscapeViewFlag())
-			load(event.getContext().getContent().getStableId());
-		else {
-			eventBus.fireEventFromSource(new ContentRequestedEvent("R-HSA-" + event.getContext().getContent().getStableId()), this); //TODO: make work for multiple species
-		}
+		load(event.getContext().getContent().getStableId());
 	}
 }

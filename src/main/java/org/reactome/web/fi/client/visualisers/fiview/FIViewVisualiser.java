@@ -240,10 +240,10 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
 		
-		//Fire GraphObjectHoveredEvent
-		FIEntityNode source = sortGraphObject(fi.get("reactomeSources"));
-		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
-		eventBus.fireEventFromSource(new GraphObjectHoveredEvent(graphObject), this);
+		//Fire GraphObjectSelectedEvent
+		String dbId= sortGraphObject(fi.get("reactomeSources"));
+		GraphObject graphObject = context.getContent().getDatabaseObject(dbId);
+		eventBus.fireEventFromSource(new GraphObjectHoveredEvent(graphObject),  this);
 		
 	}
 
@@ -263,8 +263,8 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		infoPopup.show();
 		
 		//Fire GraphObjectSelectedEvent
-		FIEntityNode source = sortGraphObject(fi.get("reactomeSources"));
-		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
+		String dbId= sortGraphObject(fi.get("reactomeSources"));
+		GraphObject graphObject = context.getContent().getDatabaseObject(dbId);
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
 		
 		
@@ -292,9 +292,9 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		cy.clearCytoscapeGraph();
 	}
 	
-	private FIEntityNode sortGraphObject(JSONValue reactomeSources) {
+	private String sortGraphObject(JSONValue reactomeSources) {
 
-		List<FIEntityNode> sourcesList = new ArrayList<>();
+		List<JSONObject> objList = new ArrayList<>();
 		
 		JSONArray jsonArray = reactomeSources.isArray();
 		
@@ -302,50 +302,39 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		if(jsonArray != null) {
 			for(int i=0; i<jsonArray.size(); i++) {
 				JSONObject obj = jsonArray.get(i).isObject();
-				FIEntityNode source = null;
-				try {
-					source = FIEntityFactory.getSourceEntity(FIEntityNode.class, obj.toString());
-					sourcesList.add(source);
-				} catch (DiagramObjectException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				objList.add(obj);
 			}
 		}
 		
-		if(sourcesList.isEmpty()) {
-			try {
-				FIEntityNode source;
-				source = FIEntityFactory.getSourceEntity(FIEntityNode.class, reactomeSources.toString());
-				return source;
-			} catch(DiagramObjectException e) {
-				e.printStackTrace();
-			}
+		//return dbId of the single source passed in
+		if(objList.isEmpty()) {
+			JSONObject obj = reactomeSources.isObject();
+			return obj.get("reactomeId").isString().stringValue();
 		}
 			
 		//Sorts sourcesList by dbId
-		Collections.sort(sourcesList, new Comparator<FIEntityNode>() {
+		Collections.sort(objList, new Comparator<JSONObject>() {
 			@Override
-			public int compare(FIEntityNode o1, FIEntityNode o2) {
-				return o1.getDbId().compareTo(o2.getDbId());
+			public int compare(JSONObject o1, JSONObject o2) {
+				return o1.get("reactomeId").isString().stringValue().compareTo(o2.get("reactomeId").isString().stringValue());
 			}
 		});
 		
 		//Sends first reaction when iterating over array from low to high DbId
-		for (FIEntityNode src : sourcesList) {
-			if (src.getSchemaClass()!= null && src.getSchemaClass().toUpperCase().contentEquals("REACTION"))
-				return src;
+		for (JSONObject obj : objList) {
+			if (obj.get("sourceType").isString().toString().toUpperCase().contentEquals("REACTION"));
+				return obj.get("reactomeId").isString().stringValue();
 			
 		}
 		
-		//Sends first COMPLEX when iterating over array from low to high DbId if reaction hasnt been returned
-		for(FIEntityNode src: sourcesList) {
-			if(src.getSchemaClass()!= null && src.getSchemaClass().toUpperCase().contentEquals("COMPLEX"))
-				return src;
+		//Sends first COMPLEX when iterating over array from low to high DbId if reaction hasn't been returned
+		for(JSONObject obj: objList) {
+			if(obj.get("sourceType").isString().toString().toUpperCase().contentEquals("COMPLEX"))
+				return obj.get("reactomeId").isString().stringValue();
 		}
 		
-		//If no SourceEntity has a sourceType of reaction, send first entry, which will have lowest DbId after sorting above.
-		return sourcesList.get(0);
+		//If no obj in objList has a sourceType, send first entry, which will have lowest DbId after sorting above.
+		return objList.get(0).get("reactomeId").isString().stringValue();
 	}
 
 	@Override

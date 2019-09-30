@@ -44,6 +44,7 @@ public class FIViewContent extends GenericContent{
 	private JSONArray fIArray;
 	private Map<String, JSONObject> fIMap;
 	private String fiJson;	
+	private boolean fIViewContent;
 	
 	public FIViewContent(String fiJson) {
 		existingProteins = new HashSet<>();
@@ -321,23 +322,12 @@ public class FIViewContent extends GenericContent{
 
 	@Override
 	public GraphObject getDatabaseObject(String identifier) {
-		return null;
+		return getDatabaseObject(Long.parseLong(identifier));
 	}
 
 	@Override
 	public GraphObject getDatabaseObject(Long dbId) {
 		return graphObjectCache.get(dbId);
-//		JSONObject obj = new JSONObject();
-//		obj.put("reactomeId", new JSONString(dbId.toString()));
-//		FIEntityNode source = null;
-//		try {
-//			source = FIEntityFactory.getSourceEntity(FIEntityNode.class, obj.toString());
-//		} catch (DiagramObjectException e) {
-//			
-//			GWT.log("Could not create GraphObject from:" + obj.toString());
-//		}
-//		GraphObject graphObject = GraphObjectFactory.getOrCreateDatabaseObject(source);
-//		return graphObject;
 	}
 
 	@Override
@@ -379,7 +369,7 @@ public class FIViewContent extends GenericContent{
 	@Override
 	public Collection<GraphObject> getDatabaseObjects() {
 		// TODO Auto-generated method stub
-		return null;
+		return new HashSet<>(this.graphObjectCache.values());
 	}
 
 	@Override
@@ -415,6 +405,14 @@ public class FIViewContent extends GenericContent{
 	@Override
 	public Type getType() {
 		return Type.DIAGRAM;
+	}
+
+	public boolean isFIViewContentFlag() {
+		return fIViewContent;
+	}
+
+	public void setFIViewContent(boolean fiViewContent) {
+		fIViewContent = fiViewContent;
 	}
 
 }
