@@ -71,6 +71,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	
 	private boolean initialised = false;
 	private boolean cytoscapeInitialised;
+	private boolean edgeClickedFlag;
     private int viewportWidth = 0;
     private int viewportHeight = 0;
 	private FIViewInfoPopup infoPopup;
@@ -85,6 +86,9 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		cyView =  new SimplePanel();
 		
 		initHandlers();
+		
+		//default this value to false
+		edgeClickedFlag = false;
 	}
 	
 	protected void initialise() {
@@ -262,6 +266,9 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
 		
+		//set edgeClickedFlag to true
+		edgeClickedFlag = true;
+		
 		//Fire GraphObjectSelectedEvent
 		String dbId= sortGraphObject(fi.get("reactomeSources"));
 		GraphObject graphObject = context.getContent().getDatabaseObject(dbId);
@@ -316,7 +323,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		Collections.sort(objList, new Comparator<JSONObject>() {
 			@Override
 			public int compare(JSONObject o1, JSONObject o2) {
-				return o1.get("reactomeId").isString().stringValue().compareTo(o2.get("reactomeId").isString().stringValue());
+				return Long.compare(Long.parseLong(o1.get("reactomeId").isString().stringValue()), Long.parseLong(o2.get("reactomeId").isString().stringValue()));
 			}
 		});
 		
@@ -364,6 +371,12 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public boolean selectGraphObject(GraphObject graphObject, boolean notify) {
+
+		//check if call initiated with onEdgeClicked. if so, return
+		if(edgeClickedFlag) {
+			edgeClickedFlag = false;
+			return true;
+		}
 		
 		cy.hierarchySelect("reactomeId", graphObject.getDbId().toString());
 		return true;
