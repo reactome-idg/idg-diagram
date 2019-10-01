@@ -106,12 +106,13 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			this.cyView.setSize(viewportWidth+"px", viewportHeight+"px");
 			
 			infoPopup = new FIViewInfoPopup();
+			infoPopup.getElement().setId("FIVIZ-info-popup");
 			infoPopup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
 				
 				@Override
 				public void setPosition(int offsetWidth, int offsetHeight) {
-					int left = (getParent().getParent().getOffsetWidth() - offsetWidth)/12;
-					int top = (getParent().getParent().getOffsetHeight() - offsetHeight)/7;
+					int left = (305 - offsetWidth);
+					int top = (110 - getOffsetHeight() - offsetHeight);
 					infoPopup.setPopupPosition(left, top);
 				}
 			});
@@ -229,7 +230,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public void onEdgeHovered(EdgeHoveredEvent event) {
-		infoPopup.hide();
 		
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIMap(event.getEdgeId()).get("data").isObject();
 		
