@@ -231,7 +231,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	@Override
 	public void onEdgeHovered(EdgeHoveredEvent event) {
 		
-		JSONObject fi = ((FIViewContent)context.getContent()).getFIMap(event.getEdgeId()).get("data").isObject();
+		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getEdgeId()).get("data").isObject();
 		
 		HTML html = new HTML(new SafeHtmlBuilder()
 				.appendEscapedLines("Functional interaction: " + 
@@ -254,7 +254,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		cy.resetSelection();
 		infoPopup.hide();
 		
-		JSONObject fi = ((FIViewContent)context.getContent()).getFIMap(event.getEdgeId()).get("data").isObject();
+		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getEdgeId()).get("data").isObject();
 		
 		HTML html = new HTML(new SafeHtmlBuilder()
 				.appendEscapedLines("Protein One Name: " + fi.get("source") + "\n"

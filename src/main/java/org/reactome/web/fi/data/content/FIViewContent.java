@@ -133,9 +133,9 @@ public class FIViewContent extends GenericContent{
 				annotationDirection, 
 				reactomeSources);
 
-		//add each edge to fi array
-		fIArray.set(fIArray.size(), interaction);
+		//add each edge to fi array and put on map
 		fIMap.put(fIArray.size() + "", interaction);
+		fIArray.set(fIArray.size(), interaction);
 		
 		//create graph object from reactomeSources and add to cache
 		convertSourcesToGraphObjects(reactomeSources);
@@ -281,7 +281,7 @@ public class FIViewContent extends GenericContent{
 		return fIArray.toString();
 	}
 
-	public JSONObject getFIMap(String id) {
+	public JSONObject getFIFromMap(String id) {
 		return fIMap.get(id);
 	}
 	
