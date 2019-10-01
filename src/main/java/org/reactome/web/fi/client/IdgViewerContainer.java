@@ -41,7 +41,11 @@ public class IdgViewerContainer extends ViewerContainer {
 		fiviewButton = new IDGIconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View");
 		diagramButton = new IDGIconButton(IDGRESOURCES.diagramIcon(), IDGRESOURCES.getCSS().diagram(), "Diagram View");
 		
-		//CytoscapeViewFlag is false by default so set button to fiviewButton by default
+		//adds diagramButton and fiviewButton. sets fiview button as default to show
+		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
+		super.leftTopLauncher.getMainControlPanel().getWidget(
+				super.leftTopLauncher.getMainControlPanel()
+				.getWidgetIndex(diagramButton)).setVisible(false);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
 		
 		
@@ -58,13 +62,19 @@ public class IdgViewerContainer extends ViewerContainer {
 
 	@Override
 	protected void setActiveVisualiser(Context context) {
+		hideButtons();
 		if(context.getContent().getType() == Content.Type.DIAGRAM && CytoscapeViewFlag.isCytoscapeViewFlag()) {
 			for (Visualiser vis : visualisers.values()) {
 				vis.asWidget().setVisible(false);
 			}
 			fIViewVisualiser.asWidget().setVisible(true);
+			showDiagramButton();
 			activeVisualiser = fIViewVisualiser;
 			return;
+		}
+		else if(context.getContent().getType() == Content.Type.DIAGRAM && !CytoscapeViewFlag.isCytoscapeViewFlag()) {
+			showCytoscapeButton();
+			super.setActiveVisualiser(context);
 		}
 		super.setActiveVisualiser(context);
 	}
@@ -73,7 +83,6 @@ public class IdgViewerContainer extends ViewerContainer {
 		fiviewButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				setDiagramButton();
 				cytoscapeButtonPressed();
 				
 			}			
@@ -82,7 +91,6 @@ public class IdgViewerContainer extends ViewerContainer {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				setCytoscapeButton();
 				cytoscapeButtonPressed();
 			}
 		});
@@ -94,15 +102,24 @@ public class IdgViewerContainer extends ViewerContainer {
 
 	}
 	
-	private void setCytoscapeButton() {
-		super.leftTopLauncher.getMainControlPanel().remove(
-				super.leftTopLauncher.getMainControlPanel().getWidgetIndex(diagramButton));
-		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
+	private void showCytoscapeButton() {
+		super.leftTopLauncher.getMainControlPanel().getWidget(
+				super.leftTopLauncher.getMainControlPanel()
+				.getWidgetIndex(fiviewButton)).setVisible(true);
 	}
-	private void setDiagramButton() {
-		super.leftTopLauncher.getMainControlPanel().remove(
-				super.leftTopLauncher.getMainControlPanel().getWidgetIndex(fiviewButton));
-		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
+	private void showDiagramButton() {
+		super.leftTopLauncher.getMainControlPanel().getWidget(
+				super.leftTopLauncher.getMainControlPanel()
+				.getWidgetIndex(diagramButton)).setVisible(true);
+	}
+	
+	private void hideButtons() {
+		super.leftTopLauncher.getMainControlPanel().getWidget(
+				super.leftTopLauncher.getMainControlPanel()
+				.getWidgetIndex(fiviewButton)).setVisible(false);
+		super.leftTopLauncher.getMainControlPanel().getWidget(
+				super.leftTopLauncher.getMainControlPanel()
+				.getWidgetIndex(diagramButton)).setVisible(false);
 	}
 	
 	@Override
