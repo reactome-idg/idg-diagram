@@ -188,7 +188,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 							 "cose");
 			cy.resetCytoscapeLayout();
 			cytoscapeInitialised = true;
-			
 		}
 		else if(cytoscapeInitialised) {
 			cy.clearCytoscapeGraph();
@@ -196,7 +195,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			cy.addCytoscapeEdge(((FIViewContent)content).getFIArray());
 			cy.resetSelection();
 			cy.resetCytoscapeLayout();
-			GWT.log(((FIViewContent)content).getFIArray());
 		}
 	}
 
@@ -371,6 +369,10 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public boolean selectGraphObject(GraphObject graphObject, boolean notify) {
+		
+		//ensure passed in graph object exists. If not, return false.
+		if(graphObject ==  null)
+			return false;
 
 		//check if call initiated with onEdgeClicked. if so, return
 		if(edgeClickedFlag) {

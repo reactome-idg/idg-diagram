@@ -63,7 +63,7 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 		context.getContent().setDbId(Long.parseLong(dbId));
         contextMap.put(context.getContent().getStableId() + ".fi", context);
 		super.context = context;
-		GraphObjectFactory.content = context.getContent();
+//		GraphObjectFactory.content = context.getContent();
 		eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
 	}
 
