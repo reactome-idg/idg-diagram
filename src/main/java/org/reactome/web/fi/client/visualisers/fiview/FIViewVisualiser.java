@@ -72,6 +72,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	private boolean initialised = false;
 	private boolean cytoscapeInitialised;
 	private boolean edgeClickedFlag;
+	private boolean edgeHoveredFlag;
     private int viewportWidth = 0;
     private int viewportHeight = 0;
 	private FIViewInfoPopup infoPopup;
@@ -89,6 +90,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		
 		//default this value to false
 		edgeClickedFlag = false;
+		edgeHoveredFlag = false;
 	}
 	
 	protected void initialise() {
@@ -242,6 +244,9 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
 		
+		//set edgeHoveredFlag to true
+		edgeHoveredFlag = true;
+		
 		//Fire GraphObjectSelectedEvent
 		String dbId= sortGraphObject(fi.get("reactomeSources"));
 		GraphObject graphObject = context.getContent().getDatabaseObject(dbId);
@@ -344,6 +349,17 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public boolean highlightGraphObject(GraphObject graphObject, boolean notify) {
+		
+		//ensure passed in graph object exists.
+		if(graphObject == null)
+			return false;
+		
+		//check if call initiated with onEdgeHovered. if so, return
+		if(edgeHoveredFlag) {
+			edgeHoveredFlag = false;
+			return true;
+		}
+		
 		this.hierarchyHoveredObject = graphObject;
 		cy.hierarchyHover("reactomeId", hierarchyHoveredObject.getDbId().toString());
 		return true;
