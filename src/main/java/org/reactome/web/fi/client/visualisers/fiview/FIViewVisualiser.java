@@ -224,8 +224,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public void onEdgeMouseOut(EdgeMouseOutEvent event) {
-		infoPopup.hide();
-		
+//		infoPopup.hide();
 	}
 
 	@Override
@@ -259,11 +258,17 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getEdgeId()).get("data").isObject();
 		
+		String direction;
+		if(fi.get("annotationDirection").equals(null))
+			direction = "null";
+		else
+			direction = fi.get("annotationDirection").isString().stringValue();
+		
 		HTML html = new HTML(new SafeHtmlBuilder()
-				.appendEscapedLines("Protein One Name: " + fi.get("source") + "\n"
-									+ "Interaction Direction: " + fi.get("annotationDirection") + "\n"
-									+ "Protein Two Name: " + fi.get("target"))
-				.toSafeHtml());
+			.appendEscapedLines("Protein One Name: " + fi.get("source") + "\n"
+								+ "Interaction Direction: " + direction + "\n"
+								+ "Protein Two Name: " + fi.get("target"))
+			.toSafeHtml());
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();
 		
@@ -300,6 +305,14 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		cy.clearCytoscapeGraph();
 	}
 	
+	/**
+	 * recieves a set of reactomeSources from an edge hovered or edge clicked event and sorts it.
+	 * Sorting preferences returning the reactomeId of the source with the lowest reactomeId and source type of "Reaction."
+	 * If no reaction exists in a set of sources, the lowest reactomeId with source type of "Complex" will be returned.
+	 * If no source type exists on any of the passed in sources, it will return the lowest reactomeId present.
+	 * @param reactomeSources
+	 * @return
+	 */
 	private String sortGraphObject(JSONValue reactomeSources) {
 
 		List<JSONObject> objList = new ArrayList<>();
@@ -462,6 +475,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		this.cyView.setHeight(height + "px");
 		this.viewportWidth = width;
 		this.viewportHeight = height;
+		//TODO: make so center happens on resize
 //		cy.centerCytoscape(); action lags until next resize
 		
 	}
