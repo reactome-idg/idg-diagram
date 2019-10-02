@@ -66,8 +66,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	private AnalysisStatus analysisStatus;
     private ExpressionSummary expressionSummary;
     private int selectedExpCol = 0;
-    private GraphObject hierarchySelectedObject;
-    private GraphObject hierarchyHoveredObject;
 	
 	private boolean initialised = false;
 	private boolean cytoscapeInitialised;
@@ -360,8 +358,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			return true;
 		}
 		
-		this.hierarchyHoveredObject = graphObject;
-		cy.hierarchyHover("reactomeId", hierarchyHoveredObject.getDbId().toString());
+		cy.hierarchyHover("reactomeId", graphObject.getDbId().toString());
 		return true;
 	}
 
