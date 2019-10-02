@@ -43,10 +43,24 @@
   }
 },
 {
+	"selector": "edge[direction=\"->\"]:selected",
+	"style": {
+    	"target-arrow-shape": "vee",
+   		"target-arrow-color": "#FF0000"
+  }
+},
+{
 	"selector": "edge[direction=\"<-\"]",
 	"style": {
     	"source-arrow-shape": "vee",
    		"source-arrow-color": "#000000"
+  }
+},
+{
+	"selector": "edge[direction=\"<-\"]:selected",
+	"style": {
+    	"source-arrow-shape": "vee",
+   		"source-arrow-color": "#FF0000"
   }
 },
 {
@@ -57,10 +71,24 @@
   }
 },
 {
+	"selector": "edge[direction=\"-|\"]:selected",
+	"style": {
+    	"target-arrow-shape": "tee",
+   		"target-arrow-color": "#FF0000"
+  }
+},
+{
 	"selector": "edge[direction=\"|-\"]",
 	"style": {
     	"source-arrow-shape": "tee",
    		"source-arrow-color": "#000000"
+  }
+},
+{
+	"selector": "edge[direction=\"|-\"]:selected",
+	"style": {
+    	"source-arrow-shape": "tee",
+   		"source-arrow-color": "#FF0000"
   }
 },
 {
@@ -73,11 +101,29 @@
   }
 },
 {
+	"selector": "edge[direction=\"|->\"]:selected",
+	"style": {
+    	"source-arrow-shape": "tee",
+   		"source-arrow-color": "#FF0000",
+			"target-arrow-shape": "vee",
+			"target-arrow-color": "#FF0000"
+  }
+},
+{
 	"selector": "edge[direction=\"<-|\"]",
 	"style": {
 			"source-arrow-shape": "vee",
 			"source-arrow-color": "#000000",
 			"target-arrow-shape": "tee",
 			"target-arrow-color": "#000000"
+	}
+},
+{
+	"selector": "edge[direction=\"<-|\"]:selected",
+	"style": {
+			"source-arrow-shape": "vee",
+			"source-arrow-color": "#FF0000",
+			"target-arrow-shape": "tee",
+			"target-arrow-color": "#FF0000"
 	}
 }]
