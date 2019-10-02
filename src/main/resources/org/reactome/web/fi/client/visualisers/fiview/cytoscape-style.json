@@ -1,6 +1,7 @@
 [{
 "selector": "node",
 	"style": {
+	"label": "data(name)",
 	"shape": "ellipse",
 	"background-color": "#00CC00",
 	"border-color": "#00CC00",
@@ -11,7 +12,6 @@
   "selector": "node:selected",
   "style": {
     "border-width": "6px",
-		"label": "data(name)",
     "border-color": "#AAD8FF",
     "border-opacity": "0.5",
     "background-color": "#FFFF66",
