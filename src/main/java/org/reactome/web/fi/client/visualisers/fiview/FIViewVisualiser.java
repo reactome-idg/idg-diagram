@@ -235,7 +235,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		HTML html = new HTML(new SafeHtmlBuilder()
 				.appendEscapedLines("Functional interaction: " + 
 									 fi.get("source") + " " +
-									 fi.get("annotationDirection") + " " +
+									 getAnnotationDirection(fi) + " " +
 									 fi.get("target"))
 				.toSafeHtml());
 		infoPopup.setHtmlLabel(html);
@@ -257,16 +257,10 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		infoPopup.hide();
 		
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getEdgeId()).get("data").isObject();
-		
-		String direction;
-		if(fi.get("annotationDirection").equals(null))
-			direction = "null";
-		else
-			direction = fi.get("annotationDirection").isString().stringValue();
-		
+				
 		HTML html = new HTML(new SafeHtmlBuilder()
 			.appendEscapedLines("Protein One Name: " + fi.get("source") + "\n"
-								+ "Interaction Direction: " + direction + "\n"
+								+ "Interaction Direction: " + getAnnotationDirection(fi) + "\n"
 								+ "Protein Two Name: " + fi.get("target"))
 			.toSafeHtml());
 		infoPopup.setHtmlLabel(html);
@@ -280,6 +274,14 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		GraphObject graphObject = context.getContent().getDatabaseObject(dbId);
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
 		
+		
+	}
+
+	protected String getAnnotationDirection(JSONObject fi) {
+		if(fi.get("annotationDirection") == null)
+			return "-";
+		else
+			return fi.get("annotationDirection").isString().stringValue();
 		
 	}
 	
