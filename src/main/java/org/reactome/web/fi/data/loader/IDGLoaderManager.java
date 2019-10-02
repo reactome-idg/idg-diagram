@@ -11,6 +11,8 @@ import org.reactome.web.fi.data.content.FIViewContent;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
+import net.sourceforge.htmlunit.corejs.javascript.json.JsonParser;
+
 /**
  * 
  * @author brunsont
@@ -58,6 +60,15 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 
 	@Override
 	public void onFIViewLoaded(String stId, String dbId, String fIJsonPathway) {
+
+		//ensure json string recieved from corews server is not null
+		//if null, set CytoscapeViewFlag to false and load the normal diagram view
+		if(fIJsonPathway == "null"){
+			CytoscapeViewFlag.ensureCytoscapeViewFlagFalse();
+			load(stId);
+			return;
+		}
+		
 		Context context = new Context(new FIViewContent(fIJsonPathway));
 		context.getContent().setStableId(stId);
 		context.getContent().setDbId(Long.parseLong(dbId));
