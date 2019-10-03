@@ -17,8 +17,10 @@ import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.data.layout.factory.DiagramObjectException;
+import org.reactome.web.diagram.events.AnalysisProfileChangedEvent;
 import org.reactome.web.diagram.events.GraphObjectHoveredEvent;
 import org.reactome.web.diagram.events.GraphObjectSelectedEvent;
+import org.reactome.web.diagram.handlers.AnalysisProfileChangedHandler;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeClickedEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeHoveredEvent;
@@ -56,7 +58,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler,
-	NodeHoveredHandler, NodeMouseOutHandler{
+	NodeHoveredHandler, NodeMouseOutHandler, AnalysisProfileChangedHandler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -98,6 +100,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			this.viewportHeight = getParent().getOffsetHeight();
 			ScriptInjector.fromString(FIVIEWPORTRESOURCES.cytoscapeLibrary().getText()).setWindow(ScriptInjector.TOP_WINDOW).inject();
 			
+			//created once and reused every time a new context is loaded
 			cy = new CytoscapeEntity(this.eventBus, FIVIEWPORTRESOURCES.fiviewStyle().getText());
 			
 			cyView.getElement().setId("cy");
@@ -105,6 +108,11 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			this.add(cyView);
 			this.cyView.setSize(viewportWidth+"px", viewportHeight+"px");
 			
+			setSize(viewportWidth, viewportHeight);
+			
+			cytoscapeInitialised = false;
+			
+			//set up popup for info and set location
 			infoPopup = new FIViewInfoPopup();
 			infoPopup.getElement().setId("FIVIZ-info-popup");
 			infoPopup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
@@ -117,15 +125,11 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 				}
 			});
 			infoPopup.hide();
-			
-			setSize(viewportWidth, viewportHeight);
-			
-			cytoscapeInitialised = false;
-			
 		}
 	}
 	
-	private void initHandlers() {
+	private void initHandlers() {        
+		eventBus.addHandler(AnalysisProfileChangedEvent.TYPE, this);
 		eventBus.addHandler(EdgeClickedEvent.TYPE, this);
 		eventBus.addHandler(EdgeHoveredEvent.TYPE, this);
 		eventBus.addHandler(EdgeMouseOutEvent.TYPE, this);
@@ -391,8 +395,16 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public boolean resetSelection(boolean notify) {
+		boolean rtn = false;
+		if(context==null) return rtn;
+		
 		cy.resetSelection();
-		return true;
+		
+		if(notify) {
+			eventBus.fireEventFromSource(new GraphObjectSelectedEvent(null, false), this);
+		}
+		rtn  = true;
+		return rtn;
 	}
 
 	@Override
@@ -488,6 +500,12 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		for(DiagramObject diagramObject : flaggedItems) {
 			eventBus.fireEventFromSource(new NodeClickedEvent(diagramObject.getId().toString(), diagramObject.getDisplayName()), this);
 		}
+		
+	}
+	
+	@Override
+	public void onAnalysisProfileChanged(AnalysisProfileChangedEvent event) {
+		// TODO Auto-generated method stub
 		
 	}
 
