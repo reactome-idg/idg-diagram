@@ -320,8 +320,13 @@ public class FIViewContent extends GenericContent{
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public GraphObject getDatabaseObject(String identifier) {
+		Long dbId = Long.parseLong(identifier.substring(identifier.lastIndexOf("-")));
+		if(dbId != null)
+			return getDatabaseObject(dbId);
+		
 		return getDatabaseObject(Long.parseLong(identifier));
 	}
 
