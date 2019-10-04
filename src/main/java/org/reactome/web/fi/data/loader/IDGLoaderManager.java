@@ -23,6 +23,9 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 	private EventBus eventBus;
 	private FIViewLoader fIViewLoader;
 	
+	private final String SPECIES = "Homo sapiens";
+			
+	
 	public IDGLoaderManager(EventBus eventBus) {
 		super(eventBus);
 		this.eventBus = eventBus;
@@ -72,6 +75,7 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 		Context context = new Context(new FIViewContent(fIJsonPathway));
 		context.getContent().setStableId(stId);
 		context.getContent().setDbId(Long.parseLong(dbId));
+		context.getContent().setSpeciesName(SPECIES);
         contextMap.put(context.getContent().getStableId() + ".fi", context);
 		super.context = context;
 		GraphObjectFactory.content = context.getContent();
