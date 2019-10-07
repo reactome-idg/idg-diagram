@@ -18,6 +18,7 @@ public class FIEntityFactory {
 	interface ModelAutoBeanFactory extends AutoBeanFactory{
 		AutoBean<FIEntityNode> fIEntityNode();
 		AutoBean<FIEventNode> fIEventNode();
+		AutoBean<ProteinEntityNode> proteinEntityNode();
 	}
 	
 	public static <T> T getSourceEntity(Class<T> cls, String json) throws DiagramObjectException{
