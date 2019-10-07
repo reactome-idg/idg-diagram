@@ -21,6 +21,8 @@ import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.fi.data.model.FIEntityFactory;
 import org.reactome.web.fi.data.model.FIEntityNode;
 import org.reactome.web.fi.data.model.FIEventNode;
+import org.reactome.web.fi.data.model.ProteinEntityNode;
+import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -38,8 +40,9 @@ import uk.ac.ebi.pwp.structures.quadtree.client.Box;
  */
 public class FIViewContent extends GenericContent{
 	
-	private Set<String> existingProteins;
+	private Map<String, String> existingProteins;
 	private Map<Long, GraphObject>graphObjectCache;
+	private MapSet<String, GraphObject> identifierMap;
 	private JSONArray proteinArray;
 	private JSONArray fIArray;
 	private Map<String, JSONObject> fIMap;
@@ -47,12 +50,16 @@ public class FIViewContent extends GenericContent{
 	private boolean fIViewContent;
 	
 	public FIViewContent(String fiJson) {
-		existingProteins = new HashSet<>();
 		this.graphObjectCache = new HashMap<>();
+        this.identifierMap = new MapSet<>();
+        
+        //specific data to FIViewcontent
+		this.existingProteins = new HashMap<>();
 		this.fIMap = new HashMap<>();
-		proteinArray = new JSONArray();
-		fIArray = new JSONArray();
+		this.proteinArray = new JSONArray();
+		this.fIArray = new JSONArray();
 		this.fiJson = fiJson;
+		
 		parseFIPathway(this.fiJson);
 	}
 	
@@ -61,6 +68,11 @@ public class FIViewContent extends GenericContent{
 		return this;
 	}
 	
+	/**
+	 * This method parses an income json from the corews server and
+	 * sends parsed json one interaction at a time to convert to FIs
+	 * @param fiJson
+	 */
 	private void parseFIPathway(String fiJson) {
 				
 		//setup Json to be manipulated
@@ -101,10 +113,33 @@ public class FIViewContent extends GenericContent{
 
 	    		}
 	    	}
+	    	//Takes all proteins existing on existing proteins after FIs are made,
+	    	//converts them to graphObjects and places them on identifierMap.
+	    	
+	    	makeIdentifiersMap();
     	}
     	
 	}
 	
+	private void makeIdentifiersMap() {
+		int counter = 0;
+		for(Map.Entry<String, String> protein : existingProteins.entrySet()) {
+			JSONObject proteinJson = new JSONObject();
+			proteinJson.put("shortName", new JSONString(protein.getValue()));
+			proteinJson.put("id", new JSONString(counter +""));
+			proteinJson.put("identifier", new JSONString(protein.getKey()));
+			proteinJson.put("sourceType", new JSONString("EntityWithAccessionedSequence"));
+			try {
+				ProteinEntityNode source = FIEntityFactory.getSourceEntity(ProteinEntityNode.class, proteinJson.toString());		
+				identifierMap.add(protein.getKey(), GraphObjectFactory.getOrCreateDatabaseObject(source));
+			} catch(DiagramObjectException e) {
+				e.printStackTrace();
+			}
+			counter--;
+		}
+		
+	}
+
 	/**
 	 * directs generation of a passed in proteins and interaction 
 	 * Use when starting CytoscapeVisualizer with multiple nodes
@@ -139,7 +174,6 @@ public class FIViewContent extends GenericContent{
 		
 		//create graph object from reactomeSources and add to cache
 		convertSourcesToGraphObjects(reactomeSources);
-
 	}
 	
 	/**
@@ -150,7 +184,7 @@ public class FIViewContent extends GenericContent{
 	 */
 	private void ensureProteinInJSON(String shortName, String accession) {
 
-		if (existingProteins.contains(accession))
+		if (existingProteins.containsKey(accession))
 			return;
 
 		//make JSONObject for protein
@@ -163,7 +197,7 @@ public class FIViewContent extends GenericContent{
 		proteinData.put("group", new JSONString("nodes"));
 		proteinData.put("data", protein);
 		proteinArray.set(proteinArray.size(), proteinData);
-		existingProteins.add(accession);
+		existingProteins.put(accession, shortName);
 	}
 	
 	/**
@@ -233,15 +267,21 @@ public class FIViewContent extends GenericContent{
 		}
 	}
 
-	protected void makeGraphObject(JSONObject obj) {
-		if(graphObjectCache.containsKey(Long.parseLong(obj.get("reactomeId").isString().stringValue())))
+	/**
+	 * converts reactomeSources JsonObject into GraphObjects
+	 * This converts Complexes into FIEntityNodes.
+	 * Converts Reactions into FIEventNodes.
+	 * @param reactomeSources
+	 */
+	protected void makeGraphObject(JSONObject reactomeSources) {
+		if(graphObjectCache.containsKey(Long.parseLong(reactomeSources.get("reactomeId").isString().stringValue())))
 			return;
 		
 		JSONObject sourceObj = new JSONObject();
-		sourceObj.put("reactomeId", obj.get("reactomeId"));
+		sourceObj.put("reactomeId", reactomeSources.get("reactomeId"));
 		
 		//choose sourceType for graph object based on passed in sourceType
-		sourceObj.put("sourceType", extractSourceType(obj));
+		sourceObj.put("sourceType", extractSourceType(reactomeSources));
 		
 		//makes graphObject from source and stores in graphObjectCache
 		try {
@@ -335,6 +375,12 @@ public class FIViewContent extends GenericContent{
 		return graphObjectCache.get(dbId);
 	}
 
+
+	@Override
+	public MapSet<String, GraphObject> getIdentifierMap() {
+		return identifierMap;
+	}
+
 	@Override
 	public GraphSubpathway getGraphSubpathway(String stId) {
 		// TODO Auto-generated method stub
@@ -383,11 +429,6 @@ public class FIViewContent extends GenericContent{
 		return null;
 	}
 
-	@Override
-	public MapSet<String, GraphObject> getIdentifierMap() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Collection<DiagramObject> getVisibleItems(Box visibleArea) {
