@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import org.reactome.web.analysis.client.model.AnalysisType;
 import org.reactome.web.analysis.client.model.ExpressionSummary;
 import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.data.AnalysisStatus;
@@ -13,6 +14,8 @@ import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
 import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
+import org.reactome.web.diagram.data.graph.model.GraphPathway;
+import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
@@ -34,6 +37,7 @@ import org.reactome.web.gwtCytoscapeJs.handlers.EdgeMouseOutHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeClickedHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeHoveredHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeMouseOutHandler;
+import org.reactome.web.gwtCytoscapeJs.util.Console;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 import org.reactome.web.fi.data.model.*;
 
@@ -249,7 +253,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		edgeHoveredFlag = true;
 		
 		//Fire GraphObjectSelectedEvent
-		String dbId= sortGraphObject(fi.get("reactomeSources"));
+		Long dbId= Long.parseLong(sortGraphObject(fi.get("reactomeSources")));
 		GraphObject graphObject = context.getContent().getDatabaseObject(dbId);
 		eventBus.fireEventFromSource(new GraphObjectHoveredEvent(graphObject),  this);
 		
@@ -274,7 +278,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		edgeClickedFlag = true;
 		
 		//Fire GraphObjectSelectedEvent
-		String dbId= sortGraphObject(fi.get("reactomeSources"));
+		Long dbId= Long.parseLong(sortGraphObject(fi.get("reactomeSources")));
 		GraphObject graphObject = context.getContent().getDatabaseObject(dbId);
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
 		
@@ -435,6 +439,19 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		analysisStatus = context.getAnalysisStatus();
         expressionSummary = analysisStatus.getExpressionSummary();
         selectedExpCol = 0;
+        Double minExp = 0.0; Double maxExp = 0.0;
+        AnalysisType analysisType = AnalysisType.NONE;
+        if(cy!=null && analysisStatus != null) {
+        	analysisType = AnalysisType.getType(analysisStatus.getAnalysisSummary().getType());
+        	cy.resetSelection();
+        }
+        for(GraphObject obj : context.getContent().getIdentifierMap().values()) {
+        	if(obj instanceof GraphPhysicalEntity) {
+        		if(((GraphPhysicalEntity) obj).isHit()) {
+        			GWT.log(((GraphPhysicalEntity) obj).getDisplayName()+ " should be highlighted");
+        		}
+        	}
+        }
 	}
 
 	@Override
@@ -442,6 +459,9 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		analysisStatus = null;
         expressionSummary = null;
         selectedExpCol = 0;
+        if(cy != null) {
+        	cy.resetSelection();
+        }
 	}
 
 	@Override
@@ -498,7 +518,8 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	public void flagItems(Set<DiagramObject> flaggedItems, Boolean includeInteractors) {
 		resetFlag();
 		for(DiagramObject diagramObject : flaggedItems) {
-			eventBus.fireEventFromSource(new NodeClickedEvent(diagramObject.getId().toString(), diagramObject.getDisplayName()), this);
+			//TODO: figure out how to highlight node
+			//either must make nodes diagramObjects and add to graphObjectCache with stId attached or convert stId to protein shortname
 		}
 		
 	}
