@@ -75,7 +75,7 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 		Context context = new Context(new FIViewContent(fIJsonPathway));
 		context.getContent().setStableId(stId);
 		context.getContent().setDbId(Long.parseLong(dbId));
-		context.getContent().setSpeciesName(SPECIES);
+		context.getContent().setSpeciesName(SPECIES); //TODO: make species flexible
         contextMap.put(context.getContent().getStableId() + ".fi", context);
 		super.context = context;
 		GraphObjectFactory.content = context.getContent();
