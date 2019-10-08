@@ -448,7 +448,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
         for(GraphObject obj : context.getContent().getIdentifierMap().values()) {
         	if(obj instanceof GraphPhysicalEntity) {
         		if(((GraphPhysicalEntity) obj).isHit()) {
-        			GWT.log(((GraphPhysicalEntity) obj).getDisplayName()+ " should be highlighted");
+        			cy.highlightNodeAndAttachedEdges(((GraphPhysicalEntity)obj).getIdentifier(), "#e803fc");
         		}
         	}
         }
