@@ -261,7 +261,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public void onEdgeClicked(EdgeClickedEvent event) {
-		cy.resetSelection();
 		infoPopup.hide();
 		
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getEdgeId()).get("data").isObject();
