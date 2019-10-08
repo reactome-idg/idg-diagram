@@ -3,6 +3,7 @@ package org.reactome.web.fi.client.visualisers.fiview;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -21,9 +22,13 @@ import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.data.layout.factory.DiagramObjectException;
 import org.reactome.web.diagram.events.AnalysisProfileChangedEvent;
+import org.reactome.web.diagram.events.ExpressionColumnChangedEvent;
 import org.reactome.web.diagram.events.GraphObjectHoveredEvent;
 import org.reactome.web.diagram.events.GraphObjectSelectedEvent;
 import org.reactome.web.diagram.handlers.AnalysisProfileChangedHandler;
+import org.reactome.web.diagram.handlers.ExpressionColumnChangedHandler;
+import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
+import org.reactome.web.diagram.profiles.interactors.InteractorColours;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeClickedEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeHoveredEvent;
@@ -62,7 +67,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler,
-	NodeHoveredHandler, NodeMouseOutHandler, AnalysisProfileChangedHandler{
+	NodeHoveredHandler, NodeMouseOutHandler, AnalysisProfileChangedHandler,
+	ExpressionColumnChangedHandler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -72,6 +78,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	private AnalysisStatus analysisStatus;
     private ExpressionSummary expressionSummary;
     private int selectedExpCol = 0;
+    private int column = 0;
 	
 	private boolean initialised = false;
 	private boolean cytoscapeInitialised;
@@ -138,7 +145,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		eventBus.addHandler(EdgeHoveredEvent.TYPE, this);
 		eventBus.addHandler(EdgeMouseOutEvent.TYPE, this);
 		eventBus.addHandler(NodeClickedEvent.TYPE, this);
-		
+		eventBus.addHandler(ExpressionColumnChangedEvent.TYPE, this);
 	}
 
 	@Override
@@ -443,12 +450,40 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
         if(cy!=null && analysisStatus != null) {
         	analysisType = AnalysisType.getType(analysisStatus.getAnalysisSummary().getType());
         	cy.resetSelection();
+        	if(analysisStatus.getExpressionSummary()!=null) {
+        		minExp = analysisStatus.getExpressionSummary().getMin();
+        		maxExp = analysisStatus.getExpressionSummary().getMax();
+        	}
         }
-        for(GraphObject obj : context.getContent().getIdentifierMap().values()) {
-        	if(obj instanceof GraphPhysicalEntity) {
-        		if(((GraphPhysicalEntity) obj).isHit()) {
-        			cy.highlightNodeAndAttachedEdges(((GraphPhysicalEntity)obj).getIdentifier(), "#e803fc");
+        
+        //make list of entities to be highlighted
+        List<GraphObject> entities = new LinkedList<>();
+        for(GraphObject identifier : context.getContent().getIdentifierMap().values()) {
+        	if(identifier instanceof GraphPhysicalEntity) {
+        		if(((GraphPhysicalEntity) identifier).isHit()) {
+        			entities.add(identifier);
         		}
+        	}
+        }
+        
+        //setup lighter node color
+        cy.setNodeFill(InteractorColours.get().PROFILE.getProtein().getLighterFill());
+        
+        //render entities based on analysis type
+        for(GraphObject entity : entities) {
+        	switch(analysisType) {
+        	case NONE:
+        	case SPECIES_COMPARISON:
+        	case OVERREPRESENTATION:
+        		drawAnalysisEnrichmentNode(entity);
+        		break;
+        	case EXPRESSION:
+        	case GSVA:
+        	case GSA_STATISTICS:
+        		drawAnalysisExpressionNode(entity, minExp, maxExp);
+        		break;
+        	case GSA_REGULATION:
+        		drawAnalysisRegulationNode(entity, minExp);
         	}
         }
 	}
@@ -463,12 +498,50 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
         }
 	}
 
+	//highlight enrichment node
+	private void drawAnalysisEnrichmentNode(GraphObject entity) {
+		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(),
+				AnalysisColours.get().PROFILE.getEnrichment().getGradient().getMax());
+	}
+	
+	//highlight expression of a node
+	private void drawAnalysisExpressionNode(GraphObject entity, Double minExp, Double maxExp) {
+		String color = getExpressionColor(((GraphPhysicalEntity)entity).getExpression(), minExp, maxExp);
+		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color);
+	}
+	
+	//highlight regulated node
+	private void drawAnalysisRegulationNode(GraphObject entity, Double minExp) {
+		String color = getRegulationColor(((GraphPhysicalEntity)entity).getExpression(), minExp);
+		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color);
+	}
+	
+	//get node color for a given expression
+	private String getExpressionColor(List<Double> exp, Double minExp, Double maxExp) {
+		double value = minExp;
+		if(exp != null)
+			value = exp.get(column);
+		return AnalysisColours.get().expressionGradient.getColor(value, minExp, maxExp);
+	}
+	
+	//get node color for given regulation
+	private String getRegulationColor(List<Double> exp, Double minExp) {
+		double value = minExp;
+		if(exp != null)
+			value = exp.get(column);
+		return AnalysisColours.get().regulationColorMap.getColor((int)value);
+	}
+	
 	@Override
 	public void expressionColumnChanged() {
-		// TODO Auto-generated method stub
-		
+		loadAnalysis();
 	}
 
+	@Override
+	public void onExpressionColumnChanged(ExpressionColumnChangedEvent e) {
+		this.column = e.getColumn();
+	}
+	
 	@Override
 	public void interactorsCollapsed(String resource) {
 		// TODO Auto-generated method stub
