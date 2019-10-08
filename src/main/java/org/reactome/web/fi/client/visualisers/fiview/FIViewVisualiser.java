@@ -364,12 +364,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			
 		}
 		
-		//Sends first COMPLEX when iterating over array from low to high DbId if reaction hasn't been returned
-		for(JSONObject obj: objList) {
-			if(obj.get("sourceType").isString().toString().toUpperCase().contentEquals("COMPLEX"))
-				return obj.get("reactomeId").isString().stringValue();
-		}
-		
 		//If no obj in objList has a sourceType, send first entry, which will have lowest DbId after sorting above.
 		return objList.get(0).get("reactomeId").isString().stringValue();
 	}
