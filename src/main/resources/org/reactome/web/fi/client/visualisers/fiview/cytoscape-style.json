@@ -23,9 +23,9 @@
   "selector": "edge",
   "style": {
     "curve-style": "straight",
-    "line-color": "#000000",
-    "width": "1.5",
-    "overlay-padding": "3px"
+    "line-color": "#bbb",
+    "width": "1",
+    "overlay-padding": "20px"
   }
 },
 {
@@ -40,7 +40,7 @@
 	"selector": "edge[direction=\"->\"]",
 	"style": {
     	"target-arrow-shape": "vee",
-   		"target-arrow-color": "#000000"
+   		"target-arrow-color": "#bbb"
   }
 },
 {
@@ -54,7 +54,7 @@
 	"selector": "edge[direction=\"<-\"]",
 	"style": {
     	"source-arrow-shape": "vee",
-   		"source-arrow-color": "#000000"
+   		"source-arrow-color": "#bbb"
   }
 },
 {
@@ -68,7 +68,7 @@
 	"selector": "edge[direction=\"-|\"]",
 	"style": {
     	"target-arrow-shape": "tee",
-   		"target-arrow-color": "#000000"
+   		"target-arrow-color": "#bbb"
   }
 },
 {
@@ -82,7 +82,7 @@
 	"selector": "edge[direction=\"|-\"]",
 	"style": {
     	"source-arrow-shape": "tee",
-   		"source-arrow-color": "#000000"
+   		"source-arrow-color": "#bbb"
   }
 },
 {
@@ -96,9 +96,9 @@
 	"selector": "edge[direction=\"|->\"]",
 	"style": {
     	"source-arrow-shape": "tee",
-   		"source-arrow-color": "#000000",
-			"target-arrow-shape": "vee",
-			"target-arrow-color": "#000000"
+   		"source-arrow-color": "#bbb",
+		"target-arrow-shape": "vee",
+		"target-arrow-color": "#bbb"
   }
 },
 {
@@ -106,25 +106,25 @@
 	"style": {
     	"source-arrow-shape": "tee",
    		"source-arrow-color": "#FF0000",
-			"target-arrow-shape": "vee",
-			"target-arrow-color": "#FF0000"
+		"target-arrow-shape": "vee",
+		"target-arrow-color": "#FF0000"
   }
 },
 {
 	"selector": "edge[direction=\"<-|\"]",
 	"style": {
-			"source-arrow-shape": "vee",
-			"source-arrow-color": "#000000",
-			"target-arrow-shape": "tee",
-			"target-arrow-color": "#000000"
+		"source-arrow-shape": "vee",
+		"source-arrow-color": "#bbb",
+		"target-arrow-shape": "tee",
+		"target-arrow-color": "#bbb"
 	}
 },
 {
 	"selector": "edge[direction=\"<-|\"]:selected",
 	"style": {
-			"source-arrow-shape": "vee",
-			"source-arrow-color": "#FF0000",
-			"target-arrow-shape": "tee",
-			"target-arrow-color": "#FF0000"
+		"source-arrow-shape": "vee",
+		"source-arrow-color": "#FF0000",
+		"target-arrow-shape": "tee",
+		"target-arrow-color": "#FF0000"
 	}
 }]
