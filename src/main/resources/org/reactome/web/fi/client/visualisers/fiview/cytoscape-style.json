@@ -2,6 +2,7 @@
 "selector": "node",
 	"style": {
 	"label": "data(name)",
+	"font-size":"6px",
 	"shape": "ellipse",
 	"background-color": "#00CC00",
 	"border-color": "#00CC00",
