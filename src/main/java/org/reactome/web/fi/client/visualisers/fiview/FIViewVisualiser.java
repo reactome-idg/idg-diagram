@@ -209,7 +209,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			cy.clearCytoscapeGraph();
 			cy.addCytoscapeNodes(((FIViewContent)content).getProteinArray());
 			cy.addCytoscapeEdge(((FIViewContent)content).getFIArray());
-			cy.resetSelection();
+			cy.resetStyle();
 			cy.resetCytoscapeLayout();
 		}
 	}
@@ -393,7 +393,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public boolean resetHighlight(boolean notify) {
-		cy.resetSelection();
+		cy.removeEdgeClass("hovered");
 		return true;
 	}
 
@@ -402,7 +402,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		boolean rtn = false;
 		if(context==null) return rtn;
 		
-		cy.resetSelection();
+		cy.resetStyle();
 		
 		if(notify) {
 			eventBus.fireEventFromSource(new GraphObjectSelectedEvent(null, false), this);
@@ -443,7 +443,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
         AnalysisType analysisType = AnalysisType.NONE;
         if(cy!=null && analysisStatus != null) {
         	analysisType = AnalysisType.getType(analysisStatus.getAnalysisSummary().getType());
-        	cy.resetSelection();
+        	cy.resetStyle();
         	if(analysisStatus.getExpressionSummary()!=null) {
         		minExp = analysisStatus.getExpressionSummary().getMin();
         		maxExp = analysisStatus.getExpressionSummary().getMax();
@@ -488,7 +488,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
         expressionSummary = null;
         selectedExpCol = 0;
         if(cy != null) {
-        	cy.resetSelection();
+        	cy.resetStyle();
         }
 	}
 
@@ -584,8 +584,10 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	public void flagItems(Set<DiagramObject> flaggedItems, Boolean includeInteractors) {
 		resetFlag();
 		for(DiagramObject diagramObject : flaggedItems) {
-			//TODO: figure out how to highlight node
-			//either must make nodes diagramObjects and add to graphObjectCache with stId attached or convert stId to protein shortname
+			if(diagramObject.getIsDisease())
+				continue;
+			if(diagramObject.getSchemaClass() == "EntityWithAccessionedSequence")
+				cy.addNodeClass("name", diagramObject.getDisplayName(), "flagged");
 		}
 		
 	}
@@ -600,7 +602,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	public void resetFlag() {
 		cy.resetSelection();
 	}
-	
 	/**
 	 * Everything below here is for resource loading for the cytoscape view button.
 	 */

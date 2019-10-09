@@ -37,6 +37,18 @@
 	}
 },
 {
+	"selector": "edge.highlighted",
+	"style": {
+		"line-color": "#FF0000"
+	}
+},
+{
+	"selector":"edge.hovered",
+	"style": {
+		"line-color": "#0000FF"
+	}
+},
+{
 	"selector": "edge[direction=\"->\"]",
 	"style": {
     	"target-arrow-shape": "vee",
