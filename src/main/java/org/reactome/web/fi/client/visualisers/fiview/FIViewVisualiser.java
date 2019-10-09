@@ -75,10 +75,11 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	
 	private Context context;
 	
+	private GraphObject selected;
+	
 	private AnalysisStatus analysisStatus;
     private ExpressionSummary expressionSummary;
     private int selectedExpCol = 0;
-    private int column = 0;
 	
 	private boolean initialised = false;
 	private boolean cytoscapeInitialised;
@@ -425,20 +426,20 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		}
 		
 		cy.hierarchySelect("reactomeId", graphObject.getDbId().toString());
+		this.selected = graphObject;
 		return true;
 	}
 
 	@Override
 	public GraphObject getSelected() {
-		// TODO Auto-generated method stub
-		return null;
+		return selected;
 	}
 
 	@Override
 	public void loadAnalysis() {
 		analysisStatus = context.getAnalysisStatus();
-        expressionSummary = analysisStatus.getExpressionSummary();
-        selectedExpCol = 0;
+		if(analysisStatus != null)
+			expressionSummary = analysisStatus.getExpressionSummary();
         Double minExp = 0.0; Double maxExp = 0.0;
         AnalysisType analysisType = AnalysisType.NONE;
         if(cy!=null && analysisStatus != null) {
@@ -514,7 +515,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	private String getExpressionColor(List<Double> exp, Double minExp, Double maxExp) {
 		double value = minExp;
 		if(exp != null)
-			value = exp.get(column);
+			value = exp.get(selectedExpCol);
 		return AnalysisColours.get().expressionGradient.getColor(value, minExp, maxExp);
 	}
 	
@@ -522,7 +523,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	private String getRegulationColor(List<Double> exp, Double minExp) {
 		double value = minExp;
 		if(exp != null)
-			value = exp.get(column);
+			value = exp.get(selectedExpCol);
 		return AnalysisColours.get().regulationColorMap.getColor((int)value);
 	}
 	
@@ -533,38 +534,23 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public void onExpressionColumnChanged(ExpressionColumnChangedEvent e) {
-		this.column = e.getColumn();
+		this.selectedExpCol = e.getColumn();
 	}
 	
 	@Override
-	public void interactorsCollapsed(String resource) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void interactorsCollapsed(String resource) {/* Nothing Here */}
 
 	@Override
-	public void interactorsFiltered() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void interactorsFiltered() {/* Nothing Here */}
 
 	@Override
-	public void interactorsLayoutUpdated() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void interactorsLayoutUpdated() {/* Nothing Here */}
 
 	@Override
-	public void interactorsLoaded() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void interactorsLoaded() {/* Nothing Here */}
 
 	@Override
-	public void interactorsResourceChanged(OverlayResource resource) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void interactorsResourceChanged(OverlayResource resource) {/* Nothing Here */}
 
 	@Override
 	public void setSize(int width, int height) {
@@ -594,8 +580,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	
 	@Override
 	public void onAnalysisProfileChanged(AnalysisProfileChangedEvent event) {
-		// TODO Auto-generated method stub
-		
+		loadAnalysis();
 	}
 
 	@Override
