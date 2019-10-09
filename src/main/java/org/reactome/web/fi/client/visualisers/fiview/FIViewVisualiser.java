@@ -78,7 +78,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	private GraphObject selected;
 	
 	private AnalysisStatus analysisStatus;
-    private ExpressionSummary expressionSummary;
     private int selectedExpCol = 0;
 	
 	private boolean initialised = false;
@@ -155,10 +154,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	}
 
 	@Override
-	public void zoomDelta(double deltaFactor) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void zoomDelta(double deltaFactor) {/* Nothing Here */}
 
 	@Override
 	public void zoomIn() {
@@ -180,7 +176,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			cy.panUp(dY);
 		else if(dY == -10)
 			cy.panDown(dY);
-		
 	}
 
 	@Override
@@ -239,9 +234,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	}
 
 	@Override
-	public void onEdgeMouseOut(EdgeMouseOutEvent event) {
-//		infoPopup.hide();
-	}
+	public void onEdgeMouseOut(EdgeMouseOutEvent event) {/* Nothing Hewre */}
 
 	@Override
 	public void onEdgeHovered(EdgeHoveredEvent event) {
@@ -362,7 +355,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		for (JSONObject obj : objList) {
 			if (obj.get("sourceType").isString().toString().toUpperCase().contentEquals("REACTION"));
 				return obj.get("reactomeId").isString().stringValue();
-			
 		}
 		
 		//If no obj in objList has a sourceType, send first entry, which will have lowest DbId after sorting above.
@@ -387,10 +379,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	}
 
 	@Override
-	public void highlightInteractor(DiagramInteractor diagramInteractor) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void highlightInteractor(DiagramInteractor diagramInteractor) {/* Nothing Here */}
 
 	@Override
 	public boolean resetHighlight(boolean notify) {
@@ -437,14 +426,15 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 
 	@Override
 	public void loadAnalysis() {
+		//analysisStatus set in context when onAnalysisLoaded in DiagramViewerImpl is ran
 		analysisStatus = context.getAnalysisStatus();
-		if(analysisStatus != null)
-			expressionSummary = analysisStatus.getExpressionSummary();
         Double minExp = 0.0; Double maxExp = 0.0;
         AnalysisType analysisType = AnalysisType.NONE;
         if(cy!=null && analysisStatus != null) {
         	analysisType = AnalysisType.getType(analysisStatus.getAnalysisSummary().getType());
         	cy.resetStyle();
+            //setup lighter node color
+            cy.setNodeFill(InteractorColours.get().PROFILE.getProtein().getLighterFill());
         	if(analysisStatus.getExpressionSummary()!=null) {
         		minExp = analysisStatus.getExpressionSummary().getMin();
         		maxExp = analysisStatus.getExpressionSummary().getMax();
@@ -460,9 +450,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
         		}
         	}
         }
-        
-        //setup lighter node color
-        cy.setNodeFill(InteractorColours.get().PROFILE.getProtein().getLighterFill());
         
         //render entities based on analysis type
         for(GraphObject entity : entities) {
@@ -486,7 +473,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	@Override
 	public void resetAnalysis() {
 		analysisStatus = null;
-        expressionSummary = null;
         selectedExpCol = 0;
         if(cy != null) {
         	cy.resetStyle();
@@ -563,7 +549,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		this.viewportHeight = height;
 		//TODO: make so center happens on resize
 //		cy.centerCytoscape(); action lags until next resize
-		
 	}
 
 	@Override
@@ -575,7 +560,6 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 			if(diagramObject.getSchemaClass() == "EntityWithAccessionedSequence")
 				cy.addNodeClass("name", diagramObject.getDisplayName(), "flagged");
 		}
-		
 	}
 	
 	@Override
@@ -607,7 +591,5 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
         
         @Source("org/reactome/web/fi/client/visualisers/fiview/cytoscape.umd.js")
         public TextResource cytoscapeLibrary();
-
-
     }
 }
