@@ -1,12 +1,14 @@
 [{
 "selector": "node",
 	"style": {
+	"width": "9",
+	"height": "9",
 	"label": "data(name)",
 	"font-size":"6px",
 	"shape": "ellipse",
 	"background-color": "#00CC00",
 	"border-color": "#00CC00",
-	"background-opacity": ".25"
+	"background-opacity": ".4"
 	 }
 },
 {
@@ -31,9 +33,7 @@
 {
 	"selector": "edge:selected",
 	"style": {
-		"line-color": "#FF0000",
-		"target-arrow-color": "#FF0000",
-		"source-arrow-color": "#FF0000"
+		"line-color": "#FF0000"
 	}
 },
 {
@@ -63,6 +63,13 @@
   }
 },
 {
+	"selector": "edge[direction=\"->\"].hovered",
+	"style": {
+    	"target-arrow-shape": "vee",
+   		"target-arrow-color": "#0000FF"
+  }
+},
+{
 	"selector": "edge[direction=\"<-\"]",
 	"style": {
     	"source-arrow-shape": "vee",
@@ -77,6 +84,13 @@
   }
 },
 {
+	"selector": "edge[direction=\"<-\"].hovered",
+	"style": {
+    	"source-arrow-shape": "vee",
+   		"source-arrow-color": "#0000FF"
+  }
+},
+{
 	"selector": "edge[direction=\"-|\"]",
 	"style": {
     	"target-arrow-shape": "tee",
@@ -88,6 +102,13 @@
 	"style": {
     	"target-arrow-shape": "tee",
    		"target-arrow-color": "#FF0000"
+  }
+},
+{
+	"selector": "edge[direction=\"-|\"].hovered",
+	"style": {
+    	"target-arrow-shape": "tee",
+   		"target-arrow-color": "#0000FF"
   }
 },
 {
