@@ -286,10 +286,10 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 	}
 
 	protected String getAnnotationDirection(JSONObject fi) {
-		if(fi.get("annotationDirection") == null)
+		if(fi.get("direction") == null)
 			return "-";
 		else
-			return fi.get("annotationDirection").isString().stringValue();
+			return fi.get("direction").isString().stringValue();
 		
 	}
 	

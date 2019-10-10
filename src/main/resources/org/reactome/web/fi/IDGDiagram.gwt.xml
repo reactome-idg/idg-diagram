@@ -18,6 +18,7 @@
   <source path='handlers' />
   <source path='data'/>
   <source path='common' />
+  <source path='model' />
   
     <!-- allow Super Dev Mode -->
   <add-linker name="xsiframe"/>
