@@ -1,5 +1,8 @@
 package org.reactome.web.fi.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum FILayoutType {
 
 	NONE,
@@ -8,7 +11,7 @@ public enum FILayoutType {
 	CIRCLE,
 	COSE;
 	
-	public FILayoutType getType(String type) {
+	public static FILayoutType getType(String type) {
 		if(type==null) return NONE;
 		for(FILayoutType t: values()) {
 			if(t.toString().toLowerCase().equals(type.toLowerCase()))
@@ -17,4 +20,12 @@ public enum FILayoutType {
 		return NONE;
 	}
 	
+	public static List<String> getLayouts(){
+		List<String> result = new ArrayList<>();
+		for(FILayoutType t: values()) {
+			result.add(t.toString().toLowerCase());
+		}
+		
+		return result;
+	}
 }

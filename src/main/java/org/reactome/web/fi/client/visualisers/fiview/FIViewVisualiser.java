@@ -77,6 +77,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	private Context context;
 	
+	private FIContextPanel fIContextPanel;
+	
 	private GraphObject selected;
 	
 	private AnalysisStatus analysisStatus;
@@ -97,6 +99,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		this.getElement().addClassName("pwp-FIViz"); //IMPORTANT!
 		this.eventBus = eventBus;
 		
+		fIContextPanel = new FIContextPanel(eventBus);
 		cyView =  new SimplePanel();
 		
 		initHandlers();
@@ -118,6 +121,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			
 			cyView.getElement().setId("cy");
 			
+			this.add(fIContextPanel);
+			this.setWidgetPosition(fIContextPanel, 25, 100);
 			this.add(cyView);
 			this.cyView.setSize(viewportWidth+"px", viewportHeight+"px");
 			
