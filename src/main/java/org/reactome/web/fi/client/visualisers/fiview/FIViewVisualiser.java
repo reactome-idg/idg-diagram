@@ -393,6 +393,7 @@ public class FIViewVisualiser extends SimplePanel implements Visualiser,
 		if(context==null) return rtn;
 		
 		cy.resetStyle();
+		cy.removeClass("highlighted");
 		
 		if(notify) {
 			eventBus.fireEventFromSource(new GraphObjectSelectedEvent(null, false), this);
