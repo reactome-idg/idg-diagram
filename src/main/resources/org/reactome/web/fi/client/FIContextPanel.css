@@ -9,7 +9,7 @@
     -webkit-box-shadow: 3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
     -moz-box-shadow:    3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Firefox 3.5 - 3.6 */
     box-shadow:         3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
-    padding: 2px;
+    padding: 5px;
     border-radius: 10px;
     border: solid 2px rgb(7, 133, 171);
 
@@ -19,6 +19,33 @@
     max-width: 320px;
 }
 
+.fipopup select{
+	background-color: transparent;
+    color: white;
+    border: solid 1px white;
+    height: 1.5em;
+    width: 100%;
+    margin-top: 4px;
+    outline: none;
+    font-size: medium !important;
+}
+
+.fipopup select:disabled{
+	background-color: transparent;
+    color: gray;
+    border: solid 1px gray;
+    height: 1.5em;
+    width: 100%;
+    margin-top: 4px;
+    outline: none;
+    font-size: medium !important;
+}
+
+.fipopup select option{
+	color:black;
+}
+
 .layoutLabel{
-	color: #EEEEEE;
+	margin-top: 5px;
+    color: rgb(0, 90, 117);
 }

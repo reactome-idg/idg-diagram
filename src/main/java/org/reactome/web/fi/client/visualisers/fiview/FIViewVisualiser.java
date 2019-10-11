@@ -36,12 +36,16 @@ import org.reactome.web.gwtCytoscapeJs.events.EdgeMouseOutEvent;
 import org.reactome.web.gwtCytoscapeJs.events.NodeClickedEvent;
 import org.reactome.web.gwtCytoscapeJs.events.NodeHoveredEvent;
 import org.reactome.web.gwtCytoscapeJs.events.NodeMouseOutEvent;
+import org.reactome.web.gwtCytoscapeJs.events.CytoscapeCoreContextEvent;
+import org.reactome.web.gwtCytoscapeJs.events.CytoscapeCoreSelectedEvent;
 import org.reactome.web.gwtCytoscapeJs.handlers.EdgeClickedHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.EdgeHoveredHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.EdgeMouseOutHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeClickedHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeHoveredHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeMouseOutHandler;
+import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreContextHandler;
+import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreSelectedHandler;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 import org.reactome.web.fi.data.model.*;
@@ -72,14 +76,15 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler,
 	NodeHoveredHandler, NodeMouseOutHandler, AnalysisProfileChangedHandler,
-	ExpressionColumnChangedHandler, CytoscapeLayoutChangedHandler{
+	ExpressionColumnChangedHandler, CytoscapeLayoutChangedHandler, CytoscapeCoreContextHandler,
+	CytoscapeCoreSelectedHandler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
 	
 	private Context context;
 	
-	private FIContextPanel fIContextPanel;
+	private FILayoutChangerPanel fILayoutChangerPanel;
 	
 	private GraphObject selected;
 	
@@ -93,6 +98,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
     private int viewportWidth = 0;
     private int viewportHeight = 0;
 	private FIViewInfoPopup infoPopup;
+	private AbsolutePanel contextPopup;
 	
 	SimplePanel cyView;
     
@@ -101,8 +107,10 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		this.getElement().addClassName("pwp-FIViz"); //IMPORTANT!
 		this.eventBus = eventBus;
 		
-		fIContextPanel = new FIContextPanel(eventBus);
+		fILayoutChangerPanel = new FILayoutChangerPanel(eventBus);
 		cyView =  new SimplePanel();
+		
+		contextPopup = new AbsolutePanel();
 		
 		initHandlers();
 		
@@ -125,8 +133,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			
 			this.add(cyView);
 			this.cyView.setSize(viewportWidth+"px", viewportHeight+"px");
-			this.add(fIContextPanel);
-			this.setWidgetPosition(fIContextPanel, 25, 100);
+			this.add(contextPopup);
+			contextPopup.setVisible(false);
 			
 			setSize(viewportWidth, viewportHeight);
 			
@@ -156,6 +164,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		eventBus.addHandler(NodeClickedEvent.TYPE, this);
 		eventBus.addHandler(ExpressionColumnChangedEvent.TYPE, this);
 		eventBus.addHandler(CytoscapeLayoutChangedEvent.TYPE, this);
+		eventBus.addHandler(CytoscapeCoreContextEvent.TYPE, this);
+		eventBus.addHandler(CytoscapeCoreSelectedEvent.TYPE, this);
 	}
 
 	@Override
@@ -293,6 +303,18 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
 		
 		
+	}
+	
+	@Override
+	public void onCytoscapeContextSelect(CytoscapeCoreContextEvent event) {
+		contextPopup.add(fILayoutChangerPanel);
+		this.setWidgetPosition(contextPopup, event.getX(), event.getY());
+		contextPopup.setVisible(true);
+	}
+	
+	@Override
+	public void onCytoscapeCoreSelected(CytoscapeCoreSelectedEvent event) {
+		contextPopup.setVisible(false);
 	}
 
 	protected String getAnnotationDirection(JSONObject fi) {

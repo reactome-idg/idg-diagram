@@ -18,13 +18,13 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FIContextPanel extends AbsolutePanel implements ChangeHandler {
+public class FILayoutChangerPanel extends AbsolutePanel implements ChangeHandler {
 
 	private EventBus eventBus;
 	
 	private ListBox layoutSelector;
 	
-	public FIContextPanel(EventBus eventBus) {
+	public FILayoutChangerPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
 		this.setStyleName(FICONTEXTRESOURCES.getCSS().fipopup());
 		FlowPanel main = new FlowPanel();
@@ -90,7 +90,7 @@ public class FIContextPanel extends AbsolutePanel implements ChangeHandler {
 		ResourceCSS getCSS();
 	}
 	
-	@CssResource.ImportedWithPrefix("idgDiagram-FIContextPanel")
+	@CssResource.ImportedWithPrefix("idgDiagram-FILayoutChangerPanel")
 	public interface ResourceCSS extends CssResource {
 		String CSS = "org/reactome/web/fi/client/FIContextPanel.css";
 		
