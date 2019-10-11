@@ -45,6 +45,8 @@ import org.reactome.web.gwtCytoscapeJs.handlers.NodeMouseOutHandler;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 import org.reactome.web.fi.data.model.*;
+import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
+import org.reactome.web.fi.handlers.CytoscapeLayoutChangedHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -70,7 +72,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler,
 	NodeHoveredHandler, NodeMouseOutHandler, AnalysisProfileChangedHandler,
-	ExpressionColumnChangedHandler{
+	ExpressionColumnChangedHandler, CytoscapeLayoutChangedHandler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -153,6 +155,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		eventBus.addHandler(EdgeMouseOutEvent.TYPE, this);
 		eventBus.addHandler(NodeClickedEvent.TYPE, this);
 		eventBus.addHandler(ExpressionColumnChangedEvent.TYPE, this);
+		eventBus.addHandler(CytoscapeLayoutChangedEvent.TYPE, this);
 	}
 
 	@Override
@@ -205,7 +208,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			cy.cytoscapeInit(((FIViewContent)content).getProteinArray(), 
 							 ((FIViewContent)content).getFIArray(),  
 							 "cose");
-			cy.resetCytoscapeLayout();
+			cy.setCytoscapeLayout("cose");
 			cytoscapeInitialised = true;
 		}
 		else if(cytoscapeInitialised) {
@@ -213,7 +216,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			cy.addCytoscapeNodes(((FIViewContent)content).getProteinArray());
 			cy.addCytoscapeEdge(((FIViewContent)content).getFIArray());
 			cy.resetStyle();
-			cy.resetCytoscapeLayout();
+			cy.setCytoscapeLayout("cose");
 		}
 	}
 
@@ -573,6 +576,11 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void onAnalysisProfileChanged(AnalysisProfileChangedEvent event) {
 		loadAnalysis();
+	}
+	
+	@Override
+	public void onCytoscapeLayoutChanged(CytoscapeLayoutChangedEvent event) {
+		cy.setCytoscapeLayout(event.getSelection());
 	}
 
 	@Override

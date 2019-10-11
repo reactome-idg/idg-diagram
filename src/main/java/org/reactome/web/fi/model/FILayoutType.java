@@ -5,19 +5,18 @@ import java.util.List;
 
 public enum FILayoutType {
 
-	NONE,
 	RANDOM,
 	GRID,
 	CIRCLE,
 	COSE;
 	
 	public static FILayoutType getType(String type) {
-		if(type==null) return NONE;
+		if(type==null) return COSE;
 		for(FILayoutType t: values()) {
 			if(t.toString().toLowerCase().equals(type.toLowerCase()))
 				return t;
 		}
-		return NONE;
+		return COSE;
 	}
 	
 	public static List<String> getLayouts(){
