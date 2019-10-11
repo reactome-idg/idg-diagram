@@ -11,13 +11,14 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FIContextPanel extends Composite implements ChangeHandler {
+public class FIContextPanel extends AbsolutePanel implements ChangeHandler {
 
 	private EventBus eventBus;
 	
@@ -35,7 +36,7 @@ public class FIContextPanel extends Composite implements ChangeHandler {
 		setSelection(layoutSelector, "cose");
 		initHandlers();
 		
-		initWidget(main);
+		this.add(main);
 		
 	}
 
