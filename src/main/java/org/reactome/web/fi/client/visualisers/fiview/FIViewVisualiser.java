@@ -8,19 +8,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.reactome.web.analysis.client.model.AnalysisType;
-import org.reactome.web.analysis.client.model.ExpressionSummary;
 import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.data.AnalysisStatus;
 import org.reactome.web.diagram.data.Context;
-import org.reactome.web.diagram.data.GraphObjectFactory;
 import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
-import org.reactome.web.diagram.data.graph.model.GraphPathway;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
-import org.reactome.web.diagram.data.layout.factory.DiagramObjectException;
 import org.reactome.web.diagram.events.AnalysisProfileChangedEvent;
 import org.reactome.web.diagram.events.ExpressionColumnChangedEvent;
 import org.reactome.web.diagram.events.GraphObjectHoveredEvent;
@@ -31,6 +27,7 @@ import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.profiles.interactors.InteractorColours;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeClickedEvent;
+import org.reactome.web.gwtCytoscapeJs.events.EdgeContextSelectEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeHoveredEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeMouseOutEvent;
 import org.reactome.web.gwtCytoscapeJs.events.NodeClickedEvent;
@@ -39,6 +36,7 @@ import org.reactome.web.gwtCytoscapeJs.events.NodeMouseOutEvent;
 import org.reactome.web.gwtCytoscapeJs.events.CytoscapeCoreContextEvent;
 import org.reactome.web.gwtCytoscapeJs.events.CytoscapeCoreSelectedEvent;
 import org.reactome.web.gwtCytoscapeJs.handlers.EdgeClickedHandler;
+import org.reactome.web.gwtCytoscapeJs.handlers.EdgeContextSelectHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.EdgeHoveredHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.EdgeMouseOutHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeClickedHandler;
@@ -46,9 +44,7 @@ import org.reactome.web.gwtCytoscapeJs.handlers.NodeHoveredHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeMouseOutHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreContextHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreSelectedHandler;
-import org.reactome.web.gwtCytoscapeJs.util.Console;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
-import org.reactome.web.fi.data.model.*;
 import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
 import org.reactome.web.fi.handlers.CytoscapeLayoutChangedHandler;
 
@@ -77,7 +73,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler,
 	NodeHoveredHandler, NodeMouseOutHandler, AnalysisProfileChangedHandler,
 	ExpressionColumnChangedHandler, CytoscapeLayoutChangedHandler, CytoscapeCoreContextHandler,
-	CytoscapeCoreSelectedHandler{
+	CytoscapeCoreSelectedHandler, EdgeContextSelectHandler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -85,6 +81,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	private Context context;
 	
 	private FILayoutChangerPanel fILayoutChangerPanel;
+	private EdgeContextPanel edgeContextPanel;
 	
 	private GraphObject selected;
 	
@@ -98,7 +95,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
     private int viewportWidth = 0;
     private int viewportHeight = 0;
 	private FIViewInfoPopup infoPopup;
-	private AbsolutePanel contextPopup;
+	private AbsolutePanel coreContextPopup;
+	private AbsolutePanel edgeContextPopup;
 	
 	SimplePanel cyView;
     
@@ -108,9 +106,13 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		this.eventBus = eventBus;
 		
 		fILayoutChangerPanel = new FILayoutChangerPanel(eventBus);
+		edgeContextPanel = new EdgeContextPanel(eventBus);
 		cyView =  new SimplePanel();
 		
-		contextPopup = new AbsolutePanel();
+		coreContextPopup = new AbsolutePanel();
+		coreContextPopup.add(fILayoutChangerPanel);
+		edgeContextPopup = new AbsolutePanel();
+		edgeContextPopup.add(edgeContextPanel);
 		
 		initHandlers();
 		
@@ -133,8 +135,10 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			
 			this.add(cyView);
 			this.cyView.setSize(viewportWidth+"px", viewportHeight+"px");
-			this.add(contextPopup);
-			contextPopup.setVisible(false);
+			this.add(coreContextPopup);
+			coreContextPopup.setVisible(false);
+			this.add(edgeContextPopup);
+			edgeContextPopup.setVisible(false);
 			
 			setSize(viewportWidth, viewportHeight);
 			
@@ -166,6 +170,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		eventBus.addHandler(CytoscapeLayoutChangedEvent.TYPE, this);
 		eventBus.addHandler(CytoscapeCoreContextEvent.TYPE, this);
 		eventBus.addHandler(CytoscapeCoreSelectedEvent.TYPE, this);
+		eventBus.addHandler(EdgeContextSelectEvent.TYPE, this);
 	}
 
 	@Override
@@ -307,14 +312,23 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	@Override
 	public void onCytoscapeContextSelect(CytoscapeCoreContextEvent event) {
-		contextPopup.add(fILayoutChangerPanel);
-		this.setWidgetPosition(contextPopup, event.getX(), event.getY());
-		contextPopup.setVisible(true);
+		this.setWidgetPosition(coreContextPopup, event.getX(), event.getY());
+		coreContextPopup.setVisible(true);
+	}
+	
+	@Override
+	public void onEdgeContextSelect(EdgeContextSelectEvent event) {
+		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getId()).get("data").isObject();
+		edgeContextPanel.updateContext(fi);
+		this.setWidgetPosition(edgeContextPopup, event.getX(), event.getY());
+		edgeContextPopup.setVisible(true);
 	}
 	
 	@Override
 	public void onCytoscapeCoreSelected(CytoscapeCoreSelectedEvent event) {
-		contextPopup.setVisible(false);
+		coreContextPopup.setVisible(false);
+		edgeContextPopup.setVisible(false);
+		
 	}
 
 	protected String getAnnotationDirection(JSONObject fi) {
@@ -350,8 +364,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	/**
 	 * recieves a set of reactomeSources from an edge hovered or edge clicked event and sorts it.
 	 * Sorting preferences returning the reactomeId of the source with the lowest reactomeId and source type of "Reaction."
-	 * If no reaction exists in a set of sources, the lowest reactomeId with source type of "Complex" will be returned.
-	 * If no source type exists on any of the passed in sources, it will return the lowest reactomeId present.
+	 * If no reaction exists in a set of sourcesFlowPanel, the lowest reactomeId with source type of "Complex" will be returned.
+	 * If no source type exists on any of the passed in sourcesFlowPanel, it will return the lowest reactomeId present.
 	 * @param reactomeSources
 	 * @return
 	 */
