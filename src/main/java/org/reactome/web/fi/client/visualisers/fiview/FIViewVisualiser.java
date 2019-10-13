@@ -315,12 +315,14 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	@Override
 	public void onCytoscapeContextSelect(CytoscapeCoreContextEvent event) {
+		hideContextMenus();
 		this.setWidgetPosition(coreContextPopup, event.getX(), event.getY());
 		coreContextPopup.setVisible(true);
 	}
 	
 	@Override
 	public void onEdgeContextSelect(EdgeContextSelectEvent event) {
+		hideContextMenus();
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getId()).get("data").isObject();
 		edgeContextPanel.updateContext(fi);
 		this.setWidgetPosition(edgeContextPopup, event.getX(), event.getY());
@@ -338,9 +340,12 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	@Override
 	public void onCytoscapeCoreSelected(CytoscapeCoreSelectedEvent event) {
+		hideContextMenus();
+	}
+
+	private void hideContextMenus() {
 		coreContextPopup.setVisible(false);
 		edgeContextPopup.setVisible(false);
-		
 	}
 
 	protected String getAnnotationDirection(JSONObject fi) {
