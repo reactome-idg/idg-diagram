@@ -46,7 +46,9 @@ import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreContextHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreSelectedHandler;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
+import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
 import org.reactome.web.fi.handlers.CytoscapeLayoutChangedHandler;
+import org.reactome.web.fi.handlers.FireGraphObjectSelectedHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -73,7 +75,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler,
 	NodeHoveredHandler, NodeMouseOutHandler, AnalysisProfileChangedHandler,
 	ExpressionColumnChangedHandler, CytoscapeLayoutChangedHandler, CytoscapeCoreContextHandler,
-	CytoscapeCoreSelectedHandler, EdgeContextSelectHandler{
+	CytoscapeCoreSelectedHandler, EdgeContextSelectHandler, FireGraphObjectSelectedHandler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -171,6 +173,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		eventBus.addHandler(CytoscapeCoreContextEvent.TYPE, this);
 		eventBus.addHandler(CytoscapeCoreSelectedEvent.TYPE, this);
 		eventBus.addHandler(EdgeContextSelectEvent.TYPE, this);
+		eventBus.addHandler(FireGraphObjectSelectedEvent.TYPE, this);
 	}
 
 	@Override
@@ -322,6 +325,15 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		edgeContextPanel.updateContext(fi);
 		this.setWidgetPosition(edgeContextPopup, event.getX(), event.getY());
 		edgeContextPopup.setVisible(true);
+	}
+	
+	@Override
+	public void onFireGraphObjectSelected(FireGraphObjectSelectedEvent event) {
+		//set edgeClickedFlag to true
+		edgeClickedFlag = true;
+		
+		GraphObject graphObject = context.getContent().getDatabaseObject(event.getReactomeId());
+		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false), this);
 	}
 	
 	@Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.reactome.web.diagram.context.popups.export.SnapshotTabPanel.Resources;
+import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -34,10 +35,11 @@ public class EdgeContextPanel extends AbsolutePanel implements ChangeHandler{
 	private HTML htmlLabel;
 	private ListBox sourcesOptions;
 	private FlowPanel sourcesFlowPanel;
+	private FlowPanel main;
 	
 	public EdgeContextPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
-		FlowPanel main = new FlowPanel();
+		main = new FlowPanel();
 		main.setStyleName(EDGECONTEXTRESOURCES.getCSS().edgePopup());
 		sourcesFlowPanel = new FlowPanel();
 		htmlLabel = new HTML();
@@ -47,13 +49,17 @@ public class EdgeContextPanel extends AbsolutePanel implements ChangeHandler{
 		main.add(sourcesFlowPanel);
 		
 		this.add(main);
-		
+				
 	}
 	
 	public void updateContext(JSONObject fi) {
 		htmlLabel = null;
 		sourcesOptions = null;
 		sourcesFlowPanel = null;
+		main = new FlowPanel();
+		main.setStyleName(EDGECONTEXTRESOURCES.getCSS().edgePopup());
+		this.remove(0);
+
 		
 		HTML html = new HTML(new SafeHtmlBuilder()
 			.appendEscapedLines("Protein One Name: " + fi.get("source") + "\n"
@@ -61,11 +67,16 @@ public class EdgeContextPanel extends AbsolutePanel implements ChangeHandler{
 								+ "Protein Two Name: " + fi.get("target"))
 			.toSafeHtml());
 		this.htmlLabel = html;
-		
+				
 		List<String> sourcesList = setSourcesList(fi.get("reactomeId"));
-		
+				
 		sourcesFlowPanel = setOptions(sourcesList);
 		
+		
+		main.add(html);
+		main.add(setOptions(sourcesList));
+		this.add(main);
+				
 	}
 	
 	private FlowPanel setOptions(List<String> sourcesList) {
@@ -122,7 +133,7 @@ public class EdgeContextPanel extends AbsolutePanel implements ChangeHandler{
 		ListBox lb = (ListBox) event.getSource();
 		String aux = lb.getSelectedValue();
 		if(lb.equals(sourcesOptions)) {
-			GWT.log("source selected: " + aux);
+			eventBus.fireEventFromSource(new FireGraphObjectSelectedEvent(aux), this);
 			setSelection(aux);
 		}
 	}
