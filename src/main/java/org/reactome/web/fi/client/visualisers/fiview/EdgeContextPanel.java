@@ -32,46 +32,32 @@ import com.google.gwt.json.client.JSONValue;
 public class EdgeContextPanel extends AbsolutePanel implements ChangeHandler{
 	
 	private EventBus eventBus;
-	private HTML htmlLabel;
 	private ListBox sourcesOptions;
-	private FlowPanel sourcesFlowPanel;
 	private FlowPanel main;
 	
 	public EdgeContextPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
 		main = new FlowPanel();
 		main.setStyleName(EDGECONTEXTRESOURCES.getCSS().edgePopup());
-		sourcesFlowPanel = new FlowPanel();
-		htmlLabel = new HTML();
 		sourcesOptions = new ListBox();
-		
-		main.add(htmlLabel);
-		main.add(sourcesFlowPanel);
 		
 		this.add(main);
 				
 	}
 	
 	public void updateContext(JSONObject fi) {
-		htmlLabel = null;
 		sourcesOptions = null;
-		sourcesFlowPanel = null;
 		main = new FlowPanel();
 		main.setStyleName(EDGECONTEXTRESOURCES.getCSS().edgePopup());
 		this.remove(0);
 
-		
 		HTML html = new HTML(new SafeHtmlBuilder()
 			.appendEscapedLines("Protein One Name: " + fi.get("source") + "\n"
 								+ "Interaction Direction: " + getAnnotationDirection(fi) + "\n"
 								+ "Protein Two Name: " + fi.get("target"))
 			.toSafeHtml());
-		this.htmlLabel = html;
 				
-		List<String> sourcesList = setSourcesList(fi.get("reactomeId"));
-				
-		sourcesFlowPanel = setOptions(sourcesList);
-		
+		List<String> sourcesList = setSourcesList(fi.get("reactomeId"));		
 		
 		main.add(html);
 		main.add(setOptions(sourcesList));
