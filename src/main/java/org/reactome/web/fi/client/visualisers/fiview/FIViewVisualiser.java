@@ -142,8 +142,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			
 			this.add(cyView);
 			this.cyView.setSize(viewportWidth+"px", viewportHeight+"px");
-			this.add(nodeContextPopup);
-			nodeContextPopup.setVisible(false);
+
 			
 			this.add(contextPopup);
 			
