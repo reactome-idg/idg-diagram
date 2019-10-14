@@ -70,7 +70,7 @@ public class EdgeContextPanel extends AbsolutePanel implements ChangeHandler{
 		}
 		sourcesOptions = list;
 		
-		Label lb = new Label("Reactome Sources List: ");
+		Label lb = new Label("Reactome Source Identifiers: ");
 		lb.setStyleName(EDGECONTEXTRESOURCES.getCSS().sourcesLabel());
 		
 		FlowPanel result = new FlowPanel();

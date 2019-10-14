@@ -15,7 +15,7 @@ public class NodeContextPanel extends AbsolutePanel {
 	private FlowPanel main;
 	private final String URL = "https://www.uniprot.org/uniprot/";
 	
-	public NodeContextPanel() {};
+	public NodeContextPanel() {}
 
 	public void updatePanel(String name, String id) {
 		if(this.getWidgetCount()>0)

@@ -101,7 +101,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
     private int viewportWidth = 0;
     private int viewportHeight = 0;
 	private FIViewInfoPopup infoPopup;
-	private AbsolutePanel nodeContextPopup;
 	private AbsolutePanel contextPopup;
 	
 	SimplePanel cyView;
@@ -115,9 +114,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		edgeContextPanel = new EdgeContextPanel(eventBus);
 		nodeContextPanel = new NodeContextPanel();
 		cyView =  new SimplePanel();
-		
-		nodeContextPopup = new AbsolutePanel();
-		nodeContextPopup.add(nodeContextPanel);
 		
 		contextPopup = new AbsolutePanel();
 		contextPopup.add(fILayoutChangerPanel);
@@ -346,13 +342,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void onNodeContextSelect(NodeContextSelectEvent event) {
 		hideContextMenus();
-//		NodeContextPanel panel = new NodeContextPanel();
-//		panel.updatePanel(event.getName(), event.getId());
-//		if(nodeContextPopup.getWidgetCount()>0)
-//			nodeContextPopup.remove(0);
-//		nodeContextPopup.add(panel);
-//		this.setWidgetPosition(nodeContextPopup, event.getX(), event.getY());
-//		nodeContextPopup.setVisible(true);
 		
 		nodeContextPanel.updatePanel(event.getName(), event.getId());
 		this.setWidgetPosition(contextPopup, event.getX(), event.getY());
@@ -380,8 +369,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			contextPopup.getWidget(i).setVisible(false);
 		}
 		contextPopup.setVisible(false);
-		
-		nodeContextPopup.setVisible(false);
 	}
 
 	protected String getAnnotationDirection(JSONObject fi) {
