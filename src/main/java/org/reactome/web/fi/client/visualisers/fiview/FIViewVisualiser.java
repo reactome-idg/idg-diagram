@@ -31,6 +31,7 @@ import org.reactome.web.gwtCytoscapeJs.events.EdgeContextSelectEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeHoveredEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeMouseOutEvent;
 import org.reactome.web.gwtCytoscapeJs.events.NodeClickedEvent;
+import org.reactome.web.gwtCytoscapeJs.events.NodeContextSelectEvent;
 import org.reactome.web.gwtCytoscapeJs.events.NodeHoveredEvent;
 import org.reactome.web.gwtCytoscapeJs.events.NodeMouseOutEvent;
 import org.reactome.web.gwtCytoscapeJs.events.CytoscapeCoreContextEvent;
@@ -40,6 +41,7 @@ import org.reactome.web.gwtCytoscapeJs.handlers.EdgeContextSelectHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.EdgeHoveredHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.EdgeMouseOutHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeClickedHandler;
+import org.reactome.web.gwtCytoscapeJs.handlers.NodeContextSelectHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeHoveredHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeMouseOutHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreContextHandler;
@@ -75,7 +77,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler,
 	NodeHoveredHandler, NodeMouseOutHandler, AnalysisProfileChangedHandler,
 	ExpressionColumnChangedHandler, CytoscapeLayoutChangedHandler, CytoscapeCoreContextHandler,
-	CytoscapeCoreSelectedHandler, EdgeContextSelectHandler, FireGraphObjectSelectedHandler{
+	CytoscapeCoreSelectedHandler, EdgeContextSelectHandler, FireGraphObjectSelectedHandler,
+	NodeContextSelectHandler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -84,6 +87,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	private FILayoutChangerPanel fILayoutChangerPanel;
 	private EdgeContextPanel edgeContextPanel;
+	private NodeContextPanel nodeContextPanel;
 	
 	private GraphObject selected;
 	
@@ -99,6 +103,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	private FIViewInfoPopup infoPopup;
 	private AbsolutePanel coreContextPopup;
 	private AbsolutePanel edgeContextPopup;
+	private AbsolutePanel nodeContextPopup;
 	
 	SimplePanel cyView;
     
@@ -109,12 +114,15 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		
 		fILayoutChangerPanel = new FILayoutChangerPanel(eventBus);
 		edgeContextPanel = new EdgeContextPanel(eventBus);
+		nodeContextPanel = new NodeContextPanel();
 		cyView =  new SimplePanel();
 		
 		coreContextPopup = new AbsolutePanel();
 		coreContextPopup.add(fILayoutChangerPanel);
 		edgeContextPopup = new AbsolutePanel();
 		edgeContextPopup.add(edgeContextPanel);
+		nodeContextPopup = new AbsolutePanel();
+		nodeContextPopup.add(nodeContextPanel);
 		
 		initHandlers();
 		
@@ -141,6 +149,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			coreContextPopup.setVisible(false);
 			this.add(edgeContextPopup);
 			edgeContextPopup.setVisible(false);
+			this.add(nodeContextPopup);
+			nodeContextPopup.setVisible(false);
 			
 			setSize(viewportWidth, viewportHeight);
 			
@@ -174,6 +184,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		eventBus.addHandler(CytoscapeCoreSelectedEvent.TYPE, this);
 		eventBus.addHandler(EdgeContextSelectEvent.TYPE, this);
 		eventBus.addHandler(FireGraphObjectSelectedEvent.TYPE, this);
+		eventBus.addHandler(NodeContextSelectEvent.TYPE, this);
 	}
 
 	@Override
@@ -330,6 +341,17 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	}
 	
 	@Override
+	public void onNodeContextSelect(NodeContextSelectEvent event) {
+		hideContextMenus();
+		NodeContextPanel panel = new NodeContextPanel(event.getName(), event.getId());
+		if(nodeContextPopup.getWidgetCount()>0)
+			nodeContextPopup.remove(0);
+		nodeContextPopup.add(panel);
+		this.setWidgetPosition(nodeContextPopup, event.getX(), event.getY());
+		nodeContextPopup.setVisible(true);
+	}
+	
+	@Override
 	public void onFireGraphObjectSelected(FireGraphObjectSelectedEvent event) {
 		//set edgeClickedFlag to true
 		edgeClickedFlag = true;
@@ -346,6 +368,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	private void hideContextMenus() {
 		coreContextPopup.setVisible(false);
 		edgeContextPopup.setVisible(false);
+		nodeContextPopup.setVisible(false);
 	}
 
 	protected String getAnnotationDirection(JSONObject fi) {
