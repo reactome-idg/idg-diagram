@@ -3,9 +3,10 @@ package org.reactome.web.fi.client.visualisers.fiview;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 
 
@@ -21,12 +22,16 @@ public class NodeContextPanel extends AbsolutePanel {
 		main = new FlowPanel();
 		main.setStyleName(NODECONTEXTRESOURCES.getCSS().nodePopup());
 		
+		String shortName = name;
+		String accession = id;
+		String link = URL + accession;
 		
-		Label lbl = new Label("Protein name: " + name);
-		Hyperlink link = new Hyperlink(id, URL + id);
-		Label idLbl = new Label("Uniprot Identifier: " + link);
+		Label lbl = new Label("Protein name: " + shortName);
+		Anchor linkAnchor = new Anchor(new SafeHtmlBuilder()
+				.appendEscapedLines("Uniprote Identifier: " + accession).toSafeHtml(),
+				link, "_blank");
 		main.add(lbl);
-		main.add(idLbl);
+		main.add(linkAnchor);
 		
 		this.add(main);
 	}
