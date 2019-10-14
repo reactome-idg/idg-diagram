@@ -321,8 +321,9 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void onCytoscapeContextSelect(CytoscapeCoreContextEvent event) {
 		hideContextMenus();
-		
-		this.setWidgetPosition(contextPopup, event.getX(), event.getY());
+		int x = this.getElement().getAbsoluteLeft()-5;
+		int y = this.getElement().getAbsoluteTop()-5;
+		this.setWidgetPosition(contextPopup, event.getX()-x, event.getY()-y);
 		contextPopup.getWidget(contextPopup.getWidgetIndex(fILayoutChangerPanel)).setVisible(true);
 		contextPopup.setVisible(true);
 	}
@@ -330,9 +331,11 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void onEdgeContextSelect(EdgeContextSelectEvent event) {
 		hideContextMenus();
+		int x = this.getElement().getAbsoluteLeft()-5;
+		int y = this.getElement().getAbsoluteTop()-5;
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getId()).get("data").isObject();
 		edgeContextPanel.updateContext(fi);
-		this.setWidgetPosition(contextPopup, event.getX(), event.getY());
+		this.setWidgetPosition(contextPopup, event.getX()-x, event.getY()-y);
 		contextPopup.getWidget(contextPopup.getWidgetIndex(edgeContextPanel)).setVisible(true);
 		contextPopup.setVisible(true);
 
@@ -341,9 +344,11 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void onNodeContextSelect(NodeContextSelectEvent event) {
 		hideContextMenus();
+		int x = this.getElement().getAbsoluteLeft()-5;
+		int y = this.getElement().getAbsoluteTop()-5;
 		
 		nodeContextPanel.updatePanel(event.getName(), event.getId());
-		this.setWidgetPosition(contextPopup, event.getX(), event.getY());
+		this.setWidgetPosition(contextPopup, event.getX()-x, event.getY()-y);
 		contextPopup.getWidget(contextPopup.getWidgetIndex(nodeContextPanel)).setVisible(true);
 		contextPopup.setVisible(true);
 
