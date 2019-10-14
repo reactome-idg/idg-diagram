@@ -37,11 +37,6 @@ public class EdgeContextPanel extends AbsolutePanel implements ChangeHandler{
 	
 	public EdgeContextPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
-		main = new FlowPanel();
-		main.setStyleName(EDGECONTEXTRESOURCES.getCSS().edgePopup());
-		sourcesOptions = new ListBox();
-		
-		this.add(main);
 				
 	}
 	
@@ -49,7 +44,9 @@ public class EdgeContextPanel extends AbsolutePanel implements ChangeHandler{
 		sourcesOptions = null;
 		main = new FlowPanel();
 		main.setStyleName(EDGECONTEXTRESOURCES.getCSS().edgePopup());
-		this.remove(0);
+		
+		if(this.getWidgetCount()>0)
+			this.remove(0);
 
 		HTML html = new HTML(new SafeHtmlBuilder()
 			.appendEscapedLines("Protein One Name: " + fi.get("source") + "\n"

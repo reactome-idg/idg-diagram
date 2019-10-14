@@ -17,7 +17,9 @@ public class NodeContextPanel extends AbsolutePanel {
 	
 	public NodeContextPanel() {};
 
-	public NodeContextPanel(String name, String id) {
+	public void updatePanel(String name, String id) {
+		if(this.getWidgetCount()>0)
+			this.remove(0);
 		
 		main = new FlowPanel();
 		main.setStyleName(NODECONTEXTRESOURCES.getCSS().nodePopup());

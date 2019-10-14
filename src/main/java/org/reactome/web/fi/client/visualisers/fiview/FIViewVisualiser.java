@@ -101,9 +101,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
     private int viewportWidth = 0;
     private int viewportHeight = 0;
 	private FIViewInfoPopup infoPopup;
-	private AbsolutePanel coreContextPopup;
-	private AbsolutePanel edgeContextPopup;
 	private AbsolutePanel nodeContextPopup;
+	private AbsolutePanel contextPopup;
 	
 	SimplePanel cyView;
     
@@ -117,12 +116,14 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		nodeContextPanel = new NodeContextPanel();
 		cyView =  new SimplePanel();
 		
-		coreContextPopup = new AbsolutePanel();
-		coreContextPopup.add(fILayoutChangerPanel);
-		edgeContextPopup = new AbsolutePanel();
-		edgeContextPopup.add(edgeContextPanel);
 		nodeContextPopup = new AbsolutePanel();
 		nodeContextPopup.add(nodeContextPanel);
+		
+		contextPopup = new AbsolutePanel();
+		contextPopup.add(fILayoutChangerPanel);
+		contextPopup.add(edgeContextPanel);
+		contextPopup.add(nodeContextPanel);
+		hideContextMenus();
 		
 		initHandlers();
 		
@@ -145,12 +146,10 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			
 			this.add(cyView);
 			this.cyView.setSize(viewportWidth+"px", viewportHeight+"px");
-			this.add(coreContextPopup);
-			coreContextPopup.setVisible(false);
-			this.add(edgeContextPopup);
-			edgeContextPopup.setVisible(false);
 			this.add(nodeContextPopup);
 			nodeContextPopup.setVisible(false);
+			
+			this.add(contextPopup);
 			
 			setSize(viewportWidth, viewportHeight);
 			
@@ -327,8 +326,10 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void onCytoscapeContextSelect(CytoscapeCoreContextEvent event) {
 		hideContextMenus();
-		this.setWidgetPosition(coreContextPopup, event.getX(), event.getY());
-		coreContextPopup.setVisible(true);
+		
+		this.setWidgetPosition(contextPopup, event.getX(), event.getY());
+		contextPopup.getWidget(contextPopup.getWidgetIndex(fILayoutChangerPanel)).setVisible(true);
+		contextPopup.setVisible(true);
 	}
 	
 	@Override
@@ -336,19 +337,28 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		hideContextMenus();
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getId()).get("data").isObject();
 		edgeContextPanel.updateContext(fi);
-		this.setWidgetPosition(edgeContextPopup, event.getX(), event.getY());
-		edgeContextPopup.setVisible(true);
+		this.setWidgetPosition(contextPopup, event.getX(), event.getY());
+		contextPopup.getWidget(contextPopup.getWidgetIndex(edgeContextPanel)).setVisible(true);
+		contextPopup.setVisible(true);
+
 	}
 	
 	@Override
 	public void onNodeContextSelect(NodeContextSelectEvent event) {
 		hideContextMenus();
-		NodeContextPanel panel = new NodeContextPanel(event.getName(), event.getId());
-		if(nodeContextPopup.getWidgetCount()>0)
-			nodeContextPopup.remove(0);
-		nodeContextPopup.add(panel);
-		this.setWidgetPosition(nodeContextPopup, event.getX(), event.getY());
-		nodeContextPopup.setVisible(true);
+//		NodeContextPanel panel = new NodeContextPanel();
+//		panel.updatePanel(event.getName(), event.getId());
+//		if(nodeContextPopup.getWidgetCount()>0)
+//			nodeContextPopup.remove(0);
+//		nodeContextPopup.add(panel);
+//		this.setWidgetPosition(nodeContextPopup, event.getX(), event.getY());
+//		nodeContextPopup.setVisible(true);
+		
+		nodeContextPanel.updatePanel(event.getName(), event.getId());
+		this.setWidgetPosition(contextPopup, event.getX(), event.getY());
+		contextPopup.getWidget(contextPopup.getWidgetIndex(nodeContextPanel)).setVisible(true);
+		contextPopup.setVisible(true);
+
 	}
 	
 	@Override
@@ -366,8 +376,11 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	}
 
 	private void hideContextMenus() {
-		coreContextPopup.setVisible(false);
-		edgeContextPopup.setVisible(false);
+		for(int i=0; i<contextPopup.getWidgetCount(); i++) {
+			contextPopup.getWidget(i).setVisible(false);
+		}
+		contextPopup.setVisible(false);
+		
 		nodeContextPopup.setVisible(false);
 	}
 
