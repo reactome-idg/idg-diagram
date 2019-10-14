@@ -27,9 +27,11 @@ public class NodeContextPanel extends AbsolutePanel {
 		String link = URL + accession;
 		
 		Label lbl = new Label("Protein name: " + shortName);
+		lbl.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
 		Anchor linkAnchor = new Anchor(new SafeHtmlBuilder()
 				.appendEscapedLines("Uniprote Identifier: " + accession).toSafeHtml(),
 				link, "_blank");
+		linkAnchor.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
 		main.add(lbl);
 		main.add(linkAnchor);
 		
@@ -52,6 +54,8 @@ public class NodeContextPanel extends AbsolutePanel {
 		String CSS = "org/reactome/web/fi/client/visualisers/fiview/NodeContextPanel.css";
 		
 		String nodePopup();
+		
+		String label();
 		 
 	}
 }
