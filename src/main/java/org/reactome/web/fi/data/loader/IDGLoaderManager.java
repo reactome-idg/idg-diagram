@@ -11,17 +11,17 @@ import org.reactome.web.fi.data.content.FIViewContent;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
-import net.sourceforge.htmlunit.corejs.javascript.json.JsonParser;
-
 /**
  * 
  * @author brunsont
  *
  */
-public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Handler{
+public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Handler,
+TCRDLoader.Handler{
 
 	private EventBus eventBus;
 	private FIViewLoader fIViewLoader;
+	private TCRDLoader tcrdLoader;
 	
 	private final String SPECIES = "Homo sapiens";
 			
@@ -31,6 +31,7 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 		this.eventBus = eventBus;
 		
 		fIViewLoader = new FIViewLoader(this);
+		tcrdLoader = new TCRDLoader(this);
 	}
 	
 	@Override
@@ -51,6 +52,15 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 		}
 		else
 			super.load(identifier);
+	}
+	
+	/**
+	 * Directs loading of TCRD target level data for an input of ids.
+	 * Multiple ids should be passed in as a String separated by commas.
+	 * @param ids
+	 */
+	public void loadTCRDTargetLevel(String ids) {
+		tcrdLoader.loadTargetLevels(ids);
 	}
 	
 	private boolean isFIViewNeeded(String identifier) {
@@ -84,6 +94,16 @@ public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Hand
 
 	@Override
 	public void onFIViewLoadedError(String stId, Throwable exception) {
+		GWT.log("Error loading FIView interaction data");
+	}
+	
+	@Override 
+	public void onTargetLevelLoaded(String json) {
+		GWT.log(json);
+	}
+	
+	@Override
+	public void onTargetLevelLoadedError(Throwable exception) {
 		GWT.log("Error loading FIView interaction data");
 	}
 
