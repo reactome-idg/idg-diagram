@@ -363,6 +363,6 @@
     </servlet>
     <servlet-mapping>
     	<servlet-name>TCRDTargetLevelProxy</servlet-name>
-    	<url-pattern>/*</url-pattern>
+    	<url-pattern>/targetlevel/*</url-pattern>
     </servlet-mapping>
 </web-app>

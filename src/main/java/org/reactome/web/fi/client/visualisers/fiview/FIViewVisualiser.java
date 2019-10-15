@@ -49,6 +49,7 @@ import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreSelectedHandler;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
 import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
+import org.reactome.web.fi.events.TargetLevelDataRequestedEvent;
 import org.reactome.web.fi.handlers.CytoscapeLayoutChangedHandler;
 import org.reactome.web.fi.handlers.FireGraphObjectSelectedHandler;
 
@@ -254,6 +255,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 				.toSafeHtml());
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();		
+		
+		eventBus.fireEventFromSource(new TargetLevelDataRequestedEvent(event.getNodeId()), this);
 	}
 	
 	@Override
