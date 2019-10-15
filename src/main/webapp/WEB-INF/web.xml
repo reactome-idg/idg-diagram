@@ -344,4 +344,25 @@
         <url-pattern>/FIService/*</url-pattern>
     </servlet-mapping>
     
+    <!-- Reactome TCRD proxy -->
+    <servlet>
+    	<servlet-name>TCRDTargetLevelProxy</servlet-name>
+    	<servlet-class>org.reactome.server.utils.proxy.ProxyServlet</servlet-class>
+    	<init-param>
+    		<param-name>proxyHost</param-name>
+    		<param-value>localhost</param-value>
+    	</init-param>
+    	<init-param>
+    		<param-name>proxyPort</param-name>
+    		<param-value>8060</param-value>
+    	</init-param>
+    	<init-param>
+    		<param-name>prefixPath</param-name>
+    		<param-value></param-value>
+    	</init-param>
+    </servlet>
+    <servlet-mapping>
+    	<servlet-name>TCRDTargetLevelProxy</servlet-name>
+    	<url-pattern>/*</url-pattern>
+    </servlet-mapping>
 </web-app>
