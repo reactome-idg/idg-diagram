@@ -324,9 +324,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void onCytoscapeContextSelect(CytoscapeCoreContextEvent event) {
 		hideContextMenus();
-		int x = this.getElement().getAbsoluteLeft()-5;
-		int y = this.getElement().getAbsoluteTop()-5;
-		this.setWidgetPosition(contextPopup, event.getX()-x, event.getY()-y);
+		setPopupLocation(event.getX(), event.getY());
 		contextPopup.getWidget(contextPopup.getWidgetIndex(fILayoutChangerPanel)).setVisible(true);
 		contextPopup.setVisible(true);
 	}
@@ -334,26 +332,31 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void onEdgeContextSelect(EdgeContextSelectEvent event) {
 		hideContextMenus();
-		int x = this.getElement().getAbsoluteLeft()-5;
-		int y = this.getElement().getAbsoluteTop()-5;
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getId()).get("data").isObject();
 		edgeContextPanel.updateContext(fi);
-		this.setWidgetPosition(contextPopup, event.getX()-x, event.getY()-y);
 		contextPopup.getWidget(contextPopup.getWidgetIndex(edgeContextPanel)).setVisible(true);
 		contextPopup.setVisible(true);
+		setPopupLocation(event.getX(), event.getY());
+
 
 	}
 	
 	@Override
 	public void onNodeContextSelect(NodeContextSelectEvent event) {
 		hideContextMenus();
-		int x = this.getElement().getAbsoluteLeft()-5;
-		int y = this.getElement().getAbsoluteTop()-5;
-		
 		nodeContextPanel.updatePanel(event.getName(), event.getId());
-		this.setWidgetPosition(contextPopup, event.getX()-x, event.getY()-y);
+		setPopupLocation(event.getX(), event.getY());
 		contextPopup.getWidget(contextPopup.getWidgetIndex(nodeContextPanel)).setVisible(true);
 		contextPopup.setVisible(true);
+
+	}
+	
+	private void setPopupLocation(int eventX, int eventY) {
+		int x = this.getElement().getAbsoluteLeft()-5;
+		int y = this.getElement().getAbsoluteTop()-5;
+		eventX -=x;
+		eventY -=y;
+		this.setWidgetPosition(contextPopup, eventX, eventY);
 
 	}
 	
