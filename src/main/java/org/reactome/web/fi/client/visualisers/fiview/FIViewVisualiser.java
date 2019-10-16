@@ -334,9 +334,9 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		hideContextMenus();
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getId()).get("data").isObject();
 		edgeContextPanel.updateContext(fi);
+		setPopupLocation(event.getX(), event.getY());
 		contextPopup.getWidget(contextPopup.getWidgetIndex(edgeContextPanel)).setVisible(true);
 		contextPopup.setVisible(true);
-		setPopupLocation(event.getX(), event.getY());
 
 
 	}
