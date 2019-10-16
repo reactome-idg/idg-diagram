@@ -40,7 +40,6 @@ TCRDLoader.Handler{
 		super.cancel();
 	}
 	
-	//TODO: check if in context map before performing loading
 	@Override
 	public void load(String identifier) {
 		if (isFIViewNeeded(identifier)) {
