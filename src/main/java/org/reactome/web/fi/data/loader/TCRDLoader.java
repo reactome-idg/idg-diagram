@@ -27,6 +27,9 @@ public class TCRDLoader implements RequestCallback{
 	}
 	
 	public void loadTargetLevels(String ids) {
+		//cancel in case any request is still processing
+		cancel();
+		
 		String url = BASE_URL + "uniprots";
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
 		requestBuilder.setHeader("Accept", "application/json");
