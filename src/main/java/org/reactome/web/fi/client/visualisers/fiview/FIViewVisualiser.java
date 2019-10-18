@@ -256,7 +256,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		infoPopup.setHtmlLabel(html);
 		infoPopup.show();		
 		
-		eventBus.fireEventFromSource(new TargetLevelDataRequestedEvent(event.getNodeId()), this);
 	}
 	
 	@Override
