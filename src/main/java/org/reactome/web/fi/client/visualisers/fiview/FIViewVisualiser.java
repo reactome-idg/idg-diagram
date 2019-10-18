@@ -232,7 +232,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			cy.clearCytoscapeGraph();
 			cy.addCytoscapeNodes(((FIViewContent)content).getProteinArray());
 			cy.addCytoscapeEdge(((FIViewContent)content).getFIArray());
-			cy.resetStyle();
 			cy.setCytoscapeLayout("cose");
 		}
 	}
@@ -465,17 +464,14 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public boolean resetSelection(boolean notify) {
-		boolean rtn = false;
-		if(context==null) return rtn;
+		if(context==null) return false;
 		
-		cy.resetStyle();
 		cy.removeClass("highlighted");
 		
 		if(notify) {
 			eventBus.fireEventFromSource(new GraphObjectSelectedEvent(null, false), this);
 		}
-		rtn  = true;
-		return rtn;
+		return true;
 	}
 
 	@Override
