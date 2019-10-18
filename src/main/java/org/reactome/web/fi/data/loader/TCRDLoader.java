@@ -1,5 +1,8 @@
 package org.reactome.web.fi.data.loader;
 
+import java.util.Set;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
 
 
@@ -26,22 +29,33 @@ public class TCRDLoader implements RequestCallback{
 		}
 	}
 	
-	public void loadTargetLevels(String ids) {
+	public void load(Set<String> ids) {
+		GWT.log(ids.toString());
 		//cancel in case any request is still processing
 		cancel();
 		
 		String url = BASE_URL + "uniprots";
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
 		requestBuilder.setHeader("Accept", "application/json");
-		requestBuilder.setRequestData(ids);
+		requestBuilder.setRequestData(getPostData(ids));
 		requestBuilder.setCallback(this);
 		try {
-			this.request = requestBuilder.sendRequest(ids, this);
+			this.request = requestBuilder.send();
 		} catch(RequestException e) {
 			this.handler.onTargetLevelLoadedError(e);
 		}
 	}
 	
+	/**
+	 * iterates over a set of uniprot identifiers and adds them to a string delineated by ','.
+	 * @param ids
+	 * @return
+	 */
+	private String getPostData(Set<String> ids) {
+		// TODO iterate over set and add each string to a string builder delineated by ','
+		return null;
+	}
+
 	@Override
 	public void onResponseReceived(Request request, Response response) {
 		switch(response.getStatusCode()) {

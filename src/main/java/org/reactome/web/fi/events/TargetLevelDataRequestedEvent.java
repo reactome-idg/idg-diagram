@@ -1,5 +1,7 @@
 package org.reactome.web.fi.events;
 
+import java.util.Set;
+
 import org.reactome.web.fi.handlers.TargetLevelDataRequestedHandler;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -7,10 +9,10 @@ import com.google.gwt.event.shared.GwtEvent;
 public class TargetLevelDataRequestedEvent extends GwtEvent<TargetLevelDataRequestedHandler> {
 	public static Type<TargetLevelDataRequestedHandler> TYPE = new Type<>();
 	
-	private String ids;
+	private Set<String> ids;
 	
-	public TargetLevelDataRequestedEvent(String ids) {
-		this.ids = ids;
+	public TargetLevelDataRequestedEvent(Set<String> set) {
+		this.ids = set;
 	}
 	
 	@Override
@@ -24,7 +26,7 @@ public class TargetLevelDataRequestedEvent extends GwtEvent<TargetLevelDataReque
 	}
 	
 	
-	public String getIds() {
+	public Set<String> getIds() {
 		return ids;
 	}
 

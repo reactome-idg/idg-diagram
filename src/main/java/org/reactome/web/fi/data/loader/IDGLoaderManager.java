@@ -1,5 +1,7 @@
 package org.reactome.web.fi.data.loader;
 
+import java.util.Set;
+
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
 import org.reactome.web.diagram.data.loader.LoaderManager;
@@ -56,10 +58,10 @@ TCRDLoader.Handler{
 	/**
 	 * Directs loading of TCRD target level data for an input of ids.
 	 * Multiple ids should be passed in as a String separated by commas.
-	 * @param ids
+	 * @param set
 	 */
-	public void loadTCRDTargetLevel(String ids) {
-		tcrdLoader.loadTargetLevels(ids);
+	public void loadTCRDTargetLevel(Set<String> set) {
+		tcrdLoader.load(set);
 	}
 	
 	private boolean isFIViewNeeded(String identifier) {
