@@ -31,9 +31,9 @@ public class FILayoutChangerPanel extends AbsolutePanel implements ChangeHandler
 		
 		layoutSelector = new ListBox();
 		
-		main.add(getLayoutsWidget("Cytoscape Layout:", layoutSelector, FILayoutType.getLayouts()));
+		main.add(getLayoutsWidget("Choose Layout:", layoutSelector, FILayoutType.getLayouts()));
 		
-		setSelection(layoutSelector, "cose");
+		setSelection(layoutSelector, "force directed");
 		initHandlers();
 		
 		this.add(main);

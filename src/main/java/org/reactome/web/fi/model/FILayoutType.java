@@ -8,15 +8,15 @@ public enum FILayoutType {
 	RANDOM,
 	GRID,
 	CIRCLE,
-	COSE;
+	FORCE_DIRECTED;
 	
 	public static FILayoutType getType(String type) {
-		if(type==null) return COSE;
+		if(type==null) return FORCE_DIRECTED;
 		for(FILayoutType t: values()) {
 			if(t.toString().toLowerCase().equals(type.toLowerCase()))
 				return t;
 		}
-		return COSE;
+		return FORCE_DIRECTED;
 	}
 	
 	public static List<String> getLayouts(){

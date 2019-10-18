@@ -1,9 +1,18 @@
 package org.reactome.web.fi.client;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.client.visualisers.Visualiser;
+import org.reactome.web.diagram.client.visualisers.diagram.DiagramVisualiser;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.content.Content;
+import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSequence;
+import org.reactome.web.diagram.data.graph.model.GraphObject;
+import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
+import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
@@ -104,7 +113,33 @@ public class IdgViewerContainer extends ViewerContainer {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				eventBus.fireEventFromSource(new TargetLevelDataRequestedEvent(context.getContent().getIdentifierMap().keySet()), this);
+				if(activeVisualiser instanceof FIViewVisualiser)
+					eventBus.fireEventFromSource(new TargetLevelDataRequestedEvent(context.getContent().getIdentifierMap().keySet()), this);
+				
+				//in case of DiagramVisualiser, get each physical entity identifier and add to set
+				else if(activeVisualiser instanceof DiagramVisualiser) {
+					Set<String> identifiers = new HashSet<>();
+					
+					//iterate over all diagram objects in a diagram
+					for(DiagramObject  diagramObject: context.getContent().getDiagramObjects()) {
+						Set<GraphPhysicalEntity> participants = new HashSet<>();
+						
+						//Get graph object of each diagramObject, check if its a GraphPhysicalEntity,
+						//and get each participant if so. Then add identifier of each participant
+						//to a set of identifiers.
+						GraphObject graphObject = diagramObject.getGraphObject();
+						if(graphObject instanceof GraphPhysicalEntity) {
+							GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
+							participants = pe.getParticipants();
+						}
+						for(GraphPhysicalEntity participant: participants) {
+							identifiers.add(participant.getIdentifier());
+						}
+					}
+					GWT.log(identifiers.size() + "");
+					GWT.log(identifiers.toString());
+					///call TargetLevelDataRequestedEvent and pass in identifiers
+				}
 			}
 		});
 	}

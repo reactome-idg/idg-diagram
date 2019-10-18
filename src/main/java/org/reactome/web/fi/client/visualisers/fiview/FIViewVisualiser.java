@@ -61,6 +61,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.HTML;
@@ -97,7 +98,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	private boolean initialised = false;
 	private boolean cytoscapeInitialised;
-	private boolean edgeClickedFlag;
+	private boolean cytoscapeClickedFlag;
 	private boolean edgeHoveredFlag;
     private int viewportWidth = 0;
     private int viewportHeight = 0;
@@ -125,7 +126,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		initHandlers();
 		
 		//default this value to false
-		edgeClickedFlag = false;
+		cytoscapeClickedFlag = false;
 		edgeHoveredFlag = false;
 	}
 	
@@ -153,16 +154,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			
 			//set up popup for info and set location
 			infoPopup = new FIViewInfoPopup();
-			infoPopup.getElement().setId("FIVIZ-info-popup");
-			infoPopup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
-				
-				@Override
-				public void setPosition(int offsetWidth, int offsetHeight) {
-					int left = (305 - offsetWidth);
-					int top = (110 - getOffsetHeight() - offsetHeight);
-					infoPopup.setPopupPosition(left, top);
-				}
-			});
+			infoPopup.setStyleName(FIVIEWPORTRESOURCES.getCSS().popup());
 			infoPopup.hide();
 		}
 	}
@@ -173,6 +165,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		eventBus.addHandler(EdgeHoveredEvent.TYPE, this);
 		eventBus.addHandler(EdgeMouseOutEvent.TYPE, this);
 		eventBus.addHandler(NodeClickedEvent.TYPE, this);
+		eventBus.addHandler(NodeHoveredEvent.TYPE, this);
 		eventBus.addHandler(ExpressionColumnChangedEvent.TYPE, this);
 		eventBus.addHandler(CytoscapeLayoutChangedEvent.TYPE, this);
 		eventBus.addHandler(CytoscapeCoreContextEvent.TYPE, this);
@@ -246,30 +239,23 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public void onNodeClicked(NodeClickedEvent event) {
-				
-		infoPopup.hide();
-		HTML html = new HTML(new SafeHtmlBuilder()
-				.appendEscapedLines("Protein Short Name: " + event.getName() +
-									"\n" +
-									"Protein Accession: " + event.getNodeId())
-				.toSafeHtml());
-		infoPopup.setHtmlLabel(html);
-		infoPopup.show();		
-		
+		infoPopup.hide();		
 	}
 	
 	@Override
 	public void onNodeHovered(NodeHoveredEvent event) {
 		infoPopup.hide();
 		HTML html = new HTML(new SafeHtmlBuilder()
-				.appendEscapedLines("Node Accession number: " + event.getNodeId())
+				.appendEscapedLines(event.getName() + " (" + event.getNodeId() + ")")
 				.toSafeHtml());
+		html.setStyleName(FIVIEWPORTRESOURCES.getCSS().label());
 		infoPopup.setHtmlLabel(html);
+		infoPopup.setPopupPosition(event.getX()-this.getElement().getAbsoluteLeft(), event.getY()-this.getElement().getAbsoluteTop());
 		infoPopup.show();
 	}
 
 	@Override
-	public void onEdgeMouseOut(EdgeMouseOutEvent event) {/* Nothing Hewre */}
+	public void onEdgeMouseOut(EdgeMouseOutEvent event) {/* Nothing Here */}
 
 	@Override
 	public void onEdgeHovered(EdgeHoveredEvent event) {
@@ -277,12 +263,13 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getEdgeId()).get("data").isObject();
 		
 		HTML html = new HTML(new SafeHtmlBuilder()
-				.appendEscapedLines("Functional interaction: " + 
-									 fi.get("source") + " " +
-									 getAnnotationDirection(fi) + " " +
+				.appendEscapedLines( 
+									 fi.get("source") + " - " +
 									 fi.get("target"))
 				.toSafeHtml());
+		html.setStyleName(FIVIEWPORTRESOURCES.getCSS().label());
 		infoPopup.setHtmlLabel(html);
+		infoPopup.setPopupPosition(event.getX()-this.getElement().getAbsoluteLeft(), event.getY()-this.getElement().getAbsoluteTop());
 		infoPopup.show();
 		
 		//set edgeHoveredFlag to true
@@ -300,17 +287,9 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		infoPopup.hide();
 		
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getEdgeId()).get("data").isObject();
-				
-		HTML html = new HTML(new SafeHtmlBuilder()
-			.appendEscapedLines("Protein One Name: " + fi.get("source") + "\n"
-								+ "Interaction Direction: " + getAnnotationDirection(fi) + "\n"
-								+ "Protein Two Name: " + fi.get("target"))
-			.toSafeHtml());
-		infoPopup.setHtmlLabel(html);
-		infoPopup.show();
 		
-		//set edgeClickedFlag to true
-		edgeClickedFlag = true;
+		//set cytoscapeClickedFlag to true
+		cytoscapeClickedFlag = true;
 		
 		//Fire GraphObjectSelectedEvent
 		Long dbId= Long.parseLong(sortGraphObject(fi.get("reactomeSources")));
@@ -361,8 +340,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	@Override
 	public void onFireGraphObjectSelected(FireGraphObjectSelectedEvent event) {
-		//set edgeClickedFlag to true
-		edgeClickedFlag = true;
+		//set cytoscapeClickedFlag to true
+		cytoscapeClickedFlag = true;
 		
 		GraphObject graphObject = context.getContent().getDatabaseObject(event.getReactomeId());
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false), this);
@@ -370,6 +349,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	@Override
 	public void onCytoscapeCoreSelected(CytoscapeCoreSelectedEvent event) {
+		cytoscapeClickedFlag = true;
+		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(null,false), this);
 		hideContextMenus();
 	}
 
@@ -505,8 +486,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			return false;
 
 		//check if call initiated with onEdgeClicked. if so, return
-		if(edgeClickedFlag) {
-			edgeClickedFlag = false;
+		if(cytoscapeClickedFlag) {
+			cytoscapeClickedFlag = false;
 			return true;
 		}
 		
@@ -678,6 +659,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
     public static FIViewportResources FIVIEWPORTRESOURCES;
     static {
         FIVIEWPORTRESOURCES = GWT.create(FIViewportResources.class);
+        FIVIEWPORTRESOURCES.getCSS().ensureInjected();
     }
 
     /**
@@ -692,5 +674,17 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
         
         @Source("org/reactome/web/fi/client/visualisers/fiview/cytoscape.umd.js")
         public TextResource cytoscapeLibrary();
+       
+        @Source(ResourceCSS.CSS)
+        ResourceCSS getCSS();
+    }
+    
+    @CssResource.ImportedWithPrefix("fIViewVisualiser")
+    public interface ResourceCSS extends CssResource{
+    	String CSS = "org/reactome/web/fi/client/visualisers/fiview/FIVisualiser.css";
+    	
+    	String popup();
+    	
+    	String label();
     }
 }
