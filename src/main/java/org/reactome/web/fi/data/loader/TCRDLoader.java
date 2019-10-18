@@ -31,7 +31,6 @@ public class TCRDLoader implements RequestCallback{
 	
 	public void load(Set<String> ids) {
 		GWT.log(ids.toString());
-		//cancel in case any request is still processing
 		cancel();
 		
 		String url = BASE_URL + "uniprots";
@@ -52,7 +51,13 @@ public class TCRDLoader implements RequestCallback{
 	 * @return
 	 */
 	private String getPostData(Set<String> ids) {
-		// TODO iterate over set and add each string to a string builder delineated by ','
+		StringBuilder post = new StringBuilder();
+		ids.stream().forEach(S -> post.append(S).append(","));
+		if(post.length()>0) {
+			post.delete(post.length()-1, post.length());
+			GWT.log(post.toString());
+		}
+		
 		return null;
 	}
 
