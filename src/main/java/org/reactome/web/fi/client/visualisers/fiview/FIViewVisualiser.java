@@ -249,12 +249,14 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 				.toSafeHtml());
 		html.setStyleName(FIVIEWPORTRESOURCES.getCSS().label());
 		infoPopup.setHtmlLabel(html);
-		infoPopup.setPopupPosition(event.getX()-this.getElement().getAbsoluteLeft(), event.getY()-this.getElement().getAbsoluteTop());
+		infoPopup.setPopupPosition(event.getX(), event.getY());
 		infoPopup.show();
 	}
 
 	@Override
-	public void onEdgeMouseOut(EdgeMouseOutEvent event) {/* Nothing Here */}
+	public void onEdgeMouseOut(EdgeMouseOutEvent event) {
+		infoPopup.hide();
+	}
 
 	@Override
 	public void onEdgeHovered(EdgeHoveredEvent event) {
@@ -268,7 +270,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 				.toSafeHtml());
 		html.setStyleName(FIVIEWPORTRESOURCES.getCSS().label());
 		infoPopup.setHtmlLabel(html);
-		infoPopup.setPopupPosition(event.getX()-this.getElement().getAbsoluteLeft(), event.getY()-this.getElement().getAbsoluteTop());
+		infoPopup.setPopupPosition(event.getX(), event.getY());
 		infoPopup.show();
 		
 		//set edgeHoveredFlag to true
