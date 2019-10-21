@@ -13,6 +13,8 @@ import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSeque
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.diagram.events.RenderOtherDataEvent;
+import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
@@ -35,7 +37,7 @@ import com.google.gwt.user.client.ui.Button;
  * @author brunsont
  *
  */
-public class IdgViewerContainer extends ViewerContainer {
+public class IdgViewerContainer extends ViewerContainer implements RenderOtherDataHandler{
 
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
@@ -45,6 +47,7 @@ public class IdgViewerContainer extends ViewerContainer {
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
 		
+		eventBus.addHandler(RenderOtherDataEvent.TYPE, this);
 	}
 
 	@Override
@@ -63,11 +66,8 @@ public class IdgViewerContainer extends ViewerContainer {
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
 		super.leftTopLauncher.getMainControlPanel().add(targetLevelTest);
 		
-		
 		bind();
 	}
-	
-	
 	
 	@Override
 	protected void addExternalVisualisers() {
@@ -113,12 +113,13 @@ public class IdgViewerContainer extends ViewerContainer {
 
 			@Override
 			public void onClick(ClickEvent event) {
+				Set<String> identifiers = new HashSet<>();
+
 				if(activeVisualiser instanceof FIViewVisualiser)
-					eventBus.fireEventFromSource(new TargetLevelDataRequestedEvent(context.getContent().getIdentifierMap().keySet()), this);
+					identifiers = context.getContent().getIdentifierMap().keySet();
 				
 				//in case of DiagramVisualiser, get each physical entity identifier and add to set
 				else if(activeVisualiser instanceof DiagramVisualiser) {
-					Set<String> identifiers = new HashSet<>();
 					
 					//iterate over all diagram objects in a diagram
 					for(DiagramObject  diagramObject: context.getContent().getDiagramObjects()) {
@@ -136,10 +137,9 @@ public class IdgViewerContainer extends ViewerContainer {
 							identifiers.add(participant.getIdentifier());
 						}
 					}
-					GWT.log(identifiers.size() + "");
-					GWT.log(identifiers.toString());
-					//call TargetLevelDataRequestedEvent and pass in identifiers
 				}
+				eventBus.fireEventFromSource(new TargetLevelDataRequestedEvent(identifiers), this);
+
 			}
 		});
 	}
@@ -168,6 +168,11 @@ public class IdgViewerContainer extends ViewerContainer {
 		super.leftTopLauncher.getMainControlPanel().getWidget(
 				super.leftTopLauncher.getMainControlPanel()
 				.getWidgetIndex(diagramButton)).setVisible(false);
+	}
+	
+	@Override
+	public void onRenderOtherData(RenderOtherDataEvent event) {
+		//TODO: render other data from TCRD loader
 	}
 	
 	@Override
@@ -200,9 +205,6 @@ public class IdgViewerContainer extends ViewerContainer {
         
         @Source("images/EHLDIcon.png")
         ImageResource diagramIcon();
-        
-        
-
     }
 
     /**

@@ -2,14 +2,16 @@ package org.reactome.web.fi.data.loader;
 
 import java.util.Set;
 
-import com.google.gwt.core.client.GWT;
+import org.reactome.web.fi.data.tcrd.tagetlevel.RawTargetLevelEntities;
+import org.reactome.web.fi.data.tcrd.tagetlevel.TargetLevelDataFactory;
+
 import com.google.gwt.http.client.*;
 
 
 public class TCRDLoader implements RequestCallback{
 
 	public interface Handler{
-		void onTargetLevelLoaded(String json);
+		void onTargetLevelLoaded(RawTargetLevelEntities entities);
 		void onTargetLevelLoadedError(Throwable exception);
 	}
 	
@@ -30,7 +32,6 @@ public class TCRDLoader implements RequestCallback{
 	}
 	
 	public void load(Set<String> ids) {
-		GWT.log(ids.toString());
 		cancel();
 		
 		String url = BASE_URL + "uniprots";
@@ -55,7 +56,7 @@ public class TCRDLoader implements RequestCallback{
 		ids.stream().forEach(S -> post.append(S).append(","));
 		if(post.length()>0) {
 			post.delete(post.length()-1, post.length());
-			GWT.log(post.toString());
+			return post.toString();
 		}
 		
 		return null;
@@ -65,7 +66,14 @@ public class TCRDLoader implements RequestCallback{
 	public void onResponseReceived(Request request, Response response) {
 		switch(response.getStatusCode()) {
 		case Response.SC_OK:
-			this.handler.onTargetLevelLoaded(response.getText());
+			RawTargetLevelEntities entities;
+			try {
+				entities = TargetLevelDataFactory.getTargetLevelEntity(RawTargetLevelEntities.class, response.getText());
+			}catch(Exception e) {
+				this.handler.onTargetLevelLoadedError(e);
+				return;
+			}
+			this.handler.onTargetLevelLoaded(entities);
 			break;
 		default:
 			this.handler.onTargetLevelLoadedError(new Exception(response.getStatusText()));

@@ -9,6 +9,7 @@ import org.reactome.web.diagram.data.loader.SVGLoader;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
+import org.reactome.web.fi.data.tcrd.tagetlevel.RawTargetLevelEntities;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -99,13 +100,14 @@ TCRDLoader.Handler{
 	}
 	
 	@Override 
-	public void onTargetLevelLoaded(String json) {
-		GWT.log(json);
+	public void onTargetLevelLoaded(RawTargetLevelEntities entities) {
+		//TODO: Make and fire TargetLevelDataLoadedEvent
+		GWT.log(entities.toString());
 	}
 	
 	@Override
 	public void onTargetLevelLoadedError(Throwable exception) {
-		GWT.log("Error loading FIView interaction data");
+		GWT.log("onTargetLevelLoadedError: " + exception.getMessage());
 	}
 
 }
