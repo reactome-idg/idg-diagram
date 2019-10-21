@@ -1,25 +1,33 @@
 package org.reactome.web.fi.client;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.reactome.web.analysis.client.model.AnalysisType;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.client.visualisers.diagram.DiagramVisualiser;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.content.Content;
-import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSequence;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
+import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
+import org.reactome.web.diagram.util.AdvancedContext2d;
+import org.reactome.web.diagram.util.MapSet;
+import org.reactome.web.diagram.renderers.helper.ItemsDistribution;
+import org.reactome.web.diagram.renderers.helper.RenderType;
+import org.reactome.web.diagram.renderers.layout.Renderer;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
+import org.reactome.web.fi.data.tcrd.tagetlevel.RawTargetLevelEntities;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
+import org.reactome.web.fi.events.TargetLevelDataLoadedEvent;
 import org.reactome.web.fi.events.TargetLevelDataRequestedEvent;
+import org.reactome.web.fi.handlers.TargetLevelDataLoadedHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -28,8 +36,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 
 /**
@@ -37,17 +43,21 @@ import com.google.gwt.user.client.ui.Button;
  * @author brunsont
  *
  */
-public class IdgViewerContainer extends ViewerContainer implements RenderOtherDataHandler{
+public class IdgViewerContainer extends ViewerContainer implements RenderOtherDataHandler,
+TargetLevelDataLoadedHandler{
 
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
 	private FIViewVisualiser fIViewVisualiser;
 	private Button targetLevelTest;
 	
+	private RawTargetLevelEntities targetLevelEntities;
+	
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
 		
 		eventBus.addHandler(RenderOtherDataEvent.TYPE, this);
+		eventBus.addHandler(TargetLevelDataLoadedEvent.TYPE, this);
 	}
 
 	@Override
@@ -172,7 +182,36 @@ public class IdgViewerContainer extends ViewerContainer implements RenderOtherDa
 	
 	@Override
 	public void onRenderOtherData(RenderOtherDataEvent event) {
-		//TODO: render other data from TCRD loader
+		if(this.targetLevelEntities == null)
+			return;
+		
+		Renderer renderer = event.getRendererManager().getRenderer("Protein");
+        Double factor = context.getDiagramStatus().getFactor();
+        Coordinate offset = context.getDiagramStatus().getOffset();
+		AdvancedContext2d ctx = event.getCtx();
+        ctx.setFillStyle("#000000");
+		
+		//check analysis status for items distribution
+        AnalysisType analysisType = AnalysisType.NONE;
+        if(context.getAnalysisStatus() != null)
+        	analysisType = AnalysisType.getType(context.getAnalysisStatus().getAnalysisSummary().getType());
+
+        //get proteins with render type of normal
+        ItemsDistribution itemsDistribution = new ItemsDistribution(event.getItems(), analysisType);
+        MapSet<RenderType, DiagramObject> target = itemsDistribution.getItems("Protein");
+        Set<DiagramObject> normal = target.getElements(RenderType.NORMAL);
+        
+        for(DiagramObject item : normal) {
+        	renderer.draw(ctx, item, factor, offset);
+        }
+		
+	}
+	
+	@Override
+	public void onTargetLevelDataLoaded(TargetLevelDataLoadedEvent event) {
+		this.targetLevelEntities = event.getEntities();
+		if(activeVisualiser instanceof DiagramVisualiser) 
+			activeVisualiser.loadAnalysis();
 	}
 	
 	@Override
