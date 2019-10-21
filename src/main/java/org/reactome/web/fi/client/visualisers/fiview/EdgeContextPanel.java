@@ -14,6 +14,8 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -29,7 +31,7 @@ import com.google.gwt.json.client.JSONValue;
  * @author brunsont
  *
  */
-public class EdgeContextPanel extends AbsolutePanel implements ChangeHandler{
+public class EdgeContextPanel extends Composite implements ChangeHandler{
 	
 	private EventBus eventBus;
 	private ListBox sourcesOptions;
@@ -37,29 +39,21 @@ public class EdgeContextPanel extends AbsolutePanel implements ChangeHandler{
 	
 	public EdgeContextPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
-				
-	}
-	
-	public void updateContext(JSONObject fi) {
-		sourcesOptions = null;
 		main = new FlowPanel();
 		main.setStyleName(EDGECONTEXTRESOURCES.getCSS().edgePopup());
 		
-		if(this.getWidgetCount()>0)
-			this.remove(0);
+		initWidget(main);
+				
+	}
 
-		HTML html = new HTML(new SafeHtmlBuilder()
-			.appendEscapedLines("Protein One Name: " + fi.get("source") + "\n"
-								+ "Interaction Direction: " + getAnnotationDirection(fi) + "\n"
-								+ "Protein Two Name: " + fi.get("target"))
-			.toSafeHtml());
+	
+	public void updateContext(JSONObject fi) {
+		for(int i=0; i<main.getWidgetCount(); i++)
+			main.remove(i);
 				
 		List<String> sourcesList = setSourcesList(fi.get("reactomeId"));		
 		
-		main.add(html);
 		main.add(setOptions(sourcesList));
-		this.add(main);
-				
 	}
 	
 	private FlowPanel setOptions(List<String> sourcesList) {

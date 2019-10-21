@@ -6,23 +6,26 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
 
-public class NodeContextPanel extends AbsolutePanel {
+public class NodeContextPanel extends Composite {
 	
 	private FlowPanel main;
 	private final String URL = "https://www.uniprot.org/uniprot/";
 	
-	public NodeContextPanel() {}
-
-	public void updatePanel(String name, String id) {
-		if(this.getWidgetCount()>0)
-			this.remove(0);
-		
+	public NodeContextPanel() {
 		main = new FlowPanel();
 		main.setStyleName(NODECONTEXTRESOURCES.getCSS().nodePopup());
+		initWidget(main);
+	}
+
+	public void updatePanel(String name, String id) {
+		if(main.getWidgetCount()>0)
+			main.remove(0);
+
 		
 		String shortName = name;
 		String accession = id;
@@ -34,10 +37,12 @@ public class NodeContextPanel extends AbsolutePanel {
 				.appendEscapedLines("Uniprote Identifier: " + accession).toSafeHtml(),
 				link, "_blank");
 		linkAnchor.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
-		main.add(lbl);
-		main.add(linkAnchor);
 		
-		this.add(main);
+		FlowPanel panel = new FlowPanel();
+		panel.add(lbl);
+		panel.add(linkAnchor);
+		main.add(panel);
+		
 	}
 	
 	public static NodeContextResources NODECONTEXTRESOURCES;

@@ -67,6 +67,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 
 
@@ -103,7 +104,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
     private int viewportWidth = 0;
     private int viewportHeight = 0;
 	private FIViewInfoPopup infoPopup;
-	private AbsolutePanel contextPopup;
 	
 	SimplePanel cyView;
     
@@ -117,10 +117,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		nodeContextPanel = new NodeContextPanel();
 		cyView =  new SimplePanel();
 		
-		contextPopup = new AbsolutePanel();
-		contextPopup.add(fILayoutChangerPanel);
-		contextPopup.add(edgeContextPanel);
-		contextPopup.add(nodeContextPanel);
 		hideContextMenus();
 		
 		initHandlers();
@@ -145,8 +141,9 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			this.add(cyView);
 			this.cyView.setSize(viewportWidth+"px", viewportHeight+"px");
 
-			
-			this.add(contextPopup);
+			this.add(fILayoutChangerPanel);
+			this.add(edgeContextPanel);
+			this.add(nodeContextPanel);
 			
 			setSize(viewportWidth, viewportHeight);
 			
@@ -249,7 +246,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 				.toSafeHtml());
 		html.setStyleName(FIVIEWPORTRESOURCES.getCSS().label());
 		infoPopup.setHtmlLabel(html);
-		infoPopup.setPopupPosition(event.getX(), event.getY());
+		infoPopup.setPopupPosition(event.getX()+10, event.getY()+10);
 		infoPopup.show();
 	}
 
@@ -270,7 +267,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 				.toSafeHtml());
 		html.setStyleName(FIVIEWPORTRESOURCES.getCSS().label());
 		infoPopup.setHtmlLabel(html);
-		infoPopup.setPopupPosition(event.getX(), event.getY());
+		infoPopup.setPopupPosition(event.getX()+10, event.getY()+10);
 		infoPopup.show();
 		
 		//set edgeHoveredFlag to true
@@ -303,40 +300,40 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void onCytoscapeContextSelect(CytoscapeCoreContextEvent event) {
 		hideContextMenus();
-		setPopupLocation(event.getX(), event.getY());
-		contextPopup.getWidget(contextPopup.getWidgetIndex(fILayoutChangerPanel)).setVisible(true);
-		contextPopup.setVisible(true);
+		setPopupLocation(event.getX(), event.getY(), fILayoutChangerPanel);
+		fILayoutChangerPanel.setVisible(true);
 	}
-	
+
 	@Override
 	public void onEdgeContextSelect(EdgeContextSelectEvent event) {
 		hideContextMenus();
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getId()).get("data").isObject();
 		edgeContextPanel.updateContext(fi);
-		setPopupLocation(event.getX(), event.getY());
-		contextPopup.getWidget(contextPopup.getWidgetIndex(edgeContextPanel)).setVisible(true);
-		contextPopup.setVisible(true);
-
-
+		edgeContextPanel.setVisible(true);
+		setPopupLocation(event.getX(), event.getY(), edgeContextPanel.asWidget());
 	}
 	
 	@Override
 	public void onNodeContextSelect(NodeContextSelectEvent event) {
 		hideContextMenus();
 		nodeContextPanel.updatePanel(event.getName(), event.getId());
-		setPopupLocation(event.getX(), event.getY());
-		contextPopup.getWidget(contextPopup.getWidgetIndex(nodeContextPanel)).setVisible(true);
-		contextPopup.setVisible(true);
+		nodeContextPanel.setVisible(true);
+		setPopupLocation(event.getX(), event.getY(), nodeContextPanel);
+
 
 	}
 	
-	private void setPopupLocation(int eventX, int eventY) {
+	private void setPopupLocation(int eventX, int eventY, Widget panel) {
 		int x = this.getElement().getAbsoluteLeft()-5;
 		int y = this.getElement().getAbsoluteTop()-5;
 		eventX -=x;
 		eventY -=y;
-		this.setWidgetPosition(contextPopup, eventX, eventY);
-
+		GWT.log(panel.getOffsetWidth() + " " + panel.getOffsetHeight());
+		if(this.getOffsetHeight() + this.getElement().getAbsoluteTop() -35 < eventY + panel.getOffsetHeight())
+			eventY = eventY - panel.getOffsetHeight();
+		if(this.getOffsetWidth() + this.getElement().getAbsoluteLeft() < eventX + panel.getOffsetWidth())
+			eventX = eventX - panel.getOffsetWidth()-10;
+		this.setWidgetPosition(panel, eventX, eventY);
 	}
 	
 	@Override
@@ -356,10 +353,9 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	}
 
 	private void hideContextMenus() {
-		for(int i=0; i<contextPopup.getWidgetCount(); i++) {
-			contextPopup.getWidget(i).setVisible(false);
-		}
-		contextPopup.setVisible(false);
+		fILayoutChangerPanel.setVisible(false);
+		edgeContextPanel.setVisible(false);
+		nodeContextPanel.setVisible(false);
 	}
 
 	protected String getAnnotationDirection(JSONObject fi) {

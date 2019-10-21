@@ -138,7 +138,7 @@ public class IdgViewerContainer extends ViewerContainer {
 					}
 					GWT.log(identifiers.size() + "");
 					GWT.log(identifiers.toString());
-					///call TargetLevelDataRequestedEvent and pass in identifiers
+					//call TargetLevelDataRequestedEvent and pass in identifiers
 				}
 			}
 		});

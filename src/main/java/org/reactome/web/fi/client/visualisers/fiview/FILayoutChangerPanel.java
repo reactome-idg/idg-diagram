@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class FILayoutChangerPanel extends AbsolutePanel implements ChangeHandler {
+public class FILayoutChangerPanel extends DialogBox implements ChangeHandler {
 
 	private EventBus eventBus;
 	
