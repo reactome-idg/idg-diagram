@@ -32,7 +32,7 @@ public class TargetLevelDataRequestedEvent extends GwtEvent<TargetLevelDataReque
 
 	@Override
 	public String toString() {
-		return "TCRD Target Level data requested for ids: " + getIds();
+		return "TCRD Target Level data requested.";
 	}
 
 }
