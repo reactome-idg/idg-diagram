@@ -3,7 +3,7 @@ package org.reactome.web.fi.data.loader;
 import java.util.Set;
 
 import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
-import org.reactome.web.fi.data.overlay.OverlayResource;
+import org.reactome.web.fi.data.overlay.OverlayType;
 import org.reactome.web.fi.data.overlay.RawOverlayEntities;
 
 import com.google.gwt.http.client.*;
@@ -20,7 +20,7 @@ public class TCRDLoader implements RequestCallback{
 	
 	private Handler handler;
 	private Request request;
-	private OverlayResource resource;
+	private OverlayType resource;
 	
 	public TCRDLoader(Handler handler){
 		this.handler = handler;
@@ -32,7 +32,7 @@ public class TCRDLoader implements RequestCallback{
 		}
 	}
 	
-	public void load(Set<String> ids, OverlayResource resource) {
+	public void load(Set<String> ids, OverlayType resource) {
 		cancel();
 		
 		this.resource = resource;
