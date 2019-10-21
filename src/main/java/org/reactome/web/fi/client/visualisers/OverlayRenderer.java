@@ -6,6 +6,7 @@ import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.renderers.layout.RendererManager;
 import org.reactome.web.diagram.util.AdvancedContext2d;
+import org.reactome.web.fi.data.overlay.RawOverlayEntities;
 
 /**
  * 
@@ -13,5 +14,9 @@ import org.reactome.web.diagram.util.AdvancedContext2d;
  *
  */
 public interface OverlayRenderer {
-	public void doRender(Collection<DiagramObject> items, AdvancedContext2d ctx, Context context, RendererManager rendererManager);
+	public void doRender(Collection<DiagramObject> items, 
+						 AdvancedContext2d ctx, 
+						 Context context, 
+						 RendererManager rendererManager,
+						 Collection<RawOverlayEntities> entities);
 }
