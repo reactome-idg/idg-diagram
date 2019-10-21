@@ -105,53 +105,40 @@ OverlayDataLoadedHandler{
 	}
 	
 	private void bind() {
-		fiviewButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cytoscapeButtonPressed();
+		fiviewButton.addClickHandler(e -> cytoscapeButtonPressed());
+		diagramButton.addClickHandler(e -> cytoscapeButtonPressed());
+		targetLevelTest.addClickHandler(e -> requestOverlayData());
+	}
+	
+	private void requestOverlayData() {
+		Set<String> identifiers = null;
+
+		if(activeVisualiser instanceof FIViewVisualiser)
+			identifiers = context.getContent().getIdentifierMap().keySet();
+		
+		//in case of DiagramVisualiser, get each physical entity identifier and add to set
+		else if(activeVisualiser instanceof DiagramVisualiser) {
+			
+			//iterate over all diagram objects in a diagram
+			for(DiagramObject  diagramObject: context.getContent().getDiagramObjects()) {
+				Set<GraphPhysicalEntity> participants = null;
 				
-			}			
-		});
-		diagramButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				cytoscapeButtonPressed();
-			}
-		});
-		targetLevelTest.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				Set<String> identifiers = new HashSet<>();
-
-				if(activeVisualiser instanceof FIViewVisualiser)
-					identifiers = context.getContent().getIdentifierMap().keySet();
-				
-				//in case of DiagramVisualiser, get each physical entity identifier and add to set
-				else if(activeVisualiser instanceof DiagramVisualiser) {
-					
-					//iterate over all diagram objects in a diagram
-					for(DiagramObject  diagramObject: context.getContent().getDiagramObjects()) {
-						Set<GraphPhysicalEntity> participants = new HashSet<>();
-						
-						//Get graph object of each diagramObject, check if its a GraphPhysicalEntity,
-						//and get each participant if so. Then add identifier of each participant
-						//to a set of identifiers.
-						GraphObject graphObject = diagramObject.getGraphObject();
-						if(graphObject instanceof GraphPhysicalEntity) {
-							GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
-							participants = pe.getParticipants();
-						}
-						for(GraphPhysicalEntity participant: participants) {
-							identifiers.add(participant.getIdentifier());
-						}
+				//Get graph object of each diagramObject, check if its a GraphPhysicalEntity,
+				//and get each participant if so. Then add identifier of each participant
+				//to a set of identifiers.
+				GraphObject graphObject = diagramObject.getGraphObject();
+				if(graphObject instanceof GraphPhysicalEntity) {
+					GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
+					participants = pe.getParticipants();
+					if(identifiers==null)
+						identifiers = new HashSet<>();
+					for(GraphPhysicalEntity participant: participants) {
+						identifiers.add(participant.getIdentifier());
 					}
 				}
-				eventBus.fireEventFromSource(new OverlayDataRequestedEvent(identifiers), this);
-
 			}
-		});
+		}
+		eventBus.fireEventFromSource(new OverlayDataRequestedEvent(identifiers), this);
 	}
 	
 	private void cytoscapeButtonPressed() {
