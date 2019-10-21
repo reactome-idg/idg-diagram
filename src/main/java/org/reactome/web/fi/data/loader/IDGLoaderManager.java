@@ -4,6 +4,8 @@ import java.util.Set;
 
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
+import org.reactome.web.fi.data.overlay.OverlayResource;
+import org.reactome.web.fi.data.overlay.OverlayResource.OverlayType;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.data.loader.SVGLoader;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
@@ -62,8 +64,8 @@ TCRDLoader.Handler{
 	 * Multiple ids should be passed in as a String separated by commas.
 	 * @param set
 	 */
-	public void loadTCRDTargetLevel(Set<String> set) {
-		tcrdLoader.load(set);
+	public void loadTCRDTargetLevel(Set<String> set) { 
+		tcrdLoader.load(set, new OverlayResource(OverlayType.PROTEINTARGETLEVEL));
 	}
 	
 	private boolean isFIViewNeeded(String identifier) {

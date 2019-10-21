@@ -13,4 +13,6 @@ public interface RawOverlayEntities {
 	
 	List<RawOverlayEntity> getEntities();
 	
+	
+	void setDataType(String dataType);
 }

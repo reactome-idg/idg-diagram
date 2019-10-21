@@ -3,6 +3,7 @@ package org.reactome.web.fi.data.loader;
 import java.util.Set;
 
 import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
+import org.reactome.web.fi.data.overlay.OverlayResource;
 import org.reactome.web.fi.data.overlay.RawOverlayEntities;
 
 import com.google.gwt.http.client.*;
@@ -19,7 +20,7 @@ public class TCRDLoader implements RequestCallback{
 	
 	private Handler handler;
 	private Request request;
-
+	private OverlayResource resource;
 	
 	public TCRDLoader(Handler handler){
 		this.handler = handler;
@@ -31,8 +32,15 @@ public class TCRDLoader implements RequestCallback{
 		}
 	}
 	
-	public void load(Set<String> ids) {
+	public void load(Set<String> ids, OverlayResource resource) {
 		cancel();
+		
+		this.resource = resource;
+		
+		if(ids == null) {
+			Exception exception = new Exception("Cannot request overlay data for 0 ids.");
+			this.handler.onTargetLevelLoadedError(exception);
+		}
 		
 		String url = BASE_URL + "uniprots";
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
@@ -69,6 +77,7 @@ public class TCRDLoader implements RequestCallback{
 			RawOverlayEntities entities;
 			try {
 				entities = OverlayEntityDataFactory.getTargetLevelEntity(RawOverlayEntities.class, response.getText());
+				entities.setDataType(resource.getOverlyType().toString());
 			}catch(Exception e) {
 				this.handler.onTargetLevelLoadedError(e);
 				return;

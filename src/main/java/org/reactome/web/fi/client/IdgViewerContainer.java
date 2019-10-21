@@ -133,7 +133,7 @@ OverlayDataLoadedHandler{
 					if(identifiers==null)
 						identifiers = new HashSet<>();
 					for(GraphPhysicalEntity participant: participants) {
-						identifiers.add(participant.getIdentifier());
+						identifiers.add(participant.getIdentifier()); 
 					}
 				}
 			}
