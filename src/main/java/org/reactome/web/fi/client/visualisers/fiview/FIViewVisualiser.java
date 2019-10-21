@@ -49,7 +49,7 @@ import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreSelectedHandler;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
 import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
-import org.reactome.web.fi.events.TargetLevelDataRequestedEvent;
+import org.reactome.web.fi.events.OverlayDataRequestedEvent;
 import org.reactome.web.fi.handlers.CytoscapeLayoutChangedHandler;
 import org.reactome.web.fi.handlers.FireGraphObjectSelectedHandler;
 

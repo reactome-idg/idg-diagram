@@ -2,8 +2,8 @@ package org.reactome.web.fi.data.loader;
 
 import java.util.Set;
 
-import org.reactome.web.fi.data.tcrd.tagetlevel.RawTargetLevelEntities;
-import org.reactome.web.fi.data.tcrd.tagetlevel.TargetLevelDataFactory;
+import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
+import org.reactome.web.fi.data.overlay.RawOverlayEntities;
 
 import com.google.gwt.http.client.*;
 
@@ -11,7 +11,7 @@ import com.google.gwt.http.client.*;
 public class TCRDLoader implements RequestCallback{
 
 	public interface Handler{
-		void onTargetLevelLoaded(RawTargetLevelEntities entities);
+		void onTargetLevelLoaded(RawOverlayEntities entities);
 		void onTargetLevelLoadedError(Throwable exception);
 	}
 	
@@ -66,9 +66,9 @@ public class TCRDLoader implements RequestCallback{
 	public void onResponseReceived(Request request, Response response) {
 		switch(response.getStatusCode()) {
 		case Response.SC_OK:
-			RawTargetLevelEntities entities;
+			RawOverlayEntities entities;
 			try {
-				entities = TargetLevelDataFactory.getTargetLevelEntity(RawTargetLevelEntities.class, response.getText());
+				entities = OverlayEntityDataFactory.getTargetLevelEntity(RawOverlayEntities.class, response.getText());
 			}catch(Exception e) {
 				this.handler.onTargetLevelLoadedError(e);
 				return;

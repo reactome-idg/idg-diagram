@@ -1,15 +1,15 @@
-package org.reactome.web.fi.data.tcrd.tagetlevel;
+package org.reactome.web.fi.data.overlay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
-public abstract class TargetLevelDataFactory {
+public abstract class OverlayEntityDataFactory {
 
 	interface ModelAutoBeanFactory extends AutoBeanFactory{
-		AutoBean<RawTargetLevelEntities> targetLevelEntities();
-		AutoBean<RawTargetLevelEntity> targetLevelEntity();
+		AutoBean<RawOverlayEntities> targetLevelEntities();
+		AutoBean<RawOverlayEntity> targetLevelEntity();
 	}
 		
 	public static <T> T getTargetLevelEntity(Class<T> cls, String json) throws Exception {

@@ -23,11 +23,11 @@ import org.reactome.web.diagram.renderers.layout.Renderer;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
-import org.reactome.web.fi.data.tcrd.tagetlevel.RawTargetLevelEntities;
+import org.reactome.web.fi.data.overlay.RawOverlayEntities;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
-import org.reactome.web.fi.events.TargetLevelDataLoadedEvent;
-import org.reactome.web.fi.events.TargetLevelDataRequestedEvent;
-import org.reactome.web.fi.handlers.TargetLevelDataLoadedHandler;
+import org.reactome.web.fi.events.OverlayDataLoadedEvent;
+import org.reactome.web.fi.events.OverlayDataRequestedEvent;
+import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -44,20 +44,20 @@ import com.google.gwt.user.client.ui.Button;
  *
  */
 public class IdgViewerContainer extends ViewerContainer implements RenderOtherDataHandler,
-TargetLevelDataLoadedHandler{
+OverlayDataLoadedHandler{
 
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
 	private FIViewVisualiser fIViewVisualiser;
 	private Button targetLevelTest;
 	
-	private RawTargetLevelEntities targetLevelEntities;
+	private RawOverlayEntities targetLevelEntities;
 	
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
 		
 		eventBus.addHandler(RenderOtherDataEvent.TYPE, this);
-		eventBus.addHandler(TargetLevelDataLoadedEvent.TYPE, this);
+		eventBus.addHandler(OverlayDataLoadedEvent.TYPE, this);
 	}
 
 	@Override
@@ -148,7 +148,7 @@ TargetLevelDataLoadedHandler{
 						}
 					}
 				}
-				eventBus.fireEventFromSource(new TargetLevelDataRequestedEvent(identifiers), this);
+				eventBus.fireEventFromSource(new OverlayDataRequestedEvent(identifiers), this);
 
 			}
 		});
@@ -208,7 +208,7 @@ TargetLevelDataLoadedHandler{
 	}
 	
 	@Override
-	public void onTargetLevelDataLoaded(TargetLevelDataLoadedEvent event) {
+	public void onTargetLevelDataLoaded(OverlayDataLoadedEvent event) {
 		this.targetLevelEntities = event.getEntities();
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();

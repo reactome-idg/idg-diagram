@@ -9,8 +9,8 @@ import org.reactome.web.diagram.data.loader.SVGLoader;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
-import org.reactome.web.fi.data.tcrd.tagetlevel.RawTargetLevelEntities;
-import org.reactome.web.fi.events.TargetLevelDataLoadedEvent;
+import org.reactome.web.fi.data.overlay.RawOverlayEntities;
+import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -101,8 +101,10 @@ TCRDLoader.Handler{
 	}
 	
 	@Override 
-	public void onTargetLevelLoaded(RawTargetLevelEntities entities) {
-		eventBus.fireEventFromSource(new TargetLevelDataLoadedEvent(entities), this);
+	public void onTargetLevelLoaded(RawOverlayEntities entities) {
+		
+		GWT.log(entities.toString());
+		//eventBus.fireEventFromSource(new OverlayDataLoadedEvent(entities), this);
 	}
 	
 	@Override

@@ -7,9 +7,9 @@ import org.reactome.web.diagram.events.ContentRequestedEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
-import org.reactome.web.fi.events.TargetLevelDataRequestedEvent;
+import org.reactome.web.fi.events.OverlayDataRequestedEvent;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
-import org.reactome.web.fi.handlers.TargetLevelDataRequestedHandler;	
+import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;	
 
 /**
  * 
@@ -17,13 +17,13 @@ import org.reactome.web.fi.handlers.TargetLevelDataRequestedHandler;
  *
  */
 public class IdgDiagramViewerImpl extends DiagramViewerImpl implements CytoscapeToggledHandler,
-TargetLevelDataRequestedHandler{
+OverlayDataRequestedHandler{
 	
 	public IdgDiagramViewerImpl() {
 		super();
 		
 		eventBus.addHandler(CytoscapeToggledEvent.TYPE, this);
-		eventBus.addHandler(TargetLevelDataRequestedEvent.TYPE, this);
+		eventBus.addHandler(OverlayDataRequestedEvent.TYPE, this);
 		
 	}
 	
@@ -43,7 +43,7 @@ TargetLevelDataRequestedHandler{
 	}
 
 	@Override
-	public void onTargetLevelDataRequested(TargetLevelDataRequestedEvent event) {
+	public void onTargetLevelDataRequested(OverlayDataRequestedEvent event) {
 		((IDGLoaderManager)loaderManager).loadTCRDTargetLevel(event.getIds());
 	}
 }
