@@ -1,0 +1,32 @@
+{
+    "type":"targetlevel",
+    "values": [{
+        "name" : "Tclin+",
+        "fill" : "#FF0000"
+    },
+    {
+        "name" : "Tclin",
+        "fill" : "#00FF00" 
+    },
+    {
+        "name" : "Tchem+",
+        "fill" : "#0000FF"
+    },
+    {
+        "name" : "Tchem",
+        "fill" : "#990000"
+    },
+    {
+        "name" : "Tbio",
+        "fill" : "#009900"
+    },
+    {
+        "name" : "Tgray",
+        "fill" : "#000099"
+    },
+    {
+        "name" : "Tdark",
+        "fill" : "#440000"
+    }]
+}
+

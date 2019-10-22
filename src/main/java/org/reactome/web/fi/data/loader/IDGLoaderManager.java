@@ -103,10 +103,8 @@ TCRDLoader.Handler{
 	}
 	
 	@Override 
-	public void onTargetLevelLoaded(RawOverlayEntities entities) {
-		
-		GWT.log(entities.toString());
-		//eventBus.fireEventFromSource(new OverlayDataLoadedEvent(entities), this);
+	public void onTargetLevelLoaded(RawOverlayEntities entities) {		
+		eventBus.fireEventFromSource(new OverlayDataLoadedEvent(entities), this);
 	}
 	
 	@Override

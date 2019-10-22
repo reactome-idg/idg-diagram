@@ -1,5 +1,6 @@
 package org.reactome.web.fi.client;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,11 @@ import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.diagram.renderers.helper.ItemsDistribution;
 import org.reactome.web.diagram.renderers.helper.RenderType;
 import org.reactome.web.diagram.renderers.layout.Renderer;
+import org.reactome.web.fi.client.visualisers.OverlayDataHandler;
+import org.reactome.web.fi.client.visualisers.diagram.renderers.OverlayColourNode;
+import org.reactome.web.fi.client.visualisers.diagram.renderers.OverlayColourProperties;
+import org.reactome.web.fi.client.visualisers.diagram.renderers.OverlayColours;
+import org.reactome.web.fi.client.visualisers.diagram.renderers.ProteinTargetLevelRenderer;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
@@ -171,27 +177,11 @@ OverlayDataLoadedHandler{
 	public void onRenderOtherData(RenderOtherDataEvent event) {
 		if(this.targetLevelEntities == null)
 			return;
+		OverlayColours colours = OverlayColours.get();
+		OverlayColourProperties tLevel = colours.getColours("targetlevel");
 		
-		Renderer renderer = event.getRendererManager().getRenderer("Protein");
-        Double factor = context.getDiagramStatus().getFactor();
-        Coordinate offset = context.getDiagramStatus().getOffset();
-		AdvancedContext2d ctx = event.getCtx();
-        ctx.setFillStyle("#000000");
-		
-		//check analysis status for items distribution
-        AnalysisType analysisType = AnalysisType.NONE;
-        if(context.getAnalysisStatus() != null)
-        	analysisType = AnalysisType.getType(context.getAnalysisStatus().getAnalysisSummary().getType());
-
-        //get proteins with render type of normal
-        ItemsDistribution itemsDistribution = new ItemsDistribution(event.getItems(), analysisType);
-        MapSet<RenderType, DiagramObject> target = itemsDistribution.getItems("Protein");
-        Set<DiagramObject> normal = target.getElements(RenderType.NORMAL);
-        
-        for(DiagramObject item : normal) {
-        	renderer.draw(ctx, item, factor, offset);
-        }
-		
+		OverlayDataHandler.getHandler().registerHelper(new ProteinTargetLevelRenderer());
+		OverlayDataHandler.getHandler().overlayData(event.getItems(), event.getCtx(), context, event.getRendererManager(), this.targetLevelEntities);
 	}
 	
 	@Override

@@ -15,6 +15,7 @@ import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.fi.client.visualisers.OverlayRenderer;
 import org.reactome.web.fi.data.overlay.RawOverlayEntities;
+import org.reactome.web.fi.data.overlay.RawOverlayEntity;
 
 public class ProteinTargetLevelRenderer implements OverlayRenderer {
 
@@ -23,7 +24,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer {
 						 AdvancedContext2d ctx, 
 						 Context context,
 						 RendererManager rendererManager, 
-						 Collection<RawOverlayEntities> entities) {
+						 RawOverlayEntities entities) {
 		
 		Renderer renderer = rendererManager.getRenderer("Protein");
         Double factor = context.getDiagramStatus().getFactor();
