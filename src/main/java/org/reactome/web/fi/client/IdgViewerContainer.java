@@ -177,8 +177,6 @@ OverlayDataLoadedHandler{
 	public void onRenderOtherData(RenderOtherDataEvent event) {
 		if(this.targetLevelEntities == null)
 			return;
-		OverlayColours colours = OverlayColours.get();
-		OverlayColourProperties tLevel = colours.getColours("targetlevel");
 		
 		OverlayDataHandler.getHandler().registerHelper(new ProteinTargetLevelRenderer());
 		OverlayDataHandler.getHandler().overlayData(event.getItems(), event.getCtx(), context, event.getRendererManager(), this.targetLevelEntities);

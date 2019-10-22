@@ -1,6 +1,5 @@
 package org.reactome.web.fi.client.visualisers.diagram.renderers;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,17 +13,7 @@ public class OverlayColours{
 	private static OverlayColours overlayColours;
 	
 	private OverlayColours() {
-		OverlayColourProperties colours = null;
 		overlayColoursMap = new HashMap<>();
-		try {
-			colours = OverlayColourFactory.getOverlayObject(OverlayColourProperties.class,
-												  ColourSource.SOURCE.targetLevel()
-												  .getText());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		String text = colours.getType();
-		overlayColoursMap.put(text, colours);
 	}
 	
 	public static OverlayColours get() {
@@ -35,9 +24,32 @@ public class OverlayColours{
 	}
 	
 	public OverlayColourProperties getColours(String name){
+		if(overlayColoursMap == null || !overlayColoursMap.containsKey(name)) {
+			loadOverlayProperties(name);
+		}
 		return overlayColoursMap.get(name);
 	}
 	
+	private void loadOverlayProperties(String name) {
+		OverlayColourProperties colours = null;
+		try {
+			colours = OverlayColourFactory.getOverlayObject(OverlayColourProperties.class,
+												  getSource(name));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String text = colours.getType();
+		overlayColoursMap.put(text, colours);
+	}
+	
+	private String getSource(String name) {
+		String result = null;
+		switch(name) {
+		case "targetlevel": result = ColourSource.SOURCE.targetLevel().getText();	break;
+		}
+		return result;
+	}
+
 	interface ColourSource extends ClientBundle{
 		
 		ColourSource SOURCE = GWT.create(ColourSource.class);
