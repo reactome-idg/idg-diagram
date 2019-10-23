@@ -27,6 +27,10 @@
     {
         "name" : "Tdark",
         "fill" : "#440000"
+    }, 
+    {
+        "name" : "default",
+        "fill" : "#CCFFFF"
     }]
 }
 

@@ -179,7 +179,13 @@ OverlayDataLoadedHandler{
 			return;
 		
 		OverlayDataHandler.getHandler().registerHelper(new ProteinTargetLevelRenderer());
-		OverlayDataHandler.getHandler().overlayData(event.getItems(), event.getCtx(), context, event.getRendererManager(), this.targetLevelEntities);
+		OverlayDataHandler.getHandler()
+						  .overlayData(event.getItems(), 
+									   event.getCtx(), 
+									   context, 
+									   event.getRendererManager(), 
+									   this.targetLevelEntities,
+									   event.getOverlay());
 	}
 	
 	@Override

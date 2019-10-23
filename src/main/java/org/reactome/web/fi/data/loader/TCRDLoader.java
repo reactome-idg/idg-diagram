@@ -1,17 +1,12 @@
 package org.reactome.web.fi.data.loader;
 
-import java.util.List;
 import java.util.Set;
 
-import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
-import org.reactome.web.fi.data.overlay.OverlayType;
-import org.reactome.web.fi.data.overlay.OverlayType.OverlayTypes;
 import org.reactome.web.fi.data.overlay.RawOverlayEntities;
-import org.reactome.web.fi.data.overlay.RawOverlayEntity;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
@@ -29,7 +24,6 @@ public class TCRDLoader implements RequestCallback{
 	
 	private Handler handler;
 	private Request request;
-	private OverlayType resource;
 	
 	public TCRDLoader(Handler handler){
 		this.handler = handler;
@@ -41,11 +35,9 @@ public class TCRDLoader implements RequestCallback{
 		}
 	}
 	
-	public void load(Set<String> ids, OverlayType resource) {
+	public void load(Set<String> ids) {
 		cancel();
-		
-		this.resource = resource;
-		
+				
 		if(ids == null) {
 			Exception exception = new Exception("Cannot request overlay data for 0 ids.");
 			this.handler.onTargetLevelLoadedError(exception);
@@ -87,8 +79,19 @@ public class TCRDLoader implements RequestCallback{
 			try {
 				JSONValue val = JSONParser.parseStrict(response.getText());
 				JSONObject obj = new JSONObject();
-				obj.put("resource", new JSONString(OverlayTypes.PROTEINTARGETLEVEL.toString().toLowerCase()));
-				obj.put("entities", val);
+				obj.put("dataType", new JSONString("target_dev_level"));
+				obj.put("valueType", new JSONString("String"));
+				JSONArray valArray = val.isArray();
+				JSONArray outputArray = new JSONArray();
+				for(int i=0; i<valArray.size(); i++) {
+					JSONObject innerObj = valArray.get(i).isObject();
+					JSONObject arrayObj = new JSONObject();
+					arrayObj.put("identifier", innerObj.get("uniprot"));
+					arrayObj.put("geneName", innerObj.get("sym"));
+					arrayObj.put("value", innerObj.get("targetDevLevel"));
+					outputArray.set(outputArray.size(), arrayObj);
+				}
+				obj.put("entities", outputArray);
 				entities = OverlayEntityDataFactory.getTargetLevelEntity(RawOverlayEntities.class, obj.toString());
 			}catch(Exception e) {
 				this.handler.onTargetLevelLoadedError(e);

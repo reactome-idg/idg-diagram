@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.diagram.renderers.common.OverlayContext;
 import org.reactome.web.diagram.renderers.layout.RendererManager;
 import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.fi.data.overlay.RawOverlayEntities;
@@ -40,11 +41,12 @@ public class OverlayDataHandler {
 							AdvancedContext2d ctx, 
 							Context context, 
 							RendererManager rendererManager, 
-							RawOverlayEntities entities) {
+							RawOverlayEntities entities,
+							OverlayContext overlay) {
 		
 		if(renderers == null)
 			return;
-		renderers.forEach(renderer -> renderer.doRender(items, ctx, context, rendererManager, entities));
+		renderers.forEach(renderer -> renderer.doRender(items, ctx, context, rendererManager, entities, overlay));
 	}
 	
 	public int overlayRenderersCount() {
