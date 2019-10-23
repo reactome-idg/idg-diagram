@@ -1,12 +1,21 @@
 package org.reactome.web.fi.data.loader;
 
+import java.util.List;
 import java.util.Set;
 
+import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
 import org.reactome.web.fi.data.overlay.OverlayType;
+import org.reactome.web.fi.data.overlay.OverlayType.OverlayTypes;
 import org.reactome.web.fi.data.overlay.RawOverlayEntities;
+import org.reactome.web.fi.data.overlay.RawOverlayEntity;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 
 
 public class TCRDLoader implements RequestCallback{
@@ -76,8 +85,11 @@ public class TCRDLoader implements RequestCallback{
 		case Response.SC_OK:
 			RawOverlayEntities entities;
 			try {
-				entities = OverlayEntityDataFactory.getTargetLevelEntity(RawOverlayEntities.class, response.getText());
-				entities.setDataType(resource.getOverlyType().toString());
+				JSONValue val = JSONParser.parseStrict(response.getText());
+				JSONObject obj = new JSONObject();
+				obj.put("resource", new JSONString(OverlayTypes.PROTEINTARGETLEVEL.toString().toLowerCase()));
+				obj.put("entities", val);
+				entities = OverlayEntityDataFactory.getTargetLevelEntity(RawOverlayEntities.class, obj.toString());
 			}catch(Exception e) {
 				this.handler.onTargetLevelLoadedError(e);
 				return;

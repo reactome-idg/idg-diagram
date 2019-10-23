@@ -8,11 +8,8 @@ import java.util.List;
  *
  */
 public interface RawOverlayEntities {
-
-	String getDataType();
+	
+	String getResource();
 	
 	List<RawOverlayEntity> getEntities();
-	
-	
-	void setDataType(String dataType);
 }

@@ -1,6 +1,6 @@
 {
     "type":"targetlevel",
-    "values": [{
+    "nodes": [{
         "name" : "Tclin+",
         "fill" : "#FF0000"
     },

@@ -1,4 +1,4 @@
-package org.reactome.web.fi.client.visualisers.diagram.renderers;
+package org.reactome.web.fi.client.visualisers.diagram.profiles;
 
 import com.google.gwt.core.client.GWT;
 import com.google.web.bindery.autobean.shared.AutoBean;

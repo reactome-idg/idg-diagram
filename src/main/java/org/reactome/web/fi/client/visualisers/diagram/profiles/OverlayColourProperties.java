@@ -1,4 +1,4 @@
-package org.reactome.web.fi.client.visualisers.diagram.renderers;
+package org.reactome.web.fi.client.visualisers.diagram.profiles;
 
 import java.util.List;
 

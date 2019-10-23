@@ -1,4 +1,4 @@
-package org.reactome.web.fi.client.visualisers.diagram.renderers;
+package org.reactome.web.fi.client.visualisers.diagram.profiles;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,11 +23,15 @@ public class OverlayColours{
 		return overlayColours;
 	}
 	
-	public OverlayColourProperties getColours(String name){
+	public Map<String, String> getColours(String name){
 		if(overlayColoursMap == null || !overlayColoursMap.containsKey(name)) {
 			loadOverlayProperties(name);
 		}
-		return overlayColoursMap.get(name);
+		Map<String, String> colourMap = new HashMap<>();
+		
+		for(OverlayColourNode node: overlayColoursMap.get(name).getNodes())
+			colourMap.put(node.getName(), node.getFill());
+		return colourMap;
 	}
 	
 	private void loadOverlayProperties(String name) {
