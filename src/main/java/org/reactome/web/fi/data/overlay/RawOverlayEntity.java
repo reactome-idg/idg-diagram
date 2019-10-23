@@ -10,7 +10,7 @@ public interface RawOverlayEntity {
 	@PropertyName("sym")
 	String getGeneName();
 	
-	@PropertyName("targetDevLevel")
-	String getDataValue();
+	@PropertyName("value")
+	Object getValue();
 	
 }

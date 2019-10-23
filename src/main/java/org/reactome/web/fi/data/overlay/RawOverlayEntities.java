@@ -8,8 +8,11 @@ import java.util.List;
  *
  */
 public interface RawOverlayEntities {
-	
-	String getResource();
-	
+    
+    public String getDataType(); // e.g. target_dev_level
+    
+    public String getValueType(); // e.g. String (for enum)
+    
 	List<RawOverlayEntity> getEntities();
+	
 }
