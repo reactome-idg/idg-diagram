@@ -98,7 +98,6 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer {
 		IDGExpressionGradientHelper colourHelper = new IDGExpressionGradientHelper(null,null,null);
 		colourHelper.setColourMap(colourMap);
 		AnalysisColours.get().expressionGradient = colourHelper;
-		
 		Set<DiagramObject> objectSet = target.values();
 		for(DiagramObject item : objectSet) {
 			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();

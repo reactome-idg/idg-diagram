@@ -2,15 +2,15 @@
     "type":"targetlevel",
     "nodes": [{
         "name" : "Tclin+",
-        "fill" : "#FF0000"
+        "fill" : "#ff2121"
     },
     {
         "name" : "Tclin",
-        "fill" : "#00FF00" 
+        "fill" : "#fcba03" 
     },
     {
         "name" : "Tchem+",
-        "fill" : "#0000FF"
+        "fill" : "#a6ffaf"
     },
     {
         "name" : "Tchem",

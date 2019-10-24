@@ -83,6 +83,9 @@ OverlayDataLoadedHandler{
 		super.leftTopLauncher.getMainControlPanel().add(targetLevelTest);
 		
 		bind();
+		
+		OverlayDataHandler.getHandler().registerHelper(new ProteinTargetLevelRenderer());
+
 	}
 	
 	@Override
@@ -178,7 +181,6 @@ OverlayDataLoadedHandler{
 		if(this.targetLevelEntities == null)
 			return;
 		
-		OverlayDataHandler.getHandler().registerHelper(new ProteinTargetLevelRenderer());
 		OverlayDataHandler.getHandler()
 						  .overlayData(event.getItems(), 
 									   event.getCtx(), 
