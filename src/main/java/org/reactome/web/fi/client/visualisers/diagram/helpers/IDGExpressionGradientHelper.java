@@ -18,11 +18,13 @@ public class IDGExpressionGradientHelper extends ThreeColorGradient{
 	@Override
 	public String getColor(double p) {
 		String pString = (int)p+"";
+		GWT.log(colourMap.get(pString));
 		return colourMap.get(pString);
 	}
 
 	@Override
 	public String getColor(double point, double min, double max) {
+		GWT.log(point+"");
 		return this.getColor(point);
 	}
 

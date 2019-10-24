@@ -14,19 +14,19 @@
     },
     {
         "name" : "Tchem",
-        "fill" : "#990000"
+        "fill" : "#49d157"
     },
     {
         "name" : "Tbio",
-        "fill" : "#009900"
+        "fill" : "#87a3ff"
     },
     {
         "name" : "Tgray",
-        "fill" : "#000099"
+        "fill" : "#cfcfcf"
     },
     {
         "name" : "Tdark",
-        "fill" : "#440000"
+        "fill" : "#808080"
     }, 
     {
         "name" : "default",

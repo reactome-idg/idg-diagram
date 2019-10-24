@@ -28,10 +28,11 @@ public class OverlayColours{
 			loadOverlayProperties(name);
 		}
 		Map<String, String> colourMap = new HashMap<>();
-		
+		int counter = 0;
 		for(OverlayColourNode node: overlayColoursMap.get(name).getNodes()) {
-			colourMap.put(colourMap.size()+"", node.getFill());
 			colourMap.put(node.getName(), node.getFill());
+			colourMap.put(counter+"", colourMap.get(node.getName()));
+			counter++;
 		}
 		return colourMap;
 	}
