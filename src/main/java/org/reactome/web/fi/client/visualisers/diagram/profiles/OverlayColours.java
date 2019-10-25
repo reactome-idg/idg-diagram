@@ -12,9 +12,7 @@ public class OverlayColours{
 	private Map<String, OverlayColourProperties> overlayColoursMap;
 	private static OverlayColours overlayColours;
 	
-	private OverlayColours() {
-		overlayColoursMap = new HashMap<>();
-	}
+	private OverlayColours() { /*Nothing Here*/ }
 	
 	public static OverlayColours get() {
 		if(overlayColours ==  null) {
@@ -45,6 +43,9 @@ public class OverlayColours{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		if(overlayColoursMap == null)
+			overlayColoursMap = new HashMap<>();
+		
 		overlayColoursMap.put(name, colours);
 	}
 	
