@@ -57,7 +57,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
 	private FIViewVisualiser fIViewVisualiser;
-	private Button targetLevelTest;
+	private IDGIconButton overlayButton;
 	
 	private RawOverlayEntities overlayEntities;
 	
@@ -75,15 +75,15 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		
 		fiviewButton = new IDGIconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View");
 		diagramButton = new IDGIconButton(IDGRESOURCES.diagramIcon(), IDGRESOURCES.getCSS().diagram(), "Diagram View");
-		targetLevelTest = new Button("Test Button");
-		
+		overlayButton = new IDGIconButton(IDGRESOURCES.overlayIcon(), IDGRESOURCES.getCSS().cytoscape(), "Select An Overlay");
+				
 		//adds diagramButton and fiviewButton. sets fiview button as default to show
 		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
 		super.leftTopLauncher.getMainControlPanel().getWidget(
 				super.leftTopLauncher.getMainControlPanel()
 				.getWidgetIndex(diagramButton)).setVisible(false);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
-		super.leftTopLauncher.getMainControlPanel().add(targetLevelTest);
+		super.leftTopLauncher.getMainControlPanel().add(overlayButton);
 		
 		bind();
 		
@@ -123,7 +123,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	private void bind() {
 		fiviewButton.addClickHandler(e -> cytoscapeButtonPressed());
 		diagramButton.addClickHandler(e -> cytoscapeButtonPressed());
-		targetLevelTest.addClickHandler(e -> requestOverlayData());
+		overlayButton.addClickHandler(e -> requestOverlayData());
 	}
 	
 	private void requestOverlayData() {
@@ -250,6 +250,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
         
         @Source("images/EHLDIcon.png")
         ImageResource diagramIcon();
+        
+        @Source("images/OverlayIcon.png")
+        ImageResource overlayIcon();
     }
 
     /**
@@ -265,5 +268,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
         String cytoscape();
         
         String diagram();
+        
     }
 }

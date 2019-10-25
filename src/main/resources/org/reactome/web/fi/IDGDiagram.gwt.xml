@@ -19,6 +19,7 @@
   <source path='data'/>
   <source path='common' />
   <source path='model' />
+  <source path='legends' />
   
     <!-- allow Super Dev Mode -->
   <add-linker name="xsiframe"/>
