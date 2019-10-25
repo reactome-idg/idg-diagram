@@ -54,7 +54,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer {
 		this.rendererManager = rendererManager;
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
-        this.colourMap = OverlayColours.get().getColours("targetlevel");
+        this.colourMap = OverlayColours.get().getColours(rawEntities.getDataType());
         this.originalOverlay = overlay;
         makeEntitiesMap(rawEntities);
 		

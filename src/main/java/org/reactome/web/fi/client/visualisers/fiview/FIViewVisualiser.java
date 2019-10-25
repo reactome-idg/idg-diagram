@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.analysis.client.model.AnalysisType;
@@ -26,6 +27,8 @@ import org.reactome.web.diagram.handlers.ExpressionColumnChangedHandler;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.profiles.interactors.InteractorColours;
 import org.reactome.web.fi.data.content.FIViewContent;
+import org.reactome.web.fi.data.overlay.RawOverlayEntities;
+import org.reactome.web.fi.data.overlay.RawOverlayEntity;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeClickedEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeContextSelectEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeHoveredEvent;
@@ -46,6 +49,7 @@ import org.reactome.web.gwtCytoscapeJs.handlers.NodeHoveredHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeMouseOutHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreContextHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreSelectedHandler;
+import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColours;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
 import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
@@ -647,6 +651,14 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	public void resetFlag() {
 		cy.resetSelection();
 	}
+	
+	public void overlayNodes(RawOverlayEntities overlayEntities) {
+		Map<String, String> colourMap = OverlayColours.get().getColours(overlayEntities.getDataType());
+		for(RawOverlayEntity entity: overlayEntities.getEntities()) {
+			cy.highlightNode(entity.getIdentifier(), colourMap.get(entity.getIdentifier()));
+		}
+	}
+	
 	/**
 	 * Everything below here is for resource loading for the cytoscape view button.
 	 */

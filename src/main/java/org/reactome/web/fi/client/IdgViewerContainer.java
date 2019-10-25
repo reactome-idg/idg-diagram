@@ -195,6 +195,8 @@ OverlayDataLoadedHandler{
 		this.targetLevelEntities = event.getEntities();
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();
+		else if(activeVisualiser instanceof FIViewVisualiser)
+			((FIViewVisualiser)activeVisualiser).overlayNodes(targetLevelEntities);
 	}
 	
 	@Override

@@ -45,14 +45,13 @@ public class OverlayColours{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String text = colours.getType();
-		overlayColoursMap.put(text, colours);
+		overlayColoursMap.put(name, colours);
 	}
 	
 	private String getSource(String name) {
 		String result = null;
 		switch(name) {
-		case "targetlevel": result = ColourSource.SOURCE.targetLevel().getText();	break;
+		case "target_dev_level": result = ColourSource.SOURCE.targetLevel().getText();	break;
 		}
 		return result;
 	}
