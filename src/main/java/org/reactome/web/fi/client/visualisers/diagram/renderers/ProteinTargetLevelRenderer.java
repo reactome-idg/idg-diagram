@@ -117,14 +117,14 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer {
 		String value = entitiesMap.get(identifier);
 		List<Double> rtn = new ArrayList<>();
 		switch(value) {
-		case "Tclin+":	rtn.add((double) 0); 	break;
-		case "Tclin":	rtn.add((double) 1); 	break;
-		case "Tchem+":	rtn.add((double) 2); 	break;
-		case "Tchem":	rtn.add((double) 3);	break;
-		case "Tbio":	rtn.add((double) 4); 	break;
-		case "Tgray":	rtn.add((double) 5); 	break;
-		case "Tdark":	rtn.add((double) 6); 	break;
-		default: 		rtn.add((double) 7);	break;
+			case "Tclin+":	rtn.add((double) 0); 	break;
+			case "Tclin":	rtn.add((double) 1); 	break;
+			case "Tchem+":	rtn.add((double) 2); 	break;
+			case "Tchem":	rtn.add((double) 3);	break;
+			case "Tbio":	rtn.add((double) 4); 	break;
+			case "Tgray":	rtn.add((double) 5); 	break;
+			case "Tdark":	rtn.add((double) 6); 	break;
+			default: 		rtn.add((double) 7);	break;
 		}
 		return rtn;
 	}

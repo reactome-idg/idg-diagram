@@ -35,6 +35,7 @@ public class OverlayColours{
 		return colourMap;
 	}
 	
+	
 	private void loadOverlayProperties(String name) {
 		OverlayColourProperties colours = null;
 		try {
