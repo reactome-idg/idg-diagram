@@ -653,8 +653,10 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	}
 	
 	public void overlayNodes(RawOverlayEntities overlayEntities) {
-		if(overlayEntities == null)
+		if(overlayEntities == null) {
 			cy.resetStyle();
+			return;
+		}
 		
 		Map<String, String> colourMap = OverlayColours.get().getColours(overlayEntities.getDataType());
 		for(RawOverlayEntity entity: overlayEntities.getEntities()) {

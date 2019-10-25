@@ -127,6 +127,11 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	}
 	
 	private void requestOverlayData() {
+		if(overlayEntities != null) {
+			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
+			return;
+		}
+		
 		Set<String> identifiers = null;
 
 		if(activeVisualiser instanceof FIViewVisualiser)
