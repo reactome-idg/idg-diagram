@@ -649,7 +649,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 	@Override
 	public void resetFlag() {
-		cy.resetSelection();
+		cy.removeNodeClass("flagged");
 	}
 	
 	public void overlayNodes(RawOverlayEntities overlayEntities) {
