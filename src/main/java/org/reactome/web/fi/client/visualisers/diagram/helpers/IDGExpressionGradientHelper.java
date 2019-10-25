@@ -29,5 +29,4 @@ public class IDGExpressionGradientHelper extends ThreeColorGradient{
 	public void setColourMap(Map<String, String> colourMap) {
 		this.colourMap = colourMap;
 	}
-
 }
