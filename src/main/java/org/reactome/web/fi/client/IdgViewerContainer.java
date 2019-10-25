@@ -123,7 +123,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	private void bind() {
 		fiviewButton.addClickHandler(e -> cytoscapeButtonPressed());
 		diagramButton.addClickHandler(e -> cytoscapeButtonPressed());
-		overlayButton.addClickHandler(e -> requestOverlayData());
+		overlayButton.addClickHandler(e -> requestOverlayData()); //TODO: should open a panel allowing for selection of overlay
 	}
 	
 	private void requestOverlayData() {
@@ -263,7 +263,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
         /**
          * The path to the default CSS styles used by this resource.
          */
-        String CSS = "org/reactome/web/fi/client/CytoscapeButton.css";
+        String CSS = "org/reactome/web/fi/client/IconButton.css";
 
         String cytoscape();
         
