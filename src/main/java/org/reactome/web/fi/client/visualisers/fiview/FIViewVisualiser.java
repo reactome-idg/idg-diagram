@@ -557,19 +557,19 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	//highlight enrichment node
 	private void drawAnalysisEnrichmentNode(GraphObject entity) {
 		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(),
-				AnalysisColours.get().PROFILE.getEnrichment().getGradient().getMax());
+				AnalysisColours.get().PROFILE.getEnrichment().getGradient().getMax(), "1");
 	}
 	
 	//highlight expression of a node
 	private void drawAnalysisExpressionNode(GraphObject entity, Double minExp, Double maxExp) {
 		String color = getExpressionColor(((GraphPhysicalEntity)entity).getExpression(), minExp, maxExp);
-		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color);
+		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color, "1");
 	}
 	
 	//highlight regulated node
 	private void drawAnalysisRegulationNode(GraphObject entity, Double minExp) {
 		String color = getRegulationColor(((GraphPhysicalEntity)entity).getExpression(), minExp);
-		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color);
+		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color, "1");
 	}
 	
 	//get node color for a given expression
@@ -655,7 +655,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	public void overlayNodes(RawOverlayEntities overlayEntities) {
 		Map<String, String> colourMap = OverlayColours.get().getColours(overlayEntities.getDataType());
 		for(RawOverlayEntity entity: overlayEntities.getEntities()) {
-			cy.highlightNode(entity.getIdentifier(), colourMap.get(entity.getIdentifier()));
+			String colour = colourMap.get(entity.getValue());
+			cy.highlightNode(entity.getIdentifier(), colour, ".8");
 		}
 	}
 	
