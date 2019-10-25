@@ -26,7 +26,7 @@ public class OverlayDataLoadedEvent extends GwtEvent<OverlayDataLoadedHandler> {
 
 	@Override
 	protected void dispatch(OverlayDataLoadedHandler handler) {
-		handler.onTargetLevelDataLoaded(this);
+		handler.onOverlayDataLoaded(this);
 	}
 	
 	public RawOverlayEntities getEntities() {

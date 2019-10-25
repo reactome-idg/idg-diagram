@@ -10,5 +10,5 @@ import com.google.gwt.event.shared.EventHandler;
  *
  */
 public interface OverlayDataLoadedHandler extends EventHandler {
-	void onTargetLevelDataLoaded(OverlayDataLoadedEvent event);
+	void onOverlayDataLoaded(OverlayDataLoadedEvent event);
 }

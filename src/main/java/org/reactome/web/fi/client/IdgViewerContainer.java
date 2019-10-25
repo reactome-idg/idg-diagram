@@ -33,7 +33,9 @@ import org.reactome.web.fi.data.overlay.RawOverlayEntities;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataRequestedEvent;
+import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
+import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -50,20 +52,21 @@ import com.google.gwt.user.client.ui.Button;
  *
  */
 public class IdgViewerContainer extends ViewerContainer implements RenderOtherDataHandler,
-OverlayDataLoadedHandler{
+OverlayDataLoadedHandler, OverlayDataResetHandler{
 
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
 	private FIViewVisualiser fIViewVisualiser;
 	private Button targetLevelTest;
 	
-	private RawOverlayEntities targetLevelEntities;
+	private RawOverlayEntities overlayEntities;
 	
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
 		
 		eventBus.addHandler(RenderOtherDataEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataLoadedEvent.TYPE, this);
+		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
 	}
 
 	@Override
@@ -111,6 +114,10 @@ OverlayDataLoadedHandler{
 			super.setActiveVisualiser(context);
 		}
 		super.setActiveVisualiser(context);
+		
+		//perform node overlay if overlayEntities exist
+		if(activeVisualiser instanceof FIViewVisualiser && overlayEntities !=null)
+			((FIViewVisualiser)activeVisualiser).overlayNodes(overlayEntities);
 	}
 	
 	private void bind() {
@@ -178,7 +185,7 @@ OverlayDataLoadedHandler{
 	
 	@Override
 	public void onRenderOtherData(RenderOtherDataEvent event) {
-		if(this.targetLevelEntities == null)
+		if(this.overlayEntities == null)
 			return;
 		
 		OverlayDataHandler.getHandler()
@@ -186,17 +193,26 @@ OverlayDataLoadedHandler{
 									   event.getCtx(), 
 									   context, 
 									   event.getRendererManager(), 
-									   this.targetLevelEntities,
+									   this.overlayEntities,
 									   event.getOverlay());
 	}
 	
 	@Override
-	public void onTargetLevelDataLoaded(OverlayDataLoadedEvent event) {
-		this.targetLevelEntities = event.getEntities();
+	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
+		this.overlayEntities = event.getEntities();
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualiser)
-			((FIViewVisualiser)activeVisualiser).overlayNodes(targetLevelEntities);
+			((FIViewVisualiser)activeVisualiser).overlayNodes(overlayEntities);
+	}
+	
+	@Override
+	public void onOverlayDataReset(OverlayDataResetEvent event) {
+		overlayEntities = null;
+		if(activeVisualiser instanceof DiagramVisualiser)
+			activeVisualiser.loadAnalysis();
+		else if(activeVisualiser instanceof FIViewVisualiser)
+			((FIViewVisualiser)activeVisualiser).overlayNodes(overlayEntities);
 	}
 	
 	@Override
