@@ -64,23 +64,19 @@ public class OverlayColours{
 	
 	private String getSource(String name) {
 
-		TextResource result = null;
+		String result = null;
 		switch(name) {
-		case "target_dev_level": result = ColourSource.SOURCE.targetLevel();	break;
+		case "target_dev_level": result = ColourSource.SOURCE.targetLevel().getText();	break;
 		}
-		return result.getText();
+		return result;
 	}
 
 	interface ColourSource extends ClientBundle{
 		
 		ColourSource SOURCE = GWT.create(ColourSource.class);
-		
-		
+			
 		@Source("target_dev_level.json")
 		TextResource targetLevel();
-		
-		@Source("OverlayProfiles.json")
-		TextResource overlayProfiles();
 	}
 	
 }
