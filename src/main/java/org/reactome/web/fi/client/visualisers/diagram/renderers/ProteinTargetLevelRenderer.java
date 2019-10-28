@@ -40,6 +40,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer {
 	private Double factor;
 	private Coordinate offset;
 	private Map<String, String> colourMap;
+	private Map<Double, String> doubleColourMap;
 	private OverlayContext originalOverlay;
 	
 	@Override
@@ -55,6 +56,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer {
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
         this.colourMap = OverlayColours.get().getColours(rawEntities.getDataType());
+        this.doubleColourMap = OverlayColours.get().getDoubleColoursMap(rawEntities.getDataType());
         this.originalOverlay = overlay;
         makeEntitiesMap(rawEntities);
 		
@@ -97,7 +99,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer {
 		ThreeColorGradient originalEnrichmentGradient = AnalysisColours.get().enrichmentGradient;
 		//set Analysiscolours.get().expressionGradient to my own
 		IDGExpressionGradientHelper colourHelper = new IDGExpressionGradientHelper(null,null,null);
-		colourHelper.setColourMap(colourMap);
+		colourHelper.setColourMap(doubleColourMap);
 		AnalysisColours.get().expressionGradient = colourHelper;
 //		AnalysisColours.get().enrichmentGradient = colourHelper;
 		Set<DiagramObject> objectSet = target.values();
