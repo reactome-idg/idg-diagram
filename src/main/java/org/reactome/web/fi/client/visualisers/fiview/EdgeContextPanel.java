@@ -73,7 +73,7 @@ public class EdgeContextPanel extends Composite implements ChangeHandler{
 		return result;
 	}
 	
-	//call this after calling updateContext and pass in correct reactome source
+	//call this after calling updateContext and pass in correct reactome sourceFile
 	protected void setSelection(String selection) {
 		if(selection==null)
 			return;

@@ -266,7 +266,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		
 		HTML html = new HTML(new SafeHtmlBuilder()
 				.appendEscapedLines( 
-									 fi.get("source") + " - " +
+									 fi.get("sourceFile") + " - " +
 									 fi.get("target"))
 				.toSafeHtml());
 		html.setStyleName(FIVIEWPORTRESOURCES.getCSS().label());
@@ -394,9 +394,9 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	/**
 	 * recieves a set of reactomeSources from an edge hovered or edge clicked event and sorts it.
-	 * Sorting preferences returning the reactomeId of the source with the lowest reactomeId and source type of "Reaction."
-	 * If no reaction exists in a set of sourcesFlowPanel, the lowest reactomeId with source type of "Complex" will be returned.
-	 * If no source type exists on any of the passed in sourcesFlowPanel, it will return the lowest reactomeId present.
+	 * Sorting preferences returning the reactomeId of the sourceFile with the lowest reactomeId and sourceFile type of "Reaction."
+	 * If no reaction exists in a set of sourcesFlowPanel, the lowest reactomeId with sourceFile type of "Complex" will be returned.
+	 * If no sourceFile type exists on any of the passed in sourcesFlowPanel, it will return the lowest reactomeId present.
 	 * @param reactomeSources
 	 * @return
 	 */
@@ -406,7 +406,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		
 		JSONArray jsonArray = reactomeSources.isArray();
 		
-		//parse over jsonArray, convert each source to a FIEntityNode, and adds to a FIEntityNode array list
+		//parse over jsonArray, convert each sourceFile to a FIEntityNode, and adds to a FIEntityNode array list
 		if(jsonArray != null) {
 			for(int i=0; i<jsonArray.size(); i++) {
 				JSONObject obj = jsonArray.get(i).isObject();
@@ -414,7 +414,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			}
 		}
 		
-		//return dbId of the single source passed in
+		//return dbId of the single sourceFile passed in
 		if(objList.isEmpty()) {
 			JSONObject obj = reactomeSources.isObject();
 			return obj.get("reactomeId").isString().stringValue();
