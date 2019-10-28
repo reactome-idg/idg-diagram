@@ -92,7 +92,6 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer {
 		}
 		
 		Renderer renderer = rendererManager.getRenderer("Complex");
-		ConnectorRenderer connectorRenderer = this.rendererManager.getConnectorRenderer();
 		OverlayContext overlay = this.originalOverlay;
 		//Store AnalysisColours.get().expressionGradient for restore
 		ThreeColorGradient originalExpressionGradient = AnalysisColours.get().expressionGradient;
