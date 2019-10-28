@@ -50,7 +50,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	@Override
 	public void onClick(ClickEvent event) {
 		if(event.getSource().equals(this.closeBtn)) {
-			this.setVisible(false);
 			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 		}
 		
@@ -74,5 +73,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		colourMapPanel = new FlowPanel();
+		this.setVisible(false);
 	}
 }
