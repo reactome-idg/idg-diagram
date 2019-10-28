@@ -215,7 +215,7 @@ public class FIViewContent extends GenericContent{
 		
 		JSONObject fi = new JSONObject();
 		fi.put("id", new JSONString(fIArray.size()+""));
-		fi.put("sourceFile", new JSONString(proteinOneAccession));
+		fi.put("source", new JSONString(proteinOneAccession));
 		fi.put("target", new JSONString(proteinTwoAccession));
 		fi.put("direction", new JSONString(annotationDirection));
 		fi.put("reactomeSources", reactomeSources);
@@ -283,7 +283,7 @@ public class FIViewContent extends GenericContent{
 		//choose sourceType for graph object based on passed in sourceType
 		sourceObj.put("sourceType", extractSourceType(reactomeSources));
 		
-		//makes graphObject from sourceFile and stores in graphObjectCache
+		//makes graphObject from source and stores in graphObjectCache
 		try {
 			if(sourceObj.get("sourceType").isString().stringValue().contentEquals("Complex")) {
 				FIEntityNode source = FIEntityFactory.getSourceEntity(FIEntityNode.class, sourceObj.toString());
