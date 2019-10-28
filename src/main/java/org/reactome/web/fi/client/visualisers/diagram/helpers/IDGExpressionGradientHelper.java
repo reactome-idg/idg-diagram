@@ -17,7 +17,7 @@ public class IDGExpressionGradientHelper extends ThreeColorGradient{
 
 	@Override
 	public String getColor(double p) {
-		return colourMap.get(p);
+		return colourMap.get((double) Math.round(p));
 	}
 
 	@Override
