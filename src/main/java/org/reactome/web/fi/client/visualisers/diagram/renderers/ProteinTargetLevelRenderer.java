@@ -93,11 +93,13 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer {
 		ConnectorRenderer connectorRenderer = this.rendererManager.getConnectorRenderer();
 		OverlayContext overlay = this.originalOverlay;
 		//Store AnalysisColours.get().expressionGradient for restore
-		ThreeColorGradient originalGradient = AnalysisColours.get().expressionGradient;
+		ThreeColorGradient originalExpressionGradient = AnalysisColours.get().expressionGradient;
+		ThreeColorGradient originalEnrichmentGradient = AnalysisColours.get().enrichmentGradient;
 		//set Analysiscolours.get().expressionGradient to my own
 		IDGExpressionGradientHelper colourHelper = new IDGExpressionGradientHelper(null,null,null);
 		colourHelper.setColourMap(colourMap);
 		AnalysisColours.get().expressionGradient = colourHelper;
+		AnalysisColours.get().enrichmentGradient = colourHelper;
 		Set<DiagramObject> objectSet = target.values();
 		for(DiagramObject item : objectSet) {
 			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();
@@ -110,7 +112,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer {
 			renderer.drawExpression(ctx, overlay, item, 0, 0, 0, factor, offset);
 		}
 		//Last thing: restore AnalysisColours.get().expressionGradient
-		AnalysisColours.get().expressionGradient = originalGradient;
+		AnalysisColours.get().expressionGradient = originalExpressionGradient;
 	}
 
 	private List<Double> mapColourToDouble(String identifier) {
