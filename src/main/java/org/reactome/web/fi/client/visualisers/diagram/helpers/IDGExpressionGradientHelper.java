@@ -8,7 +8,7 @@ import com.google.gwt.core.client.GWT;
 
 public class IDGExpressionGradientHelper extends ThreeColorGradient{
 
-	private Map<String, String> colourMap;
+	private Map<Double, String> colourMap;
 	
 	public IDGExpressionGradientHelper(String hexFrom, String hexStop, String hexTo) {
 		super("#FFFF50", null, "#FFFFCA");
@@ -17,8 +17,7 @@ public class IDGExpressionGradientHelper extends ThreeColorGradient{
 
 	@Override
 	public String getColor(double p) {
-		String pString = (int)p+"";
-		return colourMap.get(pString);
+		return colourMap.get(p);
 	}
 
 	@Override
@@ -26,7 +25,7 @@ public class IDGExpressionGradientHelper extends ThreeColorGradient{
 		return this.getColor(point);
 	}
 
-	public void setColourMap(Map<String, String> colourMap) {
+	public void setColourMap(Map<Double, String> colourMap) {
 		this.colourMap = colourMap;
 	}
 }

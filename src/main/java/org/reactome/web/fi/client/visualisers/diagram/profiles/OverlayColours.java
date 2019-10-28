@@ -10,6 +10,7 @@ import com.google.gwt.resources.client.TextResource;
 public class OverlayColours{
 
 	private Map<String, Map<String, String>> overlayColoursMap;
+	private Map<String, Map<Double, String>> overlayDoubleColoursMap;
 	private static OverlayColours overlayColours;
 	
 	private OverlayColours() { /*Nothing Here*/ }
@@ -22,13 +23,18 @@ public class OverlayColours{
 	}
 	
 	public Map<String, String> getColours(String name){
-		if(overlayColoursMap == null || !overlayColoursMap.containsKey(name)) {
+		if(overlayColoursMap == null || !overlayColoursMap.containsKey(name)) 
 			loadOverlayProperties(name);
-		}
-		
+	
 		return overlayColoursMap.get(name);
 	}
 	
+	public Map<Double, String> getDoubleColoursMap(String name){
+		if(overlayDoubleColoursMap==null || !overlayDoubleColoursMap.containsKey(name))
+			loadOverlayProperties(name);
+		
+		return overlayDoubleColoursMap.get(name);
+	}
 	
 	private void loadOverlayProperties(String name) {
 		OverlayColourProperties colours = null;
@@ -40,33 +46,41 @@ public class OverlayColours{
 		}
 		if(overlayColoursMap == null)
 			overlayColoursMap = new HashMap<>();
+		if(overlayDoubleColoursMap == null)
+			overlayDoubleColoursMap = new HashMap<>();
 		
 		Map<String, String> colourMap = new HashMap<>();
+		Map<Double, String> doubleColourMap = new HashMap<>();
 		int counter = 0;
 		for(OverlayColourNode node: colours.getNodes()) {
 			colourMap.put(node.getName(), node.getFill());
-			colourMap.put(counter+"", colourMap.get(node.getName()));
+			doubleColourMap.put((double)counter, colourMap.get(node.getName()));
 			counter++;
 		}
 		
 		overlayColoursMap.put(name, colourMap);
+		overlayDoubleColoursMap.put(name, doubleColourMap);
 	}
 	
 	private String getSource(String name) {
-		String result = null;
+
+		TextResource result = null;
 		switch(name) {
-		case "target_dev_level": result = ColourSource.SOURCE.targetLevel().getText();	break;
+		case "target_dev_level": result = ColourSource.SOURCE.targetLevel();	break;
 		}
-		return result;
+		return result.getText();
 	}
 
 	interface ColourSource extends ClientBundle{
 		
 		ColourSource SOURCE = GWT.create(ColourSource.class);
 		
-		@Source("target_level.json")
+		
+		@Source("target_dev_level.json")
 		TextResource targetLevel();
 		
+		@Source("OverlayProfiles.json")
+		TextResource overlayProfiles();
 	}
 	
 }
