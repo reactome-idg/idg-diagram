@@ -1,10 +1,9 @@
 package org.reactome.web.fi.client;
 
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.reactome.web.analysis.client.model.AnalysisType;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.client.visualisers.diagram.DiagramVisualiser;
@@ -12,19 +11,10 @@ import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
-import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
-import org.reactome.web.diagram.util.AdvancedContext2d;
-import org.reactome.web.diagram.util.MapSet;
-import org.reactome.web.diagram.renderers.helper.ItemsDistribution;
-import org.reactome.web.diagram.renderers.helper.RenderType;
-import org.reactome.web.diagram.renderers.layout.Renderer;
 import org.reactome.web.fi.client.visualisers.OverlayDataHandler;
-import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColourNode;
-import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColourProperties;
-import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColours;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.ProteinTargetLevelRenderer;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
@@ -39,13 +29,10 @@ import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.legends.OverlayLegend;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Button;
 
 /**
  * 
@@ -66,6 +53,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
 		
+		initHandlers();
+	}
+
+	private void initHandlers() {
 		eventBus.addHandler(RenderOtherDataEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataLoadedEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
@@ -92,7 +83,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		
 		bind();
 		
-		OverlayDataHandler.getHandler().registerHelper(new ProteinTargetLevelRenderer());
+		OverlayDataHandler.getHandler().registerHelper(new ProteinTargetLevelRenderer(eventBus));
 
 	}
 	
@@ -210,6 +201,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.overlayEntities = event.getEntities();
+		context.setDialogMap(new HashMap<>());
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualiser)
@@ -219,6 +211,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		overlayEntities = null;
+		context.setDialogMap(new HashMap<>());
 		if(activeVisualiser instanceof DiagramVisualiser)
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualiser)

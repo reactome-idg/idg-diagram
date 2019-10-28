@@ -8,10 +8,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.analysis.client.model.AnalysisType;
+import org.reactome.web.diagram.context.dialogs.molecules.MoleculesTable;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.diagram.events.RenderOtherContextDialogInfoEvent;
+import org.reactome.web.diagram.handlers.RenderOtherContextDialogInfoHandler;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.renderers.common.OverlayContext;
 import org.reactome.web.diagram.renderers.helper.ItemsDistribution;
@@ -27,13 +30,17 @@ import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColours;
 import org.reactome.web.fi.client.visualisers.diagram.helpers.IDGExpressionGradientHelper;
 import org.reactome.web.fi.data.overlay.RawOverlayEntities;
 import org.reactome.web.fi.data.overlay.RawOverlayEntity;
+import org.reactome.web.fi.events.OverlayDataResetEvent;
+import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 
 
 
-public class ProteinTargetLevelRenderer implements OverlayRenderer {
+public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherContextDialogInfoHandler, OverlayDataResetHandler {
 
+	private EventBus eventBus;
 	private AdvancedContext2d ctx;
 	private RendererManager rendererManager;
 	private Map<String, String> entitiesMap;
@@ -42,6 +49,12 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer {
 	private Map<String, String> colourMap;
 	private Map<Double, String> doubleColourMap;
 	private OverlayContext originalOverlay;
+	
+	public ProteinTargetLevelRenderer(EventBus eventBus){
+		this.eventBus = eventBus;
+		eventBus.addHandler(RenderOtherContextDialogInfoEvent.TYPE, this);
+		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
+	}
 	
 	@Override
 	public void doRender(Collection<DiagramObject> items, 
@@ -138,6 +151,32 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer {
 		for(RawOverlayEntity entity : rawEntities.getEntities()) {
 			entitiesMap.put(entity.getIdentifier(), entity.getValue());
 		}
+	}
+
+	@Override
+	public void onRenderOtherContextDialogInfo(RenderOtherContextDialogInfoEvent event) {
+		if(entitiesMap==null)
+			return;
+		
+		List<GraphPhysicalEntity> data = event.getTable().getDataProvider().getList();
+		for(int i=0; i<data.size(); i++) {
+			GraphPhysicalEntity entity = data.get(i);
+			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(
+					colourMap.get(entitiesMap.get(entity.getIdentifier())));
+		}
+	}
+
+	@Override
+	public void onOverlayDataReset(OverlayDataResetEvent event) {
+		this.entitiesMap = null;
+		this.colourMap = null;
+		this.ctx = null;
+		this.doubleColourMap = null;
+		this.factor = null;
+		this.offset = null;
+		this.rendererManager = null;
+		this.originalOverlay = null;
+		
 	}
 
 }
