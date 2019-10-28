@@ -9,7 +9,7 @@ import com.google.gwt.resources.client.TextResource;
 
 public class OverlayColours{
 
-	private Map<String, OverlayColourProperties> overlayColoursMap;
+	private Map<String, Map<String, String>> overlayColoursMap;
 	private static OverlayColours overlayColours;
 	
 	private OverlayColours() { /*Nothing Here*/ }
@@ -25,14 +25,8 @@ public class OverlayColours{
 		if(overlayColoursMap == null || !overlayColoursMap.containsKey(name)) {
 			loadOverlayProperties(name);
 		}
-		Map<String, String> colourMap = new HashMap<>();
-		int counter = 0;
-		for(OverlayColourNode node: overlayColoursMap.get(name).getNodes()) {
-			colourMap.put(node.getName(), node.getFill());
-			colourMap.put(counter+"", colourMap.get(node.getName()));
-			counter++;
-		}
-		return colourMap;
+		
+		return overlayColoursMap.get(name);
 	}
 	
 	
@@ -47,7 +41,15 @@ public class OverlayColours{
 		if(overlayColoursMap == null)
 			overlayColoursMap = new HashMap<>();
 		
-		overlayColoursMap.put(name, colours);
+		Map<String, String> colourMap = new HashMap<>();
+		int counter = 0;
+		for(OverlayColourNode node: colours.getNodes()) {
+			colourMap.put(node.getName(), node.getFill());
+			colourMap.put(counter+"", colourMap.get(node.getName()));
+			counter++;
+		}
+		
+		overlayColoursMap.put(name, colourMap);
 	}
 	
 	private String getSource(String name) {
