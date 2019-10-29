@@ -17,6 +17,11 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class OverlayLegend extends LegendPanel implements ClickHandler,
 OverlayDataLoadedHandler, OverlayDataResetHandler{
 	

@@ -4,6 +4,11 @@ import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 
 import com.google.gwt.event.shared.GwtEvent;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class OverlayDataResetEvent extends GwtEvent<OverlayDataResetHandler>{
 	public static Type<OverlayDataResetHandler> TYPE = new Type<>();
 

@@ -3,6 +3,11 @@ package org.reactome.web.fi.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public enum OverlayType {
 
 	TARGET_DEV_LEVEL;

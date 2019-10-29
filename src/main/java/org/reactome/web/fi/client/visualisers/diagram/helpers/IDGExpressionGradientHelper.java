@@ -4,8 +4,11 @@ import java.util.Map;
 
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 
-import com.google.gwt.core.client.GWT;
-
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class IDGExpressionGradientHelper extends ThreeColorGradient{
 
 	private Map<Double, String> colourMap;

@@ -18,6 +18,11 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import org.reactome.web.diagram.context.ContextDialogPanel;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class OverlayDialogPanel extends DialogBox implements ClickHandler{
 
 	private EventBus eventBus;

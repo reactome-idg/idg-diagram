@@ -5,6 +5,11 @@ import org.reactome.web.fi.model.OverlayType;
 
 import com.google.gwt.event.shared.GwtEvent;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class MakeOverlayRequestEvent extends GwtEvent<MakeOverlayRequestHandler>{
     public static Type<MakeOverlayRequestHandler> TYPE = new Type<>();
 

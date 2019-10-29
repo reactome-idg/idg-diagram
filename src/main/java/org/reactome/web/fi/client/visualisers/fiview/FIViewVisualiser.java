@@ -53,7 +53,6 @@ import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColours;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
 import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
-import org.reactome.web.fi.events.OverlayDataRequestedEvent;
 import org.reactome.web.fi.handlers.CytoscapeLayoutChangedHandler;
 import org.reactome.web.fi.handlers.FireGraphObjectSelectedHandler;
 
@@ -69,7 +68,6 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.AbsolutePanel;

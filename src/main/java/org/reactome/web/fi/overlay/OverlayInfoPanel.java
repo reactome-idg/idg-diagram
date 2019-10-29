@@ -10,10 +10,12 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.*;
 import org.reactome.web.diagram.context.ContextInfoPanel;
-import org.reactome.web.fi.events.OverlayDataResetEvent;
-import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 
-
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class OverlayInfoPanel extends Composite implements ClickHandler{
 	
 	EventBus eventBus;

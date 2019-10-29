@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.analysis.client.model.AnalysisType;
-import org.reactome.web.diagram.context.dialogs.molecules.MoleculesTable;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.layout.Coordinate;
@@ -19,7 +18,6 @@ import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.renderers.common.OverlayContext;
 import org.reactome.web.diagram.renderers.helper.ItemsDistribution;
 import org.reactome.web.diagram.renderers.helper.RenderType;
-import org.reactome.web.diagram.renderers.layout.ConnectorRenderer;
 import org.reactome.web.diagram.renderers.layout.Renderer;
 import org.reactome.web.diagram.renderers.layout.RendererManager;
 import org.reactome.web.diagram.util.AdvancedContext2d;
@@ -33,11 +31,13 @@ import org.reactome.web.fi.data.overlay.RawOverlayEntity;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
-
-
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherContextDialogInfoHandler, OverlayDataResetHandler {
 
 	private EventBus eventBus;

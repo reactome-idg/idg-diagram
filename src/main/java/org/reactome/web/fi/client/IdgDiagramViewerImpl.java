@@ -3,8 +3,6 @@ package org.reactome.web.fi.client;
 import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.data.loader.LoaderManager;
-import org.reactome.web.diagram.events.ContentRequestedEvent;
-import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayDataRequestedEvent;

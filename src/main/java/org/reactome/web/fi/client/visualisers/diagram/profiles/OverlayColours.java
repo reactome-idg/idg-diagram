@@ -7,6 +7,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.TextResource;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class OverlayColours{
 
 	private Map<String, Map<String, String>> overlayColoursMap;

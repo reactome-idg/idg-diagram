@@ -14,6 +14,11 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class OverlayTypePanel extends Composite implements ClickHandler{
 	
 	private EventBus eventBus;

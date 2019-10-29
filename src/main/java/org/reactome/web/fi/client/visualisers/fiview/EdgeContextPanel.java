@@ -3,7 +3,6 @@ package org.reactome.web.fi.client.visualisers.fiview;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.reactome.web.diagram.context.popups.export.SnapshotTabPanel.Resources;
 import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
 
 import com.google.gwt.core.client.GWT;
@@ -12,19 +11,13 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
-
-
 
 /**
  * 

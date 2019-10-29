@@ -3,6 +3,11 @@ package org.reactome.web.fi.overlay;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.event.shared.EventBus;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class ColourChoicePanel extends Composite {
 	
 	private EventBus eventbus;
