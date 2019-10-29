@@ -27,6 +27,7 @@ import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.legends.OverlayLegend;
+import org.reactome.web.fi.overlay.OverlayDialogPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -47,6 +48,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	private FIViewVisualiser fIViewVisualiser;
 	private IDGIconButton overlayButton;
 	private OverlayLegend overlayLegend;
+	private OverlayDialogPanel overlayDialogPanel;
 	
 	private RawOverlayEntities overlayEntities;
 	
@@ -70,6 +72,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		diagramButton = new IDGIconButton(IDGRESOURCES.diagramIcon(), IDGRESOURCES.getCSS().diagram(), "Diagram View");
 		overlayButton = new IDGIconButton(IDGRESOURCES.overlayIcon(), IDGRESOURCES.getCSS().cytoscape(), "Select An Overlay");
 		overlayLegend = new OverlayLegend(eventBus);
+		overlayDialogPanel = new OverlayDialogPanel();
 				
 		//adds diagramButton and fiviewButton. sets fiview button as default to show
 		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
@@ -80,6 +83,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		super.leftTopLauncher.getMainControlPanel().add(overlayButton);
 		
 		super.bottomContainerPanel.add(overlayLegend);
+		
+		this.add(overlayDialogPanel);
+		overlayDialogPanel.hide();
+		overlayDialogPanel.setPopupPosition(getAbsoluteLeft()+20, getAbsoluteTop()+80);
 		
 		bind();
 		
@@ -124,9 +131,11 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	
 	private void requestOverlayData() {
 		if(overlayEntities != null) {
+			overlayDialogPanel.hide();
 			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 			return;
 		}
+		overlayDialogPanel.show();
 		
 		Set<String> identifiers = null;
 
