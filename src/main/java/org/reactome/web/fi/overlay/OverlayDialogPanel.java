@@ -4,6 +4,7 @@ import org.reactome.web.diagram.common.PwpButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Button;
@@ -14,9 +15,12 @@ import com.google.gwt.user.client.ui.Label;
 
 public class OverlayDialogPanel extends DialogBox implements ClickHandler{
 
+	private EventBus eventBus;
 	private Button close;
 	
-	public OverlayDialogPanel() {
+	public OverlayDialogPanel(EventBus eventBus) {
+		this.eventBus = eventBus;
+		
 		setAutoHideEnabled(false);
 		setModal(false);
 		setStyleName(org.reactome.web.diagram.context
@@ -28,6 +32,7 @@ public class OverlayDialogPanel extends DialogBox implements ClickHandler{
 										  .ContextDialogPanel.RESOURCES.getCSS()
 										  .close(),
 										  this));
+		fp.add(new OverlayInfoPanel(eventBus));
 		setTitlePanel();
 		setWidget(fp);
 		this.addStyleName(org.reactome.web.diagram.context
