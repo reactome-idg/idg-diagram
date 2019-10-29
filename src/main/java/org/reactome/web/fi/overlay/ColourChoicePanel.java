@@ -11,7 +11,8 @@ public class ColourChoicePanel extends Composite {
 		this.eventbus = eventBus;
 		
 		FlowPanel main = new FlowPanel();
-		Label lbl = new Label("Hello world!");
+		Label lbl = new Label("Change Overlay Colours:");
+		lbl.getElement().getStyle().setColor("#FFFFFF");
 		
 		main.add(lbl);
 		

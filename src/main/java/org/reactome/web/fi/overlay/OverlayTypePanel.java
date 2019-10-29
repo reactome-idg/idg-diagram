@@ -14,33 +14,34 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
-public class OverlayTypePanel extends Composite implements ClickHandler {
+public class OverlayTypePanel extends Composite implements ClickHandler{
 	
 	private EventBus eventBus;
+	private FlowPanel main;
+	private FlowPanel buttonPanel;
 	
 	public OverlayTypePanel(EventBus eventBus) {
 		this.eventBus = eventBus;
 		
-		FlowPanel main = new FlowPanel();
+		main = new FlowPanel();
 		main.add(getOverlayWidget("Choose Overlays:", OverlayType.getTypes()));
-		
-		
+				
 		initWidget(main);
 		
 	}
 
 	private Widget getOverlayWidget(String title, List<String> types) {
-		FlowPanel result = new FlowPanel();
+		buttonPanel = new FlowPanel();
 		Label lbl = new Label(title);
 		lbl.getElement().getStyle().setColor("#FFFFFF");
-		result.add(lbl);
+		buttonPanel.add(lbl);
 		
 		for(String type: types) {
 			RadioButton button  = new RadioButton(type, type);
 			button.addClickHandler(this);
-			result.add(button);
+			buttonPanel.add(button);
 		}		
-		return result;
+		return buttonPanel;
 	}
 
 	@Override
@@ -50,6 +51,5 @@ public class OverlayTypePanel extends Composite implements ClickHandler {
 				new MakeOverlayRequestEvent(
 						OverlayType.getType(btn.getName())),
 						this);
-		
 	}
 }
