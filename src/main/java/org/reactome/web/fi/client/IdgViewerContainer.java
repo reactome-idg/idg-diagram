@@ -72,7 +72,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		diagramButton = new IDGIconButton(IDGRESOURCES.diagramIcon(), IDGRESOURCES.getCSS().diagram(), "Diagram View");
 		overlayButton = new IDGIconButton(IDGRESOURCES.overlayIcon(), IDGRESOURCES.getCSS().cytoscape(), "Select An Overlay");
 		overlayLegend = new OverlayLegend(eventBus);
-		overlayDialogPanel = new OverlayDialogPanel();
+		overlayDialogPanel = new OverlayDialogPanel(eventBus);
 				
 		//adds diagramButton and fiviewButton. sets fiview button as default to show
 		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
