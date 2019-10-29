@@ -41,6 +41,7 @@ public class OverlayInfoPanel extends Composite implements ClickHandler{
 				   					.ContextInfoPanel.RESOURCES.getCSS()
 				   					.container());
 		this.container.add(new OverlayColoursPanel(eventBus));
+		this.container.add(new ColourChoicePanel(eventBus));
 		this.container.showWidget(0);
 		this.container.setAnimationVertical(true);
 		this.container.setAnimationDuration(500);
