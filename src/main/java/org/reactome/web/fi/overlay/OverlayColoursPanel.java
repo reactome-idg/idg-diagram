@@ -1,0 +1,51 @@
+package org.reactome.web.fi.overlay;
+
+import java.util.List;
+
+import org.reactome.web.fi.model.OverlayTypes;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.Widget;
+
+public class OverlayColoursPanel extends Composite implements ClickHandler {
+	
+	private EventBus eventBus;
+	
+	public OverlayColoursPanel(EventBus eventBus) {
+		this.eventBus = eventBus;
+		
+		FlowPanel main = new FlowPanel();
+		main.add(getOverlayWidget("Choose Overlays:", OverlayTypes.getTypes()));
+		
+		
+		initWidget(main);
+		
+	}
+
+	private Widget getOverlayWidget(String title, List<String> types) {
+		FlowPanel result = new FlowPanel();
+		Label lbl = new Label(title);
+		result.add(lbl);
+		
+		for(String type: types) {
+			RadioButton button  = new RadioButton(type, type);
+			button.addClickHandler(this);
+			result.add(button);
+		}		
+		return result;
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		RadioButton btn = (RadioButton) event.getSource();
+		Window.alert(btn.getName());
+		
+	}
+}
