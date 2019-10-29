@@ -24,8 +24,10 @@ import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataRequestedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
+import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
+import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
 import org.reactome.web.fi.legends.OverlayLegend;
 import org.reactome.web.fi.overlay.OverlayDialogPanel;
 
@@ -41,7 +43,7 @@ import com.google.gwt.resources.client.ImageResource;
  *
  */
 public class IdgViewerContainer extends ViewerContainer implements RenderOtherDataHandler,
-OverlayDataLoadedHandler, OverlayDataResetHandler{
+OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
@@ -62,6 +64,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		eventBus.addHandler(RenderOtherDataEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataLoadedEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
+		eventBus.addHandler(MakeOverlayRequestEvent.TYPE, this);
 	}
 
 	@Override
@@ -126,17 +129,18 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	private void bind() {
 		fiviewButton.addClickHandler(e -> cytoscapeButtonPressed());
 		diagramButton.addClickHandler(e -> cytoscapeButtonPressed());
-		overlayButton.addClickHandler(e -> requestOverlayData()); //TODO: should open a panel allowing for selection of overlay
+		overlayButton.addClickHandler(e -> {
+			if(overlayEntities != null) {
+				overlayDialogPanel.hide();
+				eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
+				return;
+			}
+			overlayDialogPanel.show();
+		}); //TODO: should open a panel allowing for selection of overlay
 	}
 	
-	private void requestOverlayData() {
-		if(overlayEntities != null) {
-			overlayDialogPanel.hide();
-			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
-			return;
-		}
-		overlayDialogPanel.show();
-		
+	@Override
+	public void onMakeOverlayRequest(MakeOverlayRequestEvent event) {
 		Set<String> identifiers = null;
 
 		if(activeVisualiser instanceof FIViewVisualiser)
@@ -275,6 +279,5 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
         String cytoscape();
         
         String diagram();
-        
     }
 }

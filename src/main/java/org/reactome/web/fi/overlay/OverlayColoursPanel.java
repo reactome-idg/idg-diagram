@@ -2,6 +2,7 @@ package org.reactome.web.fi.overlay;
 
 import java.util.List;
 
+import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.model.OverlayTypes;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -45,7 +46,10 @@ public class OverlayColoursPanel extends Composite implements ClickHandler {
 	@Override
 	public void onClick(ClickEvent event) {
 		RadioButton btn = (RadioButton) event.getSource();
-		Window.alert(btn.getName());
+		eventBus.fireEventFromSource(
+				new MakeOverlayRequestEvent(
+						OverlayTypes.getType(btn.getName())),
+						this);
 		
 	}
 }
