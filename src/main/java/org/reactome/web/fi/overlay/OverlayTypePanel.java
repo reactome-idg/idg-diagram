@@ -8,18 +8,17 @@ import org.reactome.web.fi.model.OverlayType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
-public class OverlayColoursPanel extends Composite implements ClickHandler {
+public class OverlayTypePanel extends Composite implements ClickHandler {
 	
 	private EventBus eventBus;
 	
-	public OverlayColoursPanel(EventBus eventBus) {
+	public OverlayTypePanel(EventBus eventBus) {
 		this.eventBus = eventBus;
 		
 		FlowPanel main = new FlowPanel();
@@ -33,6 +32,7 @@ public class OverlayColoursPanel extends Composite implements ClickHandler {
 	private Widget getOverlayWidget(String title, List<String> types) {
 		FlowPanel result = new FlowPanel();
 		Label lbl = new Label(title);
+		lbl.getElement().getStyle().setColor("#FFFFFF");
 		result.add(lbl);
 		
 		for(String type: types) {

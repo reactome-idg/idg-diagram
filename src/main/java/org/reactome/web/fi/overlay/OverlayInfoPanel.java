@@ -9,6 +9,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.*;
+import org.reactome.web.diagram.context.ContextInfoPanel;
 
 
 public class OverlayInfoPanel extends Composite implements ClickHandler{
@@ -24,31 +25,27 @@ public class OverlayInfoPanel extends Composite implements ClickHandler{
 		this.eventBus = eventBus;
 		
 		FlowPanel buttonsPanel = new FlowPanel();
-		buttonsPanel.setStyleName(org.reactome.web.diagram.context
-								  .ContextInfoPanel.RESOURCES.getCSS()
+		buttonsPanel.setStyleName(ContextInfoPanel.RESOURCES.getCSS()
 								  .buttonsPanel());
 		buttonsPanel.add(this.overlayTypes = new Button("Overlays", this));
 		buttonsPanel.add(this.colours = new Button("Colours", this));
 		btns.add(this.overlayTypes);
 		btns.add(this.colours);
 		
-		this.overlayTypes.addStyleName(org.reactome.web.diagram.context
-									   .ContextInfoPanel.RESOURCES.getCSS()
+		this.overlayTypes.addStyleName(ContextInfoPanel.RESOURCES.getCSS()
 									   .buttonSelected());
 		
 		this.container = new DeckLayoutPanel();
-		this.container.setStyleName(org.reactome.web.diagram.context
-				   					.ContextInfoPanel.RESOURCES.getCSS()
+		this.container.setStyleName(ContextInfoPanel.RESOURCES.getCSS()
 				   					.container());
-		this.container.add(new OverlayColoursPanel(eventBus));
+		this.container.add(new OverlayTypePanel(eventBus));
 		this.container.add(new ColourChoicePanel(eventBus));
 		this.container.showWidget(0);
 		this.container.setAnimationVertical(true);
 		this.container.setAnimationDuration(500);
 		
 		FlowPanel outerPanel = new FlowPanel();
-		outerPanel.setStyleName(org.reactome.web.diagram.context
-				   				.ContextInfoPanel.RESOURCES.getCSS()
+		outerPanel.setStyleName(ContextInfoPanel.RESOURCES.getCSS()
 				   				.outerPanel());
 		outerPanel.add(buttonsPanel);
 		outerPanel.add(this.container);
@@ -58,13 +55,11 @@ public class OverlayInfoPanel extends Composite implements ClickHandler{
 	@Override
 	public void onClick(ClickEvent event) {
 		for(Button btn: btns) {
-			btn.removeStyleName(org.reactome.web.diagram.context
-									   .ContextInfoPanel.RESOURCES.getCSS()
+			btn.removeStyleName(ContextInfoPanel.RESOURCES.getCSS()
 									   .buttonSelected());
 		}
 		Button btn = (Button) event.getSource();
-		btn.addStyleName(org.reactome.web.diagram.context
-						 .ContextInfoPanel.RESOURCES.getCSS()
+		btn.addStyleName(ContextInfoPanel.RESOURCES.getCSS()
 						 .buttonSelected());
 		if(btn.equals(this.overlayTypes))
 			this.container.showWidget(0);
