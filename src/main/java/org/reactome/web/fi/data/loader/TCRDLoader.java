@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
 import org.reactome.web.fi.data.overlay.RawOverlayEntities;
+import org.reactome.web.fi.model.OverlayType;
 
 import com.google.gwt.http.client.*;
 import com.google.gwt.json.client.JSONArray;
@@ -35,7 +36,7 @@ public class TCRDLoader implements RequestCallback{
 		}
 	}
 	
-	public void load(Set<String> ids) {
+	public void load(Set<String> ids, OverlayType type) {
 		cancel();
 				
 		if(ids == null) {

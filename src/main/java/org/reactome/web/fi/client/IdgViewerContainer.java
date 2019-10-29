@@ -168,7 +168,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 				}
 			}
 		}
-		eventBus.fireEventFromSource(new OverlayDataRequestedEvent(identifiers), this);
+		eventBus.fireEventFromSource(new OverlayDataRequestedEvent(identifiers, event.getType()), this);
 	}
 	
 	private void cytoscapeButtonPressed() {

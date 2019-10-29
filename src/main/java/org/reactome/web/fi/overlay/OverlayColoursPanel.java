@@ -3,7 +3,7 @@ package org.reactome.web.fi.overlay;
 import java.util.List;
 
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
-import org.reactome.web.fi.model.OverlayTypes;
+import org.reactome.web.fi.model.OverlayType;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -23,7 +23,7 @@ public class OverlayColoursPanel extends Composite implements ClickHandler {
 		this.eventBus = eventBus;
 		
 		FlowPanel main = new FlowPanel();
-		main.add(getOverlayWidget("Choose Overlays:", OverlayTypes.getTypes()));
+		main.add(getOverlayWidget("Choose Overlays:", OverlayType.getTypes()));
 		
 		
 		initWidget(main);
@@ -48,7 +48,7 @@ public class OverlayColoursPanel extends Composite implements ClickHandler {
 		RadioButton btn = (RadioButton) event.getSource();
 		eventBus.fireEventFromSource(
 				new MakeOverlayRequestEvent(
-						OverlayTypes.getType(btn.getName())),
+						OverlayType.getType(btn.getName())),
 						this);
 		
 	}

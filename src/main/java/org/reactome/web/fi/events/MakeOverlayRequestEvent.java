@@ -1,16 +1,16 @@
 package org.reactome.web.fi.events;
 
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
-import org.reactome.web.fi.model.OverlayTypes;
+import org.reactome.web.fi.model.OverlayType;
 
 import com.google.gwt.event.shared.GwtEvent;
 
 public class MakeOverlayRequestEvent extends GwtEvent<MakeOverlayRequestHandler>{
     public static Type<MakeOverlayRequestHandler> TYPE = new Type<>();
 
-    private OverlayTypes type;
+    private OverlayType type;
     
-    public MakeOverlayRequestEvent(OverlayTypes type) {
+    public MakeOverlayRequestEvent(OverlayType type) {
     	this.type = type;
     }
     
@@ -24,7 +24,7 @@ public class MakeOverlayRequestEvent extends GwtEvent<MakeOverlayRequestHandler>
 		handler.onMakeOverlayRequest(this);
 	}
 
-	public OverlayTypes getType() {
+	public OverlayType getType() {
 		return this.type;
 	}
 	
