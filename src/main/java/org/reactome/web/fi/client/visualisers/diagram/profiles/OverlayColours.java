@@ -34,6 +34,10 @@ public class OverlayColours{
 		return overlayColoursMap.get(name);
 	}
 	
+	public Map<String, Map<String,String>> getOverlayColoursMap(){
+		return this.overlayColoursMap;
+	}
+	
 	public Map<Double, String> getDoubleColoursMap(String name){
 		if(overlayDoubleColoursMap==null || !overlayDoubleColoursMap.containsKey(name))
 			loadOverlayProperties(name);
@@ -56,11 +60,9 @@ public class OverlayColours{
 		
 		Map<String, String> colourMap = new HashMap<>();
 		Map<Double, String> doubleColourMap = new HashMap<>();
-		int counter = 0;
 		for(OverlayColourNode node: colours.getNodes()) {
 			colourMap.put(node.getName(), node.getFill());
-			doubleColourMap.put((double)counter, colourMap.get(node.getName()));
-			counter++;
+			doubleColourMap.put((double)doubleColourMap.size(), colourMap.get(node.getName()));
 		}
 		
 		overlayColoursMap.put(name, colourMap);

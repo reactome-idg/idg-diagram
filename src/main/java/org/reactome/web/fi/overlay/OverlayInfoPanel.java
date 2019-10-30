@@ -10,7 +10,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.*;
 import org.reactome.web.diagram.context.ContextInfoPanel;
+import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
+import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 
 /**
@@ -19,13 +21,14 @@ import org.reactome.web.fi.handlers.OverlayDataResetHandler;
  *
  */
 public class OverlayInfoPanel extends Composite implements ClickHandler,
-OverlayDataResetHandler{
+OverlayDataResetHandler, OverlayDataLoadedHandler{
 	
 	EventBus eventBus;
 	private Button overlayTypes;
 	private Button colours;
 	private List<Button> btns = new LinkedList<>();
 	private OverlayTypePanel overlayTypePanel;
+	private ColourChoicePanel colourChoicePanel;
 	
 	private DeckLayoutPanel container;
 	
@@ -46,23 +49,30 @@ OverlayDataResetHandler{
 		this.container = new DeckLayoutPanel();
 		this.container.setStyleName(ContextInfoPanel.RESOURCES.getCSS()
 				   					.container());
+		
+		//adding panels to DeckPanel container
 		this.overlayTypePanel = new OverlayTypePanel(eventBus);
 		this.container.add(overlayTypePanel);
-		this.container.add(new ColourChoicePanel(eventBus));
+		this.colourChoicePanel = new ColourChoicePanel(eventBus);
+		this.container.add(colourChoicePanel);
+		
 		this.container.showWidget(0);
 		this.container.setAnimationVertical(true);
 		this.container.setAnimationDuration(500);
 		
 		FlowPanel outerPanel = new FlowPanel();
-		outerPanel.setStyleName(ContextInfoPanel.RESOURCES.getCSS()
-				   				.outerPanel());
+		outerPanel.setStyleName(ContextInfoPanel.RESOURCES.getCSS().outerPanel());
 		outerPanel.add(buttonsPanel);
 		outerPanel.add(this.container);
 		
-		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
-		
+		initHandlers();
 		initWidget(outerPanel);
 		
+	}
+
+	private void initHandlers() {
+		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
+		eventBus.addHandler(OverlayDataLoadedEvent.TYPE, this);
 	}
 
 	@Override
@@ -83,5 +93,10 @@ OverlayDataResetHandler{
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		this.overlayTypePanel.reset();
+	}
+
+	@Override
+	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
+		this.colourChoicePanel.setColourLabels();
 	}
 }
