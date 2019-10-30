@@ -10,13 +10,16 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.*;
 import org.reactome.web.diagram.context.ContextInfoPanel;
+import org.reactome.web.fi.events.OverlayDataResetEvent;
+import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 
 /**
  * 
  * @author brunsont
  *
  */
-public class OverlayInfoPanel extends Composite implements ClickHandler{
+public class OverlayInfoPanel extends Composite implements ClickHandler,
+OverlayDataResetHandler{
 	
 	EventBus eventBus;
 	private Button overlayTypes;
@@ -56,6 +59,8 @@ public class OverlayInfoPanel extends Composite implements ClickHandler{
 		outerPanel.add(buttonsPanel);
 		outerPanel.add(this.container);
 		
+		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
+		
 		initWidget(outerPanel);
 		
 	}
@@ -73,5 +78,10 @@ public class OverlayInfoPanel extends Composite implements ClickHandler{
 			this.container.showWidget(0);
 		else if(btn.equals(this.colours))
 			this.container.showWidget(1);
+	}
+
+	@Override
+	public void onOverlayDataReset(OverlayDataResetEvent event) {
+		this.overlayTypePanel.reset();
 	}
 }
