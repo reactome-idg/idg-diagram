@@ -1,0 +1,8 @@
+.overlayTypeLabel{
+	color: black;
+	padding-top: 5px;
+	white-space: nowrap;
+	padding-bottom: 5px;
+	border-bottom: 2px solid #6f7277;
+	margin-bottom: 5px;
+}
