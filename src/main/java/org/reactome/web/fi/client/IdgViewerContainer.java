@@ -30,6 +30,7 @@ import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
 import org.reactome.web.fi.legends.OverlayLegend;
+import org.reactome.web.fi.model.OverlayType;
 import org.reactome.web.fi.overlay.OverlayDialogPanel;
 
 import com.google.gwt.core.client.GWT;
@@ -77,6 +78,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		overlayButton = new IDGIconButton(IDGRESOURCES.overlayIcon(), IDGRESOURCES.getCSS().cytoscape(), "Select An Overlay");
 		overlayLegend = new OverlayLegend(eventBus);
 		overlayDialogPanel = new OverlayDialogPanel(eventBus);
+		overlayDialogPanel.hide();
 				
 		//adds diagramButton and fiviewButton. sets fiview button as default to show
 		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
@@ -89,8 +91,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		super.bottomContainerPanel.add(overlayLegend);
 		
 		this.add(overlayDialogPanel);
-		overlayDialogPanel.hide();
-		overlayDialogPanel.setPopupPosition(getAbsoluteLeft()+20, getAbsoluteTop()+80);
+		int x = activeVisualiser.asWidget().getAbsoluteLeft();
+		int y = activeVisualiser.asWidget().getAbsoluteTop();
+		overlayDialogPanel.setPopupPosition(x+20, y+80);
 		
 		bind();
 		
@@ -127,17 +130,22 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 			((FIViewVisualiser)activeVisualiser).overlayNodes(overlayEntities);
 	}
 	
+	@Override
+	public void contentLoaded(Context context) {
+		super.contentLoaded(context);
+		
+		//check if overlay should be loaded and if so, load new TCRD data
+		if(overlayEntities != null) {
+			String overlayType = overlayEntities.getDataType();
+			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
+			eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayType.getType(overlayType)), this);
+		}
+	}
+
 	private void bind() {
 		fiviewButton.addClickHandler(e -> cytoscapeButtonPressed());
 		diagramButton.addClickHandler(e -> cytoscapeButtonPressed());
-		overlayButton.addClickHandler(e -> {
-			if(overlayEntities != null) {
-				overlayDialogPanel.hide();
-				eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
-				return;
-			}
-			overlayDialogPanel.show();
-		}); //TODO: should open a panel allowing for selection of overlay
+		overlayButton.addClickHandler(e -> overlayDialogPanel.show()); 
 	}
 	
 	@Override

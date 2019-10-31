@@ -98,5 +98,6 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.colourChoicePanel.setColourLabels();
+		this.overlayTypePanel.selectType(event.getEntities().getDataType());
 	}
 }

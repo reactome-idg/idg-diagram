@@ -63,12 +63,14 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		Map<String, String> map = OverlayColours.get().getColours(event.getEntities().getDataType());
-		map.forEach((k, v) -> {				
-			InlineLabel lbl = new InlineLabel(k);
-			lbl.getElement().getStyle().setBackgroundColor(v);
-			lbl.getElement().getStyle().setPadding(3, Unit.PX);
-			lbl.getElement().getStyle().setMargin(0, Unit.PX);
-			colourMapPanel.add(lbl);
+		map.forEach((k, v) -> {
+			if(k != "defualt") {
+				InlineLabel lbl = new InlineLabel(k);
+				lbl.getElement().getStyle().setBackgroundColor(v);
+				lbl.getElement().getStyle().setPadding(3, Unit.PX);
+				lbl.getElement().getStyle().setMargin(0, Unit.PX);
+				colourMapPanel.add(lbl);
+			}
 		});
 		
 		this.setVisible(true);

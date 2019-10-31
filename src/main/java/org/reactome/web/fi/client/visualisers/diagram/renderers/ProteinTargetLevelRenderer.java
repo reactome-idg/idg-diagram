@@ -9,7 +9,9 @@ import java.util.Set;
 
 import org.reactome.web.analysis.client.model.AnalysisType;
 import org.reactome.web.diagram.data.Context;
+import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSequence;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
+import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.events.RenderOtherContextDialogInfoEvent;
@@ -74,11 +76,11 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
         makeEntitiesMap(rawEntities);
 		
 		//check analysis status for items distribution
-        AnalysisType analysisType = AnalysisType.NONE;
-        if(context.getAnalysisStatus() != null)
-        	analysisType = AnalysisType.getType(context.getAnalysisStatus().getAnalysisSummary().getType());
+//        AnalysisType analysisType = AnalysisType.NONE;
+//        if(context.getAnalysisStatus() != null)
+//        	analysisType = AnalysisType.getType(context.getAnalysisStatus().getAnalysisSummary().getType());
 
-        ItemsDistribution itemsDistribution = new ItemsDistribution(items, analysisType);
+        ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
         renderProteins(itemsDistribution.getItems("Protein"));
         renderComplexes(itemsDistribution.getItems("Complex"));
 	}
@@ -92,10 +94,12 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
         Set<DiagramObject> objectSet = target.values();
         for(DiagramObject item : objectSet) {
         	GraphPhysicalEntity graphObject = (GraphPhysicalEntity) item.getGraphObject();
-        	ctx.setFillStyle(colourMap
-        					 .get(entitiesMap
-        					 .get(graphObject.getIdentifier())));
-        	renderer.draw(ctx, item, factor, offset);
+        	if(graphObject instanceof GraphEntityWithAccessionedSequence || graphObject instanceof GraphProteinDrug) {
+	        	ctx.setFillStyle(colourMap
+	        					 .get(entitiesMap
+	        					 .get(graphObject.getIdentifier())));
+	        	renderer.draw(ctx, item, factor, offset);
+        	}
         }
 	}
 	private void renderComplexes(MapSet<RenderType, DiagramObject> target) {
@@ -117,13 +121,18 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 		Set<DiagramObject> objectSet = target.values();
 		for(DiagramObject item : objectSet) {
 			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();
-			Set<GraphPhysicalEntity> obj = entity.getParticipants();
-			for(GraphPhysicalEntity participant : obj) {
-				participant.setIsHit(participant.getIdentifier(),
-									 mapColourToDouble(participant.getIdentifier()));
+			if(entity != null) {
+				Set<GraphPhysicalEntity> obj = entity.getParticipants();
+				for(GraphPhysicalEntity participant : obj) {
+					if(participant instanceof GraphEntityWithAccessionedSequence || participant instanceof GraphProteinDrug) {
+						participant.setIsHit(participant.getIdentifier(),
+											 mapColourToDouble(participant.getIdentifier()));
+					}
+				}
+				if(entity.getParticipantsExpression(0).size() > 0)
+					//renderer.drawExpression for each diagram object here
+					renderer.drawExpression(ctx, overlay, item, 0, 0, 0, factor, offset);
 			}
-			//renderer.drawExpression for each diagram object here
-			renderer.drawExpression(ctx, overlay, item, 0, 0, 0, factor, offset);
 		}
 		//Last thing: restore AnalysisColours.get().expressionGradient
 		AnalysisColours.get().expressionGradient = originalExpressionGradient;

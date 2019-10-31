@@ -30,7 +30,7 @@
     }, 
     {
         "name" : "default",
-        "fill" : "#8DC7BB"
+        "fill" : "transparent"
     }]
 }
 

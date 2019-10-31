@@ -16,14 +16,17 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import org.reactome.web.diagram.context.ContextDialogPanel;
+import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
+import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 
 /**
  * 
  * @author brunsont
  *
  */
-public class OverlayDialogPanel extends DialogBox implements ClickHandler{
+public class OverlayDialogPanel extends DialogBox implements ClickHandler,
+OverlayDataLoadedHandler{
 
 	private EventBus eventBus;
 	private Button close;
@@ -48,6 +51,8 @@ public class OverlayDialogPanel extends DialogBox implements ClickHandler{
 		setWidget(fp);
 		this.addStyleName(ContextDialogPanel.RESOURCES.getCSS()
 						  .popupSelected());
+		
+		eventBus.addHandler(OverlayDataLoadedEvent.TYPE, this);
 		
 		show();
 
@@ -80,7 +85,6 @@ public class OverlayDialogPanel extends DialogBox implements ClickHandler{
 	public void onClick(ClickEvent event) {
 		Button btn = (Button) event.getSource();
 		if(btn.equals(close)) {
-			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 			hide();
 		}
 		if(btn.equals(minimize)) {
@@ -89,6 +93,11 @@ public class OverlayDialogPanel extends DialogBox implements ClickHandler{
 			}
 			else {infoPanel.setVisible(true);}
 		}
+	}
+	
+	@Override
+	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
+		this.show();
 	}
 	
 	public static Resources IDGRESOURCES;

@@ -59,11 +59,18 @@ public class OverlayTypePanel extends Composite implements ClickHandler{
 	}
 	
 	protected void reset() {
-		int count = buttonPanel.getWidgetCount();
 		for(int i=0; i<buttonPanel.getWidgetCount(); i++) {
 			Widget widget = buttonPanel.getWidget(i);
 			if(widget instanceof RadioButton)
 				((RadioButton) widget).setValue(false);
+		}
+	}
+
+	public void selectType(String dataType) {
+		for(int i=0; i<buttonPanel.getWidgetCount(); i++) {
+			Widget widget = buttonPanel.getWidget(i);
+			if(widget instanceof RadioButton && OverlayType.getType(((RadioButton) widget).getName()) == OverlayType.getType(dataType))
+				((RadioButton) widget).setValue(true);
 		}
 	}
 }

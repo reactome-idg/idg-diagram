@@ -49,9 +49,11 @@ public class ColourChoicePanel extends Composite {
 			overlayTypeLabel.setStyleName(RESOURCES.getCSS().overlayTypeLabel());
 			overlayTypePanel.add(overlayTypeLabel);
 			v.forEach((i,j) ->{
-				Label colorLbl = new Label(i);
-				colorLbl.getElement().getStyle().setBackgroundColor(j);
-				overlayTypePanel.add(colorLbl);
+				if(i != "default") {
+					Label colorLbl = new Label(i);
+					colorLbl.getElement().getStyle().setBackgroundColor(j);
+					overlayTypePanel.add(colorLbl);
+				}
 			});
 			result.add(overlayTypePanel);
 		});
