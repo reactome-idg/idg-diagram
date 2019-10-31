@@ -10,12 +10,16 @@ import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * 
@@ -62,9 +66,12 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
+		colourMapPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
 		Map<String, String> map = OverlayColours.get().getColours(event.getEntities().getDataType());
+		Label title = new Label("Overlay Value Types: ");
+		colourMapPanel.add(title);
 		map.forEach((k, v) -> {
-			if(k != "defualt") {
+			if(k != "default") {
 				InlineLabel lbl = new InlineLabel(k);
 				lbl.getElement().getStyle().setBackgroundColor(v);
 				lbl.getElement().getStyle().setPadding(3, Unit.PX);
@@ -80,6 +87,26 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		colourMapPanel = new FlowPanel();
+		colourMapPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
 		this.setVisible(false);
 	}
+	
+	public static Resources IDGRESOURCES;
+	static {
+		IDGRESOURCES = GWT.create(Resources.class);
+		IDGRESOURCES.getCSS().ensureInjected();
+	}
+	
+	public interface Resources extends ClientBundle {
+		@Source(ResourceCSS.CSS)
+		ResourceCSS getCSS();
+	}
+	
+	@CssResource.ImportedWithPrefix("idgDiagram-colorChoicePanel")
+	public interface ResourceCSS extends CssResource{
+		String CSS = "org/reactome/web/fi/legends/OverlayLegend.css";
+		
+		String colourMapPanel();
+	}
+	
 }
