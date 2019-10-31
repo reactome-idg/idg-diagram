@@ -91,9 +91,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		super.bottomContainerPanel.add(overlayLegend);
 		
 		this.add(overlayDialogPanel);
-		int x = activeVisualiser.asWidget().getAbsoluteLeft();
-		int y = activeVisualiser.asWidget().getAbsoluteTop();
-		overlayDialogPanel.setPopupPosition(x+20, y+80);
 		
 		bind();
 		
@@ -145,7 +142,18 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	private void bind() {
 		fiviewButton.addClickHandler(e -> cytoscapeButtonPressed());
 		diagramButton.addClickHandler(e -> cytoscapeButtonPressed());
-		overlayButton.addClickHandler(e -> overlayDialogPanel.show()); 
+		overlayButton.addClickHandler(e -> showOverlayPopup()); 
+	}
+
+	private void showOverlayPopup() {
+		overlayDialogPanel.setBoundsConstants(this.getElement().getAbsoluteTop(),
+				  this.getElement().getAbsoluteLeft()+this.getOffsetWidth(),
+				  this.getElement().getAbsoluteTop()+this.getOffsetHeight(),
+				  this.getElement().getAbsoluteLeft());
+		int x = this.getElement().getAbsoluteLeft();
+		int y = this.getElement().getAbsoluteTop();
+		overlayDialogPanel.setPopupPosition(x+20, y+40);
+		overlayDialogPanel.show();
 	}
 	
 	@Override
@@ -249,6 +257,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	public void onResize() {
 		super.onResize();
 		fIViewVisualiser.setSize(this.getOffsetWidth(), this.getOffsetHeight());
+		overlayDialogPanel.setBoundsConstants(this.getElement().getAbsoluteTop(),
+											  this.getElement().getAbsoluteLeft()+this.getOffsetWidth(),
+											  this.getElement().getAbsoluteTop()+this.getOffsetHeight(),
+											  this.getElement().getAbsoluteLeft());
 	}
 	
 	/**

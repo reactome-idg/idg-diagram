@@ -5,12 +5,16 @@ import org.reactome.web.diagram.common.PwpButton;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -32,6 +36,11 @@ OverlayDataLoadedHandler{
 	private Button close;
 	private Button minimize;
 	private OverlayInfoPanel infoPanel;
+	
+	private int topBound;
+	private int rightBound;
+	private int bottomBound;
+	private int leftBound;
 	
 	public OverlayDialogPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
@@ -74,6 +83,7 @@ OverlayDataLoadedHandler{
 	}
 	
 	public void show() {
+		Window.alert(topBound+", "+rightBound+", "+bottomBound+", "+leftBound);
 		super.show();
 	}
 	
@@ -95,11 +105,39 @@ OverlayDataLoadedHandler{
 		}
 	}
 	
+	public void setBoundsConstants(int top, int right, int bottom, int left) {
+		this.topBound = top;
+		this.rightBound = right;
+		this.bottomBound = bottom;
+		this.leftBound = left;
+	}
+	
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.show();
 	}
 	
+	@Override
+	protected void continueDragging(MouseMoveEvent event) {
+		
+		int topMargin = topBound;
+		int rightMargin = rightBound;
+		int bottomMargin = bottomBound;
+		int leftMargin = leftBound;
+		
+		if(this.getAbsoluteTop() < topMargin)
+			setPosition(this.getPopupLeft(), topMargin);
+		if((this.getAbsoluteLeft()+this.getOffsetWidth()) > rightMargin)
+			setPosition(rightMargin-this.getOffsetWidth(), this.getPopupTop());
+		int x = this.getAbsoluteTop()-topBound; //must run this outside if statement for correct function
+		if(x> bottomMargin);
+			setPosition(this.getPopupLeft(), bottomMargin-this.getOffsetHeight());
+		if(this.getAbsoluteLeft()< leftMargin)
+			this.setPopupPosition(leftMargin, this.getPopupTop());
+		
+		super.continueDragging(event);
+	}
+
 	public static Resources IDGRESOURCES;
 	static {
 			IDGRESOURCES = GWT.create(Resources.class);
