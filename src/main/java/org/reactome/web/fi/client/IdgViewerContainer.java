@@ -151,6 +151,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	@Override
 	public void onMakeOverlayRequest(MakeOverlayRequestEvent event) {
 		Set<String> identifiers = null;
+		
+		if(overlayEntities != null)
+			if(OverlayType.getType(overlayEntities.getDataType()) == event.getType())
+				return;	
 
 		if(activeVisualiser instanceof FIViewVisualiser)
 			identifiers = context.getContent().getIdentifierMap().keySet();
