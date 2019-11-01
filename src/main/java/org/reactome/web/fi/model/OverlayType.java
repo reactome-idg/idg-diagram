@@ -10,7 +10,7 @@ import java.util.List;
  */
 public enum OverlayType {
 
-	TARGET_DEV_LEVEL;
+	TARGET_DEVELOPMENT_LEVEL;
 	
 	public static OverlayType getType(String type) {
 		if(type == null) return null;

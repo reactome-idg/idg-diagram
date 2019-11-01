@@ -116,27 +116,27 @@ OverlayDataLoadedHandler{
 		this.show();
 	}
 	
-	@Override
-	protected void continueDragging(MouseMoveEvent event) {
-		
-		int genericMargin = 20;
-		
-		int topMargin = topBound + 40;
-		int rightMargin = rightBound - genericMargin;
-		int bottomMargin = bottomBound - genericMargin;
-		int leftMargin = leftBound + genericMargin;
-		
-		if(this.getAbsoluteTop() < topMargin)
-			setPosition(this.getPopupLeft(), topMargin);
-		if((this.getAbsoluteLeft()+this.getOffsetWidth()) > rightMargin)
-			setPosition(rightMargin-this.getOffsetWidth(), this.getPopupTop());
-		if(((this.getAbsoluteTop()+this.getOffsetHeight())-topBound) > bottomMargin)
-			setPosition(this.getPopupLeft(), bottomMargin-this.getOffsetHeight());
-		if(this.getAbsoluteLeft()< leftMargin)
-			this.setPopupPosition(leftMargin, this.getPopupTop());
-		
-		super.continueDragging(event);
-	}
+//	@Override
+//	protected void continueDragging(MouseMoveEvent event) {
+//		
+//		int genericMargin = 20;
+//		
+//		int topMargin = topBound + 40;
+//		int rightMargin = rightBound - genericMargin;
+//		int bottomMargin = bottomBound - genericMargin;
+//		int leftMargin = leftBound + genericMargin;
+//		
+//		if(this.getAbsoluteTop() < topMargin)
+//			setPosition(this.getPopupLeft(), topMargin);
+//		if((this.getAbsoluteLeft()+this.getOffsetWidth()) > rightMargin)
+//			setPosition(rightMargin-this.getOffsetWidth(), this.getPopupTop());
+//		if(((this.getAbsoluteTop()+this.getOffsetHeight())-topBound) > bottomMargin)
+//			setPosition(this.getPopupLeft(), bottomMargin-this.getOffsetHeight());
+//		if(this.getAbsoluteLeft()< leftMargin)
+//			this.setPopupPosition(leftMargin, this.getPopupTop());
+//		
+//		super.continueDragging(event);
+//	}
 
 	public static Resources IDGRESOURCES;
 	static {
