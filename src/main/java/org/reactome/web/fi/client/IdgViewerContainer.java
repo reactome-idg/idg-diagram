@@ -152,7 +152,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 				  this.getElement().getAbsoluteLeft());
 		int x = this.getElement().getAbsoluteLeft();
 		int y = this.getElement().getAbsoluteTop();
-		overlayDialogPanel.setPopupPosition(x+20, y+40);
+		overlayDialogPanel.setPopupPosition(x+20, y+41);
 		overlayDialogPanel.show();
 	}
 	
