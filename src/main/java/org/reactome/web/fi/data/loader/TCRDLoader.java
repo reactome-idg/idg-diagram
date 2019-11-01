@@ -3,7 +3,7 @@ package org.reactome.web.fi.data.loader;
 import java.util.Set;
 
 import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
-import org.reactome.web.fi.data.overlay.RawOverlayEntities;
+import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.model.OverlayType;
 
 import com.google.gwt.http.client.*;
@@ -17,7 +17,7 @@ import com.google.gwt.json.client.JSONValue;
 public class TCRDLoader implements RequestCallback{
 
 	public interface Handler{
-		void onTargetLevelLoaded(RawOverlayEntities entities);
+		void onTargetLevelLoaded(OverlayEntities entities);
 		void onTargetLevelLoadedError(Throwable exception);
 	}
 	
@@ -76,7 +76,7 @@ public class TCRDLoader implements RequestCallback{
 	public void onResponseReceived(Request request, Response response) {
 		switch(response.getStatusCode()) {
 		case Response.SC_OK:
-			RawOverlayEntities entities;
+			OverlayEntities entities;
 			try {
 				JSONValue val = JSONParser.parseStrict(response.getText());
 				JSONObject obj = new JSONObject();
@@ -93,7 +93,7 @@ public class TCRDLoader implements RequestCallback{
 					outputArray.set(outputArray.size(), arrayObj);
 				}
 				obj.put("entities", outputArray);
-				entities = OverlayEntityDataFactory.getTargetLevelEntity(RawOverlayEntities.class, obj.toString());
+				entities = OverlayEntityDataFactory.getTargetLevelEntity(OverlayEntities.class, obj.toString());
 			}catch(Exception e) {
 				this.handler.onTargetLevelLoadedError(e);
 				return;

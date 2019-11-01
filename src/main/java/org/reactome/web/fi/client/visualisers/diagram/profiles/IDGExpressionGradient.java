@@ -1,4 +1,4 @@
-package org.reactome.web.fi.client.visualisers.diagram.helpers;
+package org.reactome.web.fi.client.visualisers.diagram.profiles;
 
 import java.util.Map;
 
@@ -8,12 +8,14 @@ import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
  * 
  * @author brunsont
  *
+ * This class is used to override the AnalysisColours expression gradient for use in overlays
+ *
  */
-public class IDGExpressionGradientHelper extends ThreeColorGradient{
+public class IDGExpressionGradient extends ThreeColorGradient{
 
 	private Map<Double, String> colourMap;
 	
-	public IDGExpressionGradientHelper(String hexFrom, String hexStop, String hexTo) {
+	public IDGExpressionGradient(String hexFrom, String hexStop, String hexTo) {
 		super("#FFFF50", null, "#FFFFCA");
 		// TODO Auto-generated constructor stub
 	}

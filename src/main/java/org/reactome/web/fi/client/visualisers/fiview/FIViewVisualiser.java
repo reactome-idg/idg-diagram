@@ -27,8 +27,8 @@ import org.reactome.web.diagram.handlers.ExpressionColumnChangedHandler;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.profiles.interactors.InteractorColours;
 import org.reactome.web.fi.data.content.FIViewContent;
-import org.reactome.web.fi.data.overlay.RawOverlayEntities;
-import org.reactome.web.fi.data.overlay.RawOverlayEntity;
+import org.reactome.web.fi.data.overlay.OverlayEntities;
+import org.reactome.web.fi.data.overlay.OverlayEntity;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeClickedEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeContextSelectEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeHoveredEvent;
@@ -655,14 +655,14 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		cy.removeNodeClass("flagged");
 	}
 	
-	public void overlayNodes(RawOverlayEntities overlayEntities) {
+	public void overlayNodes(OverlayEntities overlayEntities) {
 		if(overlayEntities == null) {
 			cy.resetStyle();
 			return;
 		}
 		
 		Map<String, String> colourMap = OverlayColours.get().getColours(overlayEntities.getDataType());
-		for(RawOverlayEntity entity: overlayEntities.getEntities()) {
+		for(OverlayEntity entity: overlayEntities.getEntities()) {
 			String colour = colourMap.get(entity.getValue());
 			cy.highlightNode(entity.getIdentifier(), colour, ".8");
 		}

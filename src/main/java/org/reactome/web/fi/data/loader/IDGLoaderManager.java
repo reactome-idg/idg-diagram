@@ -10,7 +10,7 @@ import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColours;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
-import org.reactome.web.fi.data.overlay.RawOverlayEntities;
+import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.model.OverlayType;
 
@@ -103,7 +103,7 @@ TCRDLoader.Handler{
 	}
 	
 	@Override 
-	public void onTargetLevelLoaded(RawOverlayEntities entities) {
+	public void onTargetLevelLoaded(OverlayEntities entities) {
 		//loads colors so they are accessible when OverlayDataLoadedEvent runs
 		OverlayColours.get().getColours(entities.getDataType());
 		eventBus.fireEventFromSource(new OverlayDataLoadedEvent(entities), this);

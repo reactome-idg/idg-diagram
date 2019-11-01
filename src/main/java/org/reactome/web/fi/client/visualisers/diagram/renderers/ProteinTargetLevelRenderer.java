@@ -26,10 +26,10 @@ import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.OverlayRenderer;
+import org.reactome.web.fi.client.visualisers.diagram.profiles.IDGExpressionGradient;
 import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColours;
-import org.reactome.web.fi.client.visualisers.diagram.helpers.IDGExpressionGradientHelper;
-import org.reactome.web.fi.data.overlay.RawOverlayEntities;
-import org.reactome.web.fi.data.overlay.RawOverlayEntity;
+import org.reactome.web.fi.data.overlay.OverlayEntities;
+import org.reactome.web.fi.data.overlay.OverlayEntity;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.OverlayType;
@@ -64,20 +64,20 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 						 AdvancedContext2d ctx, 
 						 Context context,
 						 RendererManager rendererManager, 
-						 RawOverlayEntities rawEntities,
+						 OverlayEntities entities,
 						 OverlayContext overlay) {
 		
-		if(OverlayType.getType(rawEntities.getDataType()) != OverlayType.TARGET_DEV_LEVEL)
+		if(OverlayType.getType(entities.getDataType()) != OverlayType.TARGET_DEV_LEVEL)
 			return;
 		
 		this.ctx = ctx;
 		this.rendererManager = rendererManager;
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
-        this.colourMap = OverlayColours.get().getColours(rawEntities.getDataType());
-        this.doubleColourMap = OverlayColours.get().getDoubleColoursMap(rawEntities.getDataType());
+        this.colourMap = OverlayColours.get().getColours(entities.getDataType());
+        this.doubleColourMap = OverlayColours.get().getDoubleColoursMap(entities.getDataType());
         this.originalOverlay = overlay;
-        makeEntitiesMap(rawEntities);
+        makeEntitiesMap(entities);
 		
 		//check analysis status for items distribution
 //        AnalysisType analysisType = AnalysisType.NONE;
@@ -116,12 +116,10 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 		OverlayContext overlay = this.originalOverlay;
 		//Store AnalysisColours.get().expressionGradient for restore
 		ThreeColorGradient originalExpressionGradient = AnalysisColours.get().expressionGradient;
-		ThreeColorGradient originalEnrichmentGradient = AnalysisColours.get().enrichmentGradient;
 		//set Analysiscolours.get().expressionGradient to my own
-		IDGExpressionGradientHelper colourHelper = new IDGExpressionGradientHelper(null,null,null);
+		IDGExpressionGradient colourHelper = new IDGExpressionGradient(null,null,null);
 		colourHelper.setColourMap(doubleColourMap);
 		AnalysisColours.get().expressionGradient = colourHelper;
-//		AnalysisColours.get().enrichmentGradient = colourHelper;
 		Set<DiagramObject> objectSet = target.values();
 		for(DiagramObject item : objectSet) {
 			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();
@@ -158,10 +156,10 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 		return rtn;
 	}
 
-	private void makeEntitiesMap(RawOverlayEntities rawEntities) {
+	private void makeEntitiesMap(OverlayEntities rawEntities) {
 		if(entitiesMap ==null)
 			entitiesMap = new HashMap<>();
-		for(RawOverlayEntity entity : rawEntities.getEntities()) {
+		for(OverlayEntity entity : rawEntities.getEntities()) {
 			entitiesMap.put(entity.getIdentifier(), entity.getValue());
 		}
 	}

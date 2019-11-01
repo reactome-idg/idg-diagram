@@ -13,8 +13,8 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 public abstract class OverlayEntityDataFactory {
 
 	interface ModelAutoBeanFactory extends AutoBeanFactory{
-		AutoBean<RawOverlayEntities> targetLevelEntities();
-		AutoBean<RawOverlayEntity> targetLevelEntity();
+		AutoBean<OverlayEntities> targetLevelEntities();
+		AutoBean<OverlayEntity> targetLevelEntity();
 	}
 		
 	public static <T> T getTargetLevelEntity(Class<T> cls, String json) throws Exception {

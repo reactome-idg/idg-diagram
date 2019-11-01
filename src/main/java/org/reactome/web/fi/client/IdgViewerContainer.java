@@ -20,7 +20,7 @@ import org.reactome.web.fi.client.visualisers.diagram.renderers.ProteinTargetLev
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
-import org.reactome.web.fi.data.overlay.RawOverlayEntities;
+import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataRequestedEvent;
@@ -54,7 +54,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	private OverlayLegend overlayLegend;
 	private OverlayDialogPanel overlayDialogPanel;
 	
-	private RawOverlayEntities overlayEntities;
+	private OverlayEntities overlayEntities;
 	
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
@@ -136,7 +136,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 			String overlayType = overlayEntities.getDataType();
 			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 			
-			//dont bother reloading when new content is an SVG
+			//don't bother reloading when new content is an SVG
 			if(context.getContent().getType() != Content.Type.SVG)
 				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayType.getType(overlayType)), this);
 		}

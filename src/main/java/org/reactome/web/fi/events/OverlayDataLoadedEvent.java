@@ -1,6 +1,6 @@
 package org.reactome.web.fi.events;
 
-import org.reactome.web.fi.data.overlay.RawOverlayEntities;
+import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -13,9 +13,9 @@ import com.google.gwt.event.shared.GwtEvent;
 public class OverlayDataLoadedEvent extends GwtEvent<OverlayDataLoadedHandler> {
     public static Type<OverlayDataLoadedHandler> TYPE = new Type<>();
 
-    private RawOverlayEntities entities;
+    private OverlayEntities entities;
     
-    public OverlayDataLoadedEvent(RawOverlayEntities entities) {
+    public OverlayDataLoadedEvent(OverlayEntities entities) {
     	this.entities = entities;
     }
 	
@@ -29,7 +29,7 @@ public class OverlayDataLoadedEvent extends GwtEvent<OverlayDataLoadedHandler> {
 		handler.onOverlayDataLoaded(this);
 	}
 	
-	public RawOverlayEntities getEntities() {
+	public OverlayEntities getEntities() {
 		return entities;
 	}
 

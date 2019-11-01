@@ -7,12 +7,12 @@ import java.util.List;
  * @author brunsont
  *
  */
-public interface RawOverlayEntities {
+public interface OverlayEntities {
     
     public String getDataType(); // e.g. target_dev_level
     
     public String getValueType(); // e.g. String (for enum)
     
-	List<RawOverlayEntity> getEntities();
+	List<OverlayEntity> getEntities();
 	
 }

@@ -7,8 +7,8 @@ import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.renderers.layout.RendererManager;
 import org.reactome.web.diagram.renderers.common.OverlayContext;
 import org.reactome.web.diagram.util.AdvancedContext2d;
-import org.reactome.web.fi.data.overlay.RawOverlayEntities;
-import org.reactome.web.fi.data.overlay.RawOverlayEntity;
+import org.reactome.web.fi.data.overlay.OverlayEntities;
+import org.reactome.web.fi.data.overlay.OverlayEntity;
 
 /**
  * 
@@ -20,6 +20,6 @@ public interface OverlayRenderer {
 						 AdvancedContext2d ctx, 
 						 Context context, 
 						 RendererManager rendererManager,
-						 RawOverlayEntities entities,
+						 OverlayEntities entities,
 						 OverlayContext overlay);
 }
