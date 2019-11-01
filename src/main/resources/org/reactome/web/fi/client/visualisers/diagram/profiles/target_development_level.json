@@ -1,5 +1,5 @@
 {
-    "type":"targetlevel",
+    "type":"target_development_level",
     "nodes": [{
         "name" : "Tclin+",
         "fill" : "#be1cc9"

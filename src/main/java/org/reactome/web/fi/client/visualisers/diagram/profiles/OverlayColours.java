@@ -73,7 +73,7 @@ public class OverlayColours{
 
 		String result = null;
 		switch(name) {
-		case "target_dev_level": result = ColourSource.SOURCE.targetLevel().getText();	break;
+		case "target_development_level": result = ColourSource.SOURCE.targetLevel().getText();	break;
 		}
 		return result;
 	}
@@ -82,7 +82,7 @@ public class OverlayColours{
 		
 		ColourSource SOURCE = GWT.create(ColourSource.class);
 			
-		@Source("target_dev_level.json")
+		@Source("target_development_level.json")
 		TextResource targetLevel();
 	}
 	

@@ -79,7 +79,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		overlayButton = new IDGIconButton(IDGRESOURCES.overlayIcon(), IDGRESOURCES.getCSS().cytoscape(), "Select An Overlay");
 		overlayLegend = new OverlayLegend(eventBus);
 		overlayDialogPanel = new OverlayDialogPanel(eventBus);
-		overlayDialogPanel.hide();
+		overlayDialogPanel.setVisible(false);
 				
 		//adds diagramButton and fiviewButton. sets fiview button as default to show
 		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
@@ -88,10 +88,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 				.getWidgetIndex(diagramButton)).setVisible(false);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
 		super.leftTopLauncher.getMainControlPanel().add(overlayButton);
+		super.leftTopLauncher.getMainControlPanel().add(overlayDialogPanel);
 		
 		super.bottomContainerPanel.add(overlayLegend);
 		
-		this.add(overlayDialogPanel);
 		
 		bind();
 		
@@ -146,20 +146,16 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	private void bind() {
 		fiviewButton.addClickHandler(e -> cytoscapeButtonPressed());
 		diagramButton.addClickHandler(e -> cytoscapeButtonPressed());
-		overlayButton.addClickHandler(e -> showOverlayPopup()); 
-	}
-
-	private void showOverlayPopup() {
-		overlayDialogPanel.setBoundsConstants(this.getElement().getAbsoluteTop(),
-				  this.getElement().getAbsoluteLeft()+this.getOffsetWidth(),
-				  this.getElement().getAbsoluteTop()+this.getOffsetHeight(),
-				  this.getElement().getAbsoluteLeft());
-		int x = this.getElement().getAbsoluteLeft();
-		int y = this.getElement().getAbsoluteTop();
-		overlayDialogPanel.setPopupPosition(x+20, y+41);
-		overlayDialogPanel.show();
+		overlayButton.addClickHandler(e -> toggleOverlayPanel()); 
 	}
 	
+	private void toggleOverlayPanel() {
+		if(overlayDialogPanel.isVisible())
+			overlayDialogPanel.setVisible(false);
+		else
+			overlayDialogPanel.setVisible(true);
+	}
+
 	@Override
 	public void onMakeOverlayRequest(MakeOverlayRequestEvent event) {
 		eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
@@ -263,7 +259,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		overlayEntities = null;
 		context.setDialogMap(new HashMap<>());
-		overlayDialogPanel.hide();
+		overlayDialogPanel.setVisible(false);
 		if(activeVisualiser instanceof DiagramVisualiser)
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualiser)
@@ -274,10 +270,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	public void onResize() {
 		super.onResize();
 		fIViewVisualiser.setSize(this.getOffsetWidth(), this.getOffsetHeight());
-		overlayDialogPanel.setBoundsConstants(this.getElement().getAbsoluteTop(),
-											  this.getElement().getAbsoluteLeft()+this.getOffsetWidth(),
-											  this.getElement().getAbsoluteTop()+this.getOffsetHeight(),
-											  this.getElement().getAbsoluteLeft());
 	}
 	
 	/**
