@@ -67,7 +67,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 						 OverlayEntities entities,
 						 OverlayContext overlay) {
 		
-		if(OverlayType.getType(entities.getDataType()) != OverlayType.TARGET_DEV_LEVEL)
+		if(OverlayType.getType(entities.getDataType()) != OverlayType.TARGET_DEVELOPMENT_LEVEL)
 			return;
 		
 		this.ctx = ctx;
