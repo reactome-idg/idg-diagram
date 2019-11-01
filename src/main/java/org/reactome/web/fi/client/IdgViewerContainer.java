@@ -135,7 +135,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		if(overlayEntities != null) {
 			String overlayType = overlayEntities.getDataType();
 			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
-			eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayType.getType(overlayType)), this);
+			
+			//dont bother reloading when new content is an SVG
+			if(context.getContent().getType() != Content.Type.SVG)
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayType.getType(overlayType)), this);
 		}
 	}
 
