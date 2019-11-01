@@ -78,11 +78,6 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
         this.doubleColourMap = OverlayColours.get().getDoubleColoursMap(entities.getDataType());
         this.originalOverlay = overlay;
         makeEntitiesMap(entities);
-		
-		//check analysis status for items distribution
-//        AnalysisType analysisType = AnalysisType.NONE;
-//        if(context.getAnalysisStatus() != null)
-//        	analysisType = AnalysisType.getType(context.getAnalysisStatus().getAnalysisSummary().getType());
 
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
         renderProteins(itemsDistribution.getItems("Protein"));

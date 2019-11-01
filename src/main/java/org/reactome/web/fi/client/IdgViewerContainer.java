@@ -12,6 +12,7 @@ import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.diagram.events.AnalysisResetEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
 import org.reactome.web.fi.client.visualisers.OverlayDataHandler;
@@ -161,6 +162,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	
 	@Override
 	public void onMakeOverlayRequest(MakeOverlayRequestEvent event) {
+		eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
 		Set<String> identifiers = null;
 		
 		if(overlayEntities != null)

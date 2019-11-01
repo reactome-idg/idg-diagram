@@ -86,8 +86,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
-		colourMapPanel = new FlowPanel();
-		colourMapPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
+		for(int i=0; i< colourMapPanel.getWidgetCount(); i++)
+			colourMapPanel.remove(i);
 		this.setVisible(false);
 	}
 	

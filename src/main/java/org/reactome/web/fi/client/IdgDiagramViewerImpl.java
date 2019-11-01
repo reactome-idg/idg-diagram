@@ -1,11 +1,14 @@
 package org.reactome.web.fi.client;
 
+import org.reactome.web.analysis.client.filter.ResultFilter;
 import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.data.loader.LoaderManager;
+import org.reactome.web.diagram.events.AnalysisResultLoadedEvent;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayDataRequestedEvent;
+import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;	
 
@@ -38,6 +41,12 @@ OverlayDataRequestedHandler{
 	@Override
 	public void onCytoscapeToggled(CytoscapeToggledEvent event) {
 		load(event.getContext().getContent().getStableId());
+	}
+	
+	@Override
+	public void setAnalysisToken(String token, ResultFilter filter) {
+		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
+		super.setAnalysisToken(token, filter);
 	}
 
 	@Override
