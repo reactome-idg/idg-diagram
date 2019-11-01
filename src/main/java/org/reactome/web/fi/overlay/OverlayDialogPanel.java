@@ -83,7 +83,6 @@ OverlayDataLoadedHandler{
 	}
 	
 	public void show() {
-		Window.alert(topBound+", "+rightBound+", "+bottomBound+", "+leftBound);
 		super.show();
 	}
 	
