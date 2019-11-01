@@ -32,6 +32,7 @@ import org.reactome.web.fi.data.overlay.RawOverlayEntities;
 import org.reactome.web.fi.data.overlay.RawOverlayEntity;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
+import org.reactome.web.fi.model.OverlayType;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -65,6 +66,9 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 						 RendererManager rendererManager, 
 						 RawOverlayEntities rawEntities,
 						 OverlayContext overlay) {
+		
+		if(OverlayType.getType(rawEntities.getDataType()) != OverlayType.TARGET_DEV_LEVEL)
+			return;
 		
 		this.ctx = ctx;
 		this.rendererManager = rendererManager;
