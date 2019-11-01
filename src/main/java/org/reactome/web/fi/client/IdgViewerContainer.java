@@ -229,6 +229,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		super.leftTopLauncher.getMainControlPanel().getWidget(
 				super.leftTopLauncher.getMainControlPanel()
 				.getWidgetIndex(overlayButton)).setVisible(false);
+		overlayDialogPanel.setVisible(false);
 	}
 	
 	@Override
