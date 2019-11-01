@@ -202,11 +202,20 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		super.leftTopLauncher.getMainControlPanel().getWidget(
 				super.leftTopLauncher.getMainControlPanel()
 				.getWidgetIndex(fiviewButton)).setVisible(true);
+		showOverlayButton();
 	}
+
 	private void showDiagramButton() {
 		super.leftTopLauncher.getMainControlPanel().getWidget(
 				super.leftTopLauncher.getMainControlPanel()
 				.getWidgetIndex(diagramButton)).setVisible(true);
+		showOverlayButton();
+	}
+	
+	private void showOverlayButton() {
+		super.leftTopLauncher.getMainControlPanel().getWidget(
+				super.leftTopLauncher.getMainControlPanel()
+				.getWidgetIndex(overlayButton)).setVisible(true);
 	}
 	
 	private void hideButtons() {
@@ -216,6 +225,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		super.leftTopLauncher.getMainControlPanel().getWidget(
 				super.leftTopLauncher.getMainControlPanel()
 				.getWidgetIndex(diagramButton)).setVisible(false);
+		super.leftTopLauncher.getMainControlPanel().getWidget(
+				super.leftTopLauncher.getMainControlPanel()
+				.getWidgetIndex(overlayButton)).setVisible(false);
 	}
 	
 	@Override
