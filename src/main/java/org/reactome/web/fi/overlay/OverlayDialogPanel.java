@@ -1,16 +1,21 @@
 package org.reactome.web.fi.overlay;
 
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 import org.reactome.web.diagram.context.ContextDialogPanel;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
+import org.reactome.web.fi.overlay.OverlayAnimation;
 
 /**
  * 
@@ -21,7 +26,9 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 
 	private EventBus eventBus;
 	private OverlayInfoPanel infoPanel;
-	
+	private OverlayAnimation animation = new OverlayAnimation();
+
+
 	public OverlayDialogPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
 		
@@ -45,6 +52,14 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 		
 	}
 	
+	public void show() {
+		this.getElement().getStyle().setDisplay(Display.BLOCK);
+		animation.animateOverlay(0, 160, 500, this);
+	}
+	
+	public void hide() {
+		animation.animateOverlay(this.getOffsetHeight(), 0, 500, this);
+	}
 	
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {

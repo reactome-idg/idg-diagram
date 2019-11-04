@@ -151,9 +151,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	
 	private void toggleOverlayPanel() {
 		if(overlayDialogPanel.isVisible())
-			overlayDialogPanel.setVisible(false);
+			overlayDialogPanel.hide();
 		else
-			overlayDialogPanel.setVisible(true);
+			overlayDialogPanel.show();
 	}
 
 	@Override
