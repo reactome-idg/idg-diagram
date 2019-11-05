@@ -21,7 +21,7 @@ public class TCRDLoader implements RequestCallback{
 		void onTargetLevelLoadedError(Throwable exception);
 	}
 	
-	private final static String BASE_URL = "/targetlevel/";
+	private final static String BASE_URL = "/tcrdws/";
 	
 	private Handler handler;
 	private Request request;
@@ -44,7 +44,7 @@ public class TCRDLoader implements RequestCallback{
 			this.handler.onTargetLevelLoadedError(exception);
 		}
 		
-		String url = BASE_URL + "uniprots";
+		String url = BASE_URL + "targetlevel/uniprots";
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
 		requestBuilder.setHeader("Accept", "application/json");
 		requestBuilder.setRequestData(getPostData(ids));

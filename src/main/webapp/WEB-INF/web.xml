@@ -357,12 +357,12 @@
     		<param-value>8060</param-value>
     	</init-param>
     	<init-param>
-    		<param-name>prefixPath</param-name>
+    		<param-name>proxyPath</param-name>
     		<param-value></param-value>
     	</init-param>
     </servlet>
     <servlet-mapping>
     	<servlet-name>TCRDTargetLevelProxy</servlet-name>
-    	<url-pattern>/targetlevel/*</url-pattern>
+    	<url-pattern>/tcrdws/*</url-pattern>
     </servlet-mapping>
 </web-app>

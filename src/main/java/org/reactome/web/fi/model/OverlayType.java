@@ -10,7 +10,19 @@ import java.util.List;
  */
 public enum OverlayType {
 
-	TARGET_DEVELOPMENT_LEVEL;
+	TARGET_DEVELOPMENT_LEVEL("Target Development Level"),
+	TISSUE_mRNA_EXPRESSION("Tissue mRNA Expression"),
+	TISSUE_PROTEIN_EXPRESSION("Tissue Protein Expression");
+	
+	private String name;
+	
+	OverlayType(String overlayString){
+		this.name = overlayString;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
 	
 	public static OverlayType getType(String type) {
 		if(type == null) return null;
