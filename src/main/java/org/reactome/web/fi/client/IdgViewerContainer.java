@@ -138,7 +138,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 			
 			//don't bother reloading when new content is an SVG
 			if(context.getContent().getType() != Content.Type.SVG)
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayType.getTypeToString(overlayType)), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayType.lookupType(overlayType)), this);
 		}
 	}
 
@@ -161,7 +161,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		Set<String> identifiers = null;
 		
 		if(overlayEntities != null)
-			if(OverlayType.getTypeToString(overlayEntities.getDataType()) == event.getType())
+			if(OverlayType.lookupType(overlayEntities.getDataType()) == event.getType())
 				return;	
 
 		if(activeVisualiser instanceof FIViewVisualiser)

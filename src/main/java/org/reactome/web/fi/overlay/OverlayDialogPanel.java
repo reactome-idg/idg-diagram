@@ -43,8 +43,6 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 		this.add(fp);
 		
 		eventBus.addHandler(OverlayDataLoadedEvent.TYPE, this);
-				
-		this.setVisible(false);
 		
 	}
 

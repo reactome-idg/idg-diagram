@@ -80,7 +80,7 @@ public class TCRDLoader implements RequestCallback{
 			try {
 				JSONValue val = JSONParser.parseStrict(response.getText());
 				JSONObject obj = new JSONObject();
-				obj.put("dataType", new JSONString("target_development_level"));
+				obj.put("dataType", new JSONString("Target Development Level"));
 				obj.put("valueType", new JSONString("String"));
 				JSONArray valArray = val.isArray();
 				JSONArray outputArray = new JSONArray();

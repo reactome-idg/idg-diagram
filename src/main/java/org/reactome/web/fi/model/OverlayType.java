@@ -36,19 +36,10 @@ public enum OverlayType {
 		return LOOKUP.get(type);
 	}
 	
-	public static OverlayType getTypeToString(String type) {
-		if(type == null) return null;
-		for(OverlayType t: values()) {
-			if(t.toString().toLowerCase().equals(type.toLowerCase()))
-				return t;
-		}
-		return null;
-	}
-	
 	public static List<String> getTypes(){
 		List<String> result = new ArrayList<>();
-		for(OverlayType t: values()) {
-			result.add(t.toString().toLowerCase());
+		for(OverlayType t: OverlayType.values()) {
+			result.add(t.getName());
 		}
 		return result;
 	}
