@@ -3,11 +3,14 @@ package org.reactome.web.fi.overlay;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.*;
 import org.reactome.web.diagram.context.ContextInfoPanel;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
@@ -38,10 +41,8 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 		FlowPanel buttonsPanel = new FlowPanel();
 		buttonsPanel.setStyleName(ContextInfoPanel.RESOURCES.getCSS()
 								  .buttonsPanel());
-		buttonsPanel.add(this.overlayTypes = new Button("Overlays", this));
-		buttonsPanel.add(this.colours = new Button("Colours", this));
-		btns.add(this.overlayTypes);
-		btns.add(this.colours);
+		buttonsPanel.add(this.overlayTypes =  getButton("Overlays", IDGRESOURCES.bwOverlayIcon()));
+		buttonsPanel.add(this.colours =  getButton("Colours", IDGRESOURCES.colourPicker()));
 		
 		this.overlayTypes.addStyleName(ContextInfoPanel.RESOURCES.getCSS()
 									   .buttonSelected());
@@ -68,6 +69,19 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 		initHandlers();
 		initWidget(outerPanel);
 		
+	}
+
+	private Button getButton(String text, ImageResource imageResource) {
+		Image btnImg = new Image(imageResource);
+		Label btnLbl = new Label(text);
+		
+		FlowPanel fp = new FlowPanel();
+		fp.add(btnImg);
+		fp.add(btnLbl);
+		SafeHtml safe = SafeHtmlUtils.fromSafeConstant(fp.toString());
+		Button btn = new Button(safe, this);
+		this.btns.add(btn);
+		return btn;
 	}
 
 	private void initHandlers() {
@@ -99,5 +113,18 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.colourChoicePanel.setColourLabels();
 		this.overlayTypePanel.selectType(event.getEntities().getDataType());
+	}
+	
+	public static Resources IDGRESOURCES;
+	static {
+		IDGRESOURCES = GWT.create(Resources.class);
+	}
+	
+	public interface Resources extends ClientBundle{
+		@Source("images/bwOverlayIcon.png")
+		ImageResource bwOverlayIcon();
+		
+		@Source("images/Color_Picker.png")
+		ImageResource colourPicker();
 	}
 }
