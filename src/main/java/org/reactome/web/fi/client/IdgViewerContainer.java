@@ -101,7 +101,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	@Override
 	protected void addExternalVisualisers() {
 		fIViewVisualiser = new FIViewVisualiser(eventBus);
-		super.add(fIViewVisualiser);//TODO: move this so that buttons are accessible over it
+		super.add(fIViewVisualiser);
 	}
 
 	@Override
@@ -138,7 +138,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 			
 			//don't bother reloading when new content is an SVG
 			if(context.getContent().getType() != Content.Type.SVG)
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayType.getType(overlayType)), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayType.getTypeToString(overlayType)), this);
 		}
 	}
 
@@ -161,7 +161,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		Set<String> identifiers = null;
 		
 		if(overlayEntities != null)
-			if(OverlayType.getType(overlayEntities.getDataType()) == event.getType())
+			if(OverlayType.getTypeToString(overlayEntities.getDataType()) == event.getType())
 				return;	
 
 		if(activeVisualiser instanceof FIViewVisualiser)
@@ -228,7 +228,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		super.leftTopLauncher.getMainControlPanel().getWidget(
 				super.leftTopLauncher.getMainControlPanel()
 				.getWidgetIndex(overlayButton)).setVisible(false);
-		overlayDialogPanel.setVisible(false);
+		overlayDialogPanel.hide();
 	}
 	
 	@Override

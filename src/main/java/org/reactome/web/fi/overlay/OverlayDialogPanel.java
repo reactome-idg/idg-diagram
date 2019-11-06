@@ -69,6 +69,10 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 		this.setVisible(true);
 	}
 
+	public void selectOverlayType() {
+		infoPanel.selectOverlayType();
+	}
+	
 	public static Resources IDGRESOURCES;
 	static {
 			IDGRESOURCES = GWT.create(Resources.class);

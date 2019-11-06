@@ -32,6 +32,7 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 	private List<Button> btns = new LinkedList<>();
 	private OverlayTypePanel overlayTypePanel;
 	private ColourChoicePanel colourChoicePanel;
+	private String currentOverlayType;
 	
 	private DeckLayoutPanel container;
 	
@@ -111,8 +112,13 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
+		this.currentOverlayType = event.getEntities().getDataType();
 		this.colourChoicePanel.setColourLabels();
-		this.overlayTypePanel.selectType(event.getEntities().getDataType());
+		selectOverlayType();
+		}
+	
+	public void selectOverlayType() {
+		this.overlayTypePanel.selectType(currentOverlayType);
 	}
 	
 	public static Resources IDGRESOURCES;

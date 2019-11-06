@@ -60,7 +60,7 @@ public class OverlayTypePanel extends Composite implements ClickHandler{
 		RadioButton btn = (RadioButton) event.getSource();
 		eventBus.fireEventFromSource(
 				new MakeOverlayRequestEvent(
-						OverlayType.getType(btn.getText())),
+						OverlayType.getTypeToString(btn.getText())),
 						this);
 	}
 	
@@ -75,7 +75,7 @@ public class OverlayTypePanel extends Composite implements ClickHandler{
 	public void selectType(String dataType) {
 		for(int i=0; i<buttonPanel.getWidgetCount(); i++) {
 			Widget widget = buttonPanel.getWidget(i);
-			if(widget instanceof RadioButton && OverlayType.getType(((RadioButton) widget).getText()) == OverlayType.getType(dataType))
+			if(widget instanceof RadioButton && OverlayType.lookupType(((RadioButton) widget).getText()) == OverlayType.getTypeToString(dataType))
 				((RadioButton) widget).setValue(true);
 		}
 	}
