@@ -3,11 +3,13 @@ package org.reactome.web.fi.overlay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 
 import org.reactome.web.diagram.context.ContextDialogPanel;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
@@ -30,9 +32,13 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 		this.eventBus = eventBus;
 		
 		FlowPanel fp = new FlowPanel();
-		fp.setStyleName(ContextDialogPanel.RESOURCES.getCSS().popup());
-//		fp.addStyleName(ContextDialogPanel.RESOURCES.getCSS().popupSelected());
-		fp.addStyleName(IDGRESOURCES.getCSS().panel());
+		this.setStyleName(ContextDialogPanel.RESOURCES.getCSS().popup());
+		this.addStyleName(ContextDialogPanel.RESOURCES.getCSS().popupSelected());
+		this.addStyleName(IDGRESOURCES.getCSS().panel());
+		this.getElement().getStyle().setMarginLeft(170, Unit.PX);
+		Label lbl = new Label("Reactome Overlay Resources");
+		lbl.setStyleName(IDGRESOURCES.getCSS().label());
+		fp.add(lbl);
 		fp.add(this.infoPanel = new OverlayInfoPanel(this.eventBus));
 		this.add(fp);
 		
@@ -80,5 +86,7 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 		String CSS = "org/reactome/web/fi/overlay/OverlayDialogPanel.css";
 				
 		String panel();
+		
+		String label();
 	}
 }

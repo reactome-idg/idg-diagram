@@ -1,4 +1,9 @@
 .panel{
 	height: 150px;
-	margin-left: 10px;
+	margin-left: 100px;
+}
+
+.label{
+	margin-left: 5px;
+	color: black;
 }

@@ -259,7 +259,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		overlayEntities = null;
 		context.setDialogMap(new HashMap<>());
-		overlayDialogPanel.setVisible(false);
+		overlayDialogPanel.hide();
 		if(activeVisualiser instanceof DiagramVisualiser)
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualiser)
