@@ -56,7 +56,7 @@ public class OverlayTypePanel extends Composite implements ClickHandler{
 		RadioButton btn = (RadioButton) event.getSource();
 		eventBus.fireEventFromSource(
 				new MakeOverlayRequestEvent(
-						OverlayType.getType(btn.getName())),
+						OverlayType.getType(btn.getText())),
 						this);
 	}
 	

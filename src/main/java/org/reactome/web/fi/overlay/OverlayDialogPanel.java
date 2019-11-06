@@ -31,7 +31,7 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 		
 		FlowPanel fp = new FlowPanel();
 		fp.setStyleName(ContextDialogPanel.RESOURCES.getCSS().popup());
-		fp.addStyleName(ContextDialogPanel.RESOURCES.getCSS().popupSelected());
+//		fp.addStyleName(ContextDialogPanel.RESOURCES.getCSS().popupSelected());
 		fp.addStyleName(IDGRESOURCES.getCSS().panel());
 		fp.add(this.infoPanel = new OverlayInfoPanel(this.eventBus));
 		this.add(fp);
