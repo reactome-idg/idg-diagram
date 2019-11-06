@@ -218,6 +218,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 				.getWidgetIndex(overlayButton)).setVisible(true);
 	}
 	
+	/**
+	 * hides fiview, diagram, and overlay button. Also hides overlayDialogPanel
+	 */
 	private void hideButtons() {
 		super.leftTopLauncher.getMainControlPanel().getWidget(
 				super.leftTopLauncher.getMainControlPanel()
