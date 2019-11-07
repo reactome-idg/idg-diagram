@@ -70,9 +70,7 @@ public class OverlayTypePanel extends Composite implements ClickHandler{
 			button.addClickHandler(this);
 			buttonPanel.add(button);
 		}
-		
-		//TODO: add entity overlay types
-		
+				
 		return buttonPanel;
 	}
 
