@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -28,12 +29,16 @@ public class OverlayTypePanel extends Composite implements ClickHandler{
 	private EventBus eventBus;
 	private FlowPanel main;
 	private FlowPanel buttonPanel;
+	private ScrollPanel scrollPanel;
 	
 	public OverlayTypePanel(EventBus eventBus) {
 		this.eventBus = eventBus;
 		
 		main = new FlowPanel();
-		main.add(getOverlayWidget("Choose Data Overlays:", "Choose Entity Overlay"));
+		scrollPanel = new ScrollPanel();
+		scrollPanel.setHeight("140px");
+		scrollPanel.add(getOverlayWidget("Choose Data Overlays:", "Choose Entity Overlay"));
+		main.add(scrollPanel);
 				
 		initWidget(main);
 		
@@ -98,7 +103,7 @@ public class OverlayTypePanel extends Composite implements ClickHandler{
 					((RadioButton) widget).setValue(true);
 					return;
 				}
-				else if(OverlayEntityType.lookupType(((RadioButton)widget).getText()) == OverlayEntityType.lookupType(dataType)) {
+				if(OverlayEntityType.lookupType(((RadioButton)widget).getText()) == OverlayEntityType.lookupType(dataType)) {
 					((RadioButton)widget).setValue(true);
 					return;
 				}
