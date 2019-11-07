@@ -160,8 +160,13 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
 		Set<String> identifiers = null;
 		
+		if(event.getEntityType() != null) {
+			GWT.log("Entity overlay Selected");
+			return;
+		}
+		
 		if(overlayEntities != null)
-			if(OverlayDataType.lookupType(overlayEntities.getDataType()) == event.getType())
+			if(OverlayDataType.lookupType(overlayEntities.getDataType()) == event.getDataType())
 				return;	
 
 		if(activeVisualiser instanceof FIViewVisualiser)
@@ -189,7 +194,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 				}
 			}
 		}
-		eventBus.fireEventFromSource(new OverlayDataRequestedEvent(identifiers, event.getType()), this);
+		eventBus.fireEventFromSource(new OverlayDataRequestedEvent(identifiers, event.getDataType()), this);
 	}
 	
 	private void cytoscapeButtonPressed() {
