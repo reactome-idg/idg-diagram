@@ -36,11 +36,4 @@ public enum OverlayDataType {
 		return LOOKUP.get(type);
 	}
 	
-	public static List<String> getTypes(){
-		List<String> result = new ArrayList<>();
-		for(OverlayDataType t: OverlayDataType.values()) {
-			result.add(t.getName());
-		}
-		return result;
-	}
 }
