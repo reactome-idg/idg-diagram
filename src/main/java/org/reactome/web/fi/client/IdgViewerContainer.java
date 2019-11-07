@@ -157,6 +157,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 
 	@Override
 	public void onMakeOverlayRequest(MakeOverlayRequestEvent event) {
+		
+		//can't have an overlay and Analysis at the same time
 		eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
 		
 		if(event.getEntityType() != null) 

@@ -3,6 +3,11 @@ package org.reactome.web.fi.model;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public enum OverlayEntityType {
 
 	TEST_ENTITY_OVERLAY("Test Entity Overlay");
