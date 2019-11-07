@@ -158,13 +158,21 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	@Override
 	public void onMakeOverlayRequest(MakeOverlayRequestEvent event) {
 		eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
+		
+		if(event.getEntityType() != null) 
+			requestOverlayDataEntities(event);
+		else if(event.getDataType() != null)
+			requestOverlayData(event);
+		else
+			GWT.log("Cant figure out what overlay type to request!");
+	}
+
+	private void requestOverlayDataEntities(MakeOverlayRequestEvent event) {
+		GWT.log("Request overlay data entities!");
+	}
+
+	private void requestOverlayData(MakeOverlayRequestEvent event) {
 		Set<String> identifiers = null;
-		
-		if(event.getEntityType() != null) {
-			GWT.log("Entity overlay Selected");
-			return;
-		}
-		
 		if(overlayEntities != null)
 			if(OverlayDataType.lookupType(overlayEntities.getDataType()) == event.getDataType())
 				return;	
