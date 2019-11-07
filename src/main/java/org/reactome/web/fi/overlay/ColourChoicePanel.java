@@ -6,9 +6,7 @@ import java.util.Map;
 
 import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColours;
 
-import com.google.gwt.cell.client.ButtonCellBase.DefaultAppearance.Resources;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.ParagraphElement;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
