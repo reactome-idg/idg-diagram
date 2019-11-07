@@ -3,7 +3,7 @@ package org.reactome.web.fi.events;
 import java.util.Set;
 
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
-import org.reactome.web.fi.model.OverlayType;
+import org.reactome.web.fi.model.OverlayDataType;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -16,9 +16,9 @@ public class OverlayDataRequestedEvent extends GwtEvent<OverlayDataRequestedHand
 	public static Type<OverlayDataRequestedHandler> TYPE = new Type<>();
 	
 	private Set<String> ids;
-	private OverlayType type;
+	private OverlayDataType type;
 	
-	public OverlayDataRequestedEvent(Set<String> set, OverlayType type) {
+	public OverlayDataRequestedEvent(Set<String> set, OverlayDataType type) {
 		this.ids = set;
 		this.type = type;
 	}
@@ -38,7 +38,7 @@ public class OverlayDataRequestedEvent extends GwtEvent<OverlayDataRequestedHand
 		return ids;
 	}
 	
-	public OverlayType getType() {
+	public OverlayDataType getType() {
 		return this.type;
 	}
 

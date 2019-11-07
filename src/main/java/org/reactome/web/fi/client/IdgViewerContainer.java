@@ -30,7 +30,7 @@ import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
 import org.reactome.web.fi.legends.OverlayLegend;
-import org.reactome.web.fi.model.OverlayType;
+import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.overlay.OverlayDialogPanel;
 
 import com.google.gwt.core.client.GWT;
@@ -138,7 +138,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 			
 			//don't bother reloading when new content is an SVG
 			if(context.getContent().getType() != Content.Type.SVG)
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayType.lookupType(overlayType)), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.lookupType(overlayType)), this);
 		}
 	}
 
@@ -161,7 +161,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		Set<String> identifiers = null;
 		
 		if(overlayEntities != null)
-			if(OverlayType.lookupType(overlayEntities.getDataType()) == event.getType())
+			if(OverlayDataType.lookupType(overlayEntities.getDataType()) == event.getType())
 				return;	
 
 		if(activeVisualiser instanceof FIViewVisualiser)

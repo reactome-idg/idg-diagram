@@ -3,7 +3,7 @@ package org.reactome.web.fi.overlay;
 import java.util.List;
 
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
-import org.reactome.web.fi.model.OverlayType;
+import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.overlay.ColourChoicePanel.Resources;
 
 import com.google.gwt.core.client.GWT;
@@ -34,24 +34,33 @@ public class OverlayTypePanel extends Composite implements ClickHandler{
 		this.eventBus = eventBus;
 		
 		main = new FlowPanel();
-		main.add(getOverlayWidget("Choose Overlays:"));
+		main.add(getOverlayWidget("Choose Data Overlays:", "Choose Entity Overlay"));
 				
 		initWidget(main);
 		
 	}
 
-	private Widget getOverlayWidget(String title) {
+	private Widget getOverlayWidget(String dataTitle, String entityTitle) {
 		buttonPanel = new FlowPanel();
-		Label lbl = new Label(title);
+		Label lbl = new Label(dataTitle);
 		lbl.setStyleName(IDGRESOURCES.getCSS().label());
 		buttonPanel.add(lbl);
 		
-		for(OverlayType type: OverlayType.values()) {
+		for(OverlayDataType type: OverlayDataType.values()) {
 			RadioButton button  = new RadioButton("OverlayTypes", type.getName());
 			button.getElement().getStyle().setDisplay(Display.BLOCK);
 			button.addClickHandler(this);
 			buttonPanel.add(button);
 		}		
+		
+		Label entityLbl = new Label(dataTitle);
+		entityLbl.setStyleName(IDGRESOURCES.getCSS().label());
+		buttonPanel.add(entityLbl);
+		
+		
+		
+		//TODO: add entity overlay types
+		
 		return buttonPanel;
 	}
 
@@ -60,7 +69,7 @@ public class OverlayTypePanel extends Composite implements ClickHandler{
 		RadioButton btn = (RadioButton) event.getSource();
 		eventBus.fireEventFromSource(
 				new MakeOverlayRequestEvent(
-						OverlayType.lookupType(btn.getText())),
+						OverlayDataType.lookupType(btn.getText())),
 						this);
 	}
 	
@@ -75,7 +84,7 @@ public class OverlayTypePanel extends Composite implements ClickHandler{
 	public void selectType(String dataType) {
 		for(int i=0; i<buttonPanel.getWidgetCount(); i++) {
 			Widget widget = buttonPanel.getWidget(i);
-			if(widget instanceof RadioButton && OverlayType.lookupType(((RadioButton) widget).getText()) == OverlayType.lookupType(dataType))
+			if(widget instanceof RadioButton && OverlayDataType.lookupType(((RadioButton) widget).getText()) == OverlayDataType.lookupType(dataType))
 				((RadioButton) widget).setValue(true);
 		}
 	}

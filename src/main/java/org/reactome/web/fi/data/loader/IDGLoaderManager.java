@@ -12,7 +12,7 @@ import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
-import org.reactome.web.fi.model.OverlayType;
+import org.reactome.web.fi.model.OverlayDataType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -64,7 +64,7 @@ TCRDLoader.Handler{
 	 * Multiple ids should be passed in as a String separated by commas.
 	 * @param set
 	 */
-	public void loadTCRDTargetLevel(Set<String> set, OverlayType type) { 
+	public void loadTCRDTargetLevel(Set<String> set, OverlayDataType type) { 
 		tcrdLoader.load(set, type);
 	}
 	
