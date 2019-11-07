@@ -46,6 +46,8 @@ public class OverlayTypePanel extends Composite implements ClickHandler{
 
 	private Widget getOverlayWidget(String dataTitle, String entityTitle) {
 		buttonPanel = new FlowPanel();
+		
+		//add data overlay types that overlay onto current entities
 		Label lbl = new Label(dataTitle);
 		lbl.setStyleName(IDGRESOURCES.getCSS().label());
 		buttonPanel.add(lbl);
@@ -57,6 +59,7 @@ public class OverlayTypePanel extends Composite implements ClickHandler{
 			buttonPanel.add(button);
 		}		
 		
+		//add overlay types that overlay new entities
 		Label entityLbl = new Label(dataTitle);
 		entityLbl.setStyleName(IDGRESOURCES.getCSS().label());
 		buttonPanel.add(entityLbl);
