@@ -7,7 +7,6 @@ public enum OverlayEntityType {
 
 	TEST_ENTITY_OVERLAY("Test Entity Overlay");
 	
-	
 	private String name;
 	private static final Map<String, OverlayEntityType> LOOKUP =  new HashMap<>();
 	
@@ -27,6 +26,5 @@ public enum OverlayEntityType {
 	public static OverlayEntityType lookupType(String type) {
 		return LOOKUP.get(type);
 	}
-	
 	
 }
