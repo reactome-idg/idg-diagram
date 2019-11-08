@@ -12,6 +12,8 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -86,7 +88,7 @@ public class EdgeContextPanel extends Composite implements ChangeHandler, Reacto
 		list.setStyleName(EDGECONTEXTRESOURCES.getCSS().listBox());
 		list.setMultipleSelect(false);
 		list.addChangeHandler(this);
-		for(String source : sourcesList) {
+		for(String source : sourcesList) {			
 			list.addItem(source);
 		}
 		sourcesOptions = list;
