@@ -7,12 +7,12 @@ import org.reactome.web.diagram.data.GraphObjectFactory;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.data.loader.SVGLoader;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
-import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColours;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.model.OverlayDataType;
+import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;

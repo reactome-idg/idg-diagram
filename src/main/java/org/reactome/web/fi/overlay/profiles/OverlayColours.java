@@ -1,4 +1,4 @@
-package org.reactome.web.fi.client.visualisers.diagram.profiles;
+package org.reactome.web.fi.overlay.profiles;
 
 import java.util.HashMap;
 import java.util.Map;

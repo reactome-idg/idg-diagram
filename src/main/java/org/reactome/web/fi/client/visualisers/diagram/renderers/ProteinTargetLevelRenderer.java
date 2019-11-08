@@ -26,13 +26,13 @@ import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.OverlayRenderer;
-import org.reactome.web.fi.client.visualisers.diagram.profiles.IDGExpressionGradient;
-import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColours;
 import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.data.overlay.OverlayEntity;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.OverlayDataType;
+import org.reactome.web.fi.overlay.profiles.IDGExpressionGradient;
+import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
 import com.google.gwt.event.shared.EventBus;
 

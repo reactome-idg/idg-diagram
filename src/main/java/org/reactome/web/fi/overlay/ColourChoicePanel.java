@@ -4,7 +4,7 @@ import com.google.gwt.user.client.ui.*;
 
 import java.util.Map;
 
-import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColours;
+import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;

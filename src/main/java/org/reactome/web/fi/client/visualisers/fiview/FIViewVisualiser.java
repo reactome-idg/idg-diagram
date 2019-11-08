@@ -49,12 +49,12 @@ import org.reactome.web.gwtCytoscapeJs.handlers.NodeHoveredHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.NodeMouseOutHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreContextHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreSelectedHandler;
-import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColours;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
 import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
 import org.reactome.web.fi.handlers.CytoscapeLayoutChangedHandler;
 import org.reactome.web.fi.handlers.FireGraphObjectSelectedHandler;
+import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;

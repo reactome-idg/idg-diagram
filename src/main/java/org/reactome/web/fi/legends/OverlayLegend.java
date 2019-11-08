@@ -4,11 +4,11 @@ import java.util.Map;
 
 import org.reactome.web.diagram.common.PwpButton;
 import org.reactome.web.diagram.legends.LegendPanel;
-import org.reactome.web.fi.client.visualisers.diagram.profiles.OverlayColours;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
+import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
