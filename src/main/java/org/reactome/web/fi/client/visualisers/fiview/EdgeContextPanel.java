@@ -50,17 +50,31 @@ public class EdgeContextPanel extends Composite implements ChangeHandler{
 	}
 	
 	private FlowPanel setOptions(List<String> sourcesList) {
+		
+		Label lb = new Label("Reactome Source Identifiers: ");
+		lb.setStyleName(EDGECONTEXTRESOURCES.getCSS().titleLabel());
+		FlowPanel result = new FlowPanel();
+		
+		//for case where there is only one source
+		if(sourcesList.size() <=1) {
+			lb.setText("Reactome Source:");
+			Label sourceLabel = new Label(sourcesList.get(0));
+			sourceLabel.setStyleName(EDGECONTEXTRESOURCES.getCSS().sourceLabel());
+			result.add(lb);
+			result.add(sourceLabel);
+			return result;
+		}
+		
+		//for case where there are multiple sources
 		ListBox list = new ListBox();
+		list.setStyleName(EDGECONTEXTRESOURCES.getCSS().listBox());
 		list.setMultipleSelect(false);
+		
 		for(String source : sourcesList) {
 			list.addItem(source);
 		}
 		sourcesOptions = list;
 		
-		Label lb = new Label("Reactome Source Identifiers: ");
-		lb.setStyleName(EDGECONTEXTRESOURCES.getCSS().sourcesLabel());
-		
-		FlowPanel result = new FlowPanel();
 		result.add(lb);
 		result.add(sourcesOptions);
 		return result;
@@ -117,6 +131,10 @@ public class EdgeContextPanel extends Composite implements ChangeHandler{
 		
 		String edgePopup();
 		
-		String sourcesLabel();
+		String titleLabel();
+		
+		String sourceLabel();
+		
+		String listBox();
 	}
 }

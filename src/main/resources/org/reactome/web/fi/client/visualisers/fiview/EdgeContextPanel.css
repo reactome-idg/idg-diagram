@@ -45,6 +45,16 @@
 	color:black;
 }
 
-.sourcesLabel{
+.titleLabel{
+	font-size: medium;
     color: white;
+}
+
+.sourceLabel{
+	color: white;
+	font-size: medium;
+}
+
+.listBox{
+	font-size: medium;
 }
