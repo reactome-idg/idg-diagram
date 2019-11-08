@@ -121,10 +121,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 			super.setActiveVisualiser(context);
 		}
 		super.setActiveVisualiser(context);
-		
-		//perform node overlay if overlayEntities exist
-		if(activeVisualiser instanceof FIViewVisualiser && overlayEntities !=null)
-			((FIViewVisualiser)activeVisualiser).overlayNodes(overlayEntities);
 	}
 	
 	@Override
@@ -277,7 +273,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		overlayEntities = null;
 		context.setDialogMap(new HashMap<>());
-		overlayDialogPanel.hide();
+		if(event.getSource() instanceof OverlayLegend)
+			overlayDialogPanel.hide();
 		if(activeVisualiser instanceof DiagramVisualiser)
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualiser)
