@@ -89,14 +89,6 @@ public class EdgeContextPanel extends Composite implements ChangeHandler{
 		}
 		return result;
 	}
-
-	private String getAnnotationDirection(JSONObject fi) {
-		if(fi.get("direction") == null)
-			return "-";
-		else
-			return fi.get("direction").isString().stringValue();
-		
-	}
 	
 	@Override
 	public void onChange(ChangeEvent event) {
