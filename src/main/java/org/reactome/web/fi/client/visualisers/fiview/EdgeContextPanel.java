@@ -65,7 +65,16 @@ public class EdgeContextPanel extends Composite implements ChangeHandler, Reacto
 		//for case where there is only one source
 		if(sourcesList.size() <=1) {
 			lb.setText("Reactome Source:");
-			Label sourceLabel = new Label(sourcesList.get(0));
+			Label sourceLabel = new Label();
+			String sourceString = sourcesList.get(0);
+			if(sourceString.length() > 26) {
+				sourceLabel.setTitle(sourceString);
+				sourceLabel.setText(sourceString.substring(0, 26) + "...");
+			}
+			else {
+				sourceLabel.setText(sourceString);
+				sourceLabel.setTitle(sourceString);
+			}
 			sourceLabel.setStyleName(EDGECONTEXTRESOURCES.getCSS().sourceLabel());
 			result.add(lb);
 			result.add(sourceLabel);
@@ -130,8 +139,6 @@ public class EdgeContextPanel extends Composite implements ChangeHandler, Reacto
 			for(int i=0; i<array.size(); i++) {
 				JSONObject object = array.get(i).isObject();
 				String sourceString = object.get("dbId").toString() + " - " + object.get("displayName").isString().stringValue();
-				if(sourceString.length() > 25)
-					sourceString = sourceString.substring(0,26) + "...";
 				resultingList.add(sourceString);
 			}
 		}
