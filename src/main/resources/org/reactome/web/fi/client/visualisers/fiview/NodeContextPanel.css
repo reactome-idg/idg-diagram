@@ -22,3 +22,8 @@
 .label{
 	color: white;
 }
+
+.linkAnchor {
+	text-decoration: none;
+	color: white;
+}

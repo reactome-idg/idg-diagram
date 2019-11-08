@@ -39,7 +39,7 @@ public class NodeContextPanel extends Composite {
 		Anchor linkAnchor = new Anchor(new SafeHtmlBuilder()
 				.appendEscapedLines("Uniprote Identifier: " + accession).toSafeHtml(),
 				link, "_blank");
-		linkAnchor.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
+		linkAnchor.setStyleName(NODECONTEXTRESOURCES.getCSS().linkAnchor());
 		
 		FlowPanel panel = new FlowPanel();
 		panel.add(lbl);
@@ -66,6 +66,8 @@ public class NodeContextPanel extends Composite {
 		String nodePopup();
 		
 		String label();
+		
+		String linkAnchor();
 		 
 	}
 }
