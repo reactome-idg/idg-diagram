@@ -27,7 +27,6 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 	private OverlayInfoPanel infoPanel;
 	private OverlayAnimation animation = new OverlayAnimation();
 
-
 	public OverlayDialogPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
 		
@@ -50,7 +49,6 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 	@SuppressWarnings("unused")
 	private void setPosition(int x, int y) {
 		this.setPosition(x, y);
-		
 	}
 	
 	public void show() {

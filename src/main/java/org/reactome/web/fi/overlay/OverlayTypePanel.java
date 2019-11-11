@@ -72,6 +72,8 @@ public abstract class OverlayTypePanel extends Composite implements ClickHandler
 	public interface ResourceCSS extends CssResource  {
 		String CSS = "org/reactome/web/fi/overlay/OverlayTypePanel.css";
 		
+		String radioButton();
+		
 		String label();
 	}
 	

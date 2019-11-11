@@ -42,7 +42,7 @@ public class EntityOverlayTypePanel extends OverlayTypePanel {
 	
 		for(OverlayEntityType type: OverlayEntityType.values()) {
 			RadioButton button = new RadioButton("OverlayEntityTypes", type.getName());
-			button.getElement().getStyle().setDisplay(Display.BLOCK);
+			button.setStyleName(IDGRESOURCES.getCSS().radioButton());
 			button.addClickHandler(this);
 			buttonPanel.add(button);
 		}

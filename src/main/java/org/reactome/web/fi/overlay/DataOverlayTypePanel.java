@@ -56,7 +56,7 @@ public class DataOverlayTypePanel extends OverlayTypePanel{
 		
 		for(OverlayDataType type: OverlayDataType.values()) {
 			RadioButton button  = new RadioButton("OverlayDataTypes", type.getName());
-			button.getElement().getStyle().setDisplay(Display.BLOCK);
+			button.setStyleName(IDGRESOURCES.getCSS().radioButton());
 			button.addClickHandler(this);
 			buttonPanel.add(button);
 		}		

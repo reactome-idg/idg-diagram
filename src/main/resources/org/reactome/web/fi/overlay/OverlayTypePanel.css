@@ -1,4 +1,9 @@
 .label{
 	color: #005A75;
-	font-size: medium;
+	font-size: small;
+}
+
+.radioButton{
+	font-size: small;
+	display: block;
 }
