@@ -11,6 +11,8 @@
   <!-- Other module inherits                                      -->
   <inherits name='org.reactome.web.diagram.DiagramViewer' />
   <inherits name='org.reactome.web.gwtCytoscapeJs.GWTCyJs' />
+  <inherits name="com.smartgwtee.SmartGwtEE"/>
+  <inherits name="com.smartgwtee.tools.Tools"/>
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client' />

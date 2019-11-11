@@ -117,6 +117,7 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		this.dataOverlayTypePanel.reset();
 		this.entityOverlayTypePanel.reset();
+		this.colourChoicePanel.resetColours();
 	}
 
 	@Override

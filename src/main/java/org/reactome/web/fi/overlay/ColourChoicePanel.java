@@ -30,7 +30,7 @@ public class ColourChoicePanel extends Composite {
 		lbl.getElement().getStyle().setColor("#FFFFFF");
 		
 		coloursScrollPanel = new ScrollPanel();
-		coloursScrollPanel.setHeight("50px");
+		coloursScrollPanel.setHeight("60px");
 		
 		main.add(lbl);
 		main.add(coloursScrollPanel);
@@ -64,6 +64,11 @@ public class ColourChoicePanel extends Composite {
 			main.remove(i);
 		main.add(coloursScrollPanel);
 	}
+	
+	protected void resetColours() {
+		for(int i=1; i<main.getWidgetCount(); i++) 
+			main.remove(i);
+		}
 	
 	public static Resources RESOURCES;
 	static {

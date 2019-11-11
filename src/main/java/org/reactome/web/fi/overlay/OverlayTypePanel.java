@@ -43,13 +43,7 @@ public abstract class OverlayTypePanel extends Composite implements ClickHandler
 		// TODO Auto-generated method stub
 	}
 	
-	protected void reset() {
-		for(int i=0; i<buttonPanel.getWidgetCount(); i++) {
-			Widget widget = buttonPanel.getWidget(i);
-			if(widget instanceof RadioButton)
-				((RadioButton) widget).setValue(false);
-		}
-	}
+	protected abstract void reset();
 
 	public void selectType(String dataType) {
 		for(int i=0; i<buttonPanel.getWidgetCount(); i++) {
