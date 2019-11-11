@@ -55,7 +55,7 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 	
 	public void show() {
 		this.getElement().getStyle().setDisplay(Display.BLOCK);
-		animation.animateOverlay(0, 160, 500, this);
+		animation.animateOverlay(0, 169, 500, this);
 	}
 	
 	public void hide() {

@@ -27,10 +27,12 @@ public class OverlayInfoPanel extends Composite implements ClickHandler,
 OverlayDataResetHandler, OverlayDataLoadedHandler{
 	
 	EventBus eventBus;
-	private Button overlayTypes;
+	private Button dataOverlayTypes;
 	private Button colours;
+	private Button entityOverlayTypes;
 	private List<Button> btns = new LinkedList<>();
-	private OverlayTypePanel overlayTypePanel;
+	private DataOverlayTypePanel dataOverlayTypePanel;
+	private EntityOverlayTypePanel entityOverlayTypePanel;
 	private ColourChoicePanel colourChoicePanel;
 	private String currentOverlayType;
 	
@@ -42,10 +44,11 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 		FlowPanel buttonsPanel = new FlowPanel();
 		buttonsPanel.setStyleName(ContextInfoPanel.RESOURCES.getCSS()
 								  .buttonsPanel());
-		buttonsPanel.add(this.overlayTypes =  getButton("Overlays", IDGRESOURCES.bwOverlayIcon()));
+		buttonsPanel.add(this.dataOverlayTypes =  getButton("Data", IDGRESOURCES.bwOverlayIcon()));
+		buttonsPanel.add(this.entityOverlayTypes = getButton("Entity", IDGRESOURCES.bwOverlayIcon()));
 		buttonsPanel.add(this.colours =  getButton("Colours", IDGRESOURCES.colourPicker()));
-		
-		this.overlayTypes.addStyleName(ContextInfoPanel.RESOURCES.getCSS()
+
+		this.dataOverlayTypes.addStyleName(ContextInfoPanel.RESOURCES.getCSS()
 									   .buttonSelected());
 		
 		this.container = new DeckLayoutPanel();
@@ -53,8 +56,10 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 				   					.container());
 		
 		//adding panels to DeckPanel container
-		this.overlayTypePanel = new OverlayTypePanel(eventBus);
-		this.container.add(overlayTypePanel);
+		this.dataOverlayTypePanel = new DataOverlayTypePanel(eventBus);
+		this.container.add(dataOverlayTypePanel);
+		this.entityOverlayTypePanel = new EntityOverlayTypePanel(eventBus);
+		this.container.add(entityOverlayTypePanel);
 		this.colourChoicePanel = new ColourChoicePanel(eventBus);
 		this.container.add(colourChoicePanel);
 		
@@ -99,15 +104,19 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 		Button btn = (Button) event.getSource();
 		btn.addStyleName(ContextInfoPanel.RESOURCES.getCSS()
 						 .buttonSelected());
-		if(btn.equals(this.overlayTypes))
+		if(btn.equals(this.dataOverlayTypes))
 			this.container.showWidget(0);
-		else if(btn.equals(this.colours))
+		else if(btn.equals(this.entityOverlayTypes))
 			this.container.showWidget(1);
+		else if(btn.equals(this.colours))
+			this.container.showWidget(2);
+		
 	}
 
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
-		this.overlayTypePanel.reset();
+		this.dataOverlayTypePanel.reset();
+		this.entityOverlayTypePanel.reset();
 	}
 
 	@Override
@@ -118,7 +127,8 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 		}
 	
 	public void selectOverlayType() {
-		this.overlayTypePanel.selectType(currentOverlayType);
+		this.dataOverlayTypePanel.selectType(currentOverlayType);
+		this.entityOverlayTypePanel.selectType(currentOverlayType);
 	}
 	
 	public static Resources IDGRESOURCES;
