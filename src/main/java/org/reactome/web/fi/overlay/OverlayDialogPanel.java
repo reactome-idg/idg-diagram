@@ -7,8 +7,11 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 
 import org.reactome.web.diagram.context.ContextDialogPanel;
@@ -35,14 +38,25 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 		this.addStyleName(ContextDialogPanel.RESOURCES.getCSS().popupSelected());
 		this.addStyleName(IDGRESOURCES.getCSS().panel());
 		this.getElement().getStyle().setMarginLeft(170, Unit.PX);
-		Label lbl = new Label("Reactome Overlay Resources");
-		lbl.setStyleName(IDGRESOURCES.getCSS().label());
-		fp.add(lbl);
+		
+		fp.add(setTitlePanel());
 		fp.add(this.infoPanel = new OverlayInfoPanel(this.eventBus));
 		this.add(fp);
 		
 		eventBus.addHandler(OverlayDataLoadedEvent.TYPE, this);
 		
+	}
+
+	private FlowPanel setTitlePanel() {
+		FlowPanel panel = new FlowPanel();
+		panel.setStyleName(IDGRESOURCES.getCSS().titlePanel());
+		Image img = new Image(IDGRESOURCES.smOverlayIcon());
+		img.getElement().getStyle().setDisplay(Display.INLINE);
+		InlineLabel lbl = new InlineLabel("Reactome Overlay Resources");
+		lbl.setStyleName(IDGRESOURCES.getCSS().label());
+		panel.add(img);
+		panel.add(lbl);
+		return panel;
 	}
 
 	//position set in IdgViewerContainer
@@ -78,6 +92,9 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 	public interface Resources extends ClientBundle{
 		@Source(ResourceCSS.CSS)
 		ResourceCSS getCSS();
+		
+		@Source("images/smOverlayIcon.png")
+		ImageResource smOverlayIcon();
 	}
 	
 	@CssResource.ImportedWithPrefix("idg-diagram-OverlayDialogPanel")
@@ -88,5 +105,7 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 		String panel();
 		
 		String label();
+		
+		String titlePanel();
 	}
 }
