@@ -3,16 +3,9 @@ package org.reactome.web.fi.overlay;
 
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.model.OverlayDataType;
-import org.reactome.web.fi.model.OverlayEntityType;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
