@@ -44,7 +44,7 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 		FlowPanel buttonsPanel = new FlowPanel();
 		buttonsPanel.setStyleName(ContextInfoPanel.RESOURCES.getCSS()
 								  .buttonsPanel());
-		buttonsPanel.add(this.dataOverlayTypes =  getButton("Data", IDGRESOURCES.bwOverlayIcon()));
+		buttonsPanel.add(this.dataOverlayTypes =  getButton("Data", IDGRESOURCES.dataOverlayIcon()));
 		buttonsPanel.add(this.entityOverlayTypes = getButton("Entity", IDGRESOURCES.bwOverlayIcon()));
 		buttonsPanel.add(this.colours =  getButton("Colours", IDGRESOURCES.colourPicker()));
 
@@ -143,5 +143,8 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 		
 		@Source("images/Color_Picker.png")
 		ImageResource colourPicker();
+		
+		@Source("images/DataOverlayIcon.png")
+		ImageResource dataOverlayIcon();
 	}
 }
