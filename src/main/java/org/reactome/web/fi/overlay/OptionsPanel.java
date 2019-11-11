@@ -41,7 +41,7 @@ public class OptionsPanel extends Composite implements ClickHandler{
 		options = new FlowPanel();
 		options.setStyleName(RESOURCES.getCSS().optionsPanel());
 		
-		Label optionsLabel = new Label("Overlay Options");
+		Label optionsLabel = new Label("Overlay Options:");
 		optionsLabel.setStyleName(RESOURCES.getCSS().optionsLabel());
 		options.add(optionsLabel);
 		Label lbl = new Label("No overlay options available. \n Click \"Overlay!\" to perform overlay!");
