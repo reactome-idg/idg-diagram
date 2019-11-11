@@ -1,6 +1,7 @@
 .label{
 	color: #005A75;
-	font-size: small;
+	font-size: medium;
+	padding-top: 2px;
 }
 
 .radioButton{

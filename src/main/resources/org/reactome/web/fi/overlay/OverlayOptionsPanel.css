@@ -1,0 +1,45 @@
+.buttonPanel{
+	float:left;
+	width: 19;
+}
+
+.buttonPanel button{
+	color: white;
+	border-radius: 0 10px 10px 0;
+	background: none rgb(88, 195, 229);
+	font-size: x-small;
+	outline: none;
+	width: 65px;
+	height: 50px;
+	display: block
+}
+
+.buttonPanel button:hover{
+	background: none rgb(30, 148, 208);
+}
+
+.buttonPanel button:disabled {
+	background: none rgb(88, 195, 229);
+}
+
+.buttonPanel button:selected {
+	background: none rgb(6, 107, 158) !important;
+}
+
+.optionsPanel {
+	float: left;
+	width: 74%;
+	height: 150px;
+	overflow: hidden;
+}
+
+.label{
+	color: #005A75;
+    font-size: small;
+}
+
+.optionsLabel{
+	color: #005A75;
+	font-size: medium;
+	padding-top: 3px;
+}

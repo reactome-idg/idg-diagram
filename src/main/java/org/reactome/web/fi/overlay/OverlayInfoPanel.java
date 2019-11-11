@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -35,7 +36,6 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 	private EntityOverlayTypePanel entityOverlayTypePanel;
 	private ColourChoicePanel colourChoicePanel;
 	private String currentOverlayType;
-	
 	private DeckLayoutPanel container;
 	
 	public OverlayInfoPanel(EventBus eventBus) {
@@ -138,6 +138,7 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 	}
 	
 	public interface Resources extends ClientBundle{
+		
 		@Source("images/bwOverlayIcon.png")
 		ImageResource bwOverlayIcon();
 		
@@ -147,4 +148,5 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 		@Source("images/DataOverlayIcon.png")
 		ImageResource dataOverlayIcon();
 	}
+	
 }
