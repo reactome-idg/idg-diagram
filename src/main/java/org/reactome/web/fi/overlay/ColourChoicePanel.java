@@ -27,7 +27,7 @@ public class ColourChoicePanel extends Composite{
 		
 		main = new FlowPanel();
 		Label lbl = new Label("Change Overlay Colours:");
-		lbl.getElement().getStyle().setColor("#FFFFFF");
+		lbl.getElement().getStyle().setColor("#005A75");
 		
 		coloursScrollPanel = new ScrollPanel();
 		coloursScrollPanel.setHeight("60px");
