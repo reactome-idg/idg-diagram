@@ -64,8 +64,6 @@ public class DataOverlayTypePanel extends OverlayTypePanel{
 				OverlayDataType.lookupType(btn.getText())), this);
 	}
 	
-	
-	
 	@Override
 	protected void reset() {
 		for(int i=0; i<buttonPanel.getWidgetCount(); i++) {
