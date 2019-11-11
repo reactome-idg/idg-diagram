@@ -16,7 +16,7 @@ import com.google.gwt.resources.client.CssResource;
  * @author brunsont
  *
  */
-public class ColourChoicePanel extends Composite {
+public class ColourChoicePanel extends Composite{
 	
 	private EventBus eventbus;
 	private FlowPanel main;
