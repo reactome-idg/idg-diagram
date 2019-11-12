@@ -44,7 +44,7 @@ OptionsPanel.Handler{
 		container.add(optionsPanel);
 		container.showWidget(0);
 		
-		container.getElement().getStyle().setHeight(120, Unit.PX);
+		container.getElement().getStyle().setHeight(160, Unit.PX);
 		return container;
 	}
 	

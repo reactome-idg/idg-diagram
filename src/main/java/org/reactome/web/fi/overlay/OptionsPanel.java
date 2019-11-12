@@ -1,6 +1,7 @@
 package org.reactome.web.fi.overlay;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ClientBundle;
@@ -10,6 +11,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 
 public class OptionsPanel extends Composite implements ClickHandler{
 	
@@ -26,12 +28,17 @@ public class OptionsPanel extends Composite implements ClickHandler{
 	private Handler handler;
 	private FlowPanel main;
 	private FlowPanel options;
+	private ScrollPanel scrollPanel;
 	
 	public OptionsPanel(Handler handler) {
 		this.handler = handler;
 		
 		main = new FlowPanel();
-		main.add(getOptions());
+		main.getElement().getStyle().setHeight(150, Unit.PX);
+		scrollPanel = new ScrollPanel();
+		scrollPanel.setStyleName(RESOURCES.getCSS().optionsPanel());
+		scrollPanel.add(getOptions());
+		main.add(scrollPanel);
 		main.add(confirmationButtonPanel());
 		initWidget(main);
 		
