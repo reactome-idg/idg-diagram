@@ -30,7 +30,7 @@ public class OverlayDataRequestedEvent extends GwtEvent<OverlayDataRequestedHand
 
 	@Override
 	protected void dispatch(OverlayDataRequestedHandler handler) {
-		handler.onTargetLevelDataRequested(this);
+		handler.onDataOverlayRequested(this);
 	}
 	
 	
