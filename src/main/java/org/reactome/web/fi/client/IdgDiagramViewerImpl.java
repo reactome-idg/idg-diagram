@@ -50,6 +50,6 @@ OverlayDataRequestedHandler{
 
 	@Override
 	public void onDataOverlayRequested(OverlayDataRequestedEvent event) {
-		((IDGLoaderManager)loaderManager).loadTCRDTargetLevel(event.getIds(), event.getType());
+		((IDGLoaderManager)loaderManager).loadTCRDTargetLevel(event.getPostData(), event.getType());
 	}
 }

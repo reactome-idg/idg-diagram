@@ -182,27 +182,50 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		
 		//in case of DiagramVisualiser, get each physical entity identifier and add to set
 		else if(activeVisualiser instanceof DiagramVisualiser) {
+			identifiers = collectDiagramInteractors(identifiers);
+		}
+		
+		String postContent = getPostData(identifiers);
+		
+		eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
+	}
+
+	private Set<String> collectDiagramInteractors(Set<String> identifiers) {
+		//iterate over all diagram objects in a diagram
+		for(DiagramObject  diagramObject: context.getContent().getDiagramObjects()) {
+			Set<GraphPhysicalEntity> participants = null;
 			
-			//iterate over all diagram objects in a diagram
-			for(DiagramObject  diagramObject: context.getContent().getDiagramObjects()) {
-				Set<GraphPhysicalEntity> participants = null;
-				
-				//Get graph object of each diagramObject, check if its a GraphPhysicalEntity,
-				//and get each participant if so. Then add identifier of each participant
-				//to a set of identifiers.
-				GraphObject graphObject = diagramObject.getGraphObject();
-				if(graphObject instanceof GraphPhysicalEntity) {
-					GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
-					participants = pe.getParticipants();
-					if(identifiers==null)
-						identifiers = new HashSet<>();
-					for(GraphPhysicalEntity participant: participants) {
-						identifiers.add(participant.getIdentifier()); 
-					}
+			//Get graph object of each diagramObject, check if its a GraphPhysicalEntity,
+			//and get each participant if so. Then add identifier of each participant
+			//to a set of identifiers.
+			GraphObject graphObject = diagramObject.getGraphObject();
+			if(graphObject instanceof GraphPhysicalEntity) {
+				GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
+				participants = pe.getParticipants();
+				if(identifiers==null)
+					identifiers = new HashSet<>();
+				for(GraphPhysicalEntity participant: participants) {
+					identifiers.add(participant.getIdentifier()); 
 				}
 			}
 		}
-		eventBus.fireEventFromSource(new OverlayDataRequestedEvent(identifiers, event.getDataType()), this);
+		return identifiers;
+	}
+	
+	/**
+	 * iterates over a set of uniprot identifiers and adds them to a string delineated by ','.
+	 * @param ids
+	 * @return
+	 */
+	private String getPostData(Set<String> ids) {
+		StringBuilder post = new StringBuilder();
+		ids.stream().forEach(S -> post.append(S).append(","));
+		if(post.length()>0) {
+			post.delete(post.length()-1, post.length());
+			return post.toString();
+		}
+		
+		return null;
 	}
 	
 	private void cytoscapeButtonPressed() {

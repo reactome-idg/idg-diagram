@@ -15,11 +15,11 @@ import com.google.gwt.event.shared.GwtEvent;
 public class OverlayDataRequestedEvent extends GwtEvent<OverlayDataRequestedHandler> {
 	public static Type<OverlayDataRequestedHandler> TYPE = new Type<>();
 	
-	private Set<String> ids;
+	private String postData;
 	private OverlayDataType type;
 	
-	public OverlayDataRequestedEvent(Set<String> set, OverlayDataType type) {
-		this.ids = set;
+	public OverlayDataRequestedEvent(String set, OverlayDataType type) {
+		this.postData = set;
 		this.type = type;
 	}
 	
@@ -34,8 +34,8 @@ public class OverlayDataRequestedEvent extends GwtEvent<OverlayDataRequestedHand
 	}
 	
 	
-	public Set<String> getIds() {
-		return ids;
+	public String getPostData() {
+		return postData;
 	}
 	
 	public OverlayDataType getType() {
