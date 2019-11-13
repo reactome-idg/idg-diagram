@@ -25,6 +25,7 @@ public class TCRDLoader implements RequestCallback{
 	
 	private Handler handler;
 	private Request request;
+	private OverlayDataType type;
 	
 	public TCRDLoader(Handler handler){
 		this.handler = handler;
@@ -37,6 +38,7 @@ public class TCRDLoader implements RequestCallback{
 	}
 	
 	public void load(Set<String> ids, OverlayDataType type) {
+		this.type = type;
 		cancel();
 				
 		if(ids == null) {
