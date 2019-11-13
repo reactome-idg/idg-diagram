@@ -11,6 +11,11 @@ public interface OverlayEntity {
 	
 	String getGeneName();
 	
-	String getValue(); 
+	String getEType();
 	
+	String getTissue();
+	
+	String getValue();
+	
+	Double getNumberValue();
 }

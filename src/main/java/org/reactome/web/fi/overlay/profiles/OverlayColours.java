@@ -73,7 +73,8 @@ public class OverlayColours{
 
 		String result = null;
 		switch(name) {
-		case "Target Development Level": result = ColourSource.SOURCE.targetLevel().getText();	break;
+		case "Target Development Level":  result = ColourSource.SOURCE.targetLevel().getText();	break;
+		case "Tissue Expression": result = ColourSource.SOURCE.targetLevel().getText(); break;
 		}
 		return result;
 	}

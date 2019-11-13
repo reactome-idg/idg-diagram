@@ -6,6 +6,7 @@ import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
 import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.model.OverlayDataType;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -40,13 +41,14 @@ public class TCRDLoader implements RequestCallback{
 	public void load(String postData, OverlayDataType type) {
 		this.type = type;
 		cancel();
-				
+						
 		if(postData == null) {
 			Exception exception = new Exception("Cannot request overlay data for 0 ids.");
 			this.handler.onTargetLevelLoadedError(exception);
 		}
 		
-		String url = BASE_URL + "targetlevel/uniprots";
+		String url = BASE_URL + type.getUrl();
+
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
 		requestBuilder.setHeader("Accept", "application/json");
 		requestBuilder.setRequestData(postData);
@@ -64,9 +66,10 @@ public class TCRDLoader implements RequestCallback{
 		case Response.SC_OK:
 			OverlayEntities entities;
 			try {
+				GWT.log(response.getText());
 				JSONValue val = JSONParser.parseStrict(response.getText());
 				JSONObject obj = new JSONObject();
-				obj.put("dataType", new JSONString("Target Development Level"));
+				obj.put("dataType", new JSONString(type.getName()));
 				obj.put("valueType", new JSONString("String"));
 				JSONArray valArray = val.isArray();
 				JSONArray outputArray = new JSONArray();

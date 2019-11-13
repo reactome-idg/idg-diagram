@@ -187,7 +187,14 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		
 		String postContent = getPostData(identifiers);
 		
-		eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
+		if(event.getDataType() == OverlayDataType.TARGET_DEVELOPMENT_LEVEL)
+			eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
+		else if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
+			String tissues = "Adult Adrenal,Bone marrow,Adult Colon";
+	        String etypes = "HPM Protein";
+	        postContent += "\n" + tissues + "\n" + etypes;
+	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
+		}
 	}
 
 	private Set<String> collectDiagramInteractors(Set<String> identifiers) {
