@@ -15,12 +15,6 @@ public enum OverlayDataType {
 	
 	private String name;
 	private String url;
-	private static final Map<String, OverlayDataType> LOOKUP = new HashMap<>();
-	
-	static {
-		for(OverlayDataType type: OverlayDataType.values())
-			LOOKUP.put(type.getName(), type);
-	}
 	
 	OverlayDataType(String overlayString, String url){
 		this.name = overlayString;
@@ -36,7 +30,8 @@ public enum OverlayDataType {
 	}
 	
 	public static OverlayDataType lookupType(String type) {
-		return LOOKUP.get(type);
+		String look = type.replace(" ", "_").toUpperCase();
+		return valueOf(look);
 	}
 	
 }
