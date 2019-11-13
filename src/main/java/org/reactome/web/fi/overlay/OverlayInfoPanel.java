@@ -124,6 +124,8 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.currentOverlayType = event.getEntities().getDataType();
 		dataOverlayTypePanel.setCurrentType(currentOverlayType);
+		
+		if(event.getEntities().getTargetLevelEntity() != null)
 		this.colourChoicePanel.setColourLabels();
 	}
 	

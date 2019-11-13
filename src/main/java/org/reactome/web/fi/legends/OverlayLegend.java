@@ -66,9 +66,15 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
+		this.setVisible(false);
 		this.remove(colourMapPanel);
 		colourMapPanel = new FlowPanel();
 		this.add(colourMapPanel);
+		
+		//stops loading of new colours during continuous value overlay rendering
+		if(event.getEntities().getTargetLevelEntity() == null)
+			return;
+		
 		colourMapPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
 		Map<String, String> map = OverlayColours.get().getColours(event.getEntities().getDataType());
 		Label title = new Label("Overlay Value Types: ");
