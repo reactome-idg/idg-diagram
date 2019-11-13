@@ -92,6 +92,7 @@ OptionsPanel.Handler{
 			if(widget instanceof RadioButton)
 				((RadioButton) widget).setValue(false);
 		}
+		container.showWidget(0);
 	}
 
 	@Override
