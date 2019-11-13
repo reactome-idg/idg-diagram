@@ -55,6 +55,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	private OverlayDialogPanel overlayDialogPanel;
 	
 	private OverlayEntities overlayEntities;
+	private boolean renderOverlays = false;
 	
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
@@ -248,7 +249,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	
 	@Override
 	public void onRenderOtherData(RenderOtherDataEvent event) {
-		if(this.overlayEntities == null)
+		if(this.renderOverlays == false)
 			return;
 		
 		OverlayDataHandler.getHandler()
@@ -262,6 +263,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
+		this.renderOverlays = true;
 		this.overlayEntities = event.getEntities();
 		context.setDialogMap(new HashMap<>());
 		if(activeVisualiser instanceof DiagramVisualiser) 
@@ -272,7 +274,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
-		overlayEntities = null;
+		renderOverlays = false;
 		context.setDialogMap(new HashMap<>());
 		if(event.getSource() instanceof OverlayLegend)
 			overlayDialogPanel.hide();
