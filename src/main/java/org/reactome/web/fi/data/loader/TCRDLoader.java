@@ -66,22 +66,11 @@ public class TCRDLoader implements RequestCallback{
 		case Response.SC_OK:
 			OverlayEntities entities;
 			try {
-				GWT.log(response.getText());
 				JSONValue val = JSONParser.parseStrict(response.getText());
 				JSONObject obj = new JSONObject();
 				obj.put("dataType", new JSONString(type.getName()));
 				obj.put("valueType", new JSONString("String"));
-				JSONArray valArray = val.isArray();
-				JSONArray outputArray = new JSONArray();
-				for(int i=0; i<valArray.size(); i++) {
-					JSONObject innerObj = valArray.get(i).isObject();
-					JSONObject arrayObj = new JSONObject();
-					arrayObj.put("identifier", innerObj.get("uniprot"));
-					arrayObj.put("geneName", innerObj.get("sym"));
-					arrayObj.put("value", innerObj.get("targetDevLevel"));
-					outputArray.set(outputArray.size(), arrayObj);
-				}
-				obj.put("entities", outputArray);
+				obj.put(getEntityType(), val.isArray());
 				entities = OverlayEntityDataFactory.getTargetLevelEntity(OverlayEntities.class, obj.toString());
 			}catch(Exception e) {
 				this.handler.onTargetLevelLoadedError(e);
@@ -92,6 +81,15 @@ public class TCRDLoader implements RequestCallback{
 		default:
 			this.handler.onTargetLevelLoadedError(new Exception(response.getStatusText()));
 		}
+	}
+	
+	private String getEntityType() {
+		if(type == OverlayDataType.TARGET_DEVELOPMENT_LEVEL)
+			return "targetLevelEntity";
+		else if(type == OverlayDataType.TISSUE_EXPRESSION) {
+			return "expressionEntity";
+		}
+		return "overlayEntity";
 	}
 
 	@Override

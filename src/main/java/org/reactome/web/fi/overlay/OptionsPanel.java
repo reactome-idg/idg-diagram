@@ -53,29 +53,6 @@ public class OptionsPanel extends Composite implements ClickHandler{
 		options.add(optionsLabel);
 		Label lbl = new Label("No overlay options available. \n Click \"Overlay!\" to perform overlay!");
 		options.add(lbl);
-//		Label lbl = new Label("Expression Types");
-//		lbl.setStyleName(RESOURCES.getCSS().label());
-//		CheckBox box = new CheckBox();
-//		box.setName("expressionTypes");
-//		box.setText("Option 1");
-//		CheckBox box2 = new CheckBox();
-//		box2.setName("expressionTypes");
-//		box2.setText("Option 2");
-//		Label lbl2 = new Label("Tissue Types");
-//		lbl2.setStyleName(RESOURCES.getCSS().label());
-//		CheckBox box3 = new CheckBox();
-//		box3.setName("tissues");
-//		box3.setText("Option 1");
-//		CheckBox box4 = new CheckBox();
-//		box4.setName("tissues");
-//		box4.setText("Option 2");
-//		
-//		options.add(lbl);
-//		options.add(box);
-//		options.add(box2);
-//		options.add(lbl2);
-//		options.add(box3);
-//		options.add(box4);
 		
 		return options;
 	}

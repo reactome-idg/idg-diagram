@@ -123,13 +123,8 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.currentOverlayType = event.getEntities().getDataType();
+		dataOverlayTypePanel.setCurrentType(currentOverlayType);
 		this.colourChoicePanel.setColourLabels();
-		selectOverlayType();
-		}
-	
-	public void selectOverlayType() {
-		this.dataOverlayTypePanel.selectType(currentOverlayType);
-		this.entityOverlayTypePanel.selectType(currentOverlayType);
 	}
 	
 	public static Resources IDGRESOURCES;

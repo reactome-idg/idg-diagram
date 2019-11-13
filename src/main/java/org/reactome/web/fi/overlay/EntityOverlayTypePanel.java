@@ -88,13 +88,12 @@ OptionsPanel.Handler{
 	}
 
 	@Override
-	public void selectType(String dataType) {
+	public void selectType() {
 		for(int i=0; i<buttonPanel.getWidgetCount(); i++) {
 			Widget widget = buttonPanel.getWidget(i);
 			if(widget instanceof RadioButton) {
-				if(OverlayEntityType.lookupType(((RadioButton)widget).getText()) == OverlayEntityType.lookupType(dataType)) {
+				if(OverlayEntityType.lookupType(((RadioButton)widget).getText()) == OverlayEntityType.lookupType(selectedOverlayType)) {
 					((RadioButton)widget).setValue(true);
-					selectedOverlayType = dataType;
 					return;
 				}
 			}

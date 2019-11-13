@@ -295,6 +295,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.renderOverlays = true;
 		this.overlayEntities = event.getEntities();
+		
+		if(event.getEntities().getTargetLevelEntity() == null)
+			GWT.log("YEE YEE");
+		
 		context.setDialogMap(new HashMap<>());
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();

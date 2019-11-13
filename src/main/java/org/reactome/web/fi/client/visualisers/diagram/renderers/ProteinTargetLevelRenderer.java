@@ -28,6 +28,7 @@ import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.OverlayRenderer;
 import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.data.overlay.OverlayEntity;
+import org.reactome.web.fi.data.overlay.TargetLevelEntity;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.OverlayDataType;
@@ -154,8 +155,9 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 	private void makeEntitiesMap(OverlayEntities rawEntities) {
 		if(entitiesMap ==null)
 			entitiesMap = new HashMap<>();
-		for(OverlayEntity entity : rawEntities.getEntities()) {
-			entitiesMap.put(entity.getIdentifier(), entity.getValue());
+		for(TargetLevelEntity entity : rawEntities.getTargetLevelEntity()) {
+			TargetLevelEntity tEntity = (TargetLevelEntity) entity;
+			entitiesMap.put(entity.getUniprot(), tEntity.getTargetDevLevel());
 		}
 	}
 

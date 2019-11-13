@@ -45,17 +45,7 @@ public abstract class OverlayTypePanel extends Composite implements ClickHandler
 	
 	protected abstract void reset();
 
-	public void selectType(String dataType) {
-		for(int i=0; i<buttonPanel.getWidgetCount(); i++) {
-			Widget widget = buttonPanel.getWidget(i);
-			if(widget instanceof RadioButton) {
-				if(OverlayDataType.lookupType(((RadioButton) widget).getText()) == OverlayDataType.lookupType(dataType)) {
-					((RadioButton) widget).setValue(true);
-					return;
-				}
-			}
-		}
-	}
+	public abstract void selectType();
 
 	public static Resources IDGRESOURCES;
 	static {

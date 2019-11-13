@@ -13,6 +13,8 @@ public interface OverlayEntities {
     
     public String getValueType(); // e.g. String (for enum)
     
-	List<OverlayEntity> getEntities();
+	List<TargetLevelEntity> getTargetLevelEntity();
+	
+	List<ExpressionEntity> getExpressionEntity();
 	
 }

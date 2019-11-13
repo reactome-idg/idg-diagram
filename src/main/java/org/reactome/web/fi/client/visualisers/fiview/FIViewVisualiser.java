@@ -29,6 +29,7 @@ import org.reactome.web.diagram.profiles.interactors.InteractorColours;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.data.overlay.OverlayEntity;
+import org.reactome.web.fi.data.overlay.TargetLevelEntity;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeClickedEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeContextSelectEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeHoveredEvent;
@@ -662,9 +663,9 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		}
 		
 		Map<String, String> colourMap = OverlayColours.get().getColours(overlayEntities.getDataType());
-		for(OverlayEntity entity: overlayEntities.getEntities()) {
-			String colour = colourMap.get(entity.getValue());
-			cy.highlightNode(entity.getIdentifier(), colour, ".8");
+		for(OverlayEntity entity: overlayEntities.getTargetLevelEntity()) {
+			String colour = colourMap.get(((TargetLevelEntity)entity).getTargetDevLevel());
+			cy.highlightNode(entity.getUniprot(), colour, ".8");
 		}
 	}
 	

@@ -78,10 +78,6 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.setVisible(true);
 	}
-
-	public void selectOverlayType() {
-		infoPanel.selectOverlayType();
-	}
 	
 	public static Resources IDGRESOURCES;
 	static {

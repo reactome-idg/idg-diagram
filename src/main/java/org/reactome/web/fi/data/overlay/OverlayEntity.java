@@ -7,15 +7,8 @@ package org.reactome.web.fi.data.overlay;
  */
 public interface OverlayEntity {
 
-	String getIdentifier();
+	String getUniprot();
 	
-	String getGeneName();
+	String getSym();
 	
-	String getEType();
-	
-	String getTissue();
-	
-	String getValue();
-	
-	Double getNumberValue();
 }
