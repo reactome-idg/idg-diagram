@@ -10,11 +10,11 @@ import java.util.Map;
  */
 public enum OverlayDataType {
 
-	TARGET_DEVELOPMENT_LEVEL("Target Development Level"),
-	TISSUE_mRNA_EXPRESSION("Tissue mRNA Expression"),
-	TISSUE_PROTEIN_EXPRESSION("Tissue Protein Expression");
+	TARGET_DEVELOPMENT_LEVEL("Target Development Level","targetlevel/uniprots" ),
+	TISSUE_EXPRESSION("Tissue Expression", "expressions/uniprots");
 	
 	private String name;
+	private String url;
 	private static final Map<String, OverlayDataType> LOOKUP = new HashMap<>();
 	
 	static {
@@ -22,12 +22,17 @@ public enum OverlayDataType {
 			LOOKUP.put(type.getName(), type);
 	}
 	
-	OverlayDataType(String overlayString){
+	OverlayDataType(String overlayString, String url){
 		this.name = overlayString;
+		this.url = url;
 	}
 	
 	public String getName() {
 		return this.name;
+	}
+	
+	public String getUrl() {
+		return this.url;
 	}
 	
 	public static OverlayDataType lookupType(String type) {
