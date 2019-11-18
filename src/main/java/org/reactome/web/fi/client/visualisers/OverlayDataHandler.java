@@ -10,6 +10,7 @@ import org.reactome.web.diagram.renderers.common.OverlayContext;
 import org.reactome.web.diagram.renderers.layout.RendererManager;
 import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.fi.data.overlay.OverlayEntities;
+import org.reactome.web.fi.model.DataOverlay;
 
 /**
  * 
@@ -41,11 +42,12 @@ public class OverlayDataHandler {
 							Context context, 
 							RendererManager rendererManager, 
 							OverlayEntities entities,
+							DataOverlay dataOverlay,
 							OverlayContext overlay) {
 		
 		if(renderers == null)
 			return;
-		renderers.forEach(renderer -> renderer.doRender(items, ctx, context, rendererManager, entities, overlay));
+		renderers.forEach(renderer -> renderer.doRender(items, ctx, context, rendererManager, entities, dataOverlay, overlay));
 	}
 	
 	public int overlayRenderersCount() {

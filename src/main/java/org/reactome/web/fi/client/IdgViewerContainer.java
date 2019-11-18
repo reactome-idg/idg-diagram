@@ -30,6 +30,7 @@ import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
 import org.reactome.web.fi.legends.OverlayLegend;
+import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.overlay.OverlayDialogPanel;
 
@@ -55,6 +56,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	private OverlayDialogPanel overlayDialogPanel;
 	
 	private OverlayEntities overlayEntities;
+	private DataOverlay dataOverlay;
 	private boolean renderOverlays = false;
 	
 	public IdgViewerContainer(EventBus eventBus) {
@@ -288,6 +290,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 									   context, 
 									   event.getRendererManager(), 
 									   this.overlayEntities,
+									   this.dataOverlay,
 									   event.getOverlay());
 	}
 	
@@ -295,6 +298,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.renderOverlays = true;
 		this.overlayEntities = event.getEntities();
+		this.dataOverlay = event.getDataOverlay();
 		context.setDialogMap(new HashMap<>());
 		
 		if(event.getEntities().getTargetLevelEntity() == null) {
@@ -316,7 +320,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		if(activeVisualiser instanceof DiagramVisualiser)
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualiser)
-			((FIViewVisualiser)activeVisualiser).overlayNodes(overlayEntities);
+			((FIViewVisualiser)activeVisualiser).overlayNodes(null);
 	}
 	
 	@Override

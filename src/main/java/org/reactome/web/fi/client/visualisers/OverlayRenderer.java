@@ -8,6 +8,7 @@ import org.reactome.web.diagram.renderers.layout.RendererManager;
 import org.reactome.web.diagram.renderers.common.OverlayContext;
 import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.fi.data.overlay.OverlayEntities;
+import org.reactome.web.fi.model.DataOverlay;
 
 /**
  * 
@@ -20,5 +21,6 @@ public interface OverlayRenderer {
 						 Context context, 
 						 RendererManager rendererManager,
 						 OverlayEntities entities,
+						 DataOverlay dataOverlay,
 						 OverlayContext overlay);
 }

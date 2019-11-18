@@ -32,6 +32,7 @@ import org.reactome.web.fi.data.overlay.OverlayEntity;
 import org.reactome.web.fi.data.overlay.TargetLevelEntity;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
+import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.overlay.profiles.IDGExpressionGradient;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
@@ -68,9 +69,10 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 						 Context context,
 						 RendererManager rendererManager, 
 						 OverlayEntities entities,
+						 DataOverlay dataOverlay,
 						 OverlayContext overlay) {
 		
-		if(OverlayDataType.lookupType(entities.getDataType()) != OverlayDataType.TARGET_DEVELOPMENT_LEVEL)
+		if(!dataOverlay.isDiscrete())
 			return;
 		
 		this.ctx = ctx;
