@@ -97,7 +97,7 @@ TCRDLoader.Handler{
 
 	@Override
 	public void onFIViewLoadedError(String stId, Throwable exception) {
-		GWT.log("Error loading FIView interaction data");
+		GWT.log("Error loading FIView interaction data: " + exception.getMessage());
 	}
 	
 	@Override 
