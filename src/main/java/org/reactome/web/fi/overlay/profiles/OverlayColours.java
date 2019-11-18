@@ -14,8 +14,7 @@ import com.google.gwt.resources.client.TextResource;
  */
 public class OverlayColours{
 
-	private Map<String, Map<String, String>> overlayColoursMap;
-	private Map<String, Map<Double, String>> overlayDoubleColoursMap;
+	private Map<Double, String> colourMap;
 	private static OverlayColours overlayColours;
 	
 	private OverlayColours() { /*Nothing Here*/ }
@@ -27,56 +26,25 @@ public class OverlayColours{
 		return overlayColours;
 	}
 	
-	public Map<String, String> getColours(String name){
-		if(overlayColoursMap == null || !overlayColoursMap.containsKey(name)) 
-			loadOverlayProperties(name);
-	
-		return overlayColoursMap.get(name);
+	public Map<Double, String> getColours(){
+		if(colourMap == null)
+			loadOverlayColours();
+		return colourMap;
 	}
 	
-	public Map<String, Map<String,String>> getOverlayColoursMap(){
-		return this.overlayColoursMap;
-	}
-	
-	public Map<Double, String> getDoubleColoursMap(String name){
-		if(overlayDoubleColoursMap==null || !overlayDoubleColoursMap.containsKey(name))
-			loadOverlayProperties(name);
-		
-		return overlayDoubleColoursMap.get(name);
-	}
-	
-	private void loadOverlayProperties(String name) {
+	private void loadOverlayColours() {
 		OverlayColourProperties colours = null;
 		try {
 			colours = OverlayColourFactory.getOverlayObject(OverlayColourProperties.class,
-												  getSource(name));
+												  ColourSource.SOURCE.targetLevel().getText());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(overlayColoursMap == null)
-			overlayColoursMap = new HashMap<>();
-		if(overlayDoubleColoursMap == null)
-			overlayDoubleColoursMap = new HashMap<>();
 		
-		Map<String, String> colourMap = new HashMap<>();
-		Map<Double, String> doubleColourMap = new HashMap<>();
-		for(OverlayColourNode node: colours.getNodes()) {
-			colourMap.put(node.getName(), node.getFill());
-			doubleColourMap.put((double)doubleColourMap.size(), colourMap.get(node.getName()));
-		}
-		
-		overlayColoursMap.put(name, colourMap);
-		overlayDoubleColoursMap.put(name, doubleColourMap);
-	}
-	
-	private String getSource(String name) {
-
-		String result = null;
-		switch(name) {
-		case "Target Development Level":  result = ColourSource.SOURCE.targetLevel().getText();	break;
-		case "Tissue Expression": result = ColourSource.SOURCE.targetLevel().getText(); break;
-		}
-		return result;
+		colourMap = new HashMap<>();
+		for(int i=0; i<colours.getNodes().size(); i++) {
+			colourMap.put(new Double(colours.getNodes().indexOf(colours.getNodes().get(i))), colours.getNodes().get(i).getFill());
+		}		
 	}
 
 	interface ColourSource extends ClientBundle{

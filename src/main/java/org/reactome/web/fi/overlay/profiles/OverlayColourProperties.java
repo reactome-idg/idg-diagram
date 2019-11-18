@@ -8,9 +8,7 @@ import java.util.List;
  *
  */
 public interface OverlayColourProperties {
-	
-	String getType();
-	
+		
 	List<OverlayColourNode> getNodes();
 	
 }

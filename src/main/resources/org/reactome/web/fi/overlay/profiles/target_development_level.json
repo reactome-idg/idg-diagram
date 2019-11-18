@@ -1,35 +1,26 @@
 {
-    "type":"target_development_level",
     "nodes": [{
-        "name" : "Tclin+",
         "fill" : "#be1cc9"
     },
     {
-        "name" : "Tclin",
         "fill" : "#ff2121" 
     },
     {
-        "name" : "Tchem+",
         "fill" : "#63ffd8"
     },
     {
-        "name" : "Tchem",
         "fill" : "#ff8f26"
     },
     {
-        "name" : "Tbio",
         "fill" : "#87a3ff"
     },
     {
-        "name" : "Tgray",
         "fill" : "#cfcfcf"
     },
     {
-        "name" : "Tdark",
         "fill" : "#808080"
     }, 
     {
-        "name" : "default",
         "fill" : "transparent"
     }]
 }
