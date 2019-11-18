@@ -1,14 +1,13 @@
 package org.reactome.web.fi.data.loader;
 
-import java.util.Set;
 
 import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
+import org.reactome.web.fi.data.mediators.DataOverlayEntityMediator;
 import org.reactome.web.fi.data.overlay.OverlayEntities;
+import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.OverlayDataType;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
-import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
@@ -64,13 +63,16 @@ public class TCRDLoader implements RequestCallback{
 	public void onResponseReceived(Request request, Response response) {
 		switch(response.getStatusCode()) {
 		case Response.SC_OK:
+			DataOverlayEntityMediator mediator = new DataOverlayEntityMediator();
 			OverlayEntities entities;
 			try {
 				JSONValue val = JSONParser.parseStrict(response.getText());
 				JSONObject obj = new JSONObject();
 				obj.put("dataType", new JSONString(type.getName()));
 				obj.put("valueType", new JSONString("String"));
+				obj.put("discrete", new JSONString("true"));
 				obj.put(getEntityType(), val.isArray());
+				DataOverlay dataOverlay = mediator.transformData(obj.toString());
 				entities = OverlayEntityDataFactory.getTargetLevelEntity(OverlayEntities.class, obj.toString());
 			}catch(Exception e) {
 				this.handler.onTargetLevelLoadedError(e);

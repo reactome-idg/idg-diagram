@@ -5,29 +5,30 @@ import java.util.List;
 
 public class DataOverlay {
 
-	private String minValue;
-	private String maxValue;
+	private Double minValue;
+	private Double maxValue;
 	private boolean isDiscrete;
 	private List<DataOverlayEntity> dataOverlayEntities;
+	private List<String> discreteTypes;
 	
-	public DataOverlay(boolean isDiscrete) {
-		this.isDiscrete = isDiscrete;
+	public DataOverlay() {
 		dataOverlayEntities = new ArrayList<>();
+		discreteTypes = new ArrayList<>();
 	}
 
-	public String getMinValue() {
+	public Double getMinValue() {
 		return minValue;
 	}
 
-	public void setMinValue(String minValue) {
+	public void setMinValue(Double minValue) {
 		this.minValue = minValue;
 	}
 
-	public String getMaxValue() {
+	public Double getMaxValue() {
 		return maxValue;
 	}
 
-	public void setMaxValue(String maxValue) {
+	public void setMaxValue(Double maxValue) {
 		this.maxValue = maxValue;
 	}
 
@@ -46,4 +47,13 @@ public class DataOverlay {
 	public void addDataOverlayEntity(DataOverlayEntity dataOverlayEntity) {
 		this.dataOverlayEntities.add(dataOverlayEntity);
 	}
+
+	public List<String> getDiscreteTypes() {
+		return discreteTypes;
+	}
+
+	public void setDiscreteTypes(List<String> discreteTypes) {
+		this.discreteTypes = discreteTypes;
+	}
+	
 }
