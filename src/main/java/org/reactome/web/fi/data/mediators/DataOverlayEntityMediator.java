@@ -16,7 +16,6 @@ import com.google.gwt.core.client.GWT;
 public class DataOverlayEntityMediator {
 
 	public DataOverlay transformData(String responseText) {
-		DataOverlay dataOverlay = null;
 		OverlayEntities entities = null;
 		try {
 			entities = OverlayEntityDataFactory.getTargetLevelEntity(OverlayEntities.class, responseText);
@@ -25,11 +24,11 @@ public class DataOverlayEntityMediator {
 		}
 		
 		if(entities.getDiscrete() == "true")
-			dataOverlay = transformDiscrete(entities);
+			return transformDiscrete(entities);
 		else if(entities.getDiscrete() == "false")
-			dataOverlay = transformContinuous(entities);
+			return transformContinuous(entities);
 		
-		return dataOverlay;
+		return null;
 	}
 
 	private DataOverlay transformDiscrete(OverlayEntities entities) {
