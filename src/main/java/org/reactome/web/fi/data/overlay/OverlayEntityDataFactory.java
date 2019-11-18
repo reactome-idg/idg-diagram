@@ -10,7 +10,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory;
  * @author brunsont
  *
  */
-public abstract class OverlayEntityDataFactory {
+public class OverlayEntityDataFactory {
 
 	interface ModelAutoBeanFactory extends AutoBeanFactory{
 		AutoBean<OverlayEntities> overlayEntities();

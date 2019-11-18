@@ -2,7 +2,7 @@ package org.reactome.web.fi.data.overlay;
 
 public interface ExpressionEntity extends OverlayEntity{
 
-	String getetype();
+	String getEtype();
 	
 	String getTissue();
 	

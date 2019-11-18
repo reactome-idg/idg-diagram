@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.reactome.web.analysis.client.model.AnalysisType;
 import org.reactome.web.diagram.data.Context;
@@ -35,6 +36,7 @@ import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.overlay.profiles.IDGExpressionGradient;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
 /**
@@ -79,6 +81,8 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
         this.doubleColourMap = OverlayColours.get().getDoubleColoursMap(entities.getDataType());
         this.originalOverlay = overlay;
         makeEntitiesMap(entities);
+        List<String> unique = entitiesMap.values().stream().distinct().collect(Collectors.toList());
+        GWT.log(unique.size() +"");
 
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
         renderProteins(itemsDistribution.getItems("Protein"));
@@ -155,7 +159,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 	private void makeEntitiesMap(OverlayEntities rawEntities) {
 		if(entitiesMap ==null)
 			entitiesMap = new HashMap<>();
-		for(TargetLevelEntity entity : rawEntities.getTargetLevelEntity()) {
+		for(OverlayEntity entity : rawEntities.getTargetLevelEntity()) {
 			TargetLevelEntity tEntity = (TargetLevelEntity) entity;
 			entitiesMap.put(entity.getUniprot(), tEntity.getTargetDevLevel());
 		}

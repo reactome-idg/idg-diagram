@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface OverlayEntities {
     
-    public String getDataType(); // e.g. target_dev_level
+    public String getDataType(); // e.g. target_dev_level, tissue_expression
     
     public String getValueType(); // e.g. String (for enum)
     
