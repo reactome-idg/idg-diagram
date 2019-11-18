@@ -17,7 +17,7 @@ import com.google.gwt.json.client.JSONValue;
 public class TCRDLoader implements RequestCallback{
 
 	public interface Handler{
-		void onTargetLevelLoaded(OverlayEntities entities);
+		void onTargetLevelLoaded(OverlayEntities entities, DataOverlay dataOverlay);
 		void onTargetLevelLoadedError(Throwable exception);
 	}
 	
@@ -64,6 +64,7 @@ public class TCRDLoader implements RequestCallback{
 		switch(response.getStatusCode()) {
 		case Response.SC_OK:
 			DataOverlayEntityMediator mediator = new DataOverlayEntityMediator();
+			DataOverlay dataOverlay;
 			OverlayEntities entities;
 			try {
 				JSONValue val = JSONParser.parseStrict(response.getText());
@@ -72,13 +73,13 @@ public class TCRDLoader implements RequestCallback{
 				obj.put("valueType", new JSONString("String"));
 				obj.put("discrete", getIsDiscrete());
 				obj.put(getEntityType(), val.isArray());
-				DataOverlay dataOverlay = mediator.transformData(obj.toString());
+				dataOverlay = mediator.transformData(obj.toString());
 				entities = OverlayEntityDataFactory.getTargetLevelEntity(OverlayEntities.class, obj.toString());
 			}catch(Exception e) {
 				this.handler.onTargetLevelLoadedError(e);
 				return;
 			}
-			this.handler.onTargetLevelLoaded(entities);
+			this.handler.onTargetLevelLoaded(entities, dataOverlay);
 			break;
 		default:
 			this.handler.onTargetLevelLoadedError(new Exception(response.getStatusText()));

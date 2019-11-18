@@ -1,9 +1,5 @@
 package org.reactome.web.fi.data.loader;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
 import org.reactome.web.diagram.data.loader.LoaderManager;
@@ -11,12 +7,10 @@ import org.reactome.web.diagram.data.loader.SVGLoader;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
-import org.reactome.web.fi.data.overlay.ExpressionEntity;
 import org.reactome.web.fi.data.overlay.OverlayEntities;
-import org.reactome.web.fi.data.overlay.OverlayEntity;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.model.OverlayDataType;
-import org.reactome.web.fi.overlay.profiles.OverlayColours;
+import org.reactome.web.fi.model.DataOverlay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -107,7 +101,7 @@ TCRDLoader.Handler{
 	}
 	
 	@Override 
-	public void onTargetLevelLoaded(OverlayEntities entities) {
+	public void onTargetLevelLoaded(OverlayEntities entities, DataOverlay dataOverlay) {
 		eventBus.fireEventFromSource(new OverlayDataLoadedEvent(entities), this);
 	}
 	
