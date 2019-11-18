@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.reactome.web.fi.data.overlay.ExpressionEntity;
 import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
 import org.reactome.web.fi.data.overlay.TargetLevelEntity;
@@ -45,7 +46,7 @@ public class DataOverlayEntityMediator {
 			
 			//add each raw entity to list of DataOverlayEntity in DataOverlay
 			result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
-				discreteTypes.indexOf(rawEntity.getTargetDevLevel())+""));
+				new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel()))));
 		}
 		result.setMaxValue(new Double(discreteTypes.size()));
 		result.setMinValue(new Double(0));
@@ -54,6 +55,29 @@ public class DataOverlayEntityMediator {
 	}
 
 	private DataOverlay transformContinuous(OverlayEntities entities) {
-		return null;
+		DataOverlay result = new DataOverlay();
+		result.setDiscrete(false);
+		
+		Double minValue = null;
+		Double maxValue = null;
+		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
+			//reset min and max if needed
+			if(rawEntity.getNumberValue()==null)
+				continue;
+			
+			if(maxValue == null || rawEntity.getNumberValue() > maxValue)
+				maxValue = rawEntity.getNumberValue();
+			if(minValue == null || rawEntity.getNumberValue() < minValue)
+				minValue = rawEntity.getNumberValue();
+			
+			//add rawEntity to list of DataOverlayEntities
+			if(rawEntity.getNumberValue() != null)
+				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
+					rawEntity.getNumberValue()));
+		}
+		result.setMinValue(minValue);
+		result.setMaxValue(maxValue);
+			
+		return result;
 	}
 }

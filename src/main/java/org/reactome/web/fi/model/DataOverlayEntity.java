@@ -3,10 +3,10 @@ package org.reactome.web.fi.model;
 public class DataOverlayEntity {
 
 	private String identifier;
-	private String value;
+	private Double value;
 
 	
-	public DataOverlayEntity(String identifier, String value) {
+	public DataOverlayEntity(String identifier, Double value) {
 		this.identifier = identifier;
 		this.value = value;
 
@@ -20,11 +20,11 @@ public class DataOverlayEntity {
 		this.identifier = identifier;
 	}
 	
-	public String getValue() {
+	public Double getValue() {
 		return value;
 	}
 	
-	public void setValue(String value) {
+	public void setValue(Double value) {
 		this.value = value;
 	}
 }

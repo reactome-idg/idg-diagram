@@ -70,7 +70,7 @@ public class TCRDLoader implements RequestCallback{
 				JSONObject obj = new JSONObject();
 				obj.put("dataType", new JSONString(type.getName()));
 				obj.put("valueType", new JSONString("String"));
-				obj.put("discrete", new JSONString("true"));
+				obj.put("discrete", getIsDiscrete());
 				obj.put(getEntityType(), val.isArray());
 				DataOverlay dataOverlay = mediator.transformData(obj.toString());
 				entities = OverlayEntityDataFactory.getTargetLevelEntity(OverlayEntities.class, obj.toString());
@@ -94,6 +94,15 @@ public class TCRDLoader implements RequestCallback{
 		return "overlayEntity";
 	}
 
+	private JSONString getIsDiscrete() {
+		if(type == OverlayDataType.TARGET_DEVELOPMENT_LEVEL)
+			return new JSONString("true");
+		else if(type == OverlayDataType.TISSUE_EXPRESSION) {
+			return new JSONString("false");
+		}
+		return new JSONString("null");
+	}
+	
 	@Override
 	public void onError(Request request, Throwable exception) {
 		this.handler.onTargetLevelLoadedError(exception);
