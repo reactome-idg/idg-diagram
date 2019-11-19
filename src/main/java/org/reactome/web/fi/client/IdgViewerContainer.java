@@ -297,7 +297,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		this.dataOverlay = event.getDataOverlay();
 		context.setDialogMap(new HashMap<>());
 		
-		if(event.getEntities().getTargetLevelEntity() == null) {
+		if(!event.getDataOverlay().isDiscrete()) {
 			GWT.log("YEE YEE");
 		}
 		
