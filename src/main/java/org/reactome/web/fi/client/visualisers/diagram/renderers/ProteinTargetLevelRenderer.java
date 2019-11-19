@@ -83,8 +83,6 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
         this.originalOverlay = overlay;
         makeEntitiesMap(entities);
         this.dataOverlay = dataOverlay;
-        List<String> unique = entitiesMap.values().stream().distinct().collect(Collectors.toList());
-        GWT.log(unique.size() +"");
 
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
         renderProteins(itemsDistribution.getItems("Protein"));
@@ -101,7 +99,9 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
         for(DiagramObject item : objectSet) {
         	GraphPhysicalEntity graphObject = (GraphPhysicalEntity) item.getGraphObject();
         	if(graphObject instanceof GraphEntityWithAccessionedSequence || graphObject instanceof GraphProteinDrug) {
-	        	ctx.setFillStyle(colourMap.get(new Double(dataOverlay.getDiscreteTypes().indexOf(graphObject.getIdentifier()))));
+        		if(graphObject.getIdentifier().contains("-")) continue;
+        		String colour = colourMap.get(new Double(dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier())));
+	        	ctx.setFillStyle(colour);
 	        	renderer.draw(ctx, item, factor, offset);
         	}
         }
@@ -127,6 +127,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 				Set<GraphPhysicalEntity> obj = entity.getParticipants();
 				for(GraphPhysicalEntity participant : obj) {
 					if(participant instanceof GraphEntityWithAccessionedSequence || participant instanceof GraphProteinDrug) {
+						if(participant.getIdentifier().contains("-")) continue;
 						participant.setIsHit(participant.getIdentifier(),
 											 getDataOverlayValue(participant.getIdentifier()));
 					}
@@ -144,22 +145,6 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 		List<Double> result = new ArrayList<>();
 		result.add(dataOverlay.getIdentifierValueMap().get(identifier));
 		return result;
-	}
-
-	private List<Double> mapColourToDouble(String identifier) {
-		String value = entitiesMap.get(identifier);
-		List<Double> rtn = new ArrayList<>();
-		switch(value) {
-			case "Tclin+":	rtn.add((double) 0); 	break;
-			case "Tclin":	rtn.add((double) 1); 	break;
-			case "Tchem+":	rtn.add((double) 2); 	break;
-			case "Tchem":	rtn.add((double) 3);	break;
-			case "Tbio":	rtn.add((double) 4); 	break;
-			case "Tgray":	rtn.add((double) 5); 	break;
-			case "Tdark":	rtn.add((double) 6); 	break;
-			default: 		rtn.add((double) 7);	break;
-		}
-		return rtn;
 	}
 
 	private void makeEntitiesMap(OverlayEntities rawEntities) {
