@@ -16,7 +16,7 @@ import org.reactome.web.diagram.events.AnalysisResetEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
 import org.reactome.web.fi.client.visualisers.OverlayDataHandler;
-import org.reactome.web.fi.client.visualisers.diagram.renderers.ProteinTargetLevelRenderer;
+import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOverlayRenderer;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
@@ -95,7 +95,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		
 		bind();
 		
-		OverlayDataHandler.getHandler().registerHelper(new ProteinTargetLevelRenderer(eventBus));
+		OverlayDataHandler.getHandler().registerHelper(new DiscreteDataOverlayRenderer(eventBus));
 
 	}
 	

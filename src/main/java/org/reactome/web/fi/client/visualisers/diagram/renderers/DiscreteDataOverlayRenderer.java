@@ -45,7 +45,7 @@ import com.google.gwt.event.shared.EventBus;
  * @author brunsont
  *
  */
-public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherContextDialogInfoHandler, OverlayDataResetHandler {
+public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOtherContextDialogInfoHandler, OverlayDataResetHandler {
 
 	private EventBus eventBus;
 	private AdvancedContext2d ctx;
@@ -56,7 +56,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 	private OverlayContext originalOverlay;
 	private DataOverlay dataOverlay;
 	
-	public ProteinTargetLevelRenderer(EventBus eventBus){
+	public DiscreteDataOverlayRenderer(EventBus eventBus){
 		this.eventBus = eventBus;
 		eventBus.addHandler(RenderOtherContextDialogInfoEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
