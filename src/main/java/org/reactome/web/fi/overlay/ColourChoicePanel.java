@@ -38,15 +38,17 @@ public class ColourChoicePanel extends Composite{
 		initWidget(main);
 	}
 
-	protected void setColourLabels(List<String> list) {
+	protected void setColourLabels(List<String> discreteTypes) {
 		FlowPanel result = new FlowPanel();
-		Map<Double, String> overlayColours = OverlayColours.get().getColours();
+		Map<Double, String> colourMap = OverlayColours.get().getColours();
 		
-		overlayColours.forEach((i,j) ->{
-			Label colourLbl = new Label(list.get(i.intValue()));
-			colourLbl.getElement().getStyle().setBackgroundColor(j);
+		discreteTypes.forEach((i) -> {
+			Label colourLbl = new Label(i);
+			String colour = colourMap.get(new Double(discreteTypes.indexOf(i)));
+			colourLbl.getElement().getStyle().setBackgroundColor(colour);
 			result.add(colourLbl);
 		});
+
 		ScrollPanel panel = new ScrollPanel();
 		panel.add(result);
 		panel.setHeight("128px");
