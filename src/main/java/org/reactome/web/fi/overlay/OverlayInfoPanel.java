@@ -18,6 +18,7 @@ import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
+import org.reactome.web.fi.model.OverlayDataType;
 
 /**
  * 
@@ -35,7 +36,7 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 	private DataOverlayTypePanel dataOverlayTypePanel;
 	private EntityOverlayTypePanel entityOverlayTypePanel;
 	private ColourChoicePanel colourChoicePanel;
-	private String currentOverlayType;
+	private OverlayDataType currentOverlayType;
 	private DeckLayoutPanel container;
 	
 	public OverlayInfoPanel(EventBus eventBus) {
@@ -122,7 +123,7 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
-		this.currentOverlayType = event.getEntities().getDataType();
+		this.currentOverlayType = event.getDataOverlay().getOverlayType();
 		dataOverlayTypePanel.setCurrentType(currentOverlayType);
 		
 		if(event.getDataOverlay().isDiscrete())

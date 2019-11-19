@@ -101,8 +101,8 @@ TCRDLoader.Handler{
 	}
 	
 	@Override 
-	public void onTargetLevelLoaded(OverlayEntities entities, DataOverlay dataOverlay) {
-		eventBus.fireEventFromSource(new OverlayDataLoadedEvent(entities, dataOverlay), this);
+	public void onTargetLevelLoaded(DataOverlay dataOverlay) {
+		eventBus.fireEventFromSource(new OverlayDataLoadedEvent(dataOverlay), this);
 	}
 	
 	@Override

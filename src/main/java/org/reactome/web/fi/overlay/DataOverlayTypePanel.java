@@ -29,7 +29,7 @@ OptionsPanel.Handler{
 	private DeckPanel container;
 	private ScrollPanel scrollPanel;
 	private OptionsPanel optionsPanel;
-	private String selectedOverlayType = null;
+	private OverlayDataType selectedOverlayType = null;
 	
 	public DataOverlayTypePanel(EventBus eventBus) {
 		super(eventBus);
@@ -79,7 +79,7 @@ OptionsPanel.Handler{
 	@Override
 	public void onClick(ClickEvent event) {
 		RadioButton btn = (RadioButton) event.getSource();
-		selectedOverlayType = btn.getText();
+		selectedOverlayType = OverlayDataType.lookupType(btn.getText());
 		container.showWidget(1);
 //		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(
 //				OverlayDataType.lookupType(btn.getText())), this);
@@ -100,7 +100,7 @@ OptionsPanel.Handler{
 		for(int i=0; i<buttonPanel.getWidgetCount(); i++) {
 			Widget widget = buttonPanel.getWidget(i);
 			if(widget instanceof RadioButton) {
-				if(OverlayDataType.lookupType(((RadioButton) widget).getText()) == OverlayDataType.lookupType(selectedOverlayType)) {
+				if(OverlayDataType.lookupType(((RadioButton) widget).getText()) == selectedOverlayType) {
 					((RadioButton) widget).setValue(true);
 					return;
 				}
@@ -112,7 +112,7 @@ OptionsPanel.Handler{
 	public void onOverlaySelected() {
 		container.showWidget(1);
 		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(
-				OverlayDataType.lookupType(selectedOverlayType)), this);
+				selectedOverlayType), this);
 	}
 
 	@Override
@@ -127,7 +127,7 @@ OptionsPanel.Handler{
 		selectType();
 	}
 
-	public void setCurrentType(String currentOverlayType) {
+	public void setCurrentType(OverlayDataType currentOverlayType) {
 		this.selectedOverlayType = currentOverlayType;
 	}
 }
