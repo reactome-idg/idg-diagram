@@ -96,8 +96,11 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
         for(DiagramObject item : objectSet) {
         	GraphPhysicalEntity graphObject = (GraphPhysicalEntity) item.getGraphObject();
         	if(graphObject instanceof GraphEntityWithAccessionedSequence || graphObject instanceof GraphProteinDrug) {
-        		if(graphObject.getIdentifier().contains("-")) continue;
-        		String colour = colourMap.get(new Double(dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier())));
+        		int index = graphObject.getIdentifier().length();
+        		if(graphObject.getIdentifier().contains("-"))
+        			index = graphObject.getIdentifier().indexOf("-");
+        		String colour = colourMap.get(new Double(dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier()
+        																						.substring(0, index))));
 	        	ctx.setFillStyle(colour);
 	        	renderer.draw(ctx, item, factor, offset);
         	}
@@ -124,7 +127,6 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 				Set<GraphPhysicalEntity> obj = entity.getParticipants();
 				for(GraphPhysicalEntity participant : obj) {
 					if(participant instanceof GraphEntityWithAccessionedSequence || participant instanceof GraphProteinDrug) {
-						if(participant.getIdentifier().contains("-")) continue;
 						participant.setIsHit(participant.getIdentifier(),
 											 getDataOverlayValue(participant.getIdentifier()));
 					}
@@ -140,7 +142,10 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 	
 	private List<Double> getDataOverlayValue(String identifier){
 		List<Double> result = new ArrayList<>();
-		result.add(dataOverlay.getIdentifierValueMap().get(identifier));
+		int index = identifier.length();
+		if(identifier.contains("-"))
+			index = identifier.indexOf("-");
+		result.add(dataOverlay.getIdentifierValueMap().get(identifier.substring(0,index)));
 		return result;
 	}
 
@@ -152,8 +157,11 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 		List<GraphPhysicalEntity> data = event.getTable().getDataProvider().getList();
 		for(int i=0; i<data.size(); i++) {
 			GraphPhysicalEntity entity = data.get(i);
+			int index = entity.getIdentifier().length();
+			if(entity.getIdentifier().contains("-"))
+				index = entity.getIdentifier().indexOf("-");
 			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(
-					colourMap.get(new Double(dataOverlay.getIdentifierValueMap().get(entity.getIdentifier()))));
+					colourMap.get(new Double(dataOverlay.getIdentifierValueMap().get(entity.getIdentifier().substring(0, index)))));
 		}
 	}
 

@@ -7,6 +7,7 @@ import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.OverlayDataType;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;

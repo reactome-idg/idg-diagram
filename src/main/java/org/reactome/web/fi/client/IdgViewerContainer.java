@@ -212,7 +212,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 				if(identifiers==null)
 					identifiers = new HashSet<>();
 				for(GraphPhysicalEntity participant: participants) {
-					identifiers.add(participant.getIdentifier()); 
+					int i= participant.getIdentifier().length();
+					if(participant.getIdentifier().contains("-"))
+						i = participant.getIdentifier().indexOf("-");
+					identifiers.add(participant.getIdentifier().substring(0, i)); 
 				}
 			}
 		}
