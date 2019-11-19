@@ -50,7 +50,6 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 	private EventBus eventBus;
 	private AdvancedContext2d ctx;
 	private RendererManager rendererManager;
-	private Map<String, String> entitiesMap;
 	private Double factor;
 	private Coordinate offset;
 	private Map<Double, String> colourMap;
@@ -68,7 +67,6 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 						 AdvancedContext2d ctx, 
 						 Context context,
 						 RendererManager rendererManager, 
-						 OverlayEntities entities,
 						 DataOverlay dataOverlay,
 						 OverlayContext overlay) {
 		
@@ -81,7 +79,6 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
         this.offset = context.getDiagramStatus().getOffset();
         this.colourMap = OverlayColours.get().getColours();
         this.originalOverlay = overlay;
-        makeEntitiesMap(entities);
         this.dataOverlay = dataOverlay;
 
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
@@ -147,38 +144,27 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 		return result;
 	}
 
-	private void makeEntitiesMap(OverlayEntities rawEntities) {
-		if(entitiesMap ==null)
-			entitiesMap = new HashMap<>();
-		for(OverlayEntity entity : rawEntities.getTargetLevelEntity()) {
-			TargetLevelEntity tEntity = (TargetLevelEntity) entity;
-			entitiesMap.put(entity.getUniprot(), tEntity.getTargetDevLevel());
-		}
-	}
-
 	@Override
 	public void onRenderOtherContextDialogInfo(RenderOtherContextDialogInfoEvent event) {
-		if(entitiesMap==null)
+		if(dataOverlay.getIdentifierValueMap()==null)
 			return;
 		
 		List<GraphPhysicalEntity> data = event.getTable().getDataProvider().getList();
 		for(int i=0; i<data.size(); i++) {
 			GraphPhysicalEntity entity = data.get(i);
 			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(
-					colourMap.get(entitiesMap.get(entity.getIdentifier())));
+					colourMap.get(new Double(dataOverlay.getIdentifierValueMap().get(entity.getIdentifier()))));
 		}
 	}
 
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
-		this.entitiesMap = null;
 		this.colourMap = null;
 		this.ctx = null;
 		this.factor = null;
 		this.offset = null;
 		this.rendererManager = null;
 		this.originalOverlay = null;
-		
 	}
 
 }
