@@ -53,9 +53,9 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 	private Map<String, String> entitiesMap;
 	private Double factor;
 	private Coordinate offset;
-	private Map<String, String> colourMap;
-	private Map<Double, String> doubleColourMap;
+	private Map<Double, String> colourMap;
 	private OverlayContext originalOverlay;
+	private DataOverlay dataOverlay;
 	
 	public ProteinTargetLevelRenderer(EventBus eventBus){
 		this.eventBus = eventBus;
@@ -79,10 +79,10 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 		this.rendererManager = rendererManager;
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
-        this.colourMap = OverlayColours.get().getColours(entities.getDataType());
-        this.doubleColourMap = OverlayColours.get().getDoubleColoursMap(entities.getDataType());
+        this.colourMap = OverlayColours.get().getColours();
         this.originalOverlay = overlay;
         makeEntitiesMap(entities);
+        this.dataOverlay = dataOverlay;
         List<String> unique = entitiesMap.values().stream().distinct().collect(Collectors.toList());
         GWT.log(unique.size() +"");
 
@@ -101,9 +101,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
         for(DiagramObject item : objectSet) {
         	GraphPhysicalEntity graphObject = (GraphPhysicalEntity) item.getGraphObject();
         	if(graphObject instanceof GraphEntityWithAccessionedSequence || graphObject instanceof GraphProteinDrug) {
-	        	ctx.setFillStyle(colourMap
-	        					 .get(entitiesMap
-	        					 .get(graphObject.getIdentifier())));
+	        	ctx.setFillStyle(colourMap.get(new Double(dataOverlay.getDiscreteTypes().indexOf(graphObject.getIdentifier()))));
 	        	renderer.draw(ctx, item, factor, offset);
         	}
         }
@@ -120,7 +118,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 		ThreeColorGradient originalExpressionGradient = AnalysisColours.get().expressionGradient;
 		//set Analysiscolours.get().expressionGradient to my own
 		IDGExpressionGradient colourHelper = new IDGExpressionGradient(null,null,null);
-		colourHelper.setColourMap(doubleColourMap);
+		colourHelper.setColourMap(colourMap);
 		AnalysisColours.get().expressionGradient = colourHelper;
 		Set<DiagramObject> objectSet = target.values();
 		for(DiagramObject item : objectSet) {
@@ -130,7 +128,7 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 				for(GraphPhysicalEntity participant : obj) {
 					if(participant instanceof GraphEntityWithAccessionedSequence || participant instanceof GraphProteinDrug) {
 						participant.setIsHit(participant.getIdentifier(),
-											 mapColourToDouble(participant.getIdentifier()));
+											 getDataOverlayValue(participant.getIdentifier()));
 					}
 				}
 				if(entity.getParticipantsExpression(0).size() > 0)
@@ -140,6 +138,12 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 		}
 		//Last thing: restore AnalysisColours.get().expressionGradient
 		AnalysisColours.get().expressionGradient = originalExpressionGradient;
+	}
+	
+	private List<Double> getDataOverlayValue(String identifier){
+		List<Double> result = new ArrayList<>();
+		result.add(dataOverlay.getIdentifierValueMap().get(identifier));
+		return result;
 	}
 
 	private List<Double> mapColourToDouble(String identifier) {
@@ -185,7 +189,6 @@ public class ProteinTargetLevelRenderer implements OverlayRenderer, RenderOtherC
 		this.entitiesMap = null;
 		this.colourMap = null;
 		this.ctx = null;
-		this.doubleColourMap = null;
 		this.factor = null;
 		this.offset = null;
 		this.rendererManager = null;

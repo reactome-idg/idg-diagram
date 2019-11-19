@@ -2,6 +2,7 @@ package org.reactome.web.fi.overlay;
 
 import com.google.gwt.user.client.ui.*;
 
+import java.util.List;
 import java.util.Map;
 
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
@@ -37,23 +38,14 @@ public class ColourChoicePanel extends Composite{
 		initWidget(main);
 	}
 
-	protected void setColourLabels() {
+	protected void setColourLabels(List<String> list) {
 		FlowPanel result = new FlowPanel();
-		Map<String, Map<String, String>> overlayColours = OverlayColours.get().getOverlayColoursMap();
+		Map<Double, String> overlayColours = OverlayColours.get().getColours();
 		
-		overlayColours.forEach((k, v) -> {
-			FlowPanel overlayTypePanel = new FlowPanel();
-			Label overlayTypeLabel = new Label(k);
-			overlayTypeLabel.setStyleName(RESOURCES.getCSS().overlayTypeLabel());
-			overlayTypePanel.add(overlayTypeLabel);
-			v.forEach((i,j) ->{
-				if(i != "default") {
-					Label colorLbl = new Label(i);
-					colorLbl.getElement().getStyle().setBackgroundColor(j);
-					overlayTypePanel.add(colorLbl);
-				}
-			});
-			result.add(overlayTypePanel);
+		overlayColours.forEach((i,j) ->{
+			Label colourLbl = new Label(list.get(i.intValue()));
+			colourLbl.getElement().getStyle().setBackgroundColor(j);
+			result.add(colourLbl);
 		});
 		ScrollPanel panel = new ScrollPanel();
 		panel.add(result);

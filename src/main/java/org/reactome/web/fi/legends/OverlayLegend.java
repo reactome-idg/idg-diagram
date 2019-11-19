@@ -72,21 +72,20 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		this.add(colourMapPanel);
 		
 		//stops loading of new colours during continuous value overlay rendering
-		if(event.getEntities().getTargetLevelEntity() == null)
+		if(!event.getDataOverlay().isDiscrete())
 			return;
 		
 		colourMapPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
-		Map<String, String> map = OverlayColours.get().getColours(event.getEntities().getDataType());
+		Map<Double, String> colourMap = OverlayColours.get().getColours();
 		Label title = new Label("Overlay Value Types: ");
 		colourMapPanel.add(title);
-		map.forEach((k, v) -> {
-			if(k != "default") {
-				InlineLabel lbl = new InlineLabel(k);
-				lbl.getElement().getStyle().setBackgroundColor(v);
-				lbl.getElement().getStyle().setPadding(3, Unit.PX);
-				lbl.getElement().getStyle().setMargin(0, Unit.PX);
-				colourMapPanel.add(lbl);
-			}
+		event.getDataOverlay().getDiscreteTypes().forEach((i) ->{
+			InlineLabel lbl = new InlineLabel(i);
+			String colour = colourMap.get(new Double(event.getDataOverlay().getDiscreteTypes().indexOf(i)));
+			lbl.getElement().getStyle().setBackgroundColor(colour);
+			lbl.getElement().getStyle().setPadding(3, Unit.PX);
+			lbl.getElement().getStyle().setMargin(0, Unit.PX);
+			colourMapPanel.add(lbl);
 		});
 		
 		this.setVisible(true);

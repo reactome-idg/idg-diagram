@@ -1,8 +1,10 @@
 package org.reactome.web.fi.data.mediators;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.fi.data.overlay.ExpressionEntity;
@@ -38,6 +40,7 @@ public class DataOverlayEntityMediator {
 		
 		//used to set max value and index value for each identifier
 		List<String>discreteTypes = new ArrayList<>();
+		Map<String, Double> identifierValueMap = new HashMap<>();
 		for(TargetLevelEntity rawEntity : entities.getTargetLevelEntity()) {
 			
 			//add each discrete type to set
@@ -47,10 +50,13 @@ public class DataOverlayEntityMediator {
 			//add each raw entity to list of DataOverlayEntity in DataOverlay
 			result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
 				new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel()))));
+			identifierValueMap.put(rawEntity.getUniprot(), 
+				new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel())));
 		}
 		result.setMaxValue(new Double(discreteTypes.size()));
 		result.setMinValue(new Double(0));
 		result.setDiscreteTypes(discreteTypes);
+		result.setIdentifierValueMap(identifierValueMap);
 		return result;
 	}
 

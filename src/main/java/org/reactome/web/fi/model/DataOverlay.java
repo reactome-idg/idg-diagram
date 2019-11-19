@@ -1,7 +1,9 @@
 package org.reactome.web.fi.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DataOverlay {
 
@@ -10,10 +12,12 @@ public class DataOverlay {
 	private boolean isDiscrete;
 	private List<DataOverlayEntity> dataOverlayEntities;
 	private List<String> discreteTypes;
+	private Map<String, Double> identifierValueMap;
 	
 	public DataOverlay() {
 		dataOverlayEntities = new ArrayList<>();
 		discreteTypes = new ArrayList<>();
+		identifierValueMap = new HashMap<>();
 	}
 
 	public Double getMinValue() {
@@ -55,5 +59,14 @@ public class DataOverlay {
 	public void setDiscreteTypes(List<String> discreteTypes) {
 		this.discreteTypes = discreteTypes;
 	}
+
+	public Map<String, Double> getIdentifierValueMap() {
+		return identifierValueMap;
+	}
+
+	public void setIdentifierValueMap(Map<String, Double> identifierValueMap) {
+		this.identifierValueMap = identifierValueMap;
+	}
+	
 	
 }

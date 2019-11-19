@@ -308,7 +308,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualiser)
-			((FIViewVisualiser)activeVisualiser).overlayNodes(overlayEntities);
+			((FIViewVisualiser)activeVisualiser).overlayNodes(dataOverlay);
 	}
 	
 	@Override

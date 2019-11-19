@@ -55,6 +55,8 @@ import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
 import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
 import org.reactome.web.fi.handlers.CytoscapeLayoutChangedHandler;
 import org.reactome.web.fi.handlers.FireGraphObjectSelectedHandler;
+import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
 import com.google.gwt.core.client.GWT;
@@ -656,16 +658,16 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		cy.removeNodeClass("flagged");
 	}
 	
-	public void overlayNodes(OverlayEntities overlayEntities) {
-		if(overlayEntities == null) {
+	public void overlayNodes(DataOverlay dataOverlay) {
+		if(dataOverlay == null) {
 			cy.resetStyle();
 			return;
 		}
 		
-		Map<String, String> colourMap = OverlayColours.get().getColours(overlayEntities.getDataType());
-		for(OverlayEntity entity: overlayEntities.getTargetLevelEntity()) {
-			String colour = colourMap.get(((TargetLevelEntity)entity).getTargetDevLevel());
-			cy.highlightNode(entity.getUniprot(), colour, ".8");
+		Map<Double, String> colourMap = OverlayColours.get().getColours();
+		for(DataOverlayEntity entity: dataOverlay.getDataOverlayEntities()) {
+			String colour = colourMap.get(new Double(entity.getValue()));
+			cy.highlightNode(entity.getIdentifier(), colour, ".8");
 		}
 	}
 	
