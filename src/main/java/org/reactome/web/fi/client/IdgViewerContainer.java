@@ -300,6 +300,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		this.dataOverlay = event.getDataOverlay();
 		context.setDialogMap(new HashMap<>());
 		
+		//TODO: Make fake analysis status
 		if(!event.getDataOverlay().isDiscrete()) {
 			GWT.log("YEE YEE");
 		}
