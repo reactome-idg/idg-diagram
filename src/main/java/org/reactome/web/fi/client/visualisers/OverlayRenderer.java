@@ -20,7 +20,6 @@ public interface OverlayRenderer {
 						 AdvancedContext2d ctx, 
 						 Context context, 
 						 RendererManager rendererManager,
-						 OverlayEntities entities,
 						 DataOverlay dataOverlay,
 						 OverlayContext overlay);
 }

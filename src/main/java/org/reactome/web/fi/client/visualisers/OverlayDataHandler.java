@@ -41,13 +41,12 @@ public class OverlayDataHandler {
 							AdvancedContext2d ctx, 
 							Context context, 
 							RendererManager rendererManager, 
-							OverlayEntities entities,
 							DataOverlay dataOverlay,
 							OverlayContext overlay) {
 		
 		if(renderers == null)
 			return;
-		renderers.forEach(renderer -> renderer.doRender(items, ctx, context, rendererManager, entities, dataOverlay, overlay));
+		renderers.forEach(renderer -> renderer.doRender(items, ctx, context, rendererManager, dataOverlay, overlay));
 	}
 	
 	public int overlayRenderersCount() {

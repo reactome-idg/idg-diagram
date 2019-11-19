@@ -289,7 +289,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 									   event.getCtx(), 
 									   context, 
 									   event.getRendererManager(), 
-									   this.overlayEntities,
 									   this.dataOverlay,
 									   event.getOverlay());
 	}
