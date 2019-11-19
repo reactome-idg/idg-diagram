@@ -20,7 +20,6 @@ import org.reactome.web.fi.client.visualisers.diagram.renderers.ProteinTargetLev
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
-import org.reactome.web.fi.data.overlay.OverlayEntities;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataRequestedEvent;
@@ -55,7 +54,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	private OverlayLegend overlayLegend;
 	private OverlayDialogPanel overlayDialogPanel;
 	
-	private OverlayEntities overlayEntities;
 	private DataOverlay dataOverlay;
 	private boolean renderOverlays = false;
 	
@@ -131,13 +129,13 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		super.contentLoaded(context);
 		
 		//check if overlay should be loaded and if so, load new TCRD data
-		if(overlayEntities != null) {
-			String overlayType = overlayEntities.getDataType();
+		if(dataOverlay != null) {
+			OverlayDataType overlayType = dataOverlay.getOverlayType();
 			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 			
 			//don't bother reloading when new content is an SVG
 			if(context.getContent().getType() != Content.Type.SVG)
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.lookupType(overlayType)), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(overlayType), this);
 		}
 	}
 
@@ -175,8 +173,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 
 	private void requestOverlayData(MakeOverlayRequestEvent event) {
 		Set<String> identifiers = null;
-		if(overlayEntities != null)
-			if(OverlayDataType.lookupType(overlayEntities.getDataType()) == event.getDataType())
+		if(dataOverlay != null)
+			if(dataOverlay.getOverlayType() == event.getDataType())
 				return;	
 
 		if(activeVisualiser instanceof FIViewVisualiser)
@@ -296,7 +294,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.renderOverlays = true;
-		this.overlayEntities = event.getEntities();
 		this.dataOverlay = event.getDataOverlay();
 		context.setDialogMap(new HashMap<>());
 		
@@ -313,6 +310,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		renderOverlays = false;
+		this.dataOverlay = null;
 		context.setDialogMap(new HashMap<>());
 		if(event.getSource() instanceof OverlayLegend)
 			overlayDialogPanel.hide();

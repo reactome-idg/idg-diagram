@@ -13,6 +13,7 @@ import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
 import org.reactome.web.fi.data.overlay.TargetLevelEntity;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
+import org.reactome.web.fi.model.OverlayDataType;
 
 import com.google.gwt.core.client.GWT;
 
@@ -37,6 +38,7 @@ public class DataOverlayEntityMediator {
 	private DataOverlay transformDiscrete(OverlayEntities entities) {
 		DataOverlay result = new DataOverlay();
 		result.setDiscrete(true);
+		result.setOverlayType(OverlayDataType.lookupType(entities.getDataType()));
 		
 		//used to set max value and index value for each identifier
 		List<String>discreteTypes = new ArrayList<>();

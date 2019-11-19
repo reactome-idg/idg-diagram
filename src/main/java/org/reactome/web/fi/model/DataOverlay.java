@@ -10,6 +10,7 @@ public class DataOverlay {
 	private Double minValue;
 	private Double maxValue;
 	private boolean isDiscrete;
+	private OverlayDataType overlayType;
 	private List<DataOverlayEntity> dataOverlayEntities;
 	private List<String> discreteTypes;
 	private Map<String, Double> identifierValueMap;
@@ -67,6 +68,13 @@ public class DataOverlay {
 	public void setIdentifierValueMap(Map<String, Double> identifierValueMap) {
 		this.identifierValueMap = identifierValueMap;
 	}
-	
+
+	public OverlayDataType getOverlayType() {
+		return overlayType;
+	}
+
+	public void setOverlayType(OverlayDataType overlayType) {
+		this.overlayType = overlayType;
+	}
 	
 }
