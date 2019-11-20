@@ -68,6 +68,7 @@ public class DataOverlayEntityMediator {
 		Double minValue = null;
 		Double maxValue = null;
 		
+		List<String> types = new ArrayList<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
 			//reset min and max if needed
 			if(rawEntity.getNumberValue()==null)
@@ -78,7 +79,8 @@ public class DataOverlayEntityMediator {
 			if(minValue == null || rawEntity.getNumberValue() < minValue)
 				minValue = rawEntity.getNumberValue();
 	
-			
+			if(!types.contains(rawEntity.getEtype()))
+				types.add(rawEntity.getEtype());
 			
 			//add rawEntity to list of DataOverlayEntities
 			if(rawEntity.getNumberValue() != null)
