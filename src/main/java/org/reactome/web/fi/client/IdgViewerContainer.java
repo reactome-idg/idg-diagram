@@ -9,8 +9,10 @@ import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.client.visualisers.diagram.DiagramVisualiser;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.content.Content;
+import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSequence;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
+import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.events.AnalysisResetEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
@@ -212,10 +214,12 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 				if(identifiers==null)
 					identifiers = new HashSet<>();
 				for(GraphPhysicalEntity participant: participants) {
-					int i= participant.getIdentifier().length();
-					if(participant.getIdentifier().contains("-"))
-						i = participant.getIdentifier().indexOf("-");
-					identifiers.add(participant.getIdentifier().substring(0, i)); 
+					if(participant instanceof GraphEntityWithAccessionedSequence || participant instanceof GraphProteinDrug) {
+						int i= participant.getIdentifier().length();
+						if(participant.getIdentifier().contains("-"))
+							i = participant.getIdentifier().indexOf("-");
+						identifiers.add(participant.getIdentifier().substring(0, i)); 
+					}
 				}
 			}
 		}
