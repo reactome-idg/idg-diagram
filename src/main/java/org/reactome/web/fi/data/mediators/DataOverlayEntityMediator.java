@@ -49,13 +49,14 @@ public class DataOverlayEntityMediator {
 			
 			//add each raw entity to list of DataOverlayEntity in DataOverlay
 			result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
-				new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel()))));
+				new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel())),
+				rawEntity.getTargetDevLevel()));
 			identifierValueMap.put(rawEntity.getUniprot(), 
 				new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel())));
 		}
 		result.setMaxValue(new Double(discreteTypes.size()));
 		result.setMinValue(new Double(0));
-		result.setDiscreteTypes(discreteTypes);
+		result.types(discreteTypes);
 		result.setIdentifierValueMap(identifierValueMap);
 		return result;
 	}
@@ -66,6 +67,7 @@ public class DataOverlayEntityMediator {
 		
 		Double minValue = null;
 		Double maxValue = null;
+		
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
 			//reset min and max if needed
 			if(rawEntity.getNumberValue()==null)
@@ -76,6 +78,7 @@ public class DataOverlayEntityMediator {
 			if(minValue == null || rawEntity.getNumberValue() < minValue)
 				minValue = rawEntity.getNumberValue();
 	
+			
 			
 			//add rawEntity to list of DataOverlayEntities
 			if(rawEntity.getNumberValue() != null)
