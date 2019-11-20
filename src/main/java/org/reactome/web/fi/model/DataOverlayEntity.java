@@ -4,12 +4,13 @@ public class DataOverlayEntity {
 
 	private String identifier;
 	private Double value;
+	private String type;
 
 	
-	public DataOverlayEntity(String identifier, Double value) {
+	public DataOverlayEntity(String identifier, Double value, String type) {
 		this.identifier = identifier;
 		this.value = value;
-
+		this.type = type;
 	}
 	
 	public String getIdentifier() {
@@ -26,5 +27,13 @@ public class DataOverlayEntity {
 	
 	public void setValue(Double value) {
 		this.value = value;
+	}
+
+	public String getExpressionType() {
+		return type;
+	}
+
+	public void setExpressionType(String type) {
+		this.type = type;
 	}
 }

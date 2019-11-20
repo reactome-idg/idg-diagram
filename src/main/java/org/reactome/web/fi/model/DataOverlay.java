@@ -12,12 +12,12 @@ public class DataOverlay {
 	private boolean isDiscrete;
 	private OverlayDataType overlayType;
 	private List<DataOverlayEntity> dataOverlayEntities;
-	private List<String> discreteTypes;
+	private List<String> types;
 	private Map<String, Double> identifierValueMap;
 	
 	public DataOverlay() {
 		dataOverlayEntities = new ArrayList<>();
-		discreteTypes = new ArrayList<>();
+		types = new ArrayList<>();
 		identifierValueMap = new HashMap<>();
 	}
 
@@ -53,12 +53,12 @@ public class DataOverlay {
 		this.dataOverlayEntities.add(dataOverlayEntity);
 	}
 
-	public List<String> getDiscreteTypes() {
-		return discreteTypes;
+	public List<String> types() {
+		return types;
 	}
 
-	public void setDiscreteTypes(List<String> discreteTypes) {
-		this.discreteTypes = discreteTypes;
+	public void types(List<String> types) {
+		this.types = types;
 	}
 
 	public Map<String, Double> getIdentifierValueMap() {
