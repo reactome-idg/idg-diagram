@@ -75,11 +75,12 @@ public class DataOverlayEntityMediator {
 				maxValue = rawEntity.getNumberValue();
 			if(minValue == null || rawEntity.getNumberValue() < minValue)
 				minValue = rawEntity.getNumberValue();
+	
 			
 			//add rawEntity to list of DataOverlayEntities
 			if(rawEntity.getNumberValue() != null)
 				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
-					rawEntity.getNumberValue()));
+					rawEntity.getNumberValue(), rawEntity.getEtype()));
 		}
 		result.setMinValue(minValue);
 		result.setMaxValue(maxValue);

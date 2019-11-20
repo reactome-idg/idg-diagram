@@ -22,6 +22,7 @@ import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOver
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
+import org.reactome.web.fi.data.mediators.AnalysisStatusGenerator;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataRequestedEvent;
@@ -306,7 +307,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		
 		//TODO: Make fake analysis status
 		if(!event.getDataOverlay().isDiscrete()) {
-			GWT.log("YEE YEE");
+			AnalysisStatusGenerator generator = new AnalysisStatusGenerator(eventBus);
+			generator.makeAnalysis(dataOverlay);
 		}
 		
 		if(activeVisualiser instanceof DiagramVisualiser) 
