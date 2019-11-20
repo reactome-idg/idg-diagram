@@ -659,7 +659,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	}
 	
 	public void overlayNodes(DataOverlay dataOverlay) {
-		if(dataOverlay == null) {
+		if(dataOverlay == null || !dataOverlay.isDiscrete()) {
 			cy.resetStyle();
 			return;
 		}
