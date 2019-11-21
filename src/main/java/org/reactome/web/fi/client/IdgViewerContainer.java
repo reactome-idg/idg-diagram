@@ -194,7 +194,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 			eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
 		else if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
 			String tissues = "Adult Adrenal,Bone marrow,Adult Colon";
-	        String etypes = "HPM Protein";
+	        String etypes = "UniProt Tissue";
 	        postContent += "\n" + tissues + "\n" + etypes;
 	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
 		}
@@ -304,6 +304,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		this.renderOverlays = true;
 		this.dataOverlay = event.getDataOverlay();
 		context.setDialogMap(new HashMap<>());
+		GWT.log("identifierValueMap size" + event.getDataOverlay().getIdentifierValueMap().size());
 		
 		//TODO: Make fake analysis status
 		if(!event.getDataOverlay().isDiscrete()) {

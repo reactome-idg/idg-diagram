@@ -99,8 +99,10 @@ public class DataOverlayRenderer implements OverlayRenderer, RenderOtherContextD
         		int index = graphObject.getIdentifier().length();
         		if(graphObject.getIdentifier().contains("-"))
         			index = graphObject.getIdentifier().indexOf("-");
-        		String colour = colourMap.get(new Double(dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier()
-        																						.substring(0, index))));
+
+        		Double identifierDouble = dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier().substring(0, index));
+        		if (identifierDouble != null) GWT.log("hit: " + graphObject.getIdentifier().substring(0, index));
+        		String colour = colourMap.get(identifierDouble);
 	        	ctx.setFillStyle(colour);
 	        	renderer.draw(ctx, item, factor, offset);
         	}
@@ -161,7 +163,7 @@ public class DataOverlayRenderer implements OverlayRenderer, RenderOtherContextD
 			if(entity.getIdentifier().contains("-"))
 				index = entity.getIdentifier().indexOf("-");
 			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(
-					colourMap.get(new Double(dataOverlay.getIdentifierValueMap().get(entity.getIdentifier().substring(0, index)))));
+					colourMap.get(dataOverlay.getIdentifierValueMap().get(entity.getIdentifier().substring(0, index))));
 		}
 	}
 

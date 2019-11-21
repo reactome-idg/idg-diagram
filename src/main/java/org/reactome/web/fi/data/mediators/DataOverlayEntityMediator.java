@@ -70,9 +70,8 @@ public class DataOverlayEntityMediator {
 		Double maxValue = null;
 		
 		List<String> types = new ArrayList<>();
+		Map<String, Double> identifierValueMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
-			if(rawEntity.getNumberValue()==null)
-				continue;
 	
 			if(!types.contains(rawEntity.getTissue()))
 				types.add(rawEntity.getTissue());
@@ -83,10 +82,14 @@ public class DataOverlayEntityMediator {
 				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
 					rawEntity.getNumberValue(), rawEntity.getEtype()));
 			else if(rawEntity.getBooleanValue() != null) {
-				Double booleanVal = (double) 0;
-				if(rawEntity.getBooleanValue() == true) booleanVal = (double) 1;
+				result.setDiscrete(true);
+				List<String> hit = new ArrayList<String>();
+				hit.add("hit");
+				result.setTypes(hit);
+
 				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
-						booleanVal, rawEntity.getEtype()));
+						new Double(0), rawEntity.getEtype()));
+				identifierValueMap.put(rawEntity.getUniprot(), new Double(0));
 			}
 			else if(rawEntity.getQualValue() != null) {
 				//implement for qualValue
@@ -98,6 +101,7 @@ public class DataOverlayEntityMediator {
 				minValue = entity.getValue();
 			
 		}
+		result.setIdentifierValueMap(identifierValueMap);
 		result.setMinValue(minValue);
 		result.setMaxValue(maxValue);
 			
