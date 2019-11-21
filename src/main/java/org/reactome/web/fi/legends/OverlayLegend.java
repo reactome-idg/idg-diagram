@@ -37,16 +37,17 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		
 		LegendPanelCSS css = RESOURCES.getCSS();
 		
-		this.closeBtn = new PwpButton("Close", css.close(), this);
-		this.add(this.closeBtn);
-		
 		this.colourMapPanel = new FlowPanel();
 		this.add(colourMapPanel);
 		this.getElement().getStyle().setMarginBottom(10, Unit.PX);
 		
+		this.closeBtn = new PwpButton("Close", css.close(), this);
+		this.add(this.closeBtn);
+		
 		initHandlers();
 		
-		addStyleName(RESOURCES.getCSS().enrichmentControl());
+		addStyleName(RESOURCES.getCSS().enrichmentLegend());
+		this.getElement().getStyle().setWidth(100, Unit.PX);
 		this.setVisible(false);
 		
 	}
@@ -67,9 +68,13 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.setVisible(false);
-		this.remove(colourMapPanel);
-		colourMapPanel = new FlowPanel();
-		this.add(colourMapPanel);
+//		this.remove(colourMapPanel);
+//		colourMapPanel = new FlowPanel();
+//		this.add(colourMapPanel);
+		
+		if(colourMapPanel.getWidgetCount()>0)
+			for(int i=0; i<colourMapPanel.getWidgetCount(); i++)
+				colourMapPanel.remove(i);
 		
 		//stops loading of new colours during continuous value overlay rendering
 		if(!event.getDataOverlay().isDiscrete())
@@ -77,10 +82,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		
 		colourMapPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
 		Map<Double, String> colourMap = OverlayColours.get().getColours();
-		Label title = new Label("Overlay Value Types: ");
-		colourMapPanel.add(title);
 		event.getDataOverlay().getTypes().forEach((i) ->{
-			InlineLabel lbl = new InlineLabel(i);
+			Label lbl = new Label(i);
 			String colour = colourMap.get(new Double(event.getDataOverlay().getTypes().indexOf(i)));
 			lbl.getElement().getStyle().setBackgroundColor(colour);
 			lbl.getElement().getStyle().setPadding(3, Unit.PX);

@@ -74,13 +74,14 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	}
 
 	@Override
-	protected void initialise() {
+	protected void initialise() {		
+		overlayLegend = new OverlayLegend(eventBus);
+		super.rightContainerPanel.add(overlayLegend);
 		super.initialise();
 		
 		fiviewButton = new IDGIconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View");
 		diagramButton = new IDGIconButton(IDGRESOURCES.diagramIcon(), IDGRESOURCES.getCSS().diagram(), "Diagram View");
 		overlayButton = new IDGIconButton(IDGRESOURCES.overlayIcon(), IDGRESOURCES.getCSS().cytoscape(), "Select An Overlay");
-		overlayLegend = new OverlayLegend(eventBus);
 		overlayDialogPanel = new OverlayDialogPanel(eventBus);
 		overlayDialogPanel.setVisible(false);
 				
@@ -93,7 +94,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		super.leftTopLauncher.getMainControlPanel().add(overlayButton);
 		super.leftTopLauncher.getMainControlPanel().add(overlayDialogPanel);
 		
-		super.bottomContainerPanel.add(overlayLegend);
 		
 		
 		bind();
