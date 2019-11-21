@@ -14,6 +14,7 @@ public class DataOverlay {
 	private List<DataOverlayEntity> dataOverlayEntities;
 	private List<String> types;
 	private Map<String, Double> identifierValueMap;
+	private String eType;
 	
 	public DataOverlay() {
 		dataOverlayEntities = new ArrayList<>();
@@ -53,11 +54,11 @@ public class DataOverlay {
 		this.dataOverlayEntities.add(dataOverlayEntity);
 	}
 
-	public List<String> types() {
+	public List<String> getTypes() {
 		return types;
 	}
 
-	public void types(List<String> types) {
+	public void setTypes(List<String> types) {
 		this.types = types;
 	}
 
@@ -75,6 +76,14 @@ public class DataOverlay {
 
 	public void setOverlayType(OverlayDataType overlayType) {
 		this.overlayType = overlayType;
+	}
+
+	public String getEType() {
+		return eType;
+	}
+
+	public void setEType(String eType) {
+		this.eType = eType;
 	}
 	
 }

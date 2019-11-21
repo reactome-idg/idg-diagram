@@ -18,11 +18,10 @@ import org.reactome.web.diagram.events.AnalysisResetEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
 import org.reactome.web.fi.client.visualisers.OverlayDataHandler;
-import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOverlayRenderer;
+import org.reactome.web.fi.client.visualisers.diagram.renderers.DataOverlayRenderer;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
-import org.reactome.web.fi.data.mediators.AnalysisStatusGenerator;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataRequestedEvent;
@@ -41,6 +40,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.Window;
 
 /**
  * 
@@ -98,7 +98,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		
 		bind();
 		
-		OverlayDataHandler.getHandler().registerHelper(new DiscreteDataOverlayRenderer(eventBus));
+		OverlayDataHandler.getHandler().registerHelper(new DataOverlayRenderer(eventBus));
 
 	}
 	
@@ -307,8 +307,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		
 		//TODO: Make fake analysis status
 		if(!event.getDataOverlay().isDiscrete()) {
-			AnalysisStatusGenerator generator = new AnalysisStatusGenerator(eventBus);
-			generator.makeAnalysis(dataOverlay);
+			Window.alert("continuous: " + event.getDataOverlay().getMinValue() + "->" + event.getDataOverlay().getMaxValue());
 		}
 		
 		if(activeVisualiser instanceof DiagramVisualiser) 

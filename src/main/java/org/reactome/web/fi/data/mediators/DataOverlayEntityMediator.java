@@ -25,9 +25,9 @@ public class DataOverlayEntityMediator {
 			GWT.log(e.getMessage());
 		}
 		
-		if(entities.getDiscrete() == "true")
+		if(entities.getTargetLevelEntity() != null)
 			return transformDiscrete(entities);
-		else if(entities.getDiscrete() == "false")
+		else if(entities.getExpressionEntity() != null)
 			return transformContinuous(entities);
 		
 		return null;
@@ -56,13 +56,14 @@ public class DataOverlayEntityMediator {
 		}
 		result.setMaxValue(new Double(discreteTypes.size()));
 		result.setMinValue(new Double(0));
-		result.types(discreteTypes);
+		result.setTypes(discreteTypes);
 		result.setIdentifierValueMap(identifierValueMap);
 		return result;
 	}
 
 	private DataOverlay transformContinuous(OverlayEntities entities) {
 		DataOverlay result = new DataOverlay();
+		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setDiscrete(false);
 		
 		Double minValue = null;
@@ -70,22 +71,32 @@ public class DataOverlayEntityMediator {
 		
 		List<String> types = new ArrayList<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
-			//reset min and max if needed
 			if(rawEntity.getNumberValue()==null)
 				continue;
-			
-			if(maxValue == null || rawEntity.getNumberValue() > maxValue)
-				maxValue = rawEntity.getNumberValue();
-			if(minValue == null || rawEntity.getNumberValue() < minValue)
-				minValue = rawEntity.getNumberValue();
 	
-			if(!types.contains(rawEntity.getEtype()))
-				types.add(rawEntity.getEtype());
+			if(!types.contains(rawEntity.getTissue()))
+				types.add(rawEntity.getTissue());
 			
 			//add rawEntity to list of DataOverlayEntities
+			DataOverlayEntity entity = null;
 			if(rawEntity.getNumberValue() != null)
-				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
+				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
 					rawEntity.getNumberValue(), rawEntity.getEtype()));
+			else if(rawEntity.getBooleanValue() != null) {
+				Double booleanVal = (double) 0;
+				if(rawEntity.getBooleanValue() == true) booleanVal = (double) 1;
+				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
+						booleanVal, rawEntity.getEtype()));
+			}
+			else if(rawEntity.getQualValue() != null) {
+				//implement for qualValue
+			}
+			
+			if(maxValue == null || entity.getValue() > maxValue)
+				maxValue = entity.getValue();
+			if(minValue == null || entity.getValue() < minValue)
+				minValue = entity.getValue();
+			
 		}
 		result.setMinValue(minValue);
 		result.setMaxValue(maxValue);

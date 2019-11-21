@@ -43,7 +43,9 @@ public class ColourChoicePanel extends Composite{
 		Map<Double, String> colourMap = OverlayColours.get().getColours();
 		
 		discreteTypes.forEach((i) -> {
-			Label colourLbl = new Label(i);
+			Button colourLbl = new Button();
+			colourLbl.setStyleName(RESOURCES.getCSS().colourChoiceButton());
+			colourLbl.setText(i);
 			String colour = colourMap.get(new Double(discreteTypes.indexOf(i)));
 			colourLbl.getElement().getStyle().setBackgroundColor(colour);
 			result.add(colourLbl);
@@ -80,6 +82,8 @@ public class ColourChoicePanel extends Composite{
 		String CSS = "org/reactome/web/fi/overlay/ColourChoicePanel.css";
 		
 		String overlayTypeLabel();
+		
+		String colourChoiceButton();
 	}
 	
 }
