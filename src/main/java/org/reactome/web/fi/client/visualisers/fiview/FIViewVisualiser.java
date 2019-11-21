@@ -27,9 +27,6 @@ import org.reactome.web.diagram.handlers.ExpressionColumnChangedHandler;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.profiles.interactors.InteractorColours;
 import org.reactome.web.fi.data.content.FIViewContent;
-import org.reactome.web.fi.data.overlay.OverlayEntities;
-import org.reactome.web.fi.data.overlay.OverlayEntity;
-import org.reactome.web.fi.data.overlay.TargetLevelEntity;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeClickedEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeContextSelectEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeHoveredEvent;
@@ -659,8 +656,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	}
 	
 	public void overlayNodes(DataOverlay dataOverlay) {
+		cy.resetStyle();
 		if(dataOverlay == null || !dataOverlay.isDiscrete()) {
-			cy.resetStyle();
 			return;
 		}
 		

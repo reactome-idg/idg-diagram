@@ -64,6 +64,7 @@ public class DataOverlayEntityMediator {
 	private DataOverlay transformExpressionEntities(OverlayEntities entities) {
 		DataOverlay result = new DataOverlay();
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
+		result.setOverlayType(OverlayDataType.lookupType(entities.getDataType()));
 		result.setDiscrete(false);
 		
 		Double minValue = null;
