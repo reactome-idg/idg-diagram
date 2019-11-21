@@ -86,7 +86,6 @@ public class DataOverlayEntityMediator {
 				List<String> hit = new ArrayList<String>();
 				hit.add("hit");
 				result.setTypes(hit);
-
 				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
 						new Double(0), rawEntity.getEtype()));
 				identifierValueMap.put(rawEntity.getUniprot(), new Double(0));
