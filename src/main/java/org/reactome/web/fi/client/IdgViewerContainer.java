@@ -194,7 +194,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 			eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
 		else if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
 			String tissues = "Adult Adrenal,Bone marrow,Adult Colon";
-	        String etypes = "UniProt Tissue";
+	        String etypes = "HPM Protein";
 	        postContent += "\n" + tissues + "\n" + etypes;
 	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
 		}

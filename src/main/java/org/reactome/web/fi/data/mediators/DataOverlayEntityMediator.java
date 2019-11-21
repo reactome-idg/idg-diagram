@@ -12,6 +12,7 @@ import org.reactome.web.fi.data.overlay.TargetLevelEntity;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.model.OverlayDataType;
+import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
 
@@ -24,7 +25,6 @@ public class DataOverlayEntityMediator {
 		} catch (Exception e) {
 			GWT.log(e.getMessage());
 		}
-		
 		if(entities.getTargetLevelEntity() != null)
 			return transformTargetLevelEntities(entities);
 		else if(entities.getExpressionEntity() != null)
@@ -63,8 +63,65 @@ public class DataOverlayEntityMediator {
 
 	private DataOverlay transformExpressionEntities(OverlayEntities entities) {
 		DataOverlay result = new DataOverlay();
+		String eType = entities.getExpressionEntity().get(0).getEtype();
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setOverlayType(OverlayDataType.lookupType(entities.getDataType()));
+		
+		//TODO: Make the if statements not hard coded
+		if(eType == "CCLE" || eType == "GTEx" ||eType == "HCA RNA" ||eType == "HPM Gene" ||eType == "HPM Protein")
+			return result = getNumberValueResult(result, entities);
+		else if(eType == "Cell Surface Protein Atlas" || eType == "JensenLab Knowledge UniProtKB-RC" ||eType == "JensenLab Text Mining" ||eType == "UniProt Tissue")
+			return result = getBooleanValueResult(result, entities);
+		else if(eType == "Consensus")
+			return getQualValueResult(result, entities);
+			
+		return result;
+	}
+
+	private DataOverlay getQualValueResult(DataOverlay result, OverlayEntities entities) {
+		result.setDiscrete(true);
+		
+		List<String>discreteTypes = new ArrayList<>();
+		discreteTypes.add("Not detected");
+		discreteTypes.add("Low");
+		discreteTypes.add("Medium");
+		discreteTypes.add("High");
+		Map<String, Double> identifierValueMap = new HashMap<>();
+		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
+			if(rawEntity.getQualValue() != null) {
+				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(), new Double(discreteTypes.indexOf(rawEntity.getQualValue())), rawEntity.getEtype()));
+				identifierValueMap.put(rawEntity.getUniprot(), new Double(discreteTypes.indexOf(rawEntity.getQualValue())));
+			}
+		}
+		result.setIdentifierValueMap(identifierValueMap);
+		result.setMaxValue(new Double(discreteTypes.size()));
+		result.setMinValue(new Double(0));
+		return result;
+	}
+
+	private DataOverlay getBooleanValueResult(DataOverlay result, OverlayEntities entities) {
+		result.setDiscrete(true);
+		
+		List<String> hit = new ArrayList<>();
+		hit.add("Hit");
+		result.setTypes(hit);
+		
+		Map<String, Double> identifierValueMap = new HashMap<>();
+		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
+			if(rawEntity.getBooleanValue() != null) {
+				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
+						new Double(0), rawEntity.getEtype()));
+				identifierValueMap.put(rawEntity.getUniprot(), new Double(0));
+			}
+		}
+		result.setIdentifierValueMap(identifierValueMap);
+		result.setMinValue(new Double(0));
+		result.setMaxValue(new Double(0));
+		
+		return result;
+	}
+
+	private DataOverlay getNumberValueResult(DataOverlay result, OverlayEntities entities) {
 		result.setDiscrete(false);
 		
 		Double minValue = null;
@@ -73,38 +130,23 @@ public class DataOverlayEntityMediator {
 		List<String> types = new ArrayList<>();
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
-	
 			if(!types.contains(rawEntity.getTissue()))
 				types.add(rawEntity.getTissue());
-			
-			//add rawEntity to list of DataOverlayEntities
 			DataOverlayEntity entity = null;
-			if(rawEntity.getNumberValue() != null)
+			if(rawEntity.getNumberValue() != null) {
 				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
-					rawEntity.getNumberValue(), rawEntity.getEtype()));
-			else if(rawEntity.getBooleanValue() != null) {
-				result.setDiscrete(true);
-				List<String> hit = new ArrayList<String>();
-				hit.add("hit");
-				result.setTypes(hit);
-				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
-						new Double(0), rawEntity.getEtype()));
-				identifierValueMap.put(rawEntity.getUniprot(), new Double(0));
+						rawEntity.getNumberValue(), rawEntity.getEtype()));
+				identifierValueMap.put(entity.getIdentifier(), entity.getValue());
+				if(maxValue == null || entity.getValue() > maxValue)
+					maxValue = entity.getValue();
+				if(minValue == null || entity.getValue() < minValue)
+					minValue = entity.getValue();
 			}
-			else if(rawEntity.getQualValue() != null) {
-				//implement for qualValue
-			}
-			
-			if(maxValue == null || entity.getValue() > maxValue)
-				maxValue = entity.getValue();
-			if(minValue == null || entity.getValue() < minValue)
-				minValue = entity.getValue();
-			
 		}
 		result.setIdentifierValueMap(identifierValueMap);
 		result.setMinValue(minValue);
 		result.setMaxValue(maxValue);
-			
+		
 		return result;
 	}
 }
