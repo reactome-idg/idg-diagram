@@ -26,14 +26,14 @@ public class DataOverlayEntityMediator {
 		}
 		
 		if(entities.getTargetLevelEntity() != null)
-			return transformDiscrete(entities);
+			return transformTargetLevelEntities(entities);
 		else if(entities.getExpressionEntity() != null)
-			return transformContinuous(entities);
+			return transformExpressionEntities(entities);
 		
 		return null;
 	}
 
-	private DataOverlay transformDiscrete(OverlayEntities entities) {
+	private DataOverlay transformTargetLevelEntities(OverlayEntities entities) {
 		DataOverlay result = new DataOverlay();
 		result.setDiscrete(true);
 		result.setOverlayType(OverlayDataType.lookupType(entities.getDataType()));
@@ -61,7 +61,7 @@ public class DataOverlayEntityMediator {
 		return result;
 	}
 
-	private DataOverlay transformContinuous(OverlayEntities entities) {
+	private DataOverlay transformExpressionEntities(OverlayEntities entities) {
 		DataOverlay result = new DataOverlay();
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setDiscrete(false);
