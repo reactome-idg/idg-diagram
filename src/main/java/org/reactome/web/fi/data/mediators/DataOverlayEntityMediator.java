@@ -50,7 +50,7 @@ public class DataOverlayEntityMediator {
 			//add each raw entity to list of DataOverlayEntity in DataOverlay
 			result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
 				new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel())),
-				rawEntity.getTargetDevLevel()));
+				rawEntity.getTargetDevLevel(), null));
 			identifierValueMap.put(rawEntity.getUniprot(), 
 				new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel())));
 		}
@@ -69,9 +69,9 @@ public class DataOverlayEntityMediator {
 		
 		//TODO: Make the if statements not hard coded
 		if(eType == "CCLE" || eType == "GTEx" ||eType == "HCA RNA" ||eType == "HPM Gene" ||eType == "HPM Protein")
-			return result = getNumberValueResult(result, entities);
+			return getNumberValueResult(result, entities);
 		else if(eType == "Cell Surface Protein Atlas" || eType == "JensenLab Knowledge UniProtKB-RC" ||eType == "JensenLab Text Mining" ||eType == "UniProt Tissue")
-			return result = getBooleanValueResult(result, entities);
+			return getBooleanValueResult(result, entities);
 		else if(eType == "Consensus")
 			return getQualValueResult(result, entities);
 			
@@ -89,7 +89,8 @@ public class DataOverlayEntityMediator {
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
 			if(rawEntity.getQualValue() != null) {
-				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(), new Double(discreteTypes.indexOf(rawEntity.getQualValue())), rawEntity.getEtype()));
+				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(), 
+						new Double(discreteTypes.indexOf(rawEntity.getQualValue())), rawEntity.getEtype(), rawEntity.getTissue()));
 				identifierValueMap.put(rawEntity.getUniprot(), new Double(discreteTypes.indexOf(rawEntity.getQualValue())));
 			}
 		}
@@ -110,7 +111,7 @@ public class DataOverlayEntityMediator {
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
 			if(rawEntity.getBooleanValue() != null) {
 				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
-						new Double(0), rawEntity.getEtype()));
+						new Double(0), rawEntity.getEtype(), rawEntity.getTissue()));
 				identifierValueMap.put(rawEntity.getUniprot(), new Double(0));
 			}
 		}
@@ -135,7 +136,7 @@ public class DataOverlayEntityMediator {
 			DataOverlayEntity entity = null;
 			if(rawEntity.getNumberValue() != null) {
 				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
-						rawEntity.getNumberValue(), rawEntity.getEtype()));
+						rawEntity.getNumberValue(), rawEntity.getEtype(), rawEntity.getTissue()));
 				identifierValueMap.put(entity.getIdentifier(), entity.getValue());
 				if(maxValue == null || entity.getValue() > maxValue)
 					maxValue = entity.getValue();

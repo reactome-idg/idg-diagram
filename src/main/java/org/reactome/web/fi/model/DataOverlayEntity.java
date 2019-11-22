@@ -5,12 +5,14 @@ public class DataOverlayEntity {
 	private String identifier;
 	private Double value;
 	private String type;
+	private String tissue;
 
 	
-	public DataOverlayEntity(String identifier, Double value, String type) {
+	public DataOverlayEntity(String identifier, Double value, String type, String tissue) {
 		this.identifier = identifier;
 		this.value = value;
 		this.type = type;
+		this.tissue = tissue;
 	}
 	
 	public String getIdentifier() {
@@ -36,4 +38,13 @@ public class DataOverlayEntity {
 	public void setExpressionType(String type) {
 		this.type = type;
 	}
+
+	public String getTissue() {
+		return tissue;
+	}
+
+	public void setTissue(String tissue) {
+		this.tissue = tissue;
+	}
+	
 }
