@@ -45,7 +45,7 @@ import com.google.gwt.event.shared.EventBus;
  * @author brunsont
  *
  */
-public class DataOverlayRenderer implements OverlayRenderer, RenderOtherContextDialogInfoHandler, OverlayDataResetHandler {
+public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOtherContextDialogInfoHandler, OverlayDataResetHandler {
 
 	private EventBus eventBus;
 	private AdvancedContext2d ctx;
@@ -56,7 +56,7 @@ public class DataOverlayRenderer implements OverlayRenderer, RenderOtherContextD
 	private OverlayContext originalOverlay;
 	private DataOverlay dataOverlay;
 	
-	public DataOverlayRenderer(EventBus eventBus){
+	public DiscreteDataOverlayRenderer(EventBus eventBus){
 		this.eventBus = eventBus;
 		eventBus.addHandler(RenderOtherContextDialogInfoEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
@@ -74,27 +74,13 @@ public class DataOverlayRenderer implements OverlayRenderer, RenderOtherContextD
 		this.rendererManager = rendererManager;
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
+        this.colourMap = OverlayColours.get().getColours();
         this.originalOverlay = overlay;
         this.dataOverlay = dataOverlay;
 
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
-//        if(dataOverlay.isDiscrete()) {
-	        this.colourMap = OverlayColours.get().getColours();
-	        renderDiscreteProteinData(itemsDistribution.getItems("Protein"));
-	        renderDiscreteComplexData(itemsDistribution.getItems("Complex"));
-//        }
-//        else if(!dataOverlay.isDiscrete()) {
-//        	renderContinuousProteinData(itemsDistribution.getItems("Protein"));
-//        	renderContinuousComplexData(itemsDistribution.getItems("Complex"));
-//        }
-	}
-
-	private void renderContinuousProteinData(MapSet<RenderType, DiagramObject> items) {
-		GWT.log("Yee YEE");
-	}
-	
-	private void renderContinuousComplexData(MapSet<RenderType, DiagramObject> items) {
-		GWT.log("YEE NO");
+        renderDiscreteProteinData(itemsDistribution.getItems("Protein"));
+        renderDiscreteComplexData(itemsDistribution.getItems("Complex"));
 	}
 
 	private void renderDiscreteProteinData(MapSet<RenderType, DiagramObject> target) {
@@ -114,10 +100,7 @@ public class DataOverlayRenderer implements OverlayRenderer, RenderOtherContextD
         		Double identifierDouble = dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier().substring(0, index));
         		if(identifierDouble == null) continue;
         		String colour = "";
-        		if(dataOverlay.isDiscrete()) 
-        			colour = colourMap.get(identifierDouble);
-        		else if(!dataOverlay.isDiscrete())
-        			colour = AnalysisColours.get().enrichmentGradient.getColor(identifierDouble);
+    			colour = colourMap.get(identifierDouble);
 	        	ctx.setFillStyle(colour);
 	        	renderer.draw(ctx, item, factor, offset);
         	}
@@ -133,12 +116,10 @@ public class DataOverlayRenderer implements OverlayRenderer, RenderOtherContextD
 		OverlayContext overlay = this.originalOverlay;
 		//Store AnalysisColours.get().expressionGradient for restore
 		ThreeColorGradient originalExpressionGradient = AnalysisColours.get().expressionGradient;
-		if(dataOverlay.isDiscrete()) {
-			//set Analysiscolours.get().expressionGradient to my own
-			IDGExpressionGradient colourHelper = new IDGExpressionGradient(null,null,null);
-			colourHelper.setColourMap(colourMap);
-			AnalysisColours.get().expressionGradient = colourHelper;
-		}
+		//set Analysiscolours.get().expressionGradient to my own
+		IDGExpressionGradient colourHelper = new IDGExpressionGradient(null,null,null);
+		colourHelper.setColourMap(colourMap);
+		AnalysisColours.get().expressionGradient = colourHelper;
 		Set<DiagramObject> objectSet = target.values();
 		for(DiagramObject item : objectSet) {
 			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();
@@ -155,10 +136,8 @@ public class DataOverlayRenderer implements OverlayRenderer, RenderOtherContextD
 					renderer.drawExpression(ctx, overlay, item, 0, 0, 0, factor, offset);
 			}
 		}
-		if(dataOverlay.isDiscrete()) {
-			//Last thing: restore AnalysisColours.get().expressionGradient
-			AnalysisColours.get().expressionGradient = originalExpressionGradient;
-		}
+		//Last thing: restore AnalysisColours.get().expressionGradient
+		AnalysisColours.get().expressionGradient = originalExpressionGradient;
 	}
 	
 	private List<Double> getDataOverlayValue(String identifier){
@@ -172,7 +151,7 @@ public class DataOverlayRenderer implements OverlayRenderer, RenderOtherContextD
 
 	@Override
 	public void onRenderOtherContextDialogInfo(RenderOtherContextDialogInfoEvent event) {
-		if(dataOverlay == null || dataOverlay.getIdentifierValueMap()==null)
+		if(dataOverlay == null || !dataOverlay.isDiscrete() || dataOverlay.getIdentifierValueMap()==null)
 			return;
 		
 		List<GraphPhysicalEntity> data = event.getTable().getDataProvider().getList();
