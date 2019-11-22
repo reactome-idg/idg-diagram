@@ -17,6 +17,7 @@ import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.events.AnalysisResetEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
+import org.reactome.web.fi.client.tools.overlay.OverlayLauncherDisplay;
 import org.reactome.web.fi.client.visualisers.OverlayDataHandler;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.ContinuousDataOverlayRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOverlayRenderer;
@@ -56,7 +57,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	private FIViewVisualiser fIViewVisualiser;
 	private IDGIconButton overlayButton;
 	private OverlayLegend overlayLegend;
-	private OverlayDialogPanel overlayDialogPanel;
+	private OverlayLauncherDisplay overlayLauncher;
 	
 	private DataOverlay dataOverlay;
 	private boolean renderOverlays = false;
@@ -83,8 +84,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		fiviewButton = new IDGIconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View");
 		diagramButton = new IDGIconButton(IDGRESOURCES.diagramIcon(), IDGRESOURCES.getCSS().diagram(), "Diagram View");
 		overlayButton = new IDGIconButton(IDGRESOURCES.overlayIcon(), IDGRESOURCES.getCSS().cytoscape(), "Select An Overlay");
-		overlayDialogPanel = new OverlayDialogPanel(eventBus);
-		overlayDialogPanel.setVisible(false);
+		overlayLauncher = new OverlayLauncherDisplay();
 				
 		//adds diagramButton and fiviewButton. sets fiview button as default to show
 		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
@@ -93,7 +93,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 				.getWidgetIndex(diagramButton)).setVisible(false);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
 		super.leftTopLauncher.getMainControlPanel().add(overlayButton);
-		super.leftTopLauncher.getMainControlPanel().add(overlayDialogPanel);
+		this.add(overlayLauncher);
 		
 		
 		
@@ -151,10 +151,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	}
 	
 	private void toggleOverlayPanel() {
-		if(overlayDialogPanel.isVisible())
-			overlayDialogPanel.hide();
-		else
-			overlayDialogPanel.show();
+		overlayLauncher.show();
 	}
 
 	@Override
@@ -284,7 +281,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		super.leftTopLauncher.getMainControlPanel().getWidget(
 				super.leftTopLauncher.getMainControlPanel()
 				.getWidgetIndex(overlayButton)).setVisible(false);
-		overlayDialogPanel.hide();
+		overlayLauncher.hide();
 	}
 	
 	@Override
@@ -319,7 +316,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		this.dataOverlay = null;
 		context.setDialogMap(new HashMap<>());
 		if(event.getSource() instanceof OverlayLegend)
-			overlayDialogPanel.hide();
+			overlayLauncher.hide();
 		if(activeVisualiser instanceof DiagramVisualiser)
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualiser)

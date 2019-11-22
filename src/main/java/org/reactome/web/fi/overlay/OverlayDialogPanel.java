@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 import org.reactome.web.diagram.context.ContextDialogPanel;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
@@ -24,7 +25,7 @@ import org.reactome.web.fi.overlay.OverlayAnimation;
  * @author brunsont
  *
  */
-public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoadedHandler{
+public class OverlayDialogPanel extends PopupPanel implements OverlayDataLoadedHandler{
 
 	private EventBus eventBus;
 	private OverlayInfoPanel infoPanel;
@@ -66,6 +67,8 @@ public class OverlayDialogPanel extends AbsolutePanel implements OverlayDataLoad
 	}
 	
 	public void show() {
+		this.center();
+		this.setGlassEnabled(true);
 		this.getElement().getStyle().setDisplay(Display.BLOCK);
 		animation.animateOverlay(0, 169, 500, this);
 	}
