@@ -13,6 +13,7 @@ public class DataOverlay {
 	private OverlayDataType overlayType;
 	private List<DataOverlayEntity> dataOverlayEntities;
 	private List<String> types;
+	private int column;
 	private Map<String, Double> identifierValueMap;
 	private String eType;
 	
@@ -20,6 +21,7 @@ public class DataOverlay {
 		dataOverlayEntities = new ArrayList<>();
 		types = new ArrayList<>();
 		identifierValueMap = new HashMap<>();
+		column = 0;
 	}
 
 	public Double getMinValue() {
@@ -85,5 +87,12 @@ public class DataOverlay {
 	public void setEType(String eType) {
 		this.eType = eType;
 	}
-	
+
+	public int getColumn() {
+		return column;
+	}
+
+	public void setColumn(int column) {
+		this.column = column;
+	}
 }

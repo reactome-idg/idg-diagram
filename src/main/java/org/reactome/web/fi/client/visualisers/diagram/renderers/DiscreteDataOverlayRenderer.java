@@ -27,9 +27,9 @@ import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.OverlayRenderer;
-import org.reactome.web.fi.data.overlay.OverlayEntities;
-import org.reactome.web.fi.data.overlay.OverlayEntity;
-import org.reactome.web.fi.data.overlay.TargetLevelEntity;
+import org.reactome.web.fi.data.overlay.model.OverlayEntities;
+import org.reactome.web.fi.data.overlay.model.OverlayEntity;
+import org.reactome.web.fi.data.overlay.model.TargetLevelEntity;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
@@ -70,10 +70,15 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 						 DataOverlay dataOverlay,
 						 OverlayContext overlay) {
 		
+		//this renderer is for discrete data
+		if(!dataOverlay.isDiscrete())
+			return;
+		
 		this.ctx = ctx;
 		this.rendererManager = rendererManager;
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
+
         this.colourMap = OverlayColours.get().getColours();
         this.originalOverlay = overlay;
         this.dataOverlay = dataOverlay;
@@ -133,7 +138,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 				}
 				if(entity.getParticipantsExpression(0).size() > 0)
 					//renderer.drawExpression for each diagram object here
-					renderer.drawExpression(ctx, overlay, item, 0, 0, 0, factor, offset);
+					renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
 			}
 		}
 		//Last thing: restore AnalysisColours.get().expressionGradient

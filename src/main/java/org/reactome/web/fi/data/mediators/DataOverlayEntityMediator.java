@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.reactome.web.fi.data.overlay.ExpressionEntity;
-import org.reactome.web.fi.data.overlay.OverlayEntities;
-import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
-import org.reactome.web.fi.data.overlay.TargetLevelEntity;
+import org.reactome.web.fi.data.overlay.model.ExpressionEntity;
+import org.reactome.web.fi.data.overlay.model.OverlayEntities;
+import org.reactome.web.fi.data.overlay.model.OverlayEntityDataFactory;
+import org.reactome.web.fi.data.overlay.model.TargetLevelEntity;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.model.OverlayDataType;

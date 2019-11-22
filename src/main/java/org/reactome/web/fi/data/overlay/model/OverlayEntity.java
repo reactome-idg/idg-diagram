@@ -1,4 +1,4 @@
-package org.reactome.web.fi.data.overlay;
+package org.reactome.web.fi.data.overlay.model;
 
 /**
  * 

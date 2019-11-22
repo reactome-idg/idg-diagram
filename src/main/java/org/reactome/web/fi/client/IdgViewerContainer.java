@@ -18,6 +18,7 @@ import org.reactome.web.diagram.events.AnalysisResetEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
 import org.reactome.web.fi.client.visualisers.OverlayDataHandler;
+import org.reactome.web.fi.client.visualisers.diagram.renderers.ContinuousDataOverlayRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOverlayRenderer;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
@@ -99,7 +100,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		bind();
 		
 		OverlayDataHandler.getHandler().registerHelper(new DiscreteDataOverlayRenderer(eventBus));
-
+//		OverlayDataHandler.getHandler().registerHelper(new ContinuousDataOverlayRenderer(eventBus));
+		
 	}
 	
 	@Override

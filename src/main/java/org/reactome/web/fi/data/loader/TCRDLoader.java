@@ -1,9 +1,9 @@
 package org.reactome.web.fi.data.loader;
 
 
-import org.reactome.web.fi.data.overlay.OverlayEntityDataFactory;
 import org.reactome.web.fi.data.mediators.DataOverlayEntityMediator;
-import org.reactome.web.fi.data.overlay.OverlayEntities;
+import org.reactome.web.fi.data.overlay.model.OverlayEntities;
+import org.reactome.web.fi.data.overlay.model.OverlayEntityDataFactory;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.OverlayDataType;
 

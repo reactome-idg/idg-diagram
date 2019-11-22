@@ -7,7 +7,7 @@ import org.reactome.web.diagram.data.loader.SVGLoader;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
-import org.reactome.web.fi.data.overlay.OverlayEntities;
+import org.reactome.web.fi.data.overlay.model.OverlayEntities;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.model.DataOverlay;
