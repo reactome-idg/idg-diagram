@@ -101,7 +101,6 @@ public class DataOverlayRenderer implements OverlayRenderer, RenderOtherContextD
         			index = graphObject.getIdentifier().indexOf("-");
 
         		Double identifierDouble = dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier().substring(0, index));
-        		if (identifierDouble != null) GWT.log("hit: " + graphObject.getIdentifier().substring(0, index));
         		String colour = colourMap.get(identifierDouble);
 	        	ctx.setFillStyle(colour);
 	        	renderer.draw(ctx, item, factor, offset);
