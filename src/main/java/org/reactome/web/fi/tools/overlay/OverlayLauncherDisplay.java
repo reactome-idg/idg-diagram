@@ -202,6 +202,8 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 		
 		String buttonSelected();
 		
+		String dataOverlayTitle();
+		
 	}
 	
 }
