@@ -12,4 +12,6 @@ public interface ExpressionEntity extends OverlayEntity{
 	
 	Boolean getBooleanValue();
 	
+	String getStringValue();
+	
 }
