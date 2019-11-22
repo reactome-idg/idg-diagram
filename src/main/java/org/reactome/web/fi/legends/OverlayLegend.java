@@ -79,9 +79,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		
 		colourMapPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
 		Map<Double, String> colourMap = OverlayColours.get().getColours();
-		event.getDataOverlay().getTypes().forEach((i) ->{
+		event.getDataOverlay().getLegendTypes().forEach((i) ->{
 			Label lbl = new Label(i);
-			String colour = colourMap.get(new Double(event.getDataOverlay().getTypes().indexOf(i)));
+			String colour = colourMap.get(new Double(event.getDataOverlay().getLegendTypes().indexOf(i)));
 			lbl.getElement().getStyle().setBackgroundColor(colour);
 			lbl.getElement().getStyle().setPadding(3, Unit.PX);
 			lbl.getElement().getStyle().setMargin(0, Unit.PX);

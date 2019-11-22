@@ -127,7 +127,7 @@ OverlayDataResetHandler, OverlayDataLoadedHandler{
 		dataOverlayTypePanel.setCurrentType(currentOverlayType);
 		
 		if(event.getDataOverlay().isDiscrete())
-			this.colourChoicePanel.setColourLabels(event.getDataOverlay().getTypes());
+			this.colourChoicePanel.setColourLabels(event.getDataOverlay().getLegendTypes());
 	}
 	
 	public static Resources IDGRESOURCES;

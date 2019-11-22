@@ -12,14 +12,14 @@ public class DataOverlay {
 	private boolean isDiscrete;
 	private OverlayDataType overlayType;
 	private List<DataOverlayEntity> dataOverlayEntities;
-	private List<String> types;
+	private List<String> legendTypes;
 	private int column;
 	private Map<String, Double> identifierValueMap;
 	private String eType;
 	
 	public DataOverlay() {
 		dataOverlayEntities = new ArrayList<>();
-		types = new ArrayList<>();
+		legendTypes = new ArrayList<>();
 		identifierValueMap = new HashMap<>();
 		column = 0;
 	}
@@ -56,12 +56,12 @@ public class DataOverlay {
 		this.dataOverlayEntities.add(dataOverlayEntity);
 	}
 
-	public List<String> getTypes() {
-		return types;
+	public List<String> getLegendTypes() {
+		return legendTypes;
 	}
 
-	public void setTypes(List<String> types) {
-		this.types = types;
+	public void setLegendTypes(List<String> legendTypes) {
+		this.legendTypes = legendTypes;
 	}
 
 	public Map<String, Double> getIdentifierValueMap() {

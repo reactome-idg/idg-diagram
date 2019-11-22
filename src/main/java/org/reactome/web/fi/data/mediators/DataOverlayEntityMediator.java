@@ -56,7 +56,7 @@ public class DataOverlayEntityMediator {
 		}
 		result.setMaxValue(new Double(discreteTypes.size()));
 		result.setMinValue(new Double(0));
-		result.setTypes(discreteTypes);
+		result.setLegendTypes(discreteTypes);
 		result.setIdentifierValueMap(identifierValueMap);
 		return result;
 	}
@@ -105,7 +105,7 @@ public class DataOverlayEntityMediator {
 		
 		List<String> hit = new ArrayList<>();
 		hit.add("Hit");
-		result.setTypes(hit);
+		result.setLegendTypes(hit);
 		
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
