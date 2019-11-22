@@ -17,7 +17,6 @@ import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.events.AnalysisResetEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
-import org.reactome.web.fi.client.tools.overlay.OverlayLauncherDisplay;
 import org.reactome.web.fi.client.visualisers.OverlayDataHandler;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.ContinuousDataOverlayRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOverlayRenderer;
@@ -36,6 +35,7 @@ import org.reactome.web.fi.legends.OverlayLegend;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.overlay.OverlayDialogPanel;
+import org.reactome.web.fi.tools.overlay.OverlayLauncherDisplay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;

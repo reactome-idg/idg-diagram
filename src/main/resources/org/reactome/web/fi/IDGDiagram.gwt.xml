@@ -21,6 +21,7 @@
   <source path='model' />
   <source path='legends' />
   <source path='overlay' />
+  <source path='tools' />
   
     <!-- allow Super Dev Mode -->
   <add-linker name="xsiframe"/>

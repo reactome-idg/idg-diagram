@@ -1,4 +1,4 @@
-package org.reactome.web.fi.client.tools.overlay;
+package org.reactome.web.fi.tools.overlay;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -61,6 +61,10 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
         buttonsPanel.add(this.entityOverlayTypes = getButton("Overlay Relationships", RESOURCES.overlayIcon()));
         this.dataOverlayTypes.addStyleName(RESOURCES.getCSS()
 				   .buttonSelected());
+        
+        //DISABLED UNTIL DATA IS AVAILABLE
+        entityOverlayTypes.setEnabled(false);
+        //DISABLED UNTIL DATA IS AVAILABLE
         
         this.container = new DeckLayoutPanel();
         this.container.addStyleName(RESOURCES.getCSS().container());
