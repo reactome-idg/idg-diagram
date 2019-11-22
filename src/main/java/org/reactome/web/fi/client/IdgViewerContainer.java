@@ -304,12 +304,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		this.renderOverlays = true;
 		this.dataOverlay = event.getDataOverlay();
 		context.setDialogMap(new HashMap<>());
-		GWT.log("identifierValueMap size" + event.getDataOverlay().getIdentifierValueMap().size());
-		
-		//TODO: Make fake analysis status
-		if(!event.getDataOverlay().isDiscrete()) {
-			Window.alert("continuous: " + event.getDataOverlay().getMinValue() + "->" + event.getDataOverlay().getMaxValue());
-		}
 		
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();
