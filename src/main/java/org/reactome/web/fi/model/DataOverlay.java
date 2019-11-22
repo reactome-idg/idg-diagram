@@ -13,14 +13,12 @@ public class DataOverlay {
 	private OverlayDataType overlayType;
 	private List<DataOverlayEntity> dataOverlayEntities;
 	private List<String> legendTypes;
+	private List<String> tissueTypes;
 	private int column;
 	private Map<String, Double> identifierValueMap;
 	private String eType;
 	
 	public DataOverlay() {
-		dataOverlayEntities = new ArrayList<>();
-		legendTypes = new ArrayList<>();
-		identifierValueMap = new HashMap<>();
 		column = 0;
 	}
 
@@ -53,6 +51,8 @@ public class DataOverlay {
 	}
 
 	public void addDataOverlayEntity(DataOverlayEntity dataOverlayEntity) {
+		if(this.dataOverlayEntities == null)
+			this.dataOverlayEntities = new ArrayList<>();
 		this.dataOverlayEntities.add(dataOverlayEntity);
 	}
 
@@ -95,4 +95,13 @@ public class DataOverlay {
 	public void setColumn(int column) {
 		this.column = column;
 	}
+
+	public List<String> getTissueTypes() {
+		return tissueTypes;
+	}
+
+	public void setTissueTypes(List<String> tissueTypes) {
+		this.tissueTypes = tissueTypes;
+	}
+	
 }

@@ -33,6 +33,7 @@ import org.reactome.web.fi.data.overlay.model.TargetLevelEntity;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.overlay.profiles.IDGExpressionGradient;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
@@ -81,7 +82,18 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 
         this.colourMap = OverlayColours.get().getColours();
         this.originalOverlay = overlay;
+        
         this.dataOverlay = dataOverlay;
+        
+        //reset map to just entities in a specific tissue if tissueTypes isnt null
+        if(dataOverlay.getTissueTypes() != null) {
+        	Map<String, Double> identifierValueMap = new HashMap<>();
+        	for(DataOverlayEntity entity : dataOverlay.getDataOverlayEntities()) {
+        		if(entity.getTissue() == dataOverlay.getTissueTypes().get(dataOverlay.getColumn()))
+        			identifierValueMap.put(entity.getIdentifier(), entity.getValue());
+        	}
+            this.dataOverlay.setIdentifierValueMap(identifierValueMap);
+        }
 
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
         renderDiscreteProteinData(itemsDistribution.getItems("Protein"));

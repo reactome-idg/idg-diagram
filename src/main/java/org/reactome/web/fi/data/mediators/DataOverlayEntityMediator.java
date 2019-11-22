@@ -49,8 +49,8 @@ public class DataOverlayEntityMediator {
 			
 			//add each raw entity to list of DataOverlayEntity in DataOverlay
 			result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
-				new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel())),
-				rawEntity.getTargetDevLevel(), null));
+					new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel())),
+					rawEntity.getTargetDevLevel(), "non-specific"));
 			identifierValueMap.put(rawEntity.getUniprot(), 
 				new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel())));
 		}
