@@ -151,6 +151,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	}
 	
 	private void toggleOverlayPanel() {
+		overlayLauncher.center();
 		overlayLauncher.show();
 	}
 
