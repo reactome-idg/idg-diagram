@@ -33,9 +33,8 @@ public class TCRDLoader implements RequestCallback{
 	}
 	
 	public void cancel() {
-		if(this.request != null && this.request.isPending()) {
+		if(this.request != null && this.request.isPending())
 			this.request.cancel();
-		}
 	}
 	
 	public void load(String postData, OverlayDataType type) {
