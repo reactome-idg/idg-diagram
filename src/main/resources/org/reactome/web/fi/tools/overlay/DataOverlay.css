@@ -1,5 +1,90 @@
 .title{
 	text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     width: 100%;
+}
+
+.title span {
+	color: rgb(14, 124, 179);
+    font-size: x-large;
+    font-weight: bolder;
+}
+
+.expressionText{
+	color: rgb(14, 124, 179);
+    font-size: medium;
+    font-weight: bold;
+    text-align: justify;
+    margin: 15px 5px;
+}
+
+.expressionSubmission{
+	padding: 5px 5px 25px 0;
+	color:white;
+	font-size:medium;
+}
+
+.expressionMainSubmitter{
+	background-color: #58c3e5;
+	border: 1px solid #0e7cd3;
+	border-radius: 5px;
+	margin-bottom: 20px;
+	height: 10px;
+}
+
+.expressionSubmission imput{
+	float: left;
+	padding-left: 12px;
+	padding-top: 8px;
+}
+
+.expressionSubmission span {
+	float: left;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+.expressionSubmission button {
+	background: #1e95cf;
+    color: white;
+    border-radius: 16px;
+    border: 1px solid #0e7cb3;
+    float: right;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 10px 25px;
+    outline: none;
+}
+
+.expressionSubmission button:hover {
+	background: #066b9e;
+    border: 1px solid #1e95cf;
+}
+
+.expressionSubmission button:activate:hover {
+	color: #066b9e;
+    background: white;
+    border: 2px solid #066b9e;
+}
+
+.expressionSubmission img{
+	float: right;
+    margin-right: 15px;
+    margin-top: 5px;
+}
+
+.expressionSubmission select {
+	float: left;
+    margin: 0 0 0 10px;
+    background: transparent;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    color: white;
+    font-size: large;
+    font-weight: bold;
+    outline: none;
+}
+
+.expressionSubmission select option {
+	color: black;
 }

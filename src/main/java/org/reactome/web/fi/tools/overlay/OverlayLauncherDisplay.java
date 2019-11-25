@@ -68,7 +68,7 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
         
         this.container = new DeckLayoutPanel();
         this.container.addStyleName(RESOURCES.getCSS().container());
-        this.container.add(new Label("Data Overlay!"));
+        this.container.add(new DataOverlay());
         this.container.add(new Label("Relationship overlay!"));
         this.container.showWidget(0);
         this.container.setAnimationVertical(true);
@@ -176,7 +176,7 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 	@CssResource.ImportedWithPrefix("idg-OverlayLauncher")
 	public interface ResourceCSS extends CssResource{
 		
-		String CSS = "org/reactome/web/fi/client/tools/overlay/OverlayLauncher.css";
+		String CSS = "org/reactome/web/fi/tools/overlay/OverlayLauncher.css";
 		
 		String popupPanel();
 		
@@ -201,9 +201,7 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 		String innerPanel();
 		
 		String buttonSelected();
-		
-		String dataOverlayTitle();
-		
+				
 	}
 	
 }
