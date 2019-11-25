@@ -1,6 +1,7 @@
 package org.reactome.web.fi.tools.overlay;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -9,7 +10,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.TextResource;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -17,7 +17,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,7 @@ import java.util.Map;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntity;
+import org.reactome.web.fi.common.MultiSelectListBox;
 
 /**
  * 
@@ -37,8 +37,9 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 	private ExpressionTypeEntities expressionTypes;
 	private FlowPanel selectionPanel;
 	private ListBox eTypeSelector;
-	private ListBox tissueSelector;
+	private MultiSelectListBox tissueSelector;
 	private Button eTypeButton;
+	private Button tissuesSelectedButton;
 	
 	public DataOverlay() {
 		this.getElement().getStyle().setMargin(5, Unit.PX);
@@ -65,13 +66,19 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 		
 		
 		FlowPanel tissueSelectionPanel = new FlowPanel();
-		tissueSelectionPanel.add(new Label("Select Tissues:"));
-		tissueSelector = new ListBox();
+		tissueSelectionPanel.addStyleName(RESOURCES.getCSS().tissueSelectorPanel());
+		tissueSelectionPanel.add(new Label("Select Tissues (hold Ctrl to select multiple):"));
+		tissueSelector = new MultiSelectListBox();
 		tissueSelector.addStyleName(RESOURCES.getCSS().tissueSelector());
 		tissueSelector.setVisibleItemCount(10);
 		tissueSelector.setMultipleSelect(true);
 		tissueSelectionPanel.add(tissueSelector);
-		tissueSelectionPanel.add(new Label("Select a Maximum of 12 tissues"));
+		FlowPanel bottomContainer = new FlowPanel();
+		Label contextLabel = new Label("Select a Maximum of 12 tissues");
+		contextLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
+		bottomContainer.add(contextLabel);
+		bottomContainer.add(tissuesSelectedButton = new Button("Overlay!", this));
+		tissueSelectionPanel.add(bottomContainer);
 		this.add(tissueSelectionPanel);
 		
 		getExpressionTypes();
@@ -89,17 +96,30 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 	}
 	
 	protected void setTissueListBoxTypes(List<String> tissueList) {
-		for(int i=0; i<tissueSelector.getItemCount(); i++ )
-			tissueSelector.removeItem(i);
-		for(String tissue : tissueList)
-			tissueSelector.addItem(tissue);
+		tissueSelector.clear();
+		if(tissueList.size() > 0) {
+			for(String tissue : tissueList)
+				tissueSelector.addItem(tissue);
+		} else {
+			tissueSelector.addItem("No tissues. Press 'Overlay' to Overlay Data.");
+		}
+		tissueSelector.addChangeHandler(this);
+		onChange(null);
 		
 	}
 	
 	@Override
 	public void onChange(ChangeEvent event) {
-		// TODO Auto-generated method stub
-		
+		List<String> selectedTissues = tissueSelector.getSelectedItemsText();
+		if(selectedTissues == null || selectedTissues.size() == 0 || selectedTissues.size()>12) {
+			tissuesSelectedButton.setEnabled(false);
+			tissuesSelectedButton.setTitle("Please choose between 1 and 12 tissues");
+		}
+		else {
+			tissuesSelectedButton.setEnabled(true);
+			tissuesSelectedButton.setTitle("Perform Overlay");
+
+		}
 	}
 	
 	@Override
@@ -165,6 +185,8 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
     	String expressionMainSubmitter();
     	
     	String tissueSelector();
+    	
+    	String tissueSelectorPanel();
     	
     }
 

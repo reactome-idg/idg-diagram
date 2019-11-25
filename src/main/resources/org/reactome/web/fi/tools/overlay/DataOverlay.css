@@ -32,7 +32,31 @@
 	height: 10px;
 }
 
-.expressionSubmission imput{
+.tissueSelectorPanel{
+	padding: 5px 5px 35px 5px;
+	background-color: #58c3e5;
+	border: 1px solid #0e7cd3;
+	border-radius: 5px;
+}
+.tissueSelectorPanel button{
+	background: #1e95cf;
+    color: white;
+    border-radius: 16px;
+    border: 1px solid #0e7cb3;
+    float: right;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 5px 10px;
+    outline: none;
+}
+
+.tissueSelectorPanel select {
+    border: 1px solid #0e7cd3;
+    border-radius: 5px;
+    outline: none;
+}
+
+.expressionSubmission input{
 	float: left;
 	padding-left: 12px;
 	padding-top: 8px;
