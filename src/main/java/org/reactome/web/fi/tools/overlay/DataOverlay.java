@@ -63,14 +63,7 @@ public class DataOverlay  extends FlowPanel implements ChangeHandler{
 		tissueSelectionPanel.add(new Label("Select Tissues:"));
 		tissueSelector = new ListBox();
 		tissueSelector.setVisibleItemCount(10);
-		tissueSelector.addItem("test 0");
-		tissueSelector.addItem("test 1");
-		tissueSelector.addItem("test 2");
-		tissueSelector.addItem("test 3");
 		tissueSelector.setMultipleSelect(true);
-		tissueSelector.setItemSelected(0, true);
-		tissueSelector.setItemSelected(1, true);
-
 		tissueSelectionPanel.add(tissueSelector);
 		tissueSelectionPanel.add(new Label("Select a Maximum of 12 tissues"));
 		this.add(tissueSelectionPanel);
