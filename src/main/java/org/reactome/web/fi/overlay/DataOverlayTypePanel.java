@@ -112,7 +112,7 @@ OptionsPanel.Handler{
 	public void onOverlaySelected() {
 		container.showWidget(1);
 		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(
-				selectedOverlayType), this);
+				selectedOverlayType, null), this);
 	}
 
 	@Override
