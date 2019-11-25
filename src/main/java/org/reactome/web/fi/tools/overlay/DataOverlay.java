@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.TextResource;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -40,6 +41,7 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 	private MultiSelectListBox tissueSelector;
 	private Button eTypeButton;
 	private Button tissuesSelectedButton;
+	private int currentEType;
 	
 	public DataOverlay() {
 		this.getElement().getStyle().setMargin(5, Unit.PX);
@@ -111,7 +113,7 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 	@Override
 	public void onChange(ChangeEvent event) {
 		List<String> selectedTissues = tissueSelector.getSelectedItemsText();
-		if(selectedTissues == null || selectedTissues.size() == 0 || selectedTissues.size()>12) {
+		if(selectedTissues == null || selectedTissues.size()>12) {
 			tissuesSelectedButton.setEnabled(false);
 			tissuesSelectedButton.setTitle("Please choose between 1 and 12 tissues");
 		}
@@ -126,6 +128,21 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 	public void onClick(ClickEvent event) {
 		if(event.getSource() == eTypeButton && eTypeSelector.getSelectedIndex() != 0) {
 			getTissueTypes(eTypeSelector.getSelectedItemText());
+			currentEType = eTypeSelector.getSelectedIndex();
+		}
+		else if(event.getSource() == tissuesSelectedButton) {
+			if(currentEType == 0)
+				return;
+			else if(currentEType == 1) {
+				//TODO: fire MakeOverlayDataRequestEvent()
+				Window.alert(selectorMap.get(0));
+			}
+			else if(currentEType > 1) {
+				//TODO: fire MakeOverlayDataRequestedEvent()
+				String eType = selectorMap.get(currentEType);
+				List<String> tissues = tissueSelector.getSelectedItemsText();
+				Window.alert(eType + tissues.toString());
+			}
 		}
 	}
 	
