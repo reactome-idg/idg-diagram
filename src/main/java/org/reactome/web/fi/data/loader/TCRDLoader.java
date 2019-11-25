@@ -46,7 +46,7 @@ public class TCRDLoader implements RequestCallback{
 			this.handler.onTargetLevelLoadedError(exception);
 		}
 		
-		String url = BASE_URL + type.getUrl();
+		String url = BASE_URL + "expressions/uniprots";
 
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
 		requestBuilder.setHeader("Accept", "application/json");
@@ -66,6 +66,7 @@ public class TCRDLoader implements RequestCallback{
 			DataOverlayEntityMediator mediator = new DataOverlayEntityMediator();
 			DataOverlay dataOverlay;
 			try {
+				GWT.log(response.getText());
 				JSONValue val = JSONParser.parseStrict(response.getText());
 				JSONObject obj = new JSONObject();
 				obj.put("dataType", new JSONString(type.getName()));
