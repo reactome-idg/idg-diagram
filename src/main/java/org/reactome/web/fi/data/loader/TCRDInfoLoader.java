@@ -2,18 +2,24 @@ package org.reactome.web.fi.data.loader;
 
 import java.util.List;
 
+import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
+import org.reactome.web.fi.data.overlay.model.ExpressionTypeFactory;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 
 public class TCRDInfoLoader{
 
 	public interface Handler{
-		void onExpressionTypesLoaded(List<String> info);
-		void onTCRDInfoError(Throwable exception);
+		void onExpressionTypesLoaded(ExpressionTypeEntities entities);
+		void onExpressionTypesLoadedError(Throwable exception);
 	}
 	
 	private static final String BASE_URL = "/tcrdws/";
@@ -30,23 +36,27 @@ public class TCRDInfoLoader{
 			request = requestBuilder.sendRequest(null, new RequestCallback() {
 				@Override
 				public void onResponseReceived(Request request, Response response) {
-					if(response.getStatusCode() == Response.SC_OK)
-						GWT.log(response.getText());
-						//handler.onExpressionTypesLoaded(getList(response.getText(), handler));
+					if(response.getStatusCode() == Response.SC_OK) {
+						JSONValue val = JSONParser.parseStrict(response.getText());
+						JSONObject obj = new JSONObject();
+						obj.put("expressionTypeEntity", val);
+						try {
+							ExpressionTypeEntities entities = ExpressionTypeFactory.getExpressionTypeEntities(ExpressionTypeEntities.class, obj.toString());
+							handler.onExpressionTypesLoaded(entities);
+						} catch (Exception e) {
+							handler.onExpressionTypesLoadedError(e);
+						}
+					}
 				}
 				
 				@Override
 				public void onError(Request request, Throwable exception) {
-					handler.onTCRDInfoError(new Exception(exception.getMessage()));
+					handler.onExpressionTypesLoadedError(new Exception(exception.getMessage()));
 				}
 			});
 		} catch(RequestException ex) {
-			handler.onTCRDInfoError(ex);
+			handler.onExpressionTypesLoadedError(ex);
 		}
 	}
 	
-	private List<String> getList(String text, Handler handler) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

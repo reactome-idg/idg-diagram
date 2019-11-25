@@ -2,6 +2,8 @@ package org.reactome.web.fi.tools.overlay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ClientBundle;
@@ -9,19 +11,31 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
+import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
+import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntity;
 
-public class DataOverlay  extends FlowPanel implements ClickHandler{
+/**
+ * 
+ * @author brunsont
+ *
+ */
+public class DataOverlay  extends FlowPanel implements ChangeHandler{
 
-	private List<String> expressionTypes;
+	private Map<Integer, String> selectorMap;
+	private ExpressionTypeEntities expressionTypes;
 	private FlowPanel selectionPanel;
 	private ListBox eTypeSelector;
+	private ListBox tissueSelector;
 	
 	public DataOverlay() {
 		this.getElement().getStyle().setMargin(5, Unit.PX);
@@ -44,6 +58,23 @@ public class DataOverlay  extends FlowPanel implements ClickHandler{
 		eTypeSelector.setMultipleSelect(false);
 		this.add(selectionPanel);
 		
+		
+		FlowPanel tissueSelectionPanel = new FlowPanel();
+		tissueSelectionPanel.add(new Label("Select Tissues:"));
+		tissueSelector = new ListBox();
+		tissueSelector.setVisibleItemCount(10);
+		tissueSelector.addItem("test 0");
+		tissueSelector.addItem("test 1");
+		tissueSelector.addItem("test 2");
+		tissueSelector.addItem("test 3");
+		tissueSelector.setMultipleSelect(true);
+		tissueSelector.setItemSelected(0, true);
+		tissueSelector.setItemSelected(1, true);
+
+		tissueSelectionPanel.add(tissueSelector);
+		tissueSelectionPanel.add(new Label("Select a Maximum of 12 tissues"));
+		this.add(tissueSelectionPanel);
+		
 		getExpressionTypes();
 		
 	}
@@ -52,19 +83,32 @@ public class DataOverlay  extends FlowPanel implements ClickHandler{
 		TCRDInfoLoader.loadExpressionTypes(new TCRDInfoLoader.Handler() {
 			
 			@Override
-			public void onTCRDInfoError(Throwable exception) {
-				expressionTypes = new ArrayList<>();
+			public void onExpressionTypesLoadedError(Throwable exception) {
+				exception.printStackTrace();
 			}
 			
 			@Override
-			public void onExpressionTypesLoaded(List<String> info) {
-				expressionTypes = info;
+			public void onExpressionTypesLoaded(ExpressionTypeEntities entities) {
+				expressionTypes = entities;
+				setExpressionTypes(entities);
 			}
 		});
 	}
 
+	protected void setExpressionTypes(ExpressionTypeEntities entities) {
+		eTypeSelector.addItem("Choose an available expression type...", "-1");
+		selectorMap = new HashMap<>();
+		List<ExpressionTypeEntity> entityList = entities.getExpressionTypeEntity();
+		for(int i=0; i < entityList.size(); i++) {
+			eTypeSelector.addItem(entityList.get(i).getName());
+			selectorMap.put(i, entityList.get(i).getName());
+		}
+		eTypeSelector.addChangeHandler(this);
+		
+	}
+	
 	@Override
-	public void onClick(ClickEvent event) {
+	public void onChange(ChangeEvent event) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -95,4 +139,5 @@ public class DataOverlay  extends FlowPanel implements ClickHandler{
     	
     	String expressionMainSubmitter();
     }
+
 }
