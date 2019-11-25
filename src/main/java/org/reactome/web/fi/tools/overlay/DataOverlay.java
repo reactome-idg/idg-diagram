@@ -7,6 +7,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.TextResource;
@@ -22,9 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntity;
+import org.reactome.web.fi.events.MakeOverlayRequestEvent;
+import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.common.MultiSelectListBox;
 
 /**
@@ -34,6 +39,7 @@ import org.reactome.web.fi.common.MultiSelectListBox;
  */
 public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandler{
 
+	private EventBus eventBus;
 	private Map<Integer, String> selectorMap;
 	private ExpressionTypeEntities expressionTypes;
 	private FlowPanel selectionPanel;
@@ -43,7 +49,8 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 	private Button tissuesSelectedButton;
 	private int currentEType;
 	
-	public DataOverlay() {
+	public DataOverlay(EventBus eventBus) {
+		this.eventBus = eventBus;
 		this.getElement().getStyle().setMargin(5, Unit.PX);
 		
 		SimplePanel title = new SimplePanel();
@@ -134,14 +141,13 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 			if(currentEType == 0)
 				return;
 			else if(currentEType == 1) {
-				//TODO: fire MakeOverlayDataRequestEvent()
-				Window.alert(selectorMap.get(0));
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, selectorMap.get(currentEType)), this);
 			}
 			else if(currentEType > 1) {
 				//TODO: fire MakeOverlayDataRequestedEvent()
-				String eType = selectorMap.get(currentEType);
-				List<String> tissues = tissueSelector.getSelectedItemsText();
-				Window.alert(eType + tissues.toString());
+				String expressionPostData = selectorMap.get(currentEType) 
+						+ "\n" + String.join(",",tissueSelector.getSelectedItemsText());
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData), this);
 			}
 		}
 	}

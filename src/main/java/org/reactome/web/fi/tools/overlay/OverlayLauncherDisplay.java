@@ -19,6 +19,7 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
@@ -35,7 +36,7 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 	
 	private DeckLayoutPanel container;
 	
-	public OverlayLauncherDisplay() {
+	public OverlayLauncherDisplay(EventBus eventBus) {
 		super();
 		this.setAutoHideEnabled(true);
 		this.setModal(true);
@@ -68,7 +69,7 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
         
         this.container = new DeckLayoutPanel();
         this.container.addStyleName(RESOURCES.getCSS().container());
-        this.container.add(new DataOverlay());
+        this.container.add(new DataOverlay(eventBus));
         this.container.add(new Label("Relationship overlay!"));
         this.container.showWidget(0);
         this.container.setAnimationVertical(true);

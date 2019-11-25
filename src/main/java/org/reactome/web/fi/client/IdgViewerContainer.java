@@ -62,6 +62,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	private DataOverlay dataOverlay;
 	private boolean renderOverlays = false;
 	
+	private String lastExpressionOverlayPostInfo=null;
+	
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
 		
@@ -84,7 +86,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		fiviewButton = new IDGIconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View");
 		diagramButton = new IDGIconButton(IDGRESOURCES.diagramIcon(), IDGRESOURCES.getCSS().diagram(), "Diagram View");
 		overlayButton = new IDGIconButton(IDGRESOURCES.overlayIcon(), IDGRESOURCES.getCSS().cytoscape(), "Select An Overlay");
-		overlayLauncher = new OverlayLauncherDisplay();
+		overlayLauncher = new OverlayLauncherDisplay(eventBus);
 				
 		//adds diagramButton and fiviewButton. sets fiview button as default to show
 		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
@@ -100,7 +102,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		bind();
 		
 		OverlayDataHandler.getHandler().registerHelper(new DiscreteDataOverlayRenderer(eventBus));
-//		OverlayDataHandler.getHandler().registerHelper(new ContinuousDataOverlayRenderer(eventBus));
 		
 	}
 	
@@ -140,7 +141,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 			
 			//don't bother reloading when new content is an SVG
 			if(context.getContent().getType() != Content.Type.SVG)
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(overlayType), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(overlayType, this.lastExpressionOverlayPostInfo), this);
 		}
 	}
 
@@ -177,9 +178,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	private void requestOverlayData(MakeOverlayRequestEvent event) {
 		Set<String> identifiers = null;
 		if(dataOverlay != null)
-			if(dataOverlay.getOverlayType() == event.getDataType())
+			if(dataOverlay.getOverlayType() == event.getDataType() && this.lastExpressionOverlayPostInfo == event.getExpressionPostdata())
 				return;	
 
+		this.lastExpressionOverlayPostInfo = event.getExpressionPostdata();
 		if(activeVisualiser instanceof FIViewVisualiser)
 			identifiers = context.getContent().getIdentifierMap().keySet();
 		
@@ -193,9 +195,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		if(event.getDataType() == OverlayDataType.TARGET_DEVELOPMENT_LEVEL)
 			eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
 		else if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
-			String tissues = "Adult Adrenal,Bone marrow,Adult Colon";
-	        String etypes = "HPM Protein";
-	        postContent += "\n" + tissues + "\n" + etypes;
+	        postContent += "\n" + event.getExpressionPostdata();
 	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
 		}
 	}

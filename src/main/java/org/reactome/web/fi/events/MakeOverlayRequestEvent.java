@@ -1,5 +1,7 @@
 package org.reactome.web.fi.events;
 
+import java.util.List;
+
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
 import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.model.OverlayEntityType;
@@ -16,10 +18,12 @@ public class MakeOverlayRequestEvent extends GwtEvent<MakeOverlayRequestHandler>
 
     private OverlayDataType dataType;
     private OverlayEntityType entityType;
+    private String expressionPostdata;
     
     
-    public MakeOverlayRequestEvent(OverlayDataType dataType) {
+    public MakeOverlayRequestEvent(OverlayDataType dataType, String expressionPostData) {
     	this.dataType = dataType;
+    	this.expressionPostdata = expressionPostData;
     }
     
     public MakeOverlayRequestEvent(OverlayEntityType entityType) {
@@ -42,6 +46,10 @@ public class MakeOverlayRequestEvent extends GwtEvent<MakeOverlayRequestHandler>
 	
 	public OverlayEntityType getEntityType() {
 		return this.entityType;
+	}
+
+	public String getExpressionPostdata() {
+		return expressionPostdata;
 	}
 	
 }
