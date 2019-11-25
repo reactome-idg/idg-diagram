@@ -1,6 +1,6 @@
 package org.reactome.web.fi.data.loader;
 
-import java.util.List;
+import java.util.*;
 
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeFactory;
@@ -11,21 +11,26 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
 public class TCRDInfoLoader{
 
-	public interface Handler{
+	public interface ETypeHandler{
 		void onExpressionTypesLoaded(ExpressionTypeEntities entities);
 		void onExpressionTypesLoadedError(Throwable exception);
+	}
+	public interface TissueHandler{
+		void onTissueTypesLoaded(List<String> tissuesList);
+		void onTissueTypesLoadedError(Throwable exception);
 	}
 	
 	private static final String BASE_URL = "/tcrdws/";
 	private static Request request;
 	
-	public static void loadExpressionTypes(Handler handler) {
+	public static void loadExpressionTypes(ETypeHandler handler) {
 		if(request != null && request.isPending())
 			request.cancel();
 		
@@ -56,6 +61,40 @@ public class TCRDInfoLoader{
 			});
 		} catch(RequestException ex) {
 			handler.onExpressionTypesLoadedError(ex);
+		}
+	}
+
+	public static void loadTissueTypes(String eType, TissueHandler handler) {
+		if(request != null && request.isPending())
+			request.cancel();
+		
+		String fixedEType = eType.replaceAll(" ", "+");
+		String url = BASE_URL + "tissues/" + fixedEType;
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
+		requestBuilder.setHeader("Accept", "application/json");
+		try {
+			request = requestBuilder.sendRequest(null, new RequestCallback() {
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					List<String> tissueList = new ArrayList<>();
+					if(response.getStatusCode() == Response.SC_OK) {
+						JSONArray array = JSONParser.parseStrict(response.getText()).isArray();
+						if(array != null) {
+							for(int i=0; i<array.size(); i++) {
+								tissueList.add(array.get(i).isString().stringValue());
+							}
+						}
+					}
+					handler.onTissueTypesLoaded(tissueList);
+				}
+				@Override
+				public void onError(Request request, Throwable exception) {
+					handler.onTissueTypesLoadedError(new Exception(exception.getMessage()));	
+				}
+				
+			});
+		} catch(RequestException ex) {
+			handler.onTissueTypesLoadedError(ex);
 		}
 	}
 	

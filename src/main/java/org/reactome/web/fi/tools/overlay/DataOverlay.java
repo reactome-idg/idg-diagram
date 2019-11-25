@@ -9,6 +9,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.TextResource;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -29,13 +31,14 @@ import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntity;
  * @author brunsont
  *
  */
-public class DataOverlay  extends FlowPanel implements ChangeHandler{
+public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandler{
 
 	private Map<Integer, String> selectorMap;
 	private ExpressionTypeEntities expressionTypes;
 	private FlowPanel selectionPanel;
 	private ListBox eTypeSelector;
 	private ListBox tissueSelector;
+	private Button eTypeButton;
 	
 	public DataOverlay() {
 		this.getElement().getStyle().setMargin(5, Unit.PX);
@@ -56,12 +59,15 @@ public class DataOverlay  extends FlowPanel implements ChangeHandler{
 		selectionPanel.add(new InlineLabel("Select expression type:"));
 		selectionPanel.add(eTypeSelector = new ListBox());
 		eTypeSelector.setMultipleSelect(false);
+		eTypeButton = new Button("Get Tissues", this);
+		selectionPanel.add(eTypeButton);
 		this.add(selectionPanel);
 		
 		
 		FlowPanel tissueSelectionPanel = new FlowPanel();
 		tissueSelectionPanel.add(new Label("Select Tissues:"));
 		tissueSelector = new ListBox();
+		tissueSelector.addStyleName(RESOURCES.getCSS().tissueSelector());
 		tissueSelector.setVisibleItemCount(10);
 		tissueSelector.setMultipleSelect(true);
 		tissueSelectionPanel.add(tissueSelector);
@@ -72,8 +78,39 @@ public class DataOverlay  extends FlowPanel implements ChangeHandler{
 		
 	}
 
+	protected void setExpressionTypes(ExpressionTypeEntities entities) {
+		eTypeSelector.addItem("Choose an available expression type...", "-1");
+		selectorMap = new HashMap<>();
+		List<ExpressionTypeEntity> entityList = entities.getExpressionTypeEntity();
+		for(int i=0; i < entityList.size(); i++) {
+			eTypeSelector.addItem(entityList.get(i).getName());
+			selectorMap.put(i, entityList.get(i).getName());
+		}		
+	}
+	
+	protected void setTissueListBoxTypes(List<String> tissueList) {
+		for(int i=0; i<tissueSelector.getItemCount(); i++ )
+			tissueSelector.removeItem(i);
+		for(String tissue : tissueList)
+			tissueSelector.addItem(tissue);
+		
+	}
+	
+	@Override
+	public void onChange(ChangeEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void onClick(ClickEvent event) {
+		if(event.getSource() == eTypeButton && eTypeSelector.getSelectedIndex() != 0) {
+			getTissueTypes(eTypeSelector.getSelectedItemText());
+		}
+	}
+	
 	private void getExpressionTypes() {
-		TCRDInfoLoader.loadExpressionTypes(new TCRDInfoLoader.Handler() {
+		TCRDInfoLoader.loadExpressionTypes(new TCRDInfoLoader.ETypeHandler() {
 			
 			@Override
 			public void onExpressionTypesLoadedError(Throwable exception) {
@@ -87,25 +124,20 @@ public class DataOverlay  extends FlowPanel implements ChangeHandler{
 			}
 		});
 	}
+	
+	private void getTissueTypes(String eType) {
+		TCRDInfoLoader.loadTissueTypes(eType, new TCRDInfoLoader.TissueHandler() {
+			@Override
+			public void onTissueTypesLoaded(List<String> tissueList) {
+				setTissueListBoxTypes(tissueList);
+			}
+			@Override
+			public void onTissueTypesLoadedError(Throwable exception) {
+				exception.printStackTrace();
+			}
+		});
+	}
 
-	protected void setExpressionTypes(ExpressionTypeEntities entities) {
-		eTypeSelector.addItem("Choose an available expression type...", "-1");
-		selectorMap = new HashMap<>();
-		List<ExpressionTypeEntity> entityList = entities.getExpressionTypeEntity();
-		for(int i=0; i < entityList.size(); i++) {
-			eTypeSelector.addItem(entityList.get(i).getName());
-			selectorMap.put(i, entityList.get(i).getName());
-		}
-		eTypeSelector.addChangeHandler(this);
-		
-	}
-	
-	@Override
-	public void onChange(ChangeEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	public static Resources RESOURCES;
     static {
         RESOURCES = GWT.create(Resources.class);
@@ -131,6 +163,9 @@ public class DataOverlay  extends FlowPanel implements ChangeHandler{
     	String expressionSubmission();
     	
     	String expressionMainSubmitter();
+    	
+    	String tissueSelector();
+    	
     }
 
 }

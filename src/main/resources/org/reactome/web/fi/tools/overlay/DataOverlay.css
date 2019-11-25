@@ -52,7 +52,7 @@
     float: right;
     font-size: 13px;
     font-weight: bold;
-    padding: 10px 25px;
+    padding: 5px 10px;
     outline: none;
 }
 
@@ -87,4 +87,8 @@
 
 .expressionSubmission select option {
 	color: black;
+}
+
+.tissueSelector{
+	width: 400px;
 }
