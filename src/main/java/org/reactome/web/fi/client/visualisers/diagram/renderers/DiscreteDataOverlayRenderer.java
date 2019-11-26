@@ -184,6 +184,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 		this.offset = null;
 		this.rendererManager = null;
 		this.originalOverlay = null;
+		this.dataOverlay = null;
 	}
 
 }

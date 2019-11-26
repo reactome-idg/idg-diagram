@@ -317,8 +317,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		renderOverlays = false;
 		this.dataOverlay = null;
 		context.setDialogMap(new HashMap<>());
-		if(event.getSource() instanceof OverlayColourLegend)
-			overlayLauncher.hide();
 		if(activeVisualiser instanceof DiagramVisualiser)
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualiser)
