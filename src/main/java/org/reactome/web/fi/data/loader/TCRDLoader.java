@@ -66,7 +66,6 @@ public class TCRDLoader implements RequestCallback{
 			DataOverlayEntityMediator mediator = new DataOverlayEntityMediator();
 			DataOverlay dataOverlay;
 			try {
-				GWT.log(response.getText());
 				JSONValue val = JSONParser.parseStrict(response.getText());
 				JSONObject obj = new JSONObject();
 				obj.put("dataType", new JSONString(type.getName()));

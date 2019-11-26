@@ -20,7 +20,6 @@ public class DataOverlayEntityMediator {
 
 	public DataOverlay transformData(String responseText) {
 		OverlayEntities entities = null;
-		GWT.log(responseText);
 		try {
 			entities = OverlayEntityDataFactory.getTargetLevelEntity(OverlayEntities.class, responseText);
 		} catch (Exception e) {
@@ -73,7 +72,7 @@ public class DataOverlayEntityMediator {
 			return getNumberValueResult(result, entities);
 		else if(eType == "Cell Surface Protein Atlas" || eType == "JensenLab Knowledge UniProtKB-RC" ||eType == "JensenLab Text Mining" ||eType == "UniProt Tissue")
 			return getBooleanValueResult(result, entities);
-		else if(eType == "Consensus")
+		else if(eType == "Consensus" || entities.getExpressionEntity().get(0).getQualValue()!=null)
 			return getQualValueResult(result, entities);
 			
 		return result;
@@ -83,19 +82,19 @@ public class DataOverlayEntityMediator {
 		result.setDiscrete(true);
 		
 		List<String>discreteTypes = new ArrayList<>();
-		discreteTypes.add("Not detected");
-		discreteTypes.add("Low");
-		discreteTypes.add("Medium");
-		discreteTypes.add("High");
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
 			if(rawEntity.getQualValue() != null) {
+				if(!discreteTypes.contains(rawEntity.getQualValue()))
+					discreteTypes.add(rawEntity.getQualValue());
+				
 				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(), 
 						new Double(discreteTypes.indexOf(rawEntity.getQualValue())), rawEntity.getEtype(), rawEntity.getTissue()));
 				identifierValueMap.put(rawEntity.getUniprot(), new Double(discreteTypes.indexOf(rawEntity.getQualValue())));
 			}
 		}
 		result.setIdentifierValueMap(identifierValueMap);
+		result.setLegendTypes(discreteTypes);
 		result.setMaxValue(new Double(discreteTypes.size()));
 		result.setMinValue(new Double(0));
 		return result;
@@ -117,6 +116,7 @@ public class DataOverlayEntityMediator {
 			}
 		}
 		result.setIdentifierValueMap(identifierValueMap);
+		
 		result.setMinValue(new Double(0));
 		result.setMaxValue(new Double(0));
 		

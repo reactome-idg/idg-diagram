@@ -141,12 +141,11 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 			if(currentEType == 0)
 				return;
 			else if(currentEType == 1) {
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, selectorMap.get(0) + "\n" + " "), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, "\n" + selectorMap.get(0)), this);
 			}
 			else if(currentEType > 1) {
-				//TODO: fire MakeOverlayDataRequestedEvent()
-				String expressionPostData = selectorMap.get(currentEType) 
-						+ "\n" + String.join(",",tissueSelector.getSelectedItemsText());
+				String expressionPostData = String.join(",",tissueSelector.getSelectedItemsText()) 
+						+ "\n" + selectorMap.get(currentEType-1);
 				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData), this);
 			}
 		}

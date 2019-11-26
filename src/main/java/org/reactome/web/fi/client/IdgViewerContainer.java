@@ -196,7 +196,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 			eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
 		else if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
 	        postContent += "\n" + event.getExpressionPostdata();
-	        GWT.log(postContent);
 	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
 		}
 	}
@@ -302,6 +301,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
+		this.overlayLauncher.hide();
 		this.renderOverlays = true;
 		this.dataOverlay = event.getDataOverlay();
 		context.setDialogMap(new HashMap<>());
