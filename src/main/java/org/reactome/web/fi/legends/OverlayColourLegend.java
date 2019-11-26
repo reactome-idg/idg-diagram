@@ -29,15 +29,16 @@ import com.google.gwt.user.client.ui.Label;
 public class OverlayColourLegend extends LegendPanel implements
 OverlayDataLoadedHandler, OverlayDataResetHandler{
 	
-	private FlowPanel colourMapPanel;
+	private FlowPanel innerPanel;
 
 	public OverlayColourLegend(EventBus eventBus) {
 		super(eventBus);
 		
 		LegendPanelCSS css = RESOURCES.getCSS();
 		
-		this.colourMapPanel = new FlowPanel();
-		this.add(colourMapPanel);
+		this.innerPanel = new FlowPanel();
+		this.innerPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
+		this.add(innerPanel);
 		this.getElement().getStyle().setMarginBottom(10, Unit.PX);
 				
 		initHandlers();
@@ -56,15 +57,18 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.setVisible(false);
+		innerPanel.clear();
+		if(event.getDataOverlay().isDiscrete())		
+			showDiscretePanel(event);
+		else if(!event.getDataOverlay().isDiscrete())
+			showContinuousPanel(event);
 		
-		if(colourMapPanel.getWidgetCount()>0)
-			for(int i=0; i<colourMapPanel.getWidgetCount(); i++)
-				colourMapPanel.remove(i);
-		
-		//stops loading of new colours during continuous value overlay rendering
-		if(!event.getDataOverlay().isDiscrete())
-			return;
-		
+		this.setVisible(true);
+
+	}
+
+	private void showDiscretePanel(OverlayDataLoadedEvent event) {
+		FlowPanel colourMapPanel = new FlowPanel();
 		colourMapPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
 		Map<Double, String> colourMap = OverlayColours.get().getColours();
 		event.getDataOverlay().getLegendTypes().forEach((i) ->{
@@ -83,16 +87,17 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 			
 			colourMapPanel.add(lbl);
 		}
+		innerPanel.add(colourMapPanel);
+	}
+	
+	private void showContinuousPanel(OverlayDataLoadedEvent event) {
+		// TODO Auto-generated method stub
 		
-		this.setVisible(true);
-
 	}
 
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
-		this.remove(colourMapPanel);
-		colourMapPanel = new FlowPanel();
-		this.add(colourMapPanel);
+		innerPanel.clear();
 		this.setVisible(false);
 	}
 	

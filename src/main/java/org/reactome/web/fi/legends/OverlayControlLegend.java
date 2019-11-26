@@ -63,8 +63,8 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 		innerPanel.clear();
 		if(event.getDataOverlay().isDiscrete())
 			showDiscretePanel(event);
-		if(!event.getDataOverlay().isDiscrete())
-			showContinuousPanel();
+		else if(!event.getDataOverlay().isDiscrete())
+			showContinuousPanel(event);
 		this.setVisible(true);
 	}
 	
@@ -80,7 +80,7 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 		innerPanel.add(discretePanel);
 	}
 	
-	private void showContinuousPanel() {
+	private void showContinuousPanel(OverlayDataLoadedEvent event) {
 		// TODO Auto-generated method stub
 		
 	}
