@@ -60,6 +60,7 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.setVisible(false);
+		innerPanel.clear();
 		if(event.getDataOverlay().isDiscrete())
 			showDiscretePanel(event);
 		if(!event.getDataOverlay().isDiscrete())

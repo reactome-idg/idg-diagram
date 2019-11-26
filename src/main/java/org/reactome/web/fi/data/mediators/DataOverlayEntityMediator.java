@@ -110,10 +110,6 @@ public class DataOverlayEntityMediator {
 	private DataOverlay getBooleanValueResult(DataOverlay result, OverlayEntities entities) {
 		result.setDiscrete(true);
 		
-		List<String> hit = new ArrayList<>();
-		hit.add("Hit");
-		result.setLegendTypes(hit);
-		
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
 			if(rawEntity.getBooleanValue() != null) {
@@ -122,6 +118,13 @@ public class DataOverlayEntityMediator {
 				identifierValueMap.put(rawEntity.getUniprot(), new Double(0));
 			}
 		}
+		
+		List<String> hit = new ArrayList<>();
+		if(identifierValueMap.size() > 0) {
+			hit.add("Hit");
+			result.setLegendTypes(hit);
+		}
+			
 		result.setIdentifierValueMap(identifierValueMap);
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setMinValue(new Double(0));
