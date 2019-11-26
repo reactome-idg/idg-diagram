@@ -18,7 +18,15 @@ public class MultiSelectListBox extends ListBox{
 			if(isItemSelected(i))
 				result.add(this.getItemText(i));
 		}
-		
+		return result;
+	}
+	
+	public List<Integer> getSelectedItemsIndexs(){
+		List<Integer> result = new ArrayList<>();
+		for(int i=0; i<getItemCount(); i++) {
+			if(isItemSelected(i))
+				result.add(i);
+		}
 		return result;
 	}
 	
