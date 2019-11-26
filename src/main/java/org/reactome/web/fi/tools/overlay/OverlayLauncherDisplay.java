@@ -26,7 +26,11 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 
-
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 	ClickHandler, CloseHandler<PopupPanel>{
 
