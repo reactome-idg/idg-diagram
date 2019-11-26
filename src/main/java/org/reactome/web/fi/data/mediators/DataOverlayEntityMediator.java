@@ -94,9 +94,16 @@ public class DataOverlayEntityMediator {
 			}
 		}
 		result.setIdentifierValueMap(identifierValueMap);
+		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setLegendTypes(discreteTypes);
 		result.setMaxValue(new Double(discreteTypes.size()));
 		result.setMinValue(new Double(0));
+		
+		//set etype for target dev level, which has no associated eType
+		if(result.getEType() == null) {
+			result.setEType("Target Development Level");
+		}
+		
 		return result;
 	}
 
@@ -116,7 +123,7 @@ public class DataOverlayEntityMediator {
 			}
 		}
 		result.setIdentifierValueMap(identifierValueMap);
-		
+		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setMinValue(new Double(0));
 		result.setMaxValue(new Double(0));
 		
@@ -145,6 +152,7 @@ public class DataOverlayEntityMediator {
 					minValue = entity.getValue();
 			}
 		}
+		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setIdentifierValueMap(identifierValueMap);
 		result.setMinValue(minValue);
 		result.setMaxValue(maxValue);

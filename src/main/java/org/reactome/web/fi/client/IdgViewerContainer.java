@@ -31,10 +31,10 @@ import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
-import org.reactome.web.fi.legends.OverlayLegend;
+import org.reactome.web.fi.legends.OverlayColourLegend;
+import org.reactome.web.fi.legends.OverlayControlLegend;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.OverlayDataType;
-import org.reactome.web.fi.overlay.OverlayDialogPanel;
 import org.reactome.web.fi.tools.overlay.OverlayLauncherDisplay;
 
 import com.google.gwt.core.client.GWT;
@@ -42,7 +42,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.Window;
 
 /**
  * 
@@ -56,7 +55,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 	private IDGIconButton diagramButton;
 	private FIViewVisualiser fIViewVisualiser;
 	private IDGIconButton overlayButton;
-	private OverlayLegend overlayLegend;
+	private OverlayColourLegend overlayColourLegend;
+	private OverlayControlLegend overlayControlLegend;
 	private OverlayLauncherDisplay overlayLauncher;
 	
 	private DataOverlay dataOverlay;
@@ -79,8 +79,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 
 	@Override
 	protected void initialise() {		
-		overlayLegend = new OverlayLegend(eventBus);
-		super.rightContainerPanel.add(overlayLegend);
+		overlayColourLegend = new OverlayColourLegend(eventBus);
+		super.rightContainerPanel.add(overlayColourLegend);
 		super.initialise();
 		
 		fiviewButton = new IDGIconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View");
@@ -95,6 +95,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 				.getWidgetIndex(diagramButton)).setVisible(false);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
 		super.leftTopLauncher.getMainControlPanel().add(overlayButton);
+		overlayControlLegend = new OverlayControlLegend(eventBus);
+		super.bottomContainerPanel.add(overlayControlLegend);
 		this.add(overlayLauncher);
 		
 		
@@ -192,9 +194,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		
 		String postContent = getPostData(identifiers);
 		
-		if(event.getDataType() == OverlayDataType.TARGET_DEVELOPMENT_LEVEL)
-			eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
-		else if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
+		if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
 	        postContent += "\n" + event.getExpressionPostdata();
 	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
 		}
@@ -317,7 +317,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		renderOverlays = false;
 		this.dataOverlay = null;
 		context.setDialogMap(new HashMap<>());
-		if(event.getSource() instanceof OverlayLegend)
+		if(event.getSource() instanceof OverlayColourLegend)
 			overlayLauncher.hide();
 		if(activeVisualiser instanceof DiagramVisualiser)
 			activeVisualiser.loadAnalysis();
