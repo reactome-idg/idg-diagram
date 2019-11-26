@@ -76,6 +76,14 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 			colourMapPanel.add(lbl);
 		});
 		
+		if(colourMapPanel.getWidgetCount() == 0) {
+			Label lbl = new Label("No hits in this diagram.");
+			lbl.getElement().getStyle().setPadding(3, Unit.PX);
+			lbl.getElement().getStyle().setMargin(0, Unit.PX);
+			
+			colourMapPanel.add(lbl);
+		}
+		
 		this.setVisible(true);
 
 	}
