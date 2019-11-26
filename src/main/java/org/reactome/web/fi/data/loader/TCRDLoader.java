@@ -1,6 +1,5 @@
 package org.reactome.web.fi.data.loader;
 
-
 import org.reactome.web.fi.data.mediators.DataOverlayEntityMediator;
 import org.reactome.web.fi.data.overlay.model.OverlayEntities;
 import org.reactome.web.fi.data.overlay.model.OverlayEntityDataFactory;
@@ -14,7 +13,11 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
-
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class TCRDLoader implements RequestCallback{
 
 	public interface Handler{
