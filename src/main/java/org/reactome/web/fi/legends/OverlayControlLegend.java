@@ -68,10 +68,10 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 			return;
 		}
 		
-		if(event.getDataOverlay().isDiscrete())
-			showDiscretePanel(event);
-		else if(!event.getDataOverlay().isDiscrete())
-			showContinuousPanel(event);
+		if(event.getDataOverlay().getTissueTypes().size() <= 1)
+			showSingleTissuePanel(event);
+		else if(event.getDataOverlay().getTissueTypes().size() > 1)
+			showMultipleTissuePanel(event);
 		this.setVisible(true);
 	}
 	
@@ -81,13 +81,13 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 		this.setVisible(false);
 	}
 	
-	private void showDiscretePanel(OverlayDataLoadedEvent event) {
+	private void showSingleTissuePanel(OverlayDataLoadedEvent event) {
 		FlowPanel discretePanel = new FlowPanel();
 		discretePanel.add(new Label(event.getDataOverlay().getEType()));
 		innerPanel.add(discretePanel);
 	}
 	
-	private void showContinuousPanel(OverlayDataLoadedEvent event) {
+	private void showMultipleTissuePanel(OverlayDataLoadedEvent event) {
 		ContinuousControlPanel cp = new ContinuousControlPanel(eventBus, event.getDataOverlay());
 		innerPanel.add(cp);
 	}
