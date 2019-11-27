@@ -63,8 +63,9 @@ public class DataOverlayEntityMediator {
 
 	private DataOverlay transformExpressionEntities(OverlayEntities entities) {
 		DataOverlay result = new DataOverlay();
+		if(entities.getExpressionEntity().size() == 0)
+			return result;
 		String eType = entities.getExpressionEntity().get(0).getEtype();
-		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setOverlayType(OverlayDataType.lookupType(entities.getDataType()));
 		
 		//TODO: Make the if statements not hard coded

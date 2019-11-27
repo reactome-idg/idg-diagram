@@ -58,6 +58,13 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.setVisible(false);
 		innerPanel.clear();
+		
+		if(event.getDataOverlay().getDataOverlayEntities() == null) {
+			showNoResultsMessage();
+			this.setVisible(true);
+			return;
+		}
+		
 		if(event.getDataOverlay().isDiscrete())		
 			showDiscretePanel(event);
 		else if(!event.getDataOverlay().isDiscrete())
@@ -80,21 +87,25 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 			colourMapPanel.add(lbl);
 		});
 		
-		if(colourMapPanel.getWidgetCount() == 0) {
-			Label lbl = new Label("No hits in this diagram.");
-			lbl.getElement().getStyle().setPadding(3, Unit.PX);
-			lbl.getElement().getStyle().setMargin(0, Unit.PX);
-			
-			colourMapPanel.add(lbl);
-		}
-		innerPanel.add(colourMapPanel);
+		if(colourMapPanel.getWidgetCount() == 0) 
+			showNoResultsMessage();
+		else
+			innerPanel.add(colourMapPanel);
 	}
 	
 	private void showContinuousPanel(OverlayDataLoadedEvent event) {
-		// TODO Auto-generated method stub
-		
+	
 	}
 
+	private void showNoResultsMessage() {
+		FlowPanel result = new FlowPanel();
+		Label lbl = new Label("No hits in this diagram.");
+		lbl.getElement().getStyle().setPadding(3, Unit.PX);
+		lbl.getElement().getStyle().setMargin(0, Unit.PX);
+		result.add(lbl);
+		innerPanel.add(result);
+	}
+	
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		innerPanel.clear();
