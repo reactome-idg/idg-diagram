@@ -61,6 +61,13 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.setVisible(false);
 		innerPanel.clear();
+		
+		if(event.getDataOverlay().getDataOverlayEntities() == null) {
+			showNoResultsPanel();
+			this.setVisible(true);
+			return;
+		}
+		
 		if(event.getDataOverlay().isDiscrete())
 			showDiscretePanel(event);
 		else if(!event.getDataOverlay().isDiscrete())
@@ -83,6 +90,12 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 	private void showContinuousPanel(OverlayDataLoadedEvent event) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void showNoResultsPanel() {
+		FlowPanel noResults = new FlowPanel();
+		noResults.add(new Label("No Results. Please try different options!"));
+		innerPanel.add(noResults);
 	}
 	
 	//Below here is for styling
