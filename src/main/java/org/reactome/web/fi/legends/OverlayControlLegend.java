@@ -88,7 +88,7 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 	}
 	
 	private void showContinuousPanel(OverlayDataLoadedEvent event) {
-		ContinuousControlPanel cp = new ContinuousControlPanel(eventBus);
+		ContinuousControlPanel cp = new ContinuousControlPanel(eventBus, event.getDataOverlay());
 		innerPanel.add(cp);
 	}
 	

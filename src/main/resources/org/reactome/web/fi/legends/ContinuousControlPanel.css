@@ -5,7 +5,7 @@
 	border: 0;
 	cursor: pointer;
 	float:left;
-	margin: 2px;
+	margin:0 0 5px 2px;
 }
 
 @sprite .forward:hover{
@@ -30,7 +30,7 @@
 	border: 0;
 	cursor: pointer;
 	float: left;
-	margin: 2px;
+	margin:0 0 5px 2px;
 }
 
 @sprite .back:hover{

@@ -83,11 +83,14 @@ public class DataOverlayEntityMediator {
 		result.setDiscrete(true);
 		
 		List<String>discreteTypes = new ArrayList<>();
+		List<String>tissues = new ArrayList<>();
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
 			if(rawEntity.getQualValue() != null) {
 				if(!discreteTypes.contains(rawEntity.getQualValue()))
 					discreteTypes.add(rawEntity.getQualValue());
+				if(!tissues.contains(rawEntity.getTissue()))
+					tissues.add(rawEntity.getTissue());
 				
 				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(), 
 						new Double(discreteTypes.indexOf(rawEntity.getQualValue())), rawEntity.getEtype(), rawEntity.getTissue()));
@@ -96,6 +99,7 @@ public class DataOverlayEntityMediator {
 		}
 		result.setIdentifierValueMap(identifierValueMap);
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
+		result.setTissueTypes(tissues);
 		result.setLegendTypes(discreteTypes);
 		result.setMaxValue(new Double(discreteTypes.size()));
 		result.setMinValue(new Double(0));
@@ -112,7 +116,11 @@ public class DataOverlayEntityMediator {
 		result.setDiscrete(true);
 		
 		Map<String, Double> identifierValueMap = new HashMap<>();
+		List<String> tissues = new ArrayList<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
+			if(!tissues.contains(rawEntity.getTissue()))
+				tissues.add(rawEntity.getTissue());
+			
 			if(rawEntity.getBooleanValue() != null) {
 				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
 						new Double(0), rawEntity.getEtype(), rawEntity.getTissue()));
@@ -127,6 +135,7 @@ public class DataOverlayEntityMediator {
 		}
 			
 		result.setIdentifierValueMap(identifierValueMap);
+		result.setTissueTypes(tissues);
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setMinValue(new Double(0));
 		result.setMaxValue(new Double(0));
@@ -157,6 +166,7 @@ public class DataOverlayEntityMediator {
 			}
 		}
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
+		result.setTissueTypes(types);
 		result.setIdentifierValueMap(identifierValueMap);
 		result.setMinValue(minValue);
 		result.setMaxValue(maxValue);
