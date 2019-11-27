@@ -1,6 +1,9 @@
 package org.reactome.web.fi.client.visualisers.diagram.renderers;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,11 +24,14 @@ import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.OverlayRenderer;
+import org.reactome.web.fi.events.OverlayDataResetEvent;
+import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.model.DataOverlayEntity;
 
 import com.google.gwt.event.shared.EventBus;
 
-public class ContinuousDataOverlayRenderer implements OverlayRenderer{
+public class ContinuousDataOverlayRenderer implements OverlayRenderer, OverlayDataResetHandler{
 
 	private EventBus eventBus;
 	private AdvancedContext2d ctx;
@@ -55,6 +61,15 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer{
         this.gradient = AnalysisColours.get().expressionGradient;
         this.originalOverlay = overlay;
         this.dataOverlay = dataOverlay;
+        
+        if(dataOverlay.getTissueTypes() != null) {
+        	Map<String, Double> identifierValueMap = new HashMap<>();
+        	for(DataOverlayEntity entity : dataOverlay.getDataOverlayEntities()) {
+        		if(entity.getTissue() == dataOverlay.getTissueTypes().get(dataOverlay.getColumn()))
+        			identifierValueMap.put(entity.getIdentifier(), entity.getValue());
+        	}
+            this.dataOverlay.setIdentifierValueMap(identifierValueMap);
+        }
 
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
         renderContinuousProteinData(itemsDistribution.getItems("Protein"));
@@ -85,9 +100,47 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer{
 	        }
 	}
 
-	private void renderContinuousComplexData(MapSet<RenderType, DiagramObject> items) {
-		// TODO Auto-generated method stub
+	private void renderContinuousComplexData(MapSet<RenderType, DiagramObject> target) {
+		if(target == null)
+			return;
 		
+		Renderer renderer = rendererManager.getRenderer("Complex");
+		OverlayContext overlay = this.originalOverlay;
+		Set<DiagramObject> objectSet = target.values();
+		for(DiagramObject item : objectSet) {
+			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();
+			if(entity != null) {
+				Set<GraphPhysicalEntity> obj = entity.getParticipants();
+				for(GraphPhysicalEntity participant : obj) {
+					if(participant instanceof GraphEntityWithAccessionedSequence || participant instanceof GraphProteinDrug) {
+						participant.setIsHit(participant.getIdentifier(), 
+								getDataOverlayValue(participant.getIdentifier()));
+					}
+				}
+				if(entity.getParticipantsExpression(0).size() > 0)
+					renderer.drawExpression(ctx, overlay, item, 0, dataOverlay.getMinValue(), dataOverlay.getMaxValue(),factor, offset);
+			}
+		}
+	}
+	
+	private List<Double> getDataOverlayValue(String identifier){
+		List<Double> result = new ArrayList<>();
+		int index = identifier.length();
+		if(identifier.contains("-"))
+			index = identifier.indexOf("0");
+		result.add(dataOverlay.getIdentifierValueMap().get(identifier.substring(0, index)));
+		return result;
+	}
+	
+	@Override
+	public void onOverlayDataReset(OverlayDataResetEvent event) {
+		this.gradient = null;
+		this.ctx = null;
+		this.factor = null;
+		this.offset = null;
+		this.rendererManager = null;
+		this.originalOverlay = null;
+		this.dataOverlay = null;
 	}
 
 }
