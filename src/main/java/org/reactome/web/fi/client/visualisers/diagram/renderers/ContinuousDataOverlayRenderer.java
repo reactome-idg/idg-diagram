@@ -67,7 +67,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         this.originalOverlay = overlay;
         this.dataOverlay = dataOverlay;
         
-        if(dataOverlay.getTissueTypes() != null) {
+        if(dataOverlay.getTissueTypes() != null && dataOverlay.getTissueTypes().size()>1) {
         	Map<String, Double> identifierValueMap = new HashMap<>();
         	for(DataOverlayEntity entity : dataOverlay.getDataOverlayEntities()) {
         		if(entity.getTissue() == dataOverlay.getTissueTypes().get(dataOverlay.getColumn()))

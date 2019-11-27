@@ -80,7 +80,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
         this.dataOverlay = dataOverlay;
         
         //reset map to just entities in a specific tissue if tissueTypes isnt null
-        if(dataOverlay.getTissueTypes() != null) {
+        if(dataOverlay.getTissueTypes() != null && dataOverlay.getTissueTypes().size()>1) {
         	Map<String, Double> identifierValueMap = new HashMap<>();
         	for(DataOverlayEntity entity : dataOverlay.getDataOverlayEntities()) {
         		if(entity.getTissue() == dataOverlay.getTissueTypes().get(dataOverlay.getColumn()))
