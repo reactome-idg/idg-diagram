@@ -104,6 +104,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		bind();
 		
 		OverlayDataHandler.getHandler().registerHelper(new DiscreteDataOverlayRenderer(eventBus));
+		OverlayDataHandler.getHandler().registerHelper(new ContinuousDataOverlayRenderer(eventBus));
 		
 	}
 	

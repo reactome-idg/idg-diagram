@@ -45,7 +45,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer{
 			RendererManager rendererManager, DataOverlay dataOverlay, OverlayContext overlay) {
 		
 		//this render is for continuous data
-		if(dataOverlay.isDiscrete())
+		if(dataOverlay.isDiscrete() || dataOverlay.getDataOverlayEntities() == null)
 			return;
 		
 		this.ctx = ctx;
@@ -61,7 +61,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer{
         renderContinuousComplexData(itemsDistribution.getItems("Complex"));
 	}
 
-	private void renderContinuousComplexData(MapSet<RenderType, DiagramObject> target) {
+	private void renderContinuousProteinData(MapSet<RenderType, DiagramObject> target) {
 	//return if there are no proteins in the visible DiagramObject set
 			if(target == null)
 				return;
@@ -85,7 +85,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer{
 	        }
 	}
 
-	private void renderContinuousProteinData(MapSet<RenderType, DiagramObject> items) {
+	private void renderContinuousComplexData(MapSet<RenderType, DiagramObject> items) {
 		// TODO Auto-generated method stub
 		
 	}

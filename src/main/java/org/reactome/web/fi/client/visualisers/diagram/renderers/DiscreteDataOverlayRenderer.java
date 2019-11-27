@@ -66,7 +66,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 						 OverlayContext overlay) {
 		
 		//this renderer is for discrete data
-		if(!dataOverlay.isDiscrete())
+		if(!dataOverlay.isDiscrete() || dataOverlay.getDataOverlayEntities() == null)
 			return;
 		
 		this.ctx = ctx;
