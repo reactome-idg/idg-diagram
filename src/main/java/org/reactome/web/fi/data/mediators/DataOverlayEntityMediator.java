@@ -89,7 +89,8 @@ public class DataOverlayEntityMediator {
 			if(rawEntity.getQualValue() != null) {
 				if(!discreteTypes.contains(rawEntity.getQualValue()))
 					discreteTypes.add(rawEntity.getQualValue());
-				if(!tissues.contains(rawEntity.getTissue()))
+				
+				if(rawEntity.getTissue() != null && !tissues.contains(rawEntity.getTissue()))
 					tissues.add(rawEntity.getTissue());
 				
 				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(), 
@@ -118,7 +119,7 @@ public class DataOverlayEntityMediator {
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		List<String> tissues = new ArrayList<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
-			if(!tissues.contains(rawEntity.getTissue()))
+			if(rawEntity.getTissue() != null && !tissues.contains(rawEntity.getTissue()))
 				tissues.add(rawEntity.getTissue());
 			
 			if(rawEntity.getBooleanValue() != null) {
@@ -152,7 +153,7 @@ public class DataOverlayEntityMediator {
 		List<String> types = new ArrayList<>();
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
-			if(!types.contains(rawEntity.getTissue()))
+			if(rawEntity.getTissue() != null && !types.contains(rawEntity.getTissue()))
 				types.add(rawEntity.getTissue());
 			DataOverlayEntity entity = null;
 			if(rawEntity.getNumberValue() != null) {
