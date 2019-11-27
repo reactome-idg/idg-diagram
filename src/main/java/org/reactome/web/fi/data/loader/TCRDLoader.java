@@ -41,7 +41,6 @@ public class TCRDLoader implements RequestCallback{
 	}
 	
 	public void load(String postData, OverlayDataType type) {
-		GWT.log(postData);
 		this.type = type;
 		cancel();
 						
