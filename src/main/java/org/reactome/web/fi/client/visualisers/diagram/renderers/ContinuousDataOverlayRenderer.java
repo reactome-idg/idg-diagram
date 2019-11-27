@@ -14,6 +14,8 @@ import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.diagram.events.RenderOtherContextDialogInfoEvent;
+import org.reactome.web.diagram.handlers.RenderOtherContextDialogInfoHandler;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.renderers.common.OverlayContext;
 import org.reactome.web.diagram.renderers.helper.ItemsDistribution;
@@ -31,7 +33,8 @@ import org.reactome.web.fi.model.DataOverlayEntity;
 
 import com.google.gwt.event.shared.EventBus;
 
-public class ContinuousDataOverlayRenderer implements OverlayRenderer, OverlayDataResetHandler{
+public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOtherContextDialogInfoHandler, 
+	OverlayDataResetHandler{
 
 	private EventBus eventBus;
 	private AdvancedContext2d ctx;
@@ -44,6 +47,8 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, OverlayDa
 	
 	public ContinuousDataOverlayRenderer(EventBus eventBus) {
 		this.eventBus = eventBus;
+		eventBus.addHandler(RenderOtherContextDialogInfoEvent.TYPE, this);
+		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
 	}
 	
 	@Override
@@ -141,6 +146,26 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, OverlayDa
 		this.rendererManager = null;
 		this.originalOverlay = null;
 		this.dataOverlay = null;
+	}
+
+	@Override
+	public void onRenderOtherContextDialogInfo(RenderOtherContextDialogInfoEvent event) {
+		if(dataOverlay == null || dataOverlay.isDiscrete() || dataOverlay.getIdentifierValueMap() == null)
+			return;
+		
+		List<GraphPhysicalEntity> data = event.getTable().getDataProvider().getList();
+		for(int i=0; i<data.size(); i++) {
+			GraphPhysicalEntity entity = data.get(i);
+			int index = entity.getIdentifier().length();
+			if(entity.getIdentifier().contains("-"))
+				index = entity.getIdentifier().indexOf("-");
+			Double overlayVal = getDataOverlayValue(entity.getIdentifier().substring(0, index)).get(0);
+			if (overlayVal == null) continue;
+			String color = gradient.getColor(overlayVal, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
+			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(
+					color);
+			//TODO: add overlay value next to the identifier
+		}
 	}
 
 }
