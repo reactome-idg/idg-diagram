@@ -6,6 +6,7 @@ import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
+import org.reactome.web.fi.model.DataOverlay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -31,6 +32,7 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 	private FlowPanel innerPanel;
 	private PwpButton backButton;
 	private PwpButton forwardButton;
+	private DataOverlay dataOverlay;
 	
 	public OverlayControlLegend(EventBus eventBus) {
 		super(eventBus);
@@ -71,7 +73,7 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.setVisible(false);
 		innerPanel.clear();
-		
+		this.dataOverlay = event.getDataOverlay();
 		if(event.getDataOverlay().getDataOverlayEntities() == null) {
 			showNoResultsPanel();
 			this.setVisible(true);
@@ -79,9 +81,9 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 		}
 		
 		if(event.getDataOverlay().getTissueTypes().size() <= 1)
-			showSingleTissuePanel(event);
+			showSingleTissuePanel();
 		else if(event.getDataOverlay().getTissueTypes().size() > 1)
-			showMultipleTissuePanel(event);
+			showMultipleTissuePanel();
 		this.setVisible(true);
 	}
 	
@@ -91,29 +93,26 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 		this.setVisible(false);
 	}
 	
-	private void showSingleTissuePanel(OverlayDataLoadedEvent event) {
-		innerPanel.clear();
+	private void showSingleTissuePanel() {
 		forwardButton.setEnabled(false);
 		backButton.setEnabled(false);
-		InlineLabel label = new InlineLabel(event.getDataOverlay().getEType());
+		InlineLabel label = new InlineLabel(dataOverlay.getEType());
 		innerPanel.add(label);
 	}
 	
-	private void showMultipleTissuePanel(OverlayDataLoadedEvent event) {
-		innerPanel.clear();
+	private void showMultipleTissuePanel() {
 		forwardButton.setEnabled(true);
 		backButton.setEnabled(true);
 		FlowPanel infoPanel = new FlowPanel();
-		InlineLabel stepLabel = new InlineLabel((event.getDataOverlay().getColumn()+1) + "/" + event.getDataOverlay().getTissueTypes().size() + "  ");
+		InlineLabel stepLabel = new InlineLabel((dataOverlay.getColumn()+1) + "/" + dataOverlay.getTissueTypes().size() + "  ");
 		infoPanel.add(stepLabel);
-		InlineLabel typeTissueLabel  = new InlineLabel(event.getDataOverlay().getEType() + " - " + event.getDataOverlay().getTissueTypes().get(event.getDataOverlay().getColumn()));
+		InlineLabel typeTissueLabel  = new InlineLabel(dataOverlay.getEType() + " - " + dataOverlay.getTissueTypes().get(dataOverlay.getColumn()));
 		infoPanel.add(typeTissueLabel);
 		
 		innerPanel.add(infoPanel);
 	}
 	
 	private void showNoResultsPanel() {
-		innerPanel.clear();
 		forwardButton.setEnabled(false);
 		backButton.setEnabled(false);
 		FlowPanel noResults = new FlowPanel();
