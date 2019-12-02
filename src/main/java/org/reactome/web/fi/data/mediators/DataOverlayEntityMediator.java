@@ -18,6 +18,11 @@ import com.google.gwt.core.client.GWT;
 
 public class DataOverlayEntityMediator {
 
+	/**
+	 * Can be used to direct data mediation based on data type from server
+	 * @param responseText
+	 * @return
+	 */
 	public DataOverlay transformData(String responseText) {
 		OverlayEntities entities = null;
 		try {
@@ -30,6 +35,11 @@ public class DataOverlayEntityMediator {
 		
 	}
 
+	/**
+	 * Transforms TissueExpressionLevel entities into DataOverlay model
+	 * @param entities
+	 * @return
+	 */
 	private DataOverlay transformExpressionEntities(OverlayEntities entities) {
 		DataOverlay result = new DataOverlay();
 		if(entities.getExpressionEntity().size() == 0)
@@ -48,6 +58,12 @@ public class DataOverlayEntityMediator {
 		return result;
 	}
 
+	/**
+	 * Converts OverlayEntities into DataOverlay when QualValue is present in data
+	 * @param result
+	 * @param entities
+	 * @return
+	 */
 	private DataOverlay getQualValueResult(DataOverlay result, OverlayEntities entities) {
 		result.setDiscrete(true);
 		
@@ -82,6 +98,12 @@ public class DataOverlayEntityMediator {
 		return result;
 	}
 
+	/**
+	 * Converts Overlayentities into DataOverlay when BooleanValue is present in data
+	 * @param result
+	 * @param entities
+	 * @return
+	 */
 	private DataOverlay getBooleanValueResult(DataOverlay result, OverlayEntities entities) {
 		result.setDiscrete(true);
 		
@@ -112,7 +134,13 @@ public class DataOverlayEntityMediator {
 		
 		return result;
 	}
-
+	
+	/*
+	 * Converts OverlayEntities into DataOverlay when NumberValue is present
+	 * @param result
+	 * @param entities
+	 * @return
+	 */
 	private DataOverlay getNumberValueResult(DataOverlay result, OverlayEntities entities) {
 		result.setDiscrete(false);
 		

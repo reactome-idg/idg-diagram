@@ -162,6 +162,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 			String color = gradient.getColor(overlayVal, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
 			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(
 					color);
+//			event.getTable().addExpressionColumns(expression, min, max, sel);
 			//TODO: add overlay value next to the identifier
 		}
 	}
