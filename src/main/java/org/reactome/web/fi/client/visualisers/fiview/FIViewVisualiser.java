@@ -257,6 +257,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void onEdgeMouseOut(EdgeMouseOutEvent event) {
 		infoPopup.hide();
+		eventBus.fireEventFromSource(new GraphObjectHoveredEvent(), this);
 	}
 
 	@Override

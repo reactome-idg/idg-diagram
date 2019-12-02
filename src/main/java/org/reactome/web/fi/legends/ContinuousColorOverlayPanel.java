@@ -193,10 +193,12 @@ DataOverlayColumnChangedHandler{
                 GraphEntitySet set = (GraphEntitySet) graphObject;
                 expression = new LinkedList<>(set.getParticipantsExpression(column).values());
             } else {
-                GraphPhysicalEntity pe = (GraphPhysicalEntity)graphObject;
-                Double exp = dataOverlay.getIdentifierValueMap().get(pe.getIdentifier());
-                if(exp != null && exp != new Double(0))
-                	expression.add(dataOverlay.getIdentifierValueMap().get(pe.getIdentifier()));
+            	if(graphObject instanceof GraphPhysicalEntity) {
+	                GraphPhysicalEntity pe = (GraphPhysicalEntity)graphObject;
+	                Double exp = dataOverlay.getIdentifierValueMap().get(pe.getIdentifier());
+	                if(exp != null && exp != new Double(0))
+	                	expression.add(dataOverlay.getIdentifierValueMap().get(pe.getIdentifier()));
+            	}
             }
         }
         return expression;
