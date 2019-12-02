@@ -1,3 +1,53 @@
 .innerPanel{
 	margin: 5px;
 }
+
+@sprite .forward{
+    gwt-image:'forwardNormal';
+    outline:none;
+    background-repeat:no-repeat;
+    border: 0;
+    cursor: pointer;
+    float:left;
+    margin:5px 0 0 2px;
+}
+
+@sprite .forward:hover{
+    gwt-image: 'forwardHovered';
+}
+
+@sprite .forward:disabled, .forward:disabled:hover, .forward:disabled:active {
+    gwt-image:'forwardDisabled';
+    cursor: auto;
+}
+
+@sprite .forward:enabled:active:hover {
+    margin-left: 3px;
+    margin-right: 1px;
+    gwt-image: 'forwardClicked';
+}
+
+@sprite .back{
+    gwt-image: 'backNormal';
+    outline: none;
+    background-repeat:no-repeat;
+    border: 0;
+    cursor: pointer;
+    float: left;
+    margin:5px 0 0 2px;
+}
+
+@sprite .back:hover{
+    gwt-image: 'backHovered';
+}
+
+@sprite .back:disabled, .back:disabled:hover, .back:disabled:active {
+    gwt-image: 'backDisabled';
+    cursor: auto;
+}
+
+@sprite .back:enabled:active:hover {
+    margin-left:3px;
+    margin-right:1px;
+    gwt-image: 'backClicked'
+}
