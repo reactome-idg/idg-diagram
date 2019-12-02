@@ -39,12 +39,12 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		this.innerPanel = new FlowPanel();
 		this.innerPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
 		this.add(innerPanel);
-		this.getElement().getStyle().setMarginBottom(10, Unit.PX);
 				
 		initHandlers();
 		
-		addStyleName(RESOURCES.getCSS().enrichmentLegend());
+		addStyleName(IDGRESOURCES.getCSS().outerPanel());
 		this.getElement().getStyle().setWidth(100, Unit.PX);
+		this.getElement().getStyle().setHeight(260, Unit.PX);
 		this.setVisible(false);
 		
 	}
@@ -94,7 +94,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	}
 	
 	private void showContinuousPanel(OverlayDataLoadedEvent event) {
-	
+		ContinuousColorOverlayPanel panel = new ContinuousColorOverlayPanel(eventBus);
+		panel.getElement().getStyle().setMarginLeft(20, Unit.PX);
+		innerPanel.add(panel);
 	}
 
 	private void showNoResultsMessage() {
@@ -128,6 +130,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		String CSS = "org/reactome/web/fi/legends/OverlayColourLegend.css";
 		
 		String colourMapPanel();
+		
+		String outerPanel();
 	}
 	
 }
