@@ -94,10 +94,10 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 		
 	}
 
-	protected void setExpressionTypes(ExpressionTypeEntities entities) {
+	protected void setExpressionTypes() {
 		eTypeSelector.addItem("Choose an available expression type...", "-1");
 		selectorMap = new HashMap<>();
-		List<ExpressionTypeEntity> entityList = entities.getExpressionTypeEntity();
+		List<ExpressionTypeEntity> entityList = expressionTypes.getExpressionTypeEntity();
 		for(int i=0; i < entityList.size(); i++) {
 			eTypeSelector.addItem(entityList.get(i).getName());
 			selectorMap.put(i, entityList.get(i).getName());
@@ -162,7 +162,7 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 			@Override
 			public void onExpressionTypesLoaded(ExpressionTypeEntities entities) {
 				expressionTypes = entities;
-				setExpressionTypes(entities);
+				setExpressionTypes();
 			}
 		});
 	}
