@@ -8,6 +8,7 @@ import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
+import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
 import com.google.gwt.core.client.GWT;
@@ -30,6 +31,9 @@ public class OverlayColourLegend extends LegendPanel implements
 OverlayDataLoadedHandler, OverlayDataResetHandler{
 	
 	private FlowPanel innerPanel;
+	private DataOverlay dataOverlay;
+	private ContinuousColorOverlayPanel continuousPanel;
+
 
 	public OverlayColourLegend(EventBus eventBus) {
 		super(eventBus);
@@ -39,7 +43,11 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		this.innerPanel = new FlowPanel();
 		this.innerPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
 		this.add(innerPanel);
-				
+		
+		continuousPanel = new ContinuousColorOverlayPanel(eventBus);
+		continuousPanel.getElement().getStyle().setMarginLeft(20, Unit.PX);
+
+		
 		initHandlers();
 		
 		addStyleName(IDGRESOURCES.getCSS().outerPanel());
@@ -58,6 +66,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.setVisible(false);
 		innerPanel.clear();
+		this.dataOverlay = event.getDataOverlay();
 		
 		if(event.getDataOverlay().getDataOverlayEntities() == null) {
 			showNoResultsMessage();
@@ -66,21 +75,21 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		}
 		
 		if(event.getDataOverlay().isDiscrete())		
-			showDiscretePanel(event);
+			showDiscretePanel();
 		else if(!event.getDataOverlay().isDiscrete())
-			showContinuousPanel(event);
+			showContinuousPanel();
 		
 		this.setVisible(true);
 
 	}
 
-	private void showDiscretePanel(OverlayDataLoadedEvent event) {
+	private void showDiscretePanel() {
 		FlowPanel colourMapPanel = new FlowPanel();
 		colourMapPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
 		Map<Double, String> colourMap = OverlayColours.get().getColours();
-		event.getDataOverlay().getLegendTypes().forEach((i) ->{
+		dataOverlay.getLegendTypes().forEach((i) ->{
 			Label lbl = new Label(i);
-			String colour = colourMap.get(new Double(event.getDataOverlay().getLegendTypes().indexOf(i)));
+			String colour = colourMap.get(new Double(dataOverlay.getLegendTypes().indexOf(i)));
 			lbl.getElement().getStyle().setBackgroundColor(colour);
 			lbl.getElement().getStyle().setPadding(3, Unit.PX);
 			lbl.getElement().getStyle().setMargin(0, Unit.PX);
@@ -93,10 +102,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 			innerPanel.add(colourMapPanel);
 	}
 	
-	private void showContinuousPanel(OverlayDataLoadedEvent event) {
-		ContinuousColorOverlayPanel panel = new ContinuousColorOverlayPanel(eventBus);
-		panel.getElement().getStyle().setMarginLeft(20, Unit.PX);
-		innerPanel.add(panel);
+	private void showContinuousPanel() {
+		innerPanel.add(continuousPanel);
 	}
 
 	private void showNoResultsMessage() {
