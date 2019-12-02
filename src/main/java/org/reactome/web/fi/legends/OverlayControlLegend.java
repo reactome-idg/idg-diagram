@@ -2,6 +2,7 @@ package org.reactome.web.fi.legends;
 
 import org.reactome.web.diagram.common.PwpButton;
 import org.reactome.web.diagram.legends.LegendPanel;
+import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
@@ -67,6 +68,28 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 	public void onClick(ClickEvent event) {
 		if(event.getSource().equals(this.closeBtn))
 			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
+		else if(event.getSource().equals(this.forwardButton)) {
+			if(this.dataOverlay.getColumn()+1 == this.dataOverlay.getTissueTypes().size()) {
+				this.dataOverlay.setColumn(0);
+				eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(0), this);
+			}
+			else {
+				this.dataOverlay.setColumn(this.dataOverlay.getColumn()+1);
+				eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(this.dataOverlay.getColumn()), this);
+			}
+			updateUI();
+		}
+		else if(event.getSource().equals(this.backButton)) {
+			if(this.dataOverlay.getColumn() == 0){
+				this.dataOverlay.setColumn(this.dataOverlay.getTissueTypes().size()-1);
+				eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(this.dataOverlay.getColumn()), this);
+			}
+			else {
+				this.dataOverlay.setColumn(this.dataOverlay.getColumn()-1);
+				eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(this.dataOverlay.getColumn()), this);
+			}
+			updateUI();
+		}
 	}
 
 	@Override
@@ -80,9 +103,14 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 			return;
 		}
 		
-		if(event.getDataOverlay().getTissueTypes().size() <= 1)
+		updateUI();
+	}
+
+	private void updateUI() {
+		innerPanel.clear();
+		if(this.dataOverlay.getTissueTypes().size() <= 1)
 			showSingleTissuePanel();
-		else if(event.getDataOverlay().getTissueTypes().size() > 1)
+		else if(this.dataOverlay.getTissueTypes().size() > 1)
 			showMultipleTissuePanel();
 		this.setVisible(true);
 	}
