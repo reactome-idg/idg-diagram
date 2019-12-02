@@ -140,7 +140,17 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 		else if(event.getSource() == tissuesSelectedButton) {
 			if(currentEType == 0)
 				return;
-			else if(currentEType == 1) {
+			
+			String valueType = null;
+			for(ExpressionTypeEntity entity : expressionTypes.getExpressionTypeEntity()) {
+				if(entity.getName() == selectorMap.get(currentEType-1)) {
+					valueType = entity.getDataType();
+					break;
+				}
+			}
+			
+			if(currentEType == 1) {
+				valueType = "String";
 				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, "\n" + selectorMap.get(0)), this);
 			}
 			else if(currentEType > 1) {
