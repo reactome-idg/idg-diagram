@@ -3,6 +3,7 @@ package org.reactome.web.fi.client.visualisers.fiview;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import org.reactome.web.diagram.handlers.AnalysisProfileChangedHandler;
 import org.reactome.web.diagram.handlers.ExpressionColumnChangedHandler;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.profiles.interactors.InteractorColours;
+import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeClickedEvent;
 import org.reactome.web.gwtCytoscapeJs.events.EdgeContextSelectEvent;
@@ -657,15 +659,40 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	public void overlayNodes(DataOverlay dataOverlay) {
 		cy.resetStyle();
-		if(dataOverlay == null || !dataOverlay.isDiscrete()) {
+		if(dataOverlay == null) {
 			return;
 		}
 		
+		if(dataOverlay.getTissueTypes() != null && dataOverlay.getTissueTypes().size()>1) {
+        	Map<String, Double> identifierValueMap = new HashMap<>();
+        	for(DataOverlayEntity entity : dataOverlay.getDataOverlayEntities()) {
+        		if(entity.getTissue() == dataOverlay.getTissueTypes().get(dataOverlay.getColumn()))
+        			identifierValueMap.put(entity.getIdentifier(), entity.getValue());
+        	}
+            dataOverlay.setIdentifierValueMap(identifierValueMap);
+        }
+		
+		if(dataOverlay.isDiscrete())
+			overlayDiscreteData(dataOverlay);
+		else if(!dataOverlay.isDiscrete())
+			overlayContinuousData(dataOverlay);
+	}
+
+	private void overlayContinuousData(DataOverlay dataOverlay) {
+		ThreeColorGradient gradient = AnalysisColours.get().expressionGradient;
+		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
+			String color = gradient.getColor(k,dataOverlay.getMinValue(),dataOverlay.getMaxValue());
+			cy.highlightNode(v, color, ".8");
+		});
+	}
+
+	private void overlayDiscreteData(DataOverlay dataOverlay) {
 		Map<Double, String> colourMap = OverlayColours.get().getColours();
-		for(DataOverlayEntity entity: dataOverlay.getDataOverlayEntities()) {
-			String colour = colourMap.get(new Double(entity.getValue()));
-			cy.highlightNode(entity.getIdentifier(), colour, ".8");
-		}
+		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
+			String color = colourMap.get(new Double(k));
+			cy.highlightNode(v, color, ".8");
+
+		});
 	}
 	
 	/**

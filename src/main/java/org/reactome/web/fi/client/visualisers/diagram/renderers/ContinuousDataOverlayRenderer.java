@@ -31,6 +31,7 @@ import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
 public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOtherContextDialogInfoHandler, 
@@ -66,7 +67,6 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         this.gradient = AnalysisColours.get().expressionGradient;
         this.originalOverlay = overlay;
         this.dataOverlay = dataOverlay;
-        
         if(dataOverlay.getTissueTypes() != null && dataOverlay.getTissueTypes().size()>1) {
         	Map<String, Double> identifierValueMap = new HashMap<>();
         	for(DataOverlayEntity entity : dataOverlay.getDataOverlayEntities()) {
@@ -75,7 +75,6 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         	}
             this.dataOverlay.setIdentifierValueMap(identifierValueMap);
         }
-
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
         renderContinuousProteinData(itemsDistribution.getItems("Protein"));
         renderContinuousComplexData(itemsDistribution.getItems("Complex"));
@@ -97,8 +96,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 
 	        		Double identifierDouble = dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier().substring(0, index));
 	        		if(identifierDouble == null) continue;
-	        		String colour = "";
-	    			colour = gradient.getColor(identifierDouble, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
+	        		String colour = gradient.getColor(identifierDouble, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
 		        	ctx.setFillStyle(colour);
 		        	renderer.draw(ctx, item, factor, offset);
 	        	}

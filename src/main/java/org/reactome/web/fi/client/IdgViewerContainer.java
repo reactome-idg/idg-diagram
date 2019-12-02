@@ -24,12 +24,14 @@ import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
+import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataRequestedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
+import org.reactome.web.fi.handlers.DataOverlayColumnChangedHandler;
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
 import org.reactome.web.fi.legends.OverlayColourLegend;
 import org.reactome.web.fi.legends.OverlayControlLegend;
@@ -49,7 +51,7 @@ import com.google.gwt.resources.client.ImageResource;
  *
  */
 public class IdgViewerContainer extends ViewerContainer implements RenderOtherDataHandler,
-OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
+OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, DataOverlayColumnChangedHandler{
 
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
@@ -75,6 +77,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 		eventBus.addHandler(OverlayDataLoadedEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
 		eventBus.addHandler(MakeOverlayRequestEvent.TYPE, this);
+		eventBus.addHandler(DataOverlayColumnChangedEvent.TYPE, this);
 	}
 
 	@Override
@@ -322,6 +325,16 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler{
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualiser)
 			((FIViewVisualiser)activeVisualiser).overlayNodes(null);
+	}
+	
+	@Override
+	public void onDataOverlayColumnChanged(DataOverlayColumnChangedEvent event) {
+		this.dataOverlay.setColumn(event.getColumn());
+		context.setDialogMap(new HashMap<>());
+		if(activeVisualiser instanceof DiagramVisualiser) 
+			activeVisualiser.loadAnalysis();
+		else if(activeVisualiser instanceof FIViewVisualiser)
+			((FIViewVisualiser)activeVisualiser).overlayNodes(dataOverlay);
 	}
 	
 	@Override
