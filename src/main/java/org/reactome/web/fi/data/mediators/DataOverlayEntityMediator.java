@@ -25,40 +25,9 @@ public class DataOverlayEntityMediator {
 		} catch (Exception e) {
 			GWT.log(e.getMessage());
 		}
-		if(entities.getTargetLevelEntity() != null)
-			return transformTargetLevelEntities(entities);
-		else if(entities.getExpressionEntity() != null)
-			return transformExpressionEntities(entities);
 		
-		return null;
-	}
-
-	private DataOverlay transformTargetLevelEntities(OverlayEntities entities) {
-		DataOverlay result = new DataOverlay();
-		result.setDiscrete(true);
-		result.setOverlayType(OverlayDataType.lookupType(entities.getDataType()));
+		return transformExpressionEntities(entities);
 		
-		//used to set max value and index value for each identifier
-		List<String>discreteTypes = new ArrayList<>();
-		Map<String, Double> identifierValueMap = new HashMap<>();
-		for(TargetLevelEntity rawEntity : entities.getTargetLevelEntity()) {
-			
-			//add each discrete type to set
-			if(!discreteTypes.contains(rawEntity.getTargetDevLevel()))
-				discreteTypes.add(rawEntity.getTargetDevLevel());
-			
-			//add each raw entity to list of DataOverlayEntity in DataOverlay
-			result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
-					new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel())),
-					rawEntity.getTargetDevLevel(), "non-specific"));
-			identifierValueMap.put(rawEntity.getUniprot(), 
-				new Double(discreteTypes.indexOf(rawEntity.getTargetDevLevel())));
-		}
-		result.setMaxValue(new Double(discreteTypes.size()));
-		result.setMinValue(new Double(0));
-		result.setLegendTypes(discreteTypes);
-		result.setIdentifierValueMap(identifierValueMap);
-		return result;
 	}
 
 	private DataOverlay transformExpressionEntities(OverlayEntities entities) {
@@ -69,11 +38,11 @@ public class DataOverlayEntityMediator {
 		result.setOverlayType(OverlayDataType.lookupType(entities.getDataType()));
 		
 		//TODO: Make the if statements not hard coded
-		if(eType == "CCLE" || eType == "GTEx" ||eType == "HCA RNA" ||eType == "HPM Gene" ||eType == "HPM Protein")
+		if(eType == "CCLE" || eType == "GTEx" || eType == "HCA RNA" || eType == "HPM Gene" || eType == "HPM Protein")
 			return getNumberValueResult(result, entities);
 		else if(eType == "Cell Surface Protein Atlas" || eType == "JensenLab Knowledge UniProtKB-RC" ||eType == "JensenLab Text Mining" ||eType == "UniProt Tissue")
 			return getBooleanValueResult(result, entities);
-		else if(eType == "Consensus" || entities.getExpressionEntity().get(0).getQualValue()!=null)
+		else if(entities.getExpressionEntity().get(0).getQualValue()!=null)
 			return getQualValueResult(result, entities);
 			
 		return result;
