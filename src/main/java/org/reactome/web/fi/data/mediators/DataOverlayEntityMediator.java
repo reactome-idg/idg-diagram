@@ -39,7 +39,7 @@ public class DataOverlayEntityMediator {
 	}
 
 	/**
-	 * Transforms TissueExpressionLevel entities into DataOverlay model
+	 * Transforms TissueExpressionLevel entities into DataOverlayPanel model
 	 * @param entities
 	 * @return
 	 */
@@ -62,7 +62,7 @@ public class DataOverlayEntityMediator {
 	}
 
 	/**
-	 * Converts OverlayEntities into DataOverlay when QualValue is present in data
+	 * Converts OverlayEntities into DataOverlayPanel when QualValue is present in data
 	 * @param result
 	 * @param entities
 	 * @return
@@ -102,7 +102,7 @@ public class DataOverlayEntityMediator {
 	}
 
 	/**
-	 * Converts Overlayentities into DataOverlay when BooleanValue is present in data
+	 * Converts Overlayentities into DataOverlayPanel when BooleanValue is present in data
 	 * @param result
 	 * @param entities
 	 * @return
@@ -139,7 +139,7 @@ public class DataOverlayEntityMediator {
 	}
 	
 	/*
-	 * Converts OverlayEntities into DataOverlay when NumberValue is present
+	 * Converts OverlayEntities into DataOverlayPanel when NumberValue is present
 	 * @param result
 	 * @param entities
 	 * @return

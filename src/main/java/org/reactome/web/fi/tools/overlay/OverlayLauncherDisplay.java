@@ -73,7 +73,7 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
         
         this.container = new DeckLayoutPanel();
         this.container.addStyleName(RESOURCES.getCSS().container());
-        this.container.add(new DataOverlay(eventBus));
+        this.container.add(new DataOverlayPanel(eventBus));
         this.container.add(new Label("Relationship overlay!"));
         this.container.showWidget(0);
         this.container.setAnimationVertical(true);

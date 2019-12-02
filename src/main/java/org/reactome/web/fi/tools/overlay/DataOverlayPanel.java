@@ -37,7 +37,7 @@ import org.reactome.web.fi.common.MultiSelectListBox;
  * @author brunsont
  *
  */
-public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandler{
+public class DataOverlayPanel  extends FlowPanel implements ClickHandler, ChangeHandler{
 
 	private EventBus eventBus;
 	private Map<Integer, String> selectorMap;
@@ -49,7 +49,7 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 	private Button tissuesSelectedButton;
 	private int currentEType;
 	
-	public DataOverlay(EventBus eventBus) {
+	public DataOverlayPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
 		this.getElement().getStyle().setMargin(5, Unit.PX);
 		
@@ -151,12 +151,12 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
 			
 			if(currentEType == 1) {
 				valueType = "String";
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, "\n" + selectorMap.get(0)), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, "\n" + selectorMap.get(0), valueType), this);
 			}
 			else if(currentEType > 1) {
 				String expressionPostData = String.join(",",tissueSelector.getSelectedItemsText()) 
 						+ "\n" + selectorMap.get(currentEType-1);
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData, valueType), this);
 			}
 		}
 	}
@@ -206,7 +206,7 @@ public class DataOverlay  extends FlowPanel implements ClickHandler, ChangeHandl
     
     @CssResource.ImportedWithPrefix("idg-overlayData")
     public interface ResourceCSS extends CssResource{
-    	String CSS = "org/reactome/web/fi/tools/overlay/DataOverlay.css";
+    	String CSS = "org/reactome/web/fi/tools/overlay/DataOverlayPanel.css";
     	
     	String title();
     	

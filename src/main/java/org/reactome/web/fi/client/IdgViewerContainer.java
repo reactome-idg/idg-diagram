@@ -65,6 +65,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	private boolean renderOverlays = false;
 	
 	private String lastExpressionOverlayPostInfo=null;
+	private String lastExpressionOverlayValueType = null;
 	
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
@@ -147,7 +148,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			
 			//don't bother reloading when new content is an SVG
 			if(context.getContent().getType() != Content.Type.SVG)
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(overlayType, this.lastExpressionOverlayPostInfo), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(overlayType, this.lastExpressionOverlayPostInfo, this.lastExpressionOverlayValueType ), this);
 		}
 	}
 
@@ -165,6 +166,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	@Override
 	public void onMakeOverlayRequest(MakeOverlayRequestEvent event) {
 		
+		//set lastExpressionOverlayValueType in case diagram is changed before reset
+		this.lastExpressionOverlayValueType = event.getReturnValueType();
 		//can't have an overlay and Analysis at the same time
 		if(context.getAnalysisStatus() != null)
 			eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
