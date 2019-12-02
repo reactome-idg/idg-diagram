@@ -2,8 +2,11 @@ package org.reactome.web.fi.data.mediators;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.reactome.web.fi.data.overlay.model.ExpressionEntity;
 import org.reactome.web.fi.data.overlay.model.OverlayEntities;
@@ -68,14 +71,14 @@ public class DataOverlayEntityMediator {
 		result.setDiscrete(true);
 		
 		List<String>discreteTypes = new ArrayList<>();
-		List<String>tissues = new ArrayList<>();
+		Set<String>tissues = new HashSet<>();
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
 			if(rawEntity.getQualValue() != null) {
 				if(!discreteTypes.contains(rawEntity.getQualValue()))
 					discreteTypes.add(rawEntity.getQualValue());
 				
-				if(rawEntity.getTissue() != null && !tissues.contains(rawEntity.getTissue()))
+				if(rawEntity.getTissue() != null)
 					tissues.add(rawEntity.getTissue());
 				
 				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(), 
@@ -85,7 +88,7 @@ public class DataOverlayEntityMediator {
 		}
 		result.setIdentifierValueMap(identifierValueMap);
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
-		result.setTissueTypes(tissues);
+		result.setTissueTypes(tissues.stream().sorted().collect(Collectors.toList()));
 		result.setLegendTypes(discreteTypes);
 		result.setMaxValue(new Double(discreteTypes.size()));
 		result.setMinValue(new Double(0));
@@ -108,9 +111,9 @@ public class DataOverlayEntityMediator {
 		result.setDiscrete(true);
 		
 		Map<String, Double> identifierValueMap = new HashMap<>();
-		List<String> tissues = new ArrayList<>();
+		Set<String> tissues = new HashSet<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
-			if(rawEntity.getTissue() != null && !tissues.contains(rawEntity.getTissue()))
+			if(rawEntity.getTissue() != null)
 				tissues.add(rawEntity.getTissue());
 			
 			if(rawEntity.getBooleanValue() != null) {
@@ -127,7 +130,7 @@ public class DataOverlayEntityMediator {
 		}
 			
 		result.setIdentifierValueMap(identifierValueMap);
-		result.setTissueTypes(tissues);
+		result.setTissueTypes(tissues.stream().sorted().collect(Collectors.toList()));
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setMinValue(new Double(0));
 		result.setMaxValue(new Double(0));
@@ -147,10 +150,10 @@ public class DataOverlayEntityMediator {
 		Double minValue = null;
 		Double maxValue = null;
 		
-		List<String> types = new ArrayList<>();
+		Set<String> types = new HashSet<>();
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
-			if(rawEntity.getTissue() != null && !types.contains(rawEntity.getTissue()))
+			if(rawEntity.getTissue() != null)
 				types.add(rawEntity.getTissue());
 			DataOverlayEntity entity = null;
 			if(rawEntity.getNumberValue() != null) {
@@ -164,7 +167,7 @@ public class DataOverlayEntityMediator {
 			}
 		}
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
-		result.setTissueTypes(types);
+		result.setTissueTypes(types.stream().sorted().collect(Collectors.toList()));
 		result.setIdentifierValueMap(identifierValueMap);
 		result.setMinValue(minValue);
 		result.setMaxValue(maxValue);
