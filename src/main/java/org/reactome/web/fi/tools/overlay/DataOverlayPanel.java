@@ -94,6 +94,9 @@ public class DataOverlayPanel  extends FlowPanel implements ClickHandler, Change
 		
 	}
 
+	/**
+	 * Sets list box of ETypes used to direct tissue selection
+	 */
 	protected void setExpressionTypes() {
 		eTypeSelector.addItem("Choose an available expression type...", "-1");
 		selectorMap = new HashMap<>();
@@ -104,6 +107,10 @@ public class DataOverlayPanel  extends FlowPanel implements ClickHandler, Change
 		}		
 	}
 	
+	/**
+	 * Sets list box of tissues. 12 can be selected at one time.
+	 * @param tissueList
+	 */
 	protected void setTissueListBoxTypes(List<String> tissueList) {
 		tissueSelector.clear();
 		if(tissueList.size() > 0) {
@@ -133,14 +140,19 @@ public class DataOverlayPanel  extends FlowPanel implements ClickHandler, Change
 	
 	@Override
 	public void onClick(ClickEvent event) {
+		
+		//directs loading of tissueTypes
 		if(event.getSource() == eTypeButton && eTypeSelector.getSelectedIndex() != 0) {
 			getTissueTypes(eTypeSelector.getSelectedItemText());
 			currentEType = eTypeSelector.getSelectedIndex();
 		}
 		else if(event.getSource() == tissuesSelectedButton) {
+			
+			//dont allow MakeOverlayRequestedEvent to fire if no EType is selected
 			if(currentEType == 0)
 				return;
 			
+			//gets return value type to be used in data mediation after server call
 			String valueType = expressionTypes.getExpressionTypeEntity().get(currentEType-1).getDataType();
 			
 			if(currentEType == 1) {
@@ -155,6 +167,9 @@ public class DataOverlayPanel  extends FlowPanel implements ClickHandler, Change
 		}
 	}
 	
+	/**
+	 * Loads expression types for list box
+	 */
 	private void getExpressionTypes() {
 		TCRDInfoLoader.loadExpressionTypes(new TCRDInfoLoader.ETypeHandler() {
 			
@@ -171,6 +186,10 @@ public class DataOverlayPanel  extends FlowPanel implements ClickHandler, Change
 		});
 	}
 	
+	/**
+	 * Loads tissues for a specific EType
+	 * @param eType
+	 */
 	private void getTissueTypes(String eType) {
 		TCRDInfoLoader.loadTissueTypes(eType, new TCRDInfoLoader.TissueHandler() {
 			@Override
