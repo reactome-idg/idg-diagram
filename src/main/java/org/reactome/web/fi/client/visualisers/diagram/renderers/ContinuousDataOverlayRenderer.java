@@ -151,6 +151,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 		if(dataOverlay == null || dataOverlay.isDiscrete() || dataOverlay.getIdentifierValueMap() == null)
 			return;
 		
+		event.getTable().addExpressionColumns(dataOverlay.getTissueTypes(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), dataOverlay.getColumn());
 		List<GraphPhysicalEntity> data = event.getTable().getDataProvider().getList();
 		for(int i=0; i<data.size(); i++) {
 			GraphPhysicalEntity entity = data.get(i);
@@ -162,9 +163,9 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 			String color = gradient.getColor(overlayVal, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
 			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(
 					color);
-//			event.getTable().addExpressionColumns(expression, min, max, sel);
 			//TODO: add overlay value next to the identifier
 		}
+
 	}
 
 }
