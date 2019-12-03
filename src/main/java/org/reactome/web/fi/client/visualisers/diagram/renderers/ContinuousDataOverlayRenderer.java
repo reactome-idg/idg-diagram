@@ -56,7 +56,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	public void doRender(Collection<DiagramObject> items, AdvancedContext2d ctx, Context context,
 			RendererManager rendererManager, DataOverlay dataOverlay, OverlayContext overlay) {
 		
-		//this render is for continuous data
+		//this render is for continuous data only
 		if(dataOverlay.isDiscrete() || dataOverlay.getDataOverlayEntities() == null)
 			return;
 		
@@ -81,29 +81,30 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	}
 
 	private void renderContinuousProteinData(MapSet<RenderType, DiagramObject> target) {
-	//return if there are no proteins in the visible DiagramObject set
-			if(target == null)
-				return;
-			
-			Renderer renderer = rendererManager.getRenderer("Protein");
-	        Set<DiagramObject> objectSet = target.values();
-	        for(DiagramObject item : objectSet) {
-	        	GraphPhysicalEntity graphObject = (GraphPhysicalEntity) item.getGraphObject();
-	        	if(graphObject instanceof GraphEntityWithAccessionedSequence || graphObject instanceof GraphProteinDrug) {
-	        		int index = graphObject.getIdentifier().length();
-	        		if(graphObject.getIdentifier().contains("-"))
-	        			index = graphObject.getIdentifier().indexOf("-");
+		//return if there are no proteins in the visible DiagramObject set
+		if(target == null)
+			return;
+		
+		Renderer renderer = rendererManager.getRenderer("Protein");
+        Set<DiagramObject> objectSet = target.values();
+        for(DiagramObject item : objectSet) {
+        	GraphPhysicalEntity graphObject = (GraphPhysicalEntity) item.getGraphObject();
+        	if(graphObject instanceof GraphEntityWithAccessionedSequence || graphObject instanceof GraphProteinDrug) {
+        		int index = graphObject.getIdentifier().length();
+        		if(graphObject.getIdentifier().contains("-"))
+        			index = graphObject.getIdentifier().indexOf("-");
 
-	        		Double identifierDouble = dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier().substring(0, index));
-	        		if(identifierDouble == null) continue;
-	        		String colour = gradient.getColor(identifierDouble, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
-		        	ctx.setFillStyle(colour);
-		        	renderer.draw(ctx, item, factor, offset);
-	        	}
-	        }
+        		Double identifierDouble = dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier().substring(0, index));
+        		if(identifierDouble == null) continue;
+        		String colour = gradient.getColor(identifierDouble, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
+	        	ctx.setFillStyle(colour);
+	        	renderer.draw(ctx, item, factor, offset);
+        	}
+        }
 	}
 
 	private void renderContinuousComplexData(MapSet<RenderType, DiagramObject> target) {
+		//return if there are no Complexes in the visible DiagramObject set
 		if(target == null)
 			return;
 		
@@ -126,6 +127,11 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 		}
 	}
 	
+	/**
+	 * Used to get the correct expression
+	 * @param identifier
+	 * @return
+	 */
 	private List<Double> getDataOverlayValue(String identifier){
 		List<Double> result = new ArrayList<>();
 		int index = identifier.length();
@@ -146,6 +152,9 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 		this.dataOverlay = null;
 	}
 
+	/**
+	 * Used to recolor and add expression columns to diagram context popups
+	 */
 	@Override
 	public void onRenderOtherContextDialogInfo(RenderOtherContextDialogInfoEvent event) {
 		if(dataOverlay == null || dataOverlay.isDiscrete() || dataOverlay.getIdentifierValueMap() == null)
@@ -163,9 +172,6 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 			String color = gradient.getColor(overlayVal, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
 			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(
 					color);
-			//TODO: add overlay value next to the identifier
 		}
-
 	}
-
 }
