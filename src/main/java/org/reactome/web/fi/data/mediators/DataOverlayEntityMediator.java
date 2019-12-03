@@ -160,8 +160,8 @@ public class DataOverlayEntityMediator {
 	private DataOverlay getNumberValueResult(DataOverlay result, OverlayEntities entities) {
 		result.setDiscrete(false);
 		
-		Double minValue = null;
-		Double maxValue = null;
+		Double minValue = Double.MAX_VALUE;
+		Double maxValue = Double.MIN_VALUE;
 		
 		Set<String> types = new HashSet<>();
 		Map<String, Double> identifierValueMap = new HashMap<>();
@@ -173,17 +173,19 @@ public class DataOverlayEntityMediator {
 				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
 						rawEntity.getNumberValue(), rawEntity.getEtype(), rawEntity.getTissue()));
 				identifierValueMap.put(entity.getIdentifier(), entity.getValue());
-				if(maxValue == null || entity.getValue() > maxValue)
+				if(entity.getValue() > maxValue)
 					maxValue = entity.getValue();
-				if(minValue == null || entity.getValue() < minValue)
+				if(entity.getValue() < minValue)
 					minValue = entity.getValue();
 			}
 		}
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setTissueTypes(types.stream().sorted().collect(Collectors.toList()));
 		result.setIdentifierValueMap(identifierValueMap);
-		result.setMinValue(minValue);
-		result.setMaxValue(maxValue);
+		if(minValue != Double.MAX_VALUE)
+			result.setMinValue(minValue);
+		if(maxValue != Double.MIN_VALUE)
+			result.setMaxValue(maxValue);
 		
 		return result;
 	}
