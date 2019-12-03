@@ -141,13 +141,7 @@ public class DataOverlayPanel  extends FlowPanel implements ClickHandler, Change
 			if(currentEType == 0)
 				return;
 			
-			String valueType = null;
-			for(ExpressionTypeEntity entity : expressionTypes.getExpressionTypeEntity()) {
-				if(entity.getName() == selectorMap.get(currentEType-1)) {
-					valueType = entity.getDataType();
-					break;
-				}
-			}
+			String valueType = expressionTypes.getExpressionTypeEntity().get(currentEType-1).getDataType();
 			
 			if(currentEType == 1) {
 				valueType = "String";
