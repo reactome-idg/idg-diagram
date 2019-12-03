@@ -165,6 +165,7 @@ public class DataOverlayEntityMediator {
 		
 		Set<String> types = new HashSet<>();
 		Map<String, Double> identifierValueMap = new HashMap<>();
+		Map<String, List<DataOverlayEntity>> uniprotToEntitiesMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
 			if(rawEntity.getTissue() != null)
 				types.add(rawEntity.getTissue());
@@ -173,6 +174,13 @@ public class DataOverlayEntityMediator {
 				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
 						rawEntity.getNumberValue(), rawEntity.getEtype(), rawEntity.getTissue()));
 				identifierValueMap.put(entity.getIdentifier(), entity.getValue());
+				
+				//testing new way to organize 
+				if(!uniprotToEntitiesMap.containsKey(rawEntity.getUniprot()))
+					uniprotToEntitiesMap.put(rawEntity.getUniprot(), new ArrayList<>());	
+				uniprotToEntitiesMap.get(rawEntity.getUniprot()).add(entity);
+				
+				
 				if(entity.getValue() > maxValue)
 					maxValue = entity.getValue();
 				if(entity.getValue() < minValue)
@@ -182,6 +190,7 @@ public class DataOverlayEntityMediator {
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setTissueTypes(types.stream().sorted().collect(Collectors.toList()));
 		result.setIdentifierValueMap(identifierValueMap);
+		result.setUniprotToEntitiesMap(uniprotToEntitiesMap);
 		if(minValue != Double.MAX_VALUE)
 			result.setMinValue(minValue);
 		if(maxValue != Double.MIN_VALUE)

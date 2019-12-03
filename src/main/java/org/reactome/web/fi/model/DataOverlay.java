@@ -17,6 +17,7 @@ public class DataOverlay {
 	private boolean isDiscrete;
 	private OverlayDataType overlayType;
 	private List<DataOverlayEntity> dataOverlayEntities;
+	private Map<String, List<DataOverlayEntity>> uniprotToEntitiesMap;
 	private List<String> legendTypes;
 	private List<String> tissueTypes;
 	private int column;
@@ -109,4 +110,11 @@ public class DataOverlay {
 		this.tissueTypes = tissueTypes;
 	}
 	
+	public Map<String, List<DataOverlayEntity>> getUniprotToEntitiesMap() {
+		return uniprotToEntitiesMap;
+	}
+
+	public void setUniprotToEntitiesMap(Map<String, List<DataOverlayEntity>> uniprotToEntitiesMap) {
+		this.uniprotToEntitiesMap = uniprotToEntitiesMap;
+	}
 }

@@ -94,6 +94,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         		if(graphObject.getIdentifier().contains("-"))
         			index = graphObject.getIdentifier().indexOf("-");
 
+        		graphObject.setIsHit(graphObject.getIdentifier(), getDataOverlayValue(graphObject.getIdentifier()));
         		Double identifierDouble = dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier().substring(0, index));
         		if(identifierDouble == null) continue;
         		String colour = gradient.getColor(identifierDouble, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
@@ -121,8 +122,8 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 								getDataOverlayValue(participant.getIdentifier()));
 					}
 				}
-				if(entity.getParticipantsExpression(0).size() > 0)
-					renderer.drawExpression(ctx, overlay, item, 0, dataOverlay.getMinValue(), dataOverlay.getMaxValue(),factor, offset);
+				if(entity.getParticipantsExpression(dataOverlay.getColumn()).size() > 0)
+					renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(),factor, offset);
 			}
 		}
 	}
@@ -138,7 +139,16 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 		if(identifier.contains("-"))
 			index = identifier.indexOf("0");
 		result.add(dataOverlay.getIdentifierValueMap().get(identifier.substring(0, index)));
-		return result;
+		
+		List<Double> testRes = new ArrayList<>();
+		List<DataOverlayEntity> entities = dataOverlay.getUniprotToEntitiesMap().get(identifier.substring(0, index));
+		while(testRes.size()<dataOverlay.getTissueTypes().size()) testRes.add(null);
+		if(entities != null) {
+			for(DataOverlayEntity entity : entities) 
+				testRes.set(dataOverlay.getTissueTypes().indexOf(entity.getTissue()), entity.getValue());
+			return testRes;
+		}
+		return testRes;
 	}
 	
 	@Override
