@@ -21,12 +21,15 @@ import com.google.gwt.core.client.GWT;
 
 public class DataOverlayEntityMediator {
 
+	private String returnValueType;
+	
 	/**
 	 * Can be used to direct data mediation based on data type from server
 	 * @param responseText
 	 * @return
 	 */
-	public DataOverlay transformData(String responseText) {
+	public DataOverlay transformData(String responseText, String returnValueType) {
+		this.returnValueType = returnValueType;
 		OverlayEntities entities = null;
 		try {
 			entities = OverlayEntityDataFactory.getTargetLevelEntity(OverlayEntities.class, responseText);
@@ -51,14 +54,24 @@ public class DataOverlayEntityMediator {
 		result.setOverlayType(OverlayDataType.lookupType(entities.getDataType()));
 		
 		//TODO: Make the if statements not hard coded
-		if(eType == "CCLE" || eType == "GTEx" || eType == "HCA RNA" || eType == "HPM Gene" || eType == "HPM Protein")
+		if(returnValueType == "Number")
 			return getNumberValueResult(result, entities);
-		else if(eType == "Cell Surface Protein Atlas" || eType == "JensenLab Knowledge UniProtKB-RC" ||eType == "JensenLab Text Mining" ||eType == "UniProt Tissue")
+		else if(returnValueType == "Boolean")
 			return getBooleanValueResult(result, entities);
-		else if(entities.getExpressionEntity().get(0).getQualValue()!=null)
-			return getQualValueResult(result, entities);
+		else if(returnValueType == "String")
+			for(ExpressionEntity entity : entities.getExpressionEntity()) {
+				if(entity.getQualValue() != null)
+					return getQualValueResult(result, entities);
+				else if(entity.getStringValue() != null)
+					return getStringValueResult(result, entities);
+			}
 			
 		return result;
+	}
+
+	private DataOverlay getStringValueResult(DataOverlay result, OverlayEntities entities) {
+		// TODO Auto-generated method stub
+		return new DataOverlay();
 	}
 
 	/**

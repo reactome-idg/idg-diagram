@@ -30,6 +30,7 @@ public class TCRDLoader implements RequestCallback{
 	private Handler handler;
 	private Request request;
 	private OverlayDataType type;
+	private String returnValueType;
 	
 	public TCRDLoader(Handler handler){
 		this.handler = handler;
@@ -40,8 +41,9 @@ public class TCRDLoader implements RequestCallback{
 			this.request.cancel();
 	}
 	
-	public void load(String postData, OverlayDataType type) {
+	public void load(String postData, OverlayDataType type, String returnValueType) {
 		this.type = type;
+		this.returnValueType = returnValueType;
 		cancel();
 						
 		if(postData == null) {
@@ -74,7 +76,7 @@ public class TCRDLoader implements RequestCallback{
 				obj.put("dataType", new JSONString(type.getName()));
 				obj.put("valueType", new JSONString("String"));
 				obj.put(getEntityType(), val.isArray());
-				dataOverlay = mediator.transformData(obj.toString());
+				dataOverlay = mediator.transformData(obj.toString(), returnValueType);
 			}catch(Exception e) {
 				this.handler.onTargetLevelLoadedError(e);
 				return;

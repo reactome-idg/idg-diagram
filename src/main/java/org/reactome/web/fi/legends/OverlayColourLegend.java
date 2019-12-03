@@ -65,6 +65,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.setVisible(false);
+		
+		if(event.getDataOverlay().getDataOverlayEntities() == null || event.getDataOverlay().getDataOverlayEntities().size() == 0)
+			return;
+		
 		innerPanel.clear();
 		this.dataOverlay = event.getDataOverlay();
 		

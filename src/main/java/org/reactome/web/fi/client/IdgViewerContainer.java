@@ -203,7 +203,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		
 		if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
 	        postContent += "\n" + event.getExpressionPostdata();
-	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType()), this);
+	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType(), this.lastExpressionOverlayValueType), this);
 		}
 	}
 

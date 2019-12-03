@@ -17,10 +17,12 @@ public class OverlayDataRequestedEvent extends GwtEvent<OverlayDataRequestedHand
 	
 	private String postData;
 	private OverlayDataType type;
+	private String returnValueType;
 	
-	public OverlayDataRequestedEvent(String set, OverlayDataType type) {
+	public OverlayDataRequestedEvent(String set, OverlayDataType type, String returnValueType) {
 		this.postData = set;
 		this.type = type;
+		this.returnValueType = returnValueType;
 	}
 	
 	@Override
@@ -40,6 +42,10 @@ public class OverlayDataRequestedEvent extends GwtEvent<OverlayDataRequestedHand
 	
 	public OverlayDataType getType() {
 		return this.type;
+	}
+	
+	public String getReturnValueType() {
+		return this.returnValueType;
 	}
 
 	@Override

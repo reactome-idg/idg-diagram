@@ -132,6 +132,11 @@ DataOverlayColumnChangedHandler{
 
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
+		if(event.getDataOverlay().getDataOverlayEntities() == null 
+				|| event.getDataOverlay().getDataOverlayEntities().size()==0
+				|| event.getDataOverlay().isDiscrete())
+			return;
+		
 		this.dataOverlay = event.getDataOverlay();
 		this.min = event.getDataOverlay().getMinValue();
 		this.max = event.getDataOverlay().getMaxValue();
