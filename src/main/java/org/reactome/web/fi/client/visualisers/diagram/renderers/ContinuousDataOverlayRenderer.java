@@ -57,7 +57,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 			RendererManager rendererManager, DataOverlay dataOverlay, OverlayContext overlay) {
 		
 		//this render is for continuous data only
-		if(dataOverlay.isDiscrete() || dataOverlay.getDataOverlayEntities() == null)
+		if(dataOverlay.isDiscrete() || dataOverlay.getUniprotToEntitiesMap() == null)
 			return;
 		
 		this.ctx = ctx;

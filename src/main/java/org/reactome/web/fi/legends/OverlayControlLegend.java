@@ -97,7 +97,7 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 		this.setVisible(false);
 		innerPanel.clear();
 		this.dataOverlay = event.getDataOverlay();
-		if(event.getDataOverlay().getDataOverlayEntities() == null) {
+		if(event.getDataOverlay().getUniprotToEntitiesMap() == null) {
 			showNoResultsPanel();
 			this.setVisible(true);
 			return;

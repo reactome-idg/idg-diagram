@@ -666,10 +666,12 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		
 		if(dataOverlay.getTissueTypes() != null && dataOverlay.getTissueTypes().size()>1) {
         	Map<String, Double> identifierValueMap = new HashMap<>();
-        	for(DataOverlayEntity entity : dataOverlay.getDataOverlayEntities()) {
-        		if(entity.getTissue() == dataOverlay.getTissueTypes().get(dataOverlay.getColumn()))
-        			identifierValueMap.put(entity.getIdentifier(), entity.getValue());
-        	}
+        	dataOverlay.getUniprotToEntitiesMap().forEach((k,v) ->{
+    			v.forEach((l) -> {
+    				if(dataOverlay.getTissueTypes().get(dataOverlay.getColumn()) == l.getTissue())
+    					identifierValueMap.put(k, l.getValue());
+    			});
+    		});
             dataOverlay.setIdentifierValueMap(identifierValueMap);
         }
 		

@@ -190,6 +190,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			if(dataOverlay.getOverlayType() == event.getDataType() && this.lastExpressionOverlayPostInfo == event.getExpressionPostdata())
 				return;	
 
+		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
+		
 		this.lastExpressionOverlayPostInfo = event.getExpressionPostdata();
 		if(activeVisualiser instanceof FIViewVisualiser)
 			identifiers = context.getContent().getIdentifierMap().keySet();

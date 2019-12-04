@@ -66,13 +66,13 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
 		this.setVisible(false);
 		
-		if(event.getDataOverlay().getDataOverlayEntities() == null || event.getDataOverlay().getDataOverlayEntities().size() == 0)
+		if(event.getDataOverlay().getUniprotToEntitiesMap() == null || event.getDataOverlay().getUniprotToEntitiesMap().size() == 0)
 			return;
 		
 		innerPanel.clear();
 		this.dataOverlay = event.getDataOverlay();
 		
-		if(event.getDataOverlay().getDataOverlayEntities() == null) {
+		if(event.getDataOverlay().getUniprotToEntitiesMap() == null) {
 			showNoResultsMessage();
 			this.setVisible(true);
 			return;
