@@ -141,24 +141,5 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 			return;
 		
 		event.getTable().addExpressionColumns(dataOverlay.getTissueTypes(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), dataOverlay.getColumn());
-		List<GraphPhysicalEntity> data = event.getTable().getDataProvider().getList();
-		for(int i=0; i<data.size(); i++) {
-			GraphPhysicalEntity entity = data.get(i);
-			int index = entity.getIdentifier().length();
-			if(entity.getIdentifier().contains("-"))
-				index = entity.getIdentifier().indexOf("-");
-			Double overlayVal;
-			
-			//need if else to make sure entity is hit
-			if(dataOverlay.getUniprotToEntitiesMap().get(entity.getIdentifier().substring(0, index)) != null)
-				overlayVal = dataOverlay.getUniprotToEntitiesMap().get(entity.getIdentifier().substring(0, index)).get(dataOverlay.getColumn()).getValue();
-			else
-				overlayVal = null;
-			
-			if (overlayVal == null) continue;
-			String color = gradient.getColor(overlayVal, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
-//			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(
-//					color);
-		}
 	}
 }
