@@ -35,6 +35,11 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.InlineLabel;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class ContinuousColorOverlayPanel extends AbsolutePanel implements 
 GraphObjectSelectedHandler, GraphObjectHoveredHandler, OverlayDataLoadedHandler,
 DataOverlayColumnChangedHandler{
@@ -61,7 +66,6 @@ DataOverlayColumnChangedHandler{
 		this.flag = createCanvas(50,210);
 		
 		this.getElement().getStyle().setHeight(280, Unit.PX);
-//		fillGradient();
 		
 		this.topLabel = new InlineLabel("");
 		this.topLabel.setSize("40px", "15px");
@@ -88,6 +92,7 @@ DataOverlayColumnChangedHandler{
 		eventBus.addHandler(DataOverlayColumnChangedEvent.TYPE, this);
 	}
 
+	//fills gradient on data loaded
 	private void fillGradient() {
 		Context2d ctx = this.gradient.getContext2d();
 		CanvasGradient grd = ctx.createLinearGradient(0, 0, 30, 200);
@@ -104,6 +109,12 @@ DataOverlayColumnChangedHandler{
         ctx.closePath();
 	}
 
+	/**
+	 * Helper method to create canvases of specific sizes
+	 * @param width
+	 * @param height
+	 * @return
+	 */
 	private Canvas createCanvas(int width, int height) {
 		Canvas result = Canvas.createIfSupported();
 		result.setCoordinateSpaceWidth(width);
@@ -145,6 +156,9 @@ DataOverlayColumnChangedHandler{
 		updateIdentifierValueMap();
 	}
 	
+	/**
+	 * Directs drawing of pins
+	 */
     private void draw() {
     	if(!this.isVisible()) return;
     	
@@ -185,7 +199,13 @@ DataOverlayColumnChangedHandler{
     		Console.error(e.getMessage(), this);
     	}
     }
-
+    
+    /**
+     * Gets expression values of graph objects to display pins of
+     * @param graphObject
+     * @param column
+     * @return
+     */
     private List<Double> getExpressionValues(GraphObject graphObject, int column) {
     	List<Double> expression = new LinkedList<>();
     		
@@ -208,6 +228,13 @@ DataOverlayColumnChangedHandler{
         return expression;
     	}
 
+    /**
+     * Draws pin for hovered objects
+     * @param ctx
+     * @param p
+     * @param stroke
+     * @param fill
+     */
 	private void drawLeftPin(Context2d ctx, double p, String stroke, String fill) {
         int y = (int) Math.round(200 * p) + 5;
         ctx.setFillStyle(fill);
@@ -227,7 +254,14 @@ DataOverlayColumnChangedHandler{
         ctx.stroke();
         ctx.closePath();
     }
-
+	
+	/**
+	 * draws pins for selected objects
+	 * @param ctx
+	 * @param p
+	 * @param stroke
+	 * @param fill
+	 */
     private void drawRightPin(Context2d ctx, double p, String stroke, String fill) {
         int y = (int) Math.round(200 * p) + 5;
         ctx.setFillStyle(fill);
@@ -251,16 +285,19 @@ DataOverlayColumnChangedHandler{
 	private void updateIdentifierValueMap() {
 		if(dataOverlay.getTissueTypes() != null && dataOverlay.getTissueTypes().size()>1) {
         	Map<String, Double> identifierValueMap = new HashMap<>();
-        	for(DataOverlayEntity entity : dataOverlay.getDataOverlayEntities()) {
-        		if(entity.getTissue() == dataOverlay.getTissueTypes().get(dataOverlay.getColumn()))
-        			identifierValueMap.put(entity.getIdentifier(), entity.getValue());
-        	}
+        	dataOverlay.getUniprotToEntitiesMap().forEach((k,v) ->{
+    			v.forEach((l) -> {
+    				if(dataOverlay.getTissueTypes().get(dataOverlay.getColumn()) == l.getTissue())
+    					identifierValueMap.put(k, l.getValue());
+    			});
+    		});
             this.dataOverlay.setIdentifierValueMap(identifierValueMap);
         }
 	}
 
 	@Override
 	public void onDataOverlayColumnChanged(DataOverlayColumnChangedEvent event) {
+		if(dataOverlay == null) return;
 		dataOverlay.setColumn(event.getColumn());
 		updateIdentifierValueMap();
 	}

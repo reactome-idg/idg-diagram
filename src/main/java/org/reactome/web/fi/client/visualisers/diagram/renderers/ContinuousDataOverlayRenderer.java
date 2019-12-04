@@ -69,10 +69,12 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         this.dataOverlay = dataOverlay;
         if(dataOverlay.getTissueTypes() != null && dataOverlay.getTissueTypes().size()>1) {
         	Map<String, Double> identifierValueMap = new HashMap<>();
-        	for(DataOverlayEntity entity : dataOverlay.getDataOverlayEntities()) {
-        		if(entity.getTissue() == dataOverlay.getTissueTypes().get(dataOverlay.getColumn()))
-        			identifierValueMap.put(entity.getIdentifier(), entity.getValue());
-        	}
+        	dataOverlay.getUniprotToEntitiesMap().forEach((k,v) ->{
+    			v.forEach((l) -> {
+    				if(dataOverlay.getTissueTypes().get(dataOverlay.getColumn()) == l.getTissue())
+    					identifierValueMap.put(k, l.getValue());
+    			});
+    		});
             this.dataOverlay.setIdentifierValueMap(identifierValueMap);
         }
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
@@ -134,21 +136,18 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	 * @return
 	 */
 	private List<Double> getDataOverlayValue(String identifier){
-		List<Double> result = new ArrayList<>();
 		int index = identifier.length();
 		if(identifier.contains("-"))
-			index = identifier.indexOf("0");
-		result.add(dataOverlay.getIdentifierValueMap().get(identifier.substring(0, index)));
-		
-		List<Double> testRes = new ArrayList<>();
+			index = identifier.indexOf("0");		
+		List<Double> result = new ArrayList<>();
 		List<DataOverlayEntity> entities = dataOverlay.getUniprotToEntitiesMap().get(identifier.substring(0, index));
-		while(testRes.size()<dataOverlay.getTissueTypes().size()) testRes.add(null);
+		while(result.size()<dataOverlay.getTissueTypes().size()) result.add(null);
 		if(entities != null) {
 			for(DataOverlayEntity entity : entities) 
-				testRes.set(dataOverlay.getTissueTypes().indexOf(entity.getTissue()), entity.getValue());
-			return testRes;
+				result.set(dataOverlay.getTissueTypes().indexOf(entity.getTissue()), entity.getValue());
+			return result;
 		}
-		return testRes;
+		return result;
 	}
 	
 	@Override

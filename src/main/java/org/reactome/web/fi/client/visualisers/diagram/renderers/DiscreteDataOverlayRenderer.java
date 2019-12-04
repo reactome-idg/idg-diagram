@@ -82,10 +82,12 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
         //reset map to just entities in a specific tissue if tissueTypes isnt null
         if(dataOverlay.getTissueTypes() != null && dataOverlay.getTissueTypes().size()>1) {
         	Map<String, Double> identifierValueMap = new HashMap<>();
-        	for(DataOverlayEntity entity : dataOverlay.getDataOverlayEntities()) {
-        		if(entity.getTissue() == dataOverlay.getTissueTypes().get(dataOverlay.getColumn()))
-        			identifierValueMap.put(entity.getIdentifier(), entity.getValue());
-        	}
+        	dataOverlay.getUniprotToEntitiesMap().forEach((k,v) ->{
+    			v.forEach((l) -> {
+    				if(dataOverlay.getTissueTypes().get(dataOverlay.getColumn()) == l.getTissue())
+    					identifierValueMap.put(k, l.getValue());
+    			});
+    		});
             this.dataOverlay.setIdentifierValueMap(identifierValueMap);
         }
 
@@ -142,7 +144,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 											 getDataOverlayValue(participant.getIdentifier()));
 					}
 				}
-				if(entity.getParticipantsExpression(0).size() > 0)
+				if(entity.getParticipantsExpression(dataOverlay.getColumn()).size() > 0)
 					//renderer.drawExpression for each diagram object here
 					renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
 			}
@@ -152,11 +154,17 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 	}
 	
 	private List<Double> getDataOverlayValue(String identifier){
-		List<Double> result = new ArrayList<>();
 		int index = identifier.length();
 		if(identifier.contains("-"))
-			index = identifier.indexOf("-");
-		result.add(dataOverlay.getIdentifierValueMap().get(identifier.substring(0,index)));
+			index = identifier.indexOf("0");		
+		List<Double> result = new ArrayList<>();
+		List<DataOverlayEntity> entities = dataOverlay.getUniprotToEntitiesMap().get(identifier.substring(0, index));
+		while(result.size()<dataOverlay.getTissueTypes().size()) result.add(null);
+		if(entities != null) {
+			for(DataOverlayEntity entity : entities) 
+				result.set(dataOverlay.getTissueTypes().indexOf(entity.getTissue()), entity.getValue());
+			return result;
+		}
 		return result;
 	}
 

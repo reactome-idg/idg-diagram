@@ -86,20 +86,28 @@ public class DataOverlayEntityMediator {
 		List<String>discreteTypes = new ArrayList<>();
 		Set<String>tissues = new HashSet<>();
 		Map<String, Double> identifierValueMap = new HashMap<>();
+		Map<String, List<DataOverlayEntity>> uniprotToEntitiesMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
+			if(!discreteTypes.contains(rawEntity.getQualValue()))
+				discreteTypes.add(rawEntity.getQualValue());
+			
+			if(rawEntity.getTissue() != null)
+				tissues.add(rawEntity.getTissue());
+			DataOverlayEntity entity = null;
 			if(rawEntity.getQualValue() != null) {
-				if(!discreteTypes.contains(rawEntity.getQualValue()))
-					discreteTypes.add(rawEntity.getQualValue());
-				
-				if(rawEntity.getTissue() != null)
-					tissues.add(rawEntity.getTissue());
-				
-				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(), 
+				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(), 
 						new Double(discreteTypes.indexOf(rawEntity.getQualValue())), rawEntity.getEtype(), rawEntity.getTissue()));
 				identifierValueMap.put(rawEntity.getUniprot(), new Double(discreteTypes.indexOf(rawEntity.getQualValue())));
+				
+				//testing new way to organize 
+				if(!uniprotToEntitiesMap.containsKey(rawEntity.getUniprot()))
+					uniprotToEntitiesMap.put(rawEntity.getUniprot(), new ArrayList<>());	
+				uniprotToEntitiesMap.get(rawEntity.getUniprot()).add(entity);
+				
 			}
 		}
 		result.setIdentifierValueMap(identifierValueMap);
+		result.setUniprotToEntitiesMap(uniprotToEntitiesMap);
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setTissueTypes(tissues.stream().sorted().collect(Collectors.toList()));
 		result.setLegendTypes(discreteTypes);
@@ -124,15 +132,21 @@ public class DataOverlayEntityMediator {
 		result.setDiscrete(true);
 		
 		Map<String, Double> identifierValueMap = new HashMap<>();
+		Map<String, List<DataOverlayEntity>> uniprotToEntitiesMap = new HashMap<>();
 		Set<String> tissues = new HashSet<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
 			if(rawEntity.getTissue() != null)
 				tissues.add(rawEntity.getTissue());
-			
+			DataOverlayEntity entity = null;
 			if(rawEntity.getBooleanValue() != null) {
-				result.addDataOverlayEntity(new DataOverlayEntity(rawEntity.getUniprot(),
+				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
 						new Double(0), rawEntity.getEtype(), rawEntity.getTissue()));
 				identifierValueMap.put(rawEntity.getUniprot(), new Double(0));
+				
+				//testing new way to organize 
+				if(!uniprotToEntitiesMap.containsKey(rawEntity.getUniprot()))
+					uniprotToEntitiesMap.put(rawEntity.getUniprot(), new ArrayList<>());	
+				uniprotToEntitiesMap.get(rawEntity.getUniprot()).add(entity);
 			}
 		}
 		
@@ -143,6 +157,7 @@ public class DataOverlayEntityMediator {
 		}
 			
 		result.setIdentifierValueMap(identifierValueMap);
+		result.setUniprotToEntitiesMap(uniprotToEntitiesMap);
 		result.setTissueTypes(tissues.stream().sorted().collect(Collectors.toList()));
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setMinValue(new Double(0));
