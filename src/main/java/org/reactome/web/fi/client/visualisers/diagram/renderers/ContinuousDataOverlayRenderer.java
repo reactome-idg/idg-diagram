@@ -96,7 +96,6 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         		if(graphObject.getIdentifier().contains("-"))
         			index = graphObject.getIdentifier().indexOf("-");
 
-        		graphObject.setIsHit(graphObject.getIdentifier(), getDataOverlayValue(graphObject.getIdentifier()));
         		Double identifierDouble = dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier().substring(0, index));
         		if(identifierDouble == null) continue;
         		String colour = gradient.getColor(identifierDouble, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
@@ -120,26 +119,6 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 					renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(),factor, offset);
 			}
 		}
-	}
-	
-	/**
-	 * Used to get the correct expression
-	 * @param identifier
-	 * @return
-	 */
-	private List<Double> getDataOverlayValue(String identifier){
-		int index = identifier.length();
-		if(identifier.contains("-"))
-			index = identifier.indexOf("0");		
-		List<Double> result = new ArrayList<>();
-		List<DataOverlayEntity> entities = dataOverlay.getUniprotToEntitiesMap().get(identifier.substring(0, index));
-		while(result.size()<dataOverlay.getTissueTypes().size()) result.add(null);
-		if(entities != null) {
-			for(DataOverlayEntity entity : entities) 
-				result.set(dataOverlay.getTissueTypes().indexOf(entity.getTissue()), entity.getValue());
-			return result;
-		}
-		return result;
 	}
 	
 	@Override
@@ -168,7 +147,14 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 			int index = entity.getIdentifier().length();
 			if(entity.getIdentifier().contains("-"))
 				index = entity.getIdentifier().indexOf("-");
-			Double overlayVal = getDataOverlayValue(entity.getIdentifier().substring(0, index)).get(0);
+			Double overlayVal;
+			
+			//need if else to make sure entity is hit
+			if(dataOverlay.getUniprotToEntitiesMap().get(entity.getIdentifier().substring(0, index)) != null)
+				overlayVal = dataOverlay.getUniprotToEntitiesMap().get(entity.getIdentifier().substring(0, index)).get(dataOverlay.getColumn()).getValue();
+			else
+				overlayVal = null;
+			
 			if (overlayVal == null) continue;
 			String color = gradient.getColor(overlayVal, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
 			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(
