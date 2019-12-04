@@ -166,7 +166,7 @@ DataOverlayColumnChangedHandler{
     		Context2d ctx = this.flag.getContext2d();
     		ctx.clearRect(0, 0, this.flag.getOffsetWidth(), this.flag.getOffsetHeight());
     		
-    		List<Double>hoveredValues = getExpressionValues(this.hovered, 0);
+    		List<Double>hoveredValues = getExpressionValues(this.hovered, dataOverlay.getColumn());
     		if (!hoveredValues.isEmpty()) {
                 String colour = DiagramColours.get().PROFILE.getProperties().getHovering();
                 for (Double value : hoveredValues) {
@@ -180,7 +180,7 @@ DataOverlayColumnChangedHandler{
                     drawLeftPin(ctx, p, colour, colour);
                 }
             }
-    		List<Double> selectedValues = getExpressionValues(this.selected, 0);
+    		List<Double> selectedValues = getExpressionValues(this.selected, dataOverlay.getColumn());
             if (!selectedValues.isEmpty()) {
                 String colour = DiagramColours.get().PROFILE.getProperties().getSelection();
                 for (Double value : selectedValues) {

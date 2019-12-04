@@ -113,7 +113,7 @@ public class FIViewContent extends GenericContent{
 
 	    		}
 	    	}
-	    	//Takes all proteins existing on existing proteins after FIs are made,
+	    	//Takes all existing proteins after FIs are made,
 	    	//converts them to graphObjects and places them on identifierMap.
 	    	
 	    	makeIdentifiersMap();

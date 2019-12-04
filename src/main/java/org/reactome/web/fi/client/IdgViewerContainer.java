@@ -328,8 +328,11 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			((FIViewVisualiser)activeVisualiser).overlayNodes(dataOverlay);
 	}
 	
+	/**
+	 * Set isHit used in analysis for overlay in each diagram object
+	 */
 	private void setIsHitValues() {
-		MapSet<String, GraphObject> map = this.context.getContent().getIdentifierMap();
+		MapSet<String, GraphObject> map = super.context.getContent().getIdentifierMap();
 		if(dataOverlay !=null && dataOverlay.getUniprotToEntitiesMap() != null) {
 			dataOverlay.getUniprotToEntitiesMap().keySet().forEach((key) ->{
 				Set<GraphObject> elements = map.getElements(key);
