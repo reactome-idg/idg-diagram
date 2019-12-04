@@ -144,21 +144,6 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 		//Last thing: restore AnalysisColours.get().expressionGradient
 		AnalysisColours.get().expressionGradient = originalExpressionGradient;
 	}
-	
-	private List<Double> getDataOverlayValues(String identifier){
-		int index = identifier.length();
-		if(identifier.contains("-"))
-			index = identifier.indexOf("0");		
-		List<Double> result = new ArrayList<>();
-		List<DataOverlayEntity> entities = dataOverlay.getUniprotToEntitiesMap().get(identifier.substring(0, index));
-		while(result.size()<dataOverlay.getTissueTypes().size()) result.add(null);
-		if(entities != null) {
-			for(DataOverlayEntity entity : entities) 
-				result.set(dataOverlay.getTissueTypes().indexOf(entity.getTissue()), entity.getValue());
-			return result;
-		}
-		return result;
-	}
 
 	@Override
 	public void onRenderOtherContextDialogInfo(RenderOtherContextDialogInfoEvent event) {

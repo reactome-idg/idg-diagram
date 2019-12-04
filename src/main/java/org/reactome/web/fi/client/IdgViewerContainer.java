@@ -372,6 +372,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		renderOverlays = false;
 		this.dataOverlay = null;
+		context.clearAnalysisOverlay();
 		context.setDialogMap(new HashMap<>());
 		if(activeVisualiser instanceof DiagramVisualiser)
 			activeVisualiser.loadAnalysis();
