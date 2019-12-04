@@ -124,8 +124,14 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 	private void showSingleTissuePanel() {
 		forwardButton.setEnabled(false);
 		backButton.setEnabled(false);
+		String labelString = dataOverlay.getEType();
 		InlineLabel label = new InlineLabel(dataOverlay.getEType());
 		innerPanel.add(label);
+		if(dataOverlay.getTissueTypes().size() > 0)
+			labelString = labelString + " - " + dataOverlay.getTissueTypes().get(0);
+		label.setText(labelString);
+		innerPanel.add(label);
+
 	}
 	
 	private void showMultipleTissuePanel() {
