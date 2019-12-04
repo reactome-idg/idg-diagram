@@ -1,6 +1,5 @@
 package org.reactome.web.fi.legends;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -140,8 +139,8 @@ DataOverlayColumnChangedHandler{
 		this.dataOverlay = event.getDataOverlay();
 		this.min = event.getDataOverlay().getMinValue();
 		this.max = event.getDataOverlay().getMaxValue();
-		this.topLabel.setText(min+"");
-		this.bottomLabel.setText(max+"");
+		this.topLabel.setText(max+"");
+		this.bottomLabel.setText(min+"");
 		fillGradient();
 		updateIdentifierValueMap();
 	}
