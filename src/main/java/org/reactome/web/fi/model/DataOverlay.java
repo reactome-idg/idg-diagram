@@ -16,7 +16,6 @@ public class DataOverlay {
 	private Double maxValue;
 	private boolean isDiscrete;
 	private OverlayDataType overlayType;
-	private List<DataOverlayEntity> dataOverlayEntities;
 	private Map<String, List<DataOverlayEntity>> uniprotToEntitiesMap;
 	private List<String> legendTypes;
 	private List<String> tissueTypes;
@@ -50,16 +49,6 @@ public class DataOverlay {
 
 	public void setDiscrete(boolean isDiscrete) {
 		this.isDiscrete = isDiscrete;
-	}
-
-	public List<DataOverlayEntity> getDataOverlayEntities() {
-		return dataOverlayEntities;
-	}
-
-	public void addDataOverlayEntity(DataOverlayEntity dataOverlayEntity) {
-		if(this.dataOverlayEntities == null)
-			this.dataOverlayEntities = new ArrayList<>();
-		this.dataOverlayEntities.add(dataOverlayEntity);
 	}
 
 	public List<String> getLegendTypes() {

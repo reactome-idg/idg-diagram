@@ -93,13 +93,10 @@ public class DataOverlayEntityMediator {
 			
 			if(rawEntity.getTissue() != null)
 				tissues.add(rawEntity.getTissue());
-			DataOverlayEntity entity = null;
 			if(rawEntity.getQualValue() != null) {
-				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(), 
-						new Double(discreteTypes.indexOf(rawEntity.getQualValue())), rawEntity.getEtype(), rawEntity.getTissue()));
-				identifierValueMap.put(rawEntity.getUniprot(), new Double(discreteTypes.indexOf(rawEntity.getQualValue())));
-				
-				//testing new way to organize 
+				DataOverlayEntity entity = new DataOverlayEntity(rawEntity.getUniprot(), 
+						new Double(discreteTypes.indexOf(rawEntity.getQualValue())), rawEntity.getEtype(), rawEntity.getTissue());
+				identifierValueMap.put(entity.getIdentifier(), entity.getValue());
 				if(!uniprotToEntitiesMap.containsKey(rawEntity.getUniprot()))
 					uniprotToEntitiesMap.put(rawEntity.getUniprot(), new ArrayList<>());	
 				uniprotToEntitiesMap.get(rawEntity.getUniprot()).add(entity);
@@ -137,13 +134,10 @@ public class DataOverlayEntityMediator {
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
 			if(rawEntity.getTissue() != null)
 				tissues.add(rawEntity.getTissue());
-			DataOverlayEntity entity = null;
 			if(rawEntity.getBooleanValue() != null) {
-				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
-						new Double(0), rawEntity.getEtype(), rawEntity.getTissue()));
-				identifierValueMap.put(rawEntity.getUniprot(), new Double(0));
-				
-				//testing new way to organize 
+				DataOverlayEntity entity = new DataOverlayEntity(rawEntity.getUniprot(),
+						new Double(0), rawEntity.getEtype(), rawEntity.getTissue());
+				identifierValueMap.put(entity.getIdentifier(), entity.getValue());
 				if(!uniprotToEntitiesMap.containsKey(rawEntity.getUniprot()))
 					uniprotToEntitiesMap.put(rawEntity.getUniprot(), new ArrayList<>());	
 				uniprotToEntitiesMap.get(rawEntity.getUniprot()).add(entity);
@@ -184,13 +178,10 @@ public class DataOverlayEntityMediator {
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
 			if(rawEntity.getTissue() != null)
 				types.add(rawEntity.getTissue());
-			DataOverlayEntity entity = null;
 			if(rawEntity.getNumberValue() != null) {
-				result.addDataOverlayEntity(entity = new DataOverlayEntity(rawEntity.getUniprot(),
-						rawEntity.getNumberValue(), rawEntity.getEtype(), rawEntity.getTissue()));
+				DataOverlayEntity entity = new DataOverlayEntity(rawEntity.getUniprot(),
+						rawEntity.getNumberValue(), rawEntity.getEtype(), rawEntity.getTissue());
 				identifierValueMap.put(entity.getIdentifier(), entity.getValue());
-				
-				//testing new way to organize 
 				if(!uniprotToEntitiesMap.containsKey(rawEntity.getUniprot()))
 					uniprotToEntitiesMap.put(rawEntity.getUniprot(), new ArrayList<>());	
 				uniprotToEntitiesMap.get(rawEntity.getUniprot()).add(entity);
