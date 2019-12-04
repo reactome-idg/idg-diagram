@@ -1,7 +1,9 @@
 package org.reactome.web.fi.client;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.reactome.web.diagram.client.ViewerContainer;
@@ -17,6 +19,7 @@ import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.events.AnalysisResetEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
+import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.fi.client.visualisers.OverlayDataHandler;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.ContinuousDataOverlayRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOverlayRenderer;
@@ -36,6 +39,7 @@ import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
 import org.reactome.web.fi.legends.OverlayColourLegend;
 import org.reactome.web.fi.legends.OverlayControlLegend;
 import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.tools.overlay.OverlayLauncherDisplay;
 
@@ -315,12 +319,55 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		this.dataOverlay = event.getDataOverlay();
 		context.setDialogMap(new HashMap<>());
 		
+		//testing new way to set is hit for all data so it works in FIViz without overlaying on diagram first
+		setIsHitValues();
+		
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualiser)
 			((FIViewVisualiser)activeVisualiser).overlayNodes(dataOverlay);
 	}
 	
+	private void setIsHitValues() {
+		MapSet<String, GraphObject> map = this.context.getContent().getIdentifierMap();
+		if(dataOverlay !=null && dataOverlay.getUniprotToEntitiesMap() != null) {
+			dataOverlay.getUniprotToEntitiesMap().keySet().forEach((key) ->{
+				Set<GraphObject> elements = map.getElements(key);
+				if(elements == null) return;
+				for(GraphObject graphObject: elements) {
+					if(graphObject instanceof GraphPhysicalEntity) {
+						GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
+						pe.setIsHit(key, getDataOverlayValues(key));
+					}
+				}
+			});
+		}
+	}
+	
+	/**
+	 * Used to get the correct list of expressions for each graphObject.
+	 * This works for data sets with and without tissue specificity.
+	 * @param identifier
+	 * @return
+	 */
+	private List<Double> getDataOverlayValues(String identifier){
+		int index = identifier.length();
+		if(identifier.contains("-"))
+			index = identifier.indexOf("0");		
+		List<Double> result = new ArrayList<>();
+		List<DataOverlayEntity> entities = dataOverlay.getUniprotToEntitiesMap().get(identifier.substring(0, index));
+		while(result.size()<dataOverlay.getTissueTypes().size()) result.add(null);
+		if(entities != null) 
+			for(DataOverlayEntity entity : entities) {
+				if(dataOverlay.getTissueTypes().size() != 0)	//if else for data sets that are not tissue specific
+					result.set(dataOverlay.getTissueTypes().indexOf(entity.getTissue()), entity.getValue());
+				else								
+					result.add(entity.getValue());
+			return result;
+		}
+		return result;
+	}
+
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		renderOverlays = false;
