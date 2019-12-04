@@ -136,15 +136,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 		Set<DiagramObject> objectSet = target.values();
 		for(DiagramObject item : objectSet) {
 			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();
-			if(entity != null) {
-				Set<GraphPhysicalEntity> obj = entity.getParticipants();
-				for(GraphPhysicalEntity participant : obj) {
-					if(participant instanceof GraphEntityWithAccessionedSequence || participant instanceof GraphProteinDrug) {
-						participant.setIsHit(participant.getIdentifier(),
-											 getDataOverlayValue(participant.getIdentifier()));
-					}
-				}
-				if(entity.getParticipantsExpression(dataOverlay.getColumn()).size() > 0)
+			if(entity != null && entity.getParticipantsExpression(dataOverlay.getColumn()).size() > 0) {
 					//renderer.drawExpression for each diagram object here
 					renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
 			}
@@ -153,7 +145,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 		AnalysisColours.get().expressionGradient = originalExpressionGradient;
 	}
 	
-	private List<Double> getDataOverlayValue(String identifier){
+	private List<Double> getDataOverlayValues(String identifier){
 		int index = identifier.length();
 		if(identifier.contains("-"))
 			index = identifier.indexOf("0");		

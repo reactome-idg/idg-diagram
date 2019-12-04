@@ -116,15 +116,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 		Set<DiagramObject> objectSet = target.values();
 		for(DiagramObject item : objectSet) {
 			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();
-			if(entity != null) {
-				Set<GraphPhysicalEntity> obj = entity.getParticipants();
-				for(GraphPhysicalEntity participant : obj) {
-					if(participant instanceof GraphEntityWithAccessionedSequence || participant instanceof GraphProteinDrug) {
-						participant.setIsHit(participant.getIdentifier(), 
-								getDataOverlayValue(participant.getIdentifier()));
-					}
-				}
-				if(entity.getParticipantsExpression(dataOverlay.getColumn()).size() > 0)
+			if(entity != null && entity.getParticipantsExpression(dataOverlay.getColumn()).size() > 0) {
 					renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(),factor, offset);
 			}
 		}
