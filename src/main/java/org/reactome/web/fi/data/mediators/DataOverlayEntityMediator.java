@@ -87,8 +87,9 @@ public class DataOverlayEntityMediator {
 				//block to split rawString into what we want for valueStrng depending on structure of getStringValue()
 				String valueString = "";
 				String rawString = rawEntity.getStringValue();
-				if(rawString.contains("antibody")) {
-					valueString = rawString.substring(rawString.indexOf(" "), rawString.indexOf(" ")+2);
+				if(rawString.contains("antibody") || rawString.contains("antibodies")) {
+					if(!rawString.contains("Medium: "))continue;
+					valueString = rawString.substring(rawString.lastIndexOf("M")+8, rawString.lastIndexOf("M")+9);
 				}
 				else if(rawString.contains(",")) {
 					String[] splitString = rawString.split(", ");
@@ -97,6 +98,9 @@ public class DataOverlayEntityMediator {
 						if(val != "N/A") valueDouble += new Double(val);
 					
 					valueString = valueDouble + "";
+				}
+				else {
+					valueString = rawString.split(" ")[0];
 				}
 				
 				//create DataOverlayEntity based on value of valueString
