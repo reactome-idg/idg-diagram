@@ -12,18 +12,16 @@ import java.util.stream.Collectors;
 import org.reactome.web.fi.data.overlay.model.ExpressionEntity;
 import org.reactome.web.fi.data.overlay.model.OverlayEntities;
 import org.reactome.web.fi.data.overlay.model.OverlayEntityDataFactory;
-import org.reactome.web.fi.data.overlay.model.TargetLevelEntity;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.model.OverlayDataType;
-import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
 
 public class DataOverlayEntityMediator {
 
+	private JensenExperimentDataSplitter splitter = new JensenExperimentDataSplitter();
 	private String returnValueType;
-	
 	/**
 	 * Can be used to direct data mediation based on data type from server
 	 * @param responseText
@@ -85,26 +83,10 @@ public class DataOverlayEntityMediator {
 					tissues.add(rawEntity.getTissue());
 				
 				//block to split rawString into what we want for valueStrng depending on structure of getStringValue()
-				String valueString = "";
-				String rawString = rawEntity.getStringValue();
-				if(rawString.contains("antibody") || rawString.contains("antibodies")) {
-					if(!rawString.contains("Medium: "))continue;
-					valueString = rawString.substring(rawString.lastIndexOf("M")+8, rawString.lastIndexOf("M")+9);
-				}
-				else if(rawString.contains(",")) {
-					String[] splitString = rawString.split(", ");
-					double valueDouble = 0;
-					for(String val : splitString)
-						if(val != "N/A") valueDouble += new Double(val);
-					
-					valueString = valueDouble + "";
-				}
-				else {
-					valueString = rawString.split(" ")[0];
-				}
+				String valueString = splitter.split(rawEntity.getStringValue());
 				
 				//create DataOverlayEntity based on value of valueString
-				if(valueString != "" && valueString!="N/A") {
+				if(valueString != "") {
 					DataOverlayEntity entity = new DataOverlayEntity(rawEntity.getUniprot(),
 							new Double(valueString), rawEntity.getEtype(), rawEntity.getTissue());
 					identifierValueMap.put(entity.getIdentifier(), entity.getValue());
