@@ -70,8 +70,53 @@ public class DataOverlayEntityMediator {
 	}
 
 	private DataOverlay getStringValueResult(DataOverlay result, OverlayEntities entities) {
-		// TODO Auto-generated method stub
-		return new DataOverlay();
+		result.setDiscrete(false);
+		
+		Double minValue = Double.MAX_VALUE;
+		Double maxValue = Double.MIN_VALUE;
+		
+		Set<String> tissues = new HashSet<>();
+		Map<String, Double> identifierValueMap = new HashMap<>();
+		Map<String, List<DataOverlayEntity>> uniprotToEntitiesMap = new HashMap<>();
+		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
+			if(rawEntity.getStringValue() != null) {
+				if(rawEntity.getTissue() != null)
+					tissues.add(rawEntity.getTissue());
+				
+				//block to split rawString into what we want for valueStrng depending on structure of getStringValue()
+				String valueString = "";
+				String rawString = rawEntity.getStringValue();
+				if(rawString.contains("antibody")) {
+					valueString = rawString.substring(rawString.indexOf(" "), rawString.indexOf(" ")+2);
+				}
+				
+				//create DataOverlayEntity based on value of valueString
+				if(valueString != "") {
+					DataOverlayEntity entity = new DataOverlayEntity(rawEntity.getUniprot(),
+							new Double(valueString), rawEntity.getEtype(), rawEntity.getTissue());
+					identifierValueMap.put(entity.getIdentifier(), entity.getValue());
+					if(!uniprotToEntitiesMap.containsKey(rawEntity.getUniprot()))
+						uniprotToEntitiesMap.put(rawEntity.getUniprot(), new ArrayList<>());
+					uniprotToEntitiesMap.get(rawEntity.getUniprot()).add(entity);	
+					
+					//check for new min and max
+					if(entity.getValue() > maxValue)
+						maxValue = entity.getValue();
+					if(entity.getValue() < minValue)
+						minValue = entity.getValue();
+				}
+			}
+		}
+		result.setIdentifierValueMap(identifierValueMap);
+		result.setUniprotToEntitiesMap(uniprotToEntitiesMap);
+		result.setEType(entities.getExpressionEntity().get(0).getEtype());
+		result.setTissueTypes(tissues.stream().sorted().collect(Collectors.toList()));
+		if(minValue != Double.MAX_VALUE)
+			result.setMinValue(minValue);
+		if(maxValue != Double.MIN_VALUE)
+			result.setMaxValue(maxValue);
+		
+		return result;
 	}
 
 	/**
@@ -83,19 +128,19 @@ public class DataOverlayEntityMediator {
 	private DataOverlay getQualValueResult(DataOverlay result, OverlayEntities entities) {
 		result.setDiscrete(true);
 		
-		List<String>discreteTypes = new ArrayList<>();
+		List<String>legendTypes = new ArrayList<>();
 		Set<String>tissues = new HashSet<>();
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		Map<String, List<DataOverlayEntity>> uniprotToEntitiesMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
-			if(!discreteTypes.contains(rawEntity.getQualValue()))
-				discreteTypes.add(rawEntity.getQualValue());
+			if(!legendTypes.contains(rawEntity.getQualValue()))
+				legendTypes.add(rawEntity.getQualValue());
 			
 			if(rawEntity.getTissue() != null)
 				tissues.add(rawEntity.getTissue());
 			if(rawEntity.getQualValue() != null) {
 				DataOverlayEntity entity = new DataOverlayEntity(rawEntity.getUniprot(), 
-						new Double(discreteTypes.indexOf(rawEntity.getQualValue())), rawEntity.getEtype(), rawEntity.getTissue());
+						new Double(legendTypes.indexOf(rawEntity.getQualValue())), rawEntity.getEtype(), rawEntity.getTissue());
 				identifierValueMap.put(entity.getIdentifier(), entity.getValue());
 				if(!uniprotToEntitiesMap.containsKey(rawEntity.getUniprot()))
 					uniprotToEntitiesMap.put(rawEntity.getUniprot(), new ArrayList<>());	
@@ -107,8 +152,8 @@ public class DataOverlayEntityMediator {
 		result.setUniprotToEntitiesMap(uniprotToEntitiesMap);
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setTissueTypes(tissues.stream().sorted().collect(Collectors.toList()));
-		result.setLegendTypes(discreteTypes);
-		result.setMaxValue(new Double(discreteTypes.size()));
+		result.setLegendTypes(legendTypes);
+		result.setMaxValue(new Double(legendTypes.size()));
 		result.setMinValue(new Double(0));
 		
 		//set etype for target dev level, which has no associated eType
