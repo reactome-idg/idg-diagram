@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.lang.Math;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -89,9 +90,17 @@ public class DataOverlayEntityMediator {
 				if(rawString.contains("antibody")) {
 					valueString = rawString.substring(rawString.indexOf(" "), rawString.indexOf(" ")+2);
 				}
+				else if(rawString.contains(",")) {
+					String[] splitString = rawString.split(", ");
+					double valueDouble = 0;
+					for(String val : splitString)
+						if(val != "N/A") valueDouble += new Double(val);
+					
+					valueString = valueDouble + "";
+				}
 				
 				//create DataOverlayEntity based on value of valueString
-				if(valueString != "") {
+				if(valueString != "" && valueString!="N/A") {
 					DataOverlayEntity entity = new DataOverlayEntity(rawEntity.getUniprot(),
 							new Double(valueString), rawEntity.getEtype(), rawEntity.getTissue());
 					identifierValueMap.put(entity.getIdentifier(), entity.getValue());
