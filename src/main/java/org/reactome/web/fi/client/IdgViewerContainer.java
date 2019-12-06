@@ -375,7 +375,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		renderOverlays = false;
 		this.dataOverlay = null;
-		context.clearAnalysisOverlay();
+		clearAnalysisOverlay();
 		context.setDialogMap(new HashMap<>());
 		if(activeVisualiser instanceof DiagramVisualiser)
 			activeVisualiser.loadAnalysis();
@@ -383,6 +383,22 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			((FIViewVisualiser)activeVisualiser).overlayNodes(null);
 	}
 	
+	private void clearAnalysisOverlay() {
+		MapSet<String, GraphObject> map = super.context.getContent().getIdentifierMap();
+		if(dataOverlay !=null && dataOverlay.getUniprotToEntitiesMap() != null) {
+			dataOverlay.getUniprotToEntitiesMap().keySet().forEach((key) ->{
+				Set<GraphObject> elements = map.getElements(key);
+				if(elements == null) return;
+				for(GraphObject graphObject: elements) {
+					if(graphObject instanceof GraphPhysicalEntity) {
+						GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
+						pe.resetHit();
+					}
+				}
+			});
+		}
+	}
+
 	@Override
 	public void onDataOverlayColumnChanged(DataOverlayColumnChangedEvent event) {
 		this.dataOverlay.setColumn(event.getColumn());
