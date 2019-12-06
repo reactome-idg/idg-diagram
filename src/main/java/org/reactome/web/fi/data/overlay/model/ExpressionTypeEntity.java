@@ -13,4 +13,6 @@ public interface ExpressionTypeEntity {
 	
 	String getDescription();
 	
+	String getUnit();
+	
 }

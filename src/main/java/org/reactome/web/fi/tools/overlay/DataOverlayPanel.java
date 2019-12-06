@@ -154,15 +154,16 @@ public class DataOverlayPanel  extends FlowPanel implements ClickHandler, Change
 			
 			//gets return value type to be used in data mediation after server call
 			String valueType = expressionTypes.getExpressionTypeEntity().get(currentEType-1).getDataType();
+			String unit = expressionTypes.getExpressionTypeEntity().get(currentEType-1).getUnit();
 			
 			if(currentEType == 1) {
 				valueType = "String";
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, "\n" + selectorMap.get(0), valueType), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, "\n" + selectorMap.get(0), valueType, unit), this);
 			}
 			else if(currentEType > 1) {
 				String expressionPostData = String.join(",",tissueSelector.getSelectedItemsText()) 
 						+ "\n" + selectorMap.get(currentEType-1);
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData, valueType), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData, valueType, unit), this);
 			}
 		}
 	}

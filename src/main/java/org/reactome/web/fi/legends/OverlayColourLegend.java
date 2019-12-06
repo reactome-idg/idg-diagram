@@ -52,7 +52,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		
 		addStyleName(IDGRESOURCES.getCSS().outerPanel());
 		this.getElement().getStyle().setWidth(100, Unit.PX);
-		this.getElement().getStyle().setHeight(260, Unit.PX);
+		this.getElement().getStyle().setHeight(270, Unit.PX);
 		this.setVisible(false);
 		
 	}
@@ -125,6 +125,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		this.setVisible(false);
 	}
 	
+	public void setUnit(String unit) {
+		continuousPanel.setUnit(unit);
+	}
+	
 	public static Resources IDGRESOURCES;
 	static {
 		IDGRESOURCES = GWT.create(Resources.class);
@@ -144,5 +148,4 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		
 		String outerPanel();
 	}
-	
 }

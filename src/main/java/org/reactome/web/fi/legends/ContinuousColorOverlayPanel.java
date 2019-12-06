@@ -40,6 +40,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * 
@@ -57,6 +58,7 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 	
 	private InlineLabel topLabel;
 	private InlineLabel bottomLabel;
+	private Label unitLabel;
 	
 	private GraphObject hovered;
 	private GraphObject selected;
@@ -90,6 +92,11 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 		this.bottomLabel.setSize("40px", "15px");
 		this.bottomLabel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		this.add(this.bottomLabel, 5, 230);
+		
+		this.unitLabel = new Label();
+		this.unitLabel.setSize("40px", "15px");
+		this.unitLabel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		this.add(this.unitLabel, 5, 245);
 		
 		initHandlers();
 		
@@ -342,5 +349,9 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 		if(dataOverlay == null) return;
 		this.fiSelectedExpression = event.getExpression();
 		draw(Visualiser.FIVIEW);
+	}
+
+	public void setUnit(String unit) {
+		this.unitLabel.setText(unit != null ? unit:"None");
 	}
 }

@@ -20,12 +20,14 @@ public class MakeOverlayRequestEvent extends GwtEvent<MakeOverlayRequestHandler>
     private OverlayEntityType entityType;
     private String expressionPostdata;
     private String returnValueType;
+    private String unit;
     
     
-    public MakeOverlayRequestEvent(OverlayDataType dataType, String expressionPostData, String returnValueType) {
+    public MakeOverlayRequestEvent(OverlayDataType dataType, String expressionPostData, String returnValueType, String unit) {
     	this.dataType = dataType;
     	this.expressionPostdata = expressionPostData;
     	this.returnValueType = returnValueType;
+    	this.unit = unit;
     }
     
     public MakeOverlayRequestEvent(OverlayEntityType entityType) {
@@ -56,6 +58,10 @@ public class MakeOverlayRequestEvent extends GwtEvent<MakeOverlayRequestHandler>
 	
 	public String getReturnValueType() {
 		return this.returnValueType;
+	}
+	
+	public String getUnit() {
+		return this.unit;
 	}
 	
 }
