@@ -119,6 +119,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
         	}
         }
 	}
+	
 	private void renderDiscreteComplexData(MapSet<RenderType, DiagramObject> target) {
 		//return if there are no complexes in the visible DiagramObject set
 		if(target == null) {
