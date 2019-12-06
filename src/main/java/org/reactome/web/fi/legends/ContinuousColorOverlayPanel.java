@@ -126,9 +126,10 @@ DataOverlayColumnChangedHandler{
 	@Override
 	public void onGraphObjectHovered(GraphObjectHoveredEvent event) {
 		if(dataOverlay == null) return;
-		List<DiagramObject> hoveredObjects = event.getHoveredObjects();
-        DiagramObject item = hoveredObjects != null && !hoveredObjects.isEmpty() ? hoveredObjects.get(0) : null;
-        this.hovered = item != null ? item.getGraphObject() : null;
+//		List<DiagramObject> hoveredObjects = event.getHoveredObjects();
+//        DiagramObject item = hoveredObjects != null && !hoveredObjects.isEmpty() ? hoveredObjects.get(0) : null;
+//        this.hovered = item != null ? item.getGraphObject() : null;
+		this.hovered = event.getGraphObject();
         draw();
 	}
 
