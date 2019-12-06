@@ -100,7 +100,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         		if(identifierDouble == null) continue;
         		String colour = gradient.getColor(identifierDouble, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
 	        	ctx.setFillStyle(colour);
-	        	renderer.draw(ctx, item, factor, offset);
+	        	renderer.drawExpression(ctx, this.originalOverlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
         	}
         }
 	}
