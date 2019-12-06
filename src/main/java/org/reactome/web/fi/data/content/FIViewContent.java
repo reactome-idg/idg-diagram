@@ -174,7 +174,7 @@ public class FIViewContent extends GenericContent{
 		fIArray.set(fIArray.size(), interaction);
 		
 		//create graph object from reactomeSources and add to cache
-		convertSourcesToGraphObjects(reactomeSources, proteinOneShortName, proteinTwoShortName);
+		convertSourcesToGraphObjects(reactomeSources);
 	}
 	
 	/**
@@ -251,25 +251,21 @@ public class FIViewContent extends GenericContent{
 	 * parses reactomeSources if necessary and sends to cache for processing
 	 * @param reactomeSources
 	 */
-	private void convertSourcesToGraphObjects(JSONValue reactomeSources, String geneOneName, String geneTwoName) {
+	private void convertSourcesToGraphObjects(JSONValue reactomeSources) {
 		
 		JSONArray jsonArray = reactomeSources.isArray();
 		
-		//make array of gene names for GraphObject creation
-		JSONArray nameArray = new JSONArray();
-		nameArray.set(0, new JSONString(geneOneName));
-		nameArray.set(1, new JSONString(geneTwoName));
 		
 		if(jsonArray != null) {
 			for(int i=0; i<jsonArray.size(); i++) {
 			
 				JSONObject obj = jsonArray.get(i).isObject();
-				makeGraphObject(obj, geneOneName, geneTwoName);
+				makeGraphObject(obj);
 			}
 		}
 		else if(jsonArray == null) {
 			JSONObject obj = reactomeSources.isObject();
-			makeGraphObject(obj, geneOneName, geneTwoName);	
+			makeGraphObject(obj);	
 		}
 	}
 
@@ -279,16 +275,15 @@ public class FIViewContent extends GenericContent{
 	 * Converts Reactions into FIEventNodes.
 	 * @param reactomeSources
 	 */
-	protected void makeGraphObject(JSONObject reactomeSources, String geneOneName, String geneTwoName) {
-//		if(graphObjectCache.containsKey(Long.parseLong(reactomeSources.get("reactomeId").isString().stringValue())))
-//			return;
+	protected void makeGraphObject(JSONObject reactomeSources) {
+		if(graphObjectCache.containsKey(Long.parseLong(reactomeSources.get("reactomeId").isString().stringValue())))
+			return;
 		
 		JSONObject sourceObj = new JSONObject();
 		sourceObj.put("reactomeId", reactomeSources.get("reactomeId"));
 		
 		//choose sourceType for graph object based on passed in sourceType
 		sourceObj.put("sourceType", extractSourceType(reactomeSources));
-		
 		
 		//makes graphObject from source and stores in graphObjectCache
 		GraphObject graphObj = null;
@@ -306,10 +301,6 @@ public class FIViewContent extends GenericContent{
 			e.printStackTrace();
 		}
 		graphObjectCache.put(graphObj.getDbId(), graphObj);
-		identifierMap.add(geneOneName, graphObj);
-		identifierMap.add(geneTwoName, graphObj);
-
-		
 	}
 	
 	/**

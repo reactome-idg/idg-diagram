@@ -19,6 +19,4 @@ public interface FIEntityNode extends EntityNode {
 	@PropertyName("sourceType")
 	String getSchemaClass();
 	
-	@PropertyName("geneNames")
-	List<String> getGeneNames();
 }
