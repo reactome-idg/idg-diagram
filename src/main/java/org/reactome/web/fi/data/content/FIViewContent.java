@@ -13,6 +13,7 @@ import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.content.GenericContent;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPathway;
+import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphSubpathway;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
@@ -173,7 +174,7 @@ public class FIViewContent extends GenericContent{
 		fIArray.set(fIArray.size(), interaction);
 		
 		//create graph object from reactomeSources and add to cache
-		convertSourcesToGraphObjects(reactomeSources);
+		convertSourcesToGraphObjects(reactomeSources, proteinOneShortName, proteinTwoShortName);
 	}
 	
 	/**
@@ -250,20 +251,25 @@ public class FIViewContent extends GenericContent{
 	 * parses reactomeSources if necessary and sends to cache for processing
 	 * @param reactomeSources
 	 */
-	private void convertSourcesToGraphObjects(JSONValue reactomeSources) {
+	private void convertSourcesToGraphObjects(JSONValue reactomeSources, String geneOneName, String geneTwoName) {
 		
 		JSONArray jsonArray = reactomeSources.isArray();
+		
+		//make array of gene names for GraphObject creation
+		JSONArray nameArray = new JSONArray();
+		nameArray.set(0, new JSONString(geneOneName));
+		nameArray.set(1, new JSONString(geneTwoName));
 		
 		if(jsonArray != null) {
 			for(int i=0; i<jsonArray.size(); i++) {
 			
 				JSONObject obj = jsonArray.get(i).isObject();
-				makeGraphObject(obj);
+				makeGraphObject(obj, geneOneName, geneTwoName);
 			}
 		}
 		else if(jsonArray == null) {
 			JSONObject obj = reactomeSources.isObject();
-			makeGraphObject(obj);	
+			makeGraphObject(obj, geneOneName, geneTwoName);	
 		}
 	}
 
@@ -273,9 +279,9 @@ public class FIViewContent extends GenericContent{
 	 * Converts Reactions into FIEventNodes.
 	 * @param reactomeSources
 	 */
-	protected void makeGraphObject(JSONObject reactomeSources) {
-		if(graphObjectCache.containsKey(Long.parseLong(reactomeSources.get("reactomeId").isString().stringValue())))
-			return;
+	protected void makeGraphObject(JSONObject reactomeSources, String geneOneName, String geneTwoName) {
+//		if(graphObjectCache.containsKey(Long.parseLong(reactomeSources.get("reactomeId").isString().stringValue())))
+//			return;
 		
 		JSONObject sourceObj = new JSONObject();
 		sourceObj.put("reactomeId", reactomeSources.get("reactomeId"));
@@ -283,22 +289,26 @@ public class FIViewContent extends GenericContent{
 		//choose sourceType for graph object based on passed in sourceType
 		sourceObj.put("sourceType", extractSourceType(reactomeSources));
 		
+		
 		//makes graphObject from source and stores in graphObjectCache
+		GraphObject graphObj = null;
 		try {
 			if(sourceObj.get("sourceType").isString().stringValue().contentEquals("Complex")) {
 				FIEntityNode source = FIEntityFactory.getSourceEntity(FIEntityNode.class, sourceObj.toString());
-				GraphObject graphObj = GraphObjectFactory.getOrCreateDatabaseObject(source);
-				graphObjectCache.put(graphObj.getDbId(), graphObj);
+				graphObj = GraphObjectFactory.getOrCreateDatabaseObject(source);
 			}
 			else if(sourceObj.get("sourceType").isString().stringValue().contentEquals("Reaction")){
 				FIEventNode source = FIEntityFactory.getSourceEntity(FIEventNode.class, sourceObj.toString());
-				GraphObject graphObj = GraphObjectFactory.getOrCreateDatabaseObject(source);
-				graphObjectCache.put(graphObj.getDbId(), graphObj);
+				graphObj = GraphObjectFactory.getOrCreateDatabaseObject(source);
 			}
 			
 		} catch(DiagramObjectException e) {
 			e.printStackTrace();
 		}
+		graphObjectCache.put(graphObj.getDbId(), graphObj);
+		identifierMap.add(geneOneName, graphObj);
+		identifierMap.add(geneTwoName, graphObj);
+
 		
 	}
 	

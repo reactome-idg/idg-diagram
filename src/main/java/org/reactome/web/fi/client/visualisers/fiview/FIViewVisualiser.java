@@ -51,6 +51,8 @@ import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreContextHandler;
 import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreSelectedHandler;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
+import org.reactome.web.fi.events.FIViewOverlayEdgeHoveredEvent;
+import org.reactome.web.fi.events.FIViewOverlayEdgeSelectedEvent;
 import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
 import org.reactome.web.fi.handlers.CytoscapeLayoutChangedHandler;
 import org.reactome.web.fi.handlers.FireGraphObjectSelectedHandler;
@@ -109,7 +111,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
     private int viewportHeight = 0;
 	private FIViewInfoPopup infoPopup;
 	
-	SimplePanel cyView;
+	private SimplePanel cyView;
+	private DataOverlay dataOverlay;
     
 	public FIViewVisualiser(EventBus eventBus) {
 		super();
@@ -258,6 +261,9 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	public void onEdgeMouseOut(EdgeMouseOutEvent event) {
 		infoPopup.hide();
 		eventBus.fireEventFromSource(new GraphObjectHoveredEvent(), this);
+		
+		if(dataOverlay != null && !dataOverlay.isDiscrete())
+			eventBus.fireEventFromSource(new FIViewOverlayEdgeHoveredEvent(new ArrayList<>()), this);
 	}
 
 	@Override
@@ -283,6 +289,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		GraphObject graphObject = context.getContent().getDatabaseObject(dbId);
 		eventBus.fireEventFromSource(new GraphObjectHoveredEvent(graphObject),  this);
 		
+		if(dataOverlay != null && !dataOverlay.isDiscrete())
+			eventBus.fireEventFromSource(new FIViewOverlayEdgeHoveredEvent(getNodeExpression(fi)), this);
 	}
 
 	@Override
@@ -299,7 +307,17 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		GraphObject graphObject = context.getContent().getDatabaseObject(dbId);
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
 		
-		
+		if(dataOverlay != null && !dataOverlay.isDiscrete()) {
+			eventBus.fireEventFromSource(new FIViewOverlayEdgeSelectedEvent(getNodeExpression(fi)), this);
+		}
+	}
+	
+	private List<Double> getNodeExpression(JSONObject fi) {
+		List<Double> expression = new ArrayList<>();
+		expression.add(dataOverlay.getIdentifierValueMap().get(fi.get("source").isString().stringValue()));
+		expression.add(dataOverlay.getIdentifierValueMap().get(fi.get("target").isString().stringValue()));
+		expression.removeAll(Collections.singleton(null));
+		return expression;
 	}
 	
 	@Override
@@ -359,6 +377,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	public void onCytoscapeCoreSelected(CytoscapeCoreSelectedEvent event) {
 		cytoscapeClickedFlag = true;
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(null,false), this);
+		if(dataOverlay != null && !dataOverlay.isDiscrete()) 
+			eventBus.fireEventFromSource(new FIViewOverlayEdgeHoveredEvent(new ArrayList<>()), this);
 		hideContextMenus();
 	}
 
@@ -660,6 +680,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	public void overlayNodes(DataOverlay dataOverlay) {
 		cy.resetStyle();
+		this.dataOverlay = dataOverlay;
 		if(dataOverlay == null) {
 			return;
 		}

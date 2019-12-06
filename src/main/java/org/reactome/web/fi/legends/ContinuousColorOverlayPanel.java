@@ -1,5 +1,6 @@
 package org.reactome.web.fi.legends;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,9 +20,14 @@ import org.reactome.web.diagram.profiles.diagram.DiagramColours;
 import org.reactome.web.diagram.util.Console;
 import org.reactome.web.diagram.util.ExpressionUtil;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
+import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
+import org.reactome.web.fi.events.FIViewOverlayEdgeHoveredEvent;
+import org.reactome.web.fi.events.FIViewOverlayEdgeSelectedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.handlers.DataOverlayColumnChangedHandler;
+import org.reactome.web.fi.handlers.FIViewOverlayEdgeHoveredHandler;
+import org.reactome.web.fi.handlers.FIViewOverlayEdgeSelectedHandler;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
@@ -42,7 +48,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
  */
 public class ContinuousColorOverlayPanel extends AbsolutePanel implements 
 GraphObjectSelectedHandler, GraphObjectHoveredHandler, OverlayDataLoadedHandler,
-DataOverlayColumnChangedHandler{
+DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayEdgeSelectedHandler{
 	
 	private EventBus eventBus;
 	
@@ -57,6 +63,11 @@ DataOverlayColumnChangedHandler{
 
 	private double min;
 	private double max;
+	
+	private List<Double> fiHoveredExpression = new ArrayList<>();
+	private List<Double> fiSelectedExpression = new ArrayList<>();
+	
+	private enum Visualiser{DIAGRAM, FIVIEW}
 	
 	private DataOverlay dataOverlay;
 	
@@ -90,6 +101,8 @@ DataOverlayColumnChangedHandler{
 		eventBus.addHandler(GraphObjectSelectedEvent.TYPE, this);
 		eventBus.addHandler(GraphObjectHoveredEvent.TYPE, this);
 		eventBus.addHandler(DataOverlayColumnChangedEvent.TYPE, this);
+		eventBus.addHandler(FIViewOverlayEdgeHoveredEvent.TYPE, this);
+		eventBus.addHandler(FIViewOverlayEdgeSelectedEvent.TYPE, this);
 	}
 
 	//fills gradient on data loaded
@@ -125,19 +138,19 @@ DataOverlayColumnChangedHandler{
 
 	@Override
 	public void onGraphObjectHovered(GraphObjectHoveredEvent event) {
-		if(dataOverlay == null) return;
-//		List<DiagramObject> hoveredObjects = event.getHoveredObjects();
-//        DiagramObject item = hoveredObjects != null && !hoveredObjects.isEmpty() ? hoveredObjects.get(0) : null;
-//        this.hovered = item != null ? item.getGraphObject() : null;
+		if(dataOverlay == null || event.getSource() instanceof FIViewVisualiser) return;
+		List<DiagramObject> hoveredObjects = event.getHoveredObjects();
+        DiagramObject item = hoveredObjects != null && !hoveredObjects.isEmpty() ? hoveredObjects.get(0) : null;
+        this.hovered = item != null ? item.getGraphObject() : null;
 		this.hovered = event.getGraphObject();
-        draw();
+        draw(Visualiser.DIAGRAM);
 	}
 
 	@Override
 	public void onGraphObjectSelected(GraphObjectSelectedEvent event) {
-		if(dataOverlay == null) return;
+		if(dataOverlay == null || event.getSource() instanceof FIViewVisualiser) return;
 		this.selected = event.getGraphObject();
-		draw();
+		draw(Visualiser.DIAGRAM);
 		
 	}
 
@@ -159,15 +172,28 @@ DataOverlayColumnChangedHandler{
 	
 	/**
 	 * Directs drawing of pins
+	 * @param vis 
 	 */
-    private void draw() {
+    private void draw(Visualiser vis) {
     	if(!this.isVisible()) return;
     	
     	try {
     		Context2d ctx = this.flag.getContext2d();
     		ctx.clearRect(0, 0, this.flag.getOffsetWidth(), this.flag.getOffsetHeight());
     		
-    		List<Double>hoveredValues = getExpressionValues(this.hovered, dataOverlay.getColumn());
+    		//get values for hoverd and selected
+    		List<Double> hoveredValues = new ArrayList<>();
+    		List<Double> selectedValues = new ArrayList<>();
+    		if(vis == Visualiser.DIAGRAM) {
+    			hoveredValues = getExpressionValues(this.hovered, dataOverlay.getColumn());
+    			selectedValues = getExpressionValues(this.selected, dataOverlay.getColumn());
+    		}
+    		else if(vis == Visualiser.FIVIEW) {
+    			hoveredValues = this.fiHoveredExpression;
+    			selectedValues = this.fiSelectedExpression;
+    		}
+    			
+    		//draw hovered expressions
     		if (!hoveredValues.isEmpty()) {
                 String colour = DiagramColours.get().PROFILE.getProperties().getHovering();
                 for (Double value : hoveredValues) {
@@ -181,7 +207,8 @@ DataOverlayColumnChangedHandler{
                     drawLeftPin(ctx, p, colour, colour);
                 }
             }
-    		List<Double> selectedValues = getExpressionValues(this.selected, dataOverlay.getColumn());
+    		
+    		//draw selected expressions
             if (!selectedValues.isEmpty()) {
                 String colour = DiagramColours.get().PROFILE.getProperties().getSelection();
                 for (Double value : selectedValues) {
@@ -208,15 +235,15 @@ DataOverlayColumnChangedHandler{
      * @return
      */
     private List<Double> getExpressionValues(GraphObject graphObject, int column) {
-    	List<Double> expression = new LinkedList<>();
+    	List<Double> expression = new ArrayList<>();
     		
     	if (graphObject != null) {
             if (graphObject instanceof GraphComplex) {
                 GraphComplex complex = (GraphComplex) graphObject;
-                expression = new LinkedList<>(complex.getParticipantsExpression(column).values());
+                expression = new ArrayList<>(complex.getParticipantsExpression(column).values());
             } else if (graphObject instanceof GraphEntitySet) {
                 GraphEntitySet set = (GraphEntitySet) graphObject;
-                expression = new LinkedList<>(set.getParticipantsExpression(column).values());
+                expression = new ArrayList<>(set.getParticipantsExpression(column).values());
             } else {
             	if(graphObject instanceof GraphPhysicalEntity) {
 	                GraphPhysicalEntity pe = (GraphPhysicalEntity)graphObject;
@@ -302,5 +329,18 @@ DataOverlayColumnChangedHandler{
 		dataOverlay.setColumn(event.getColumn());
 		updateIdentifierValueMap();
 	}
-	
+
+	@Override
+	public void onFIViewOverlayEdgeHovered(FIViewOverlayEdgeHoveredEvent event) {
+		if(dataOverlay == null) return;
+		this.fiHoveredExpression = event.getExpression();
+		draw(Visualiser.FIVIEW);
+	}
+
+	@Override
+	public void onFIViewOverlayEdgeSelected(FIViewOverlayEdgeSelectedEvent event) {
+		if(dataOverlay == null) return;
+		this.fiSelectedExpression = event.getExpression();
+		draw(Visualiser.FIVIEW);
+	}
 }
