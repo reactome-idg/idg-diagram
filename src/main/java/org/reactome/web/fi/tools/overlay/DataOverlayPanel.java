@@ -5,13 +5,10 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.TextResource;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -19,12 +16,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
@@ -38,7 +32,7 @@ import org.reactome.web.fi.common.MultiSelectListBox;
  * @author brunsont
  *
  */
-public class DataOverlayPanel  extends FlowPanel implements ClickHandler, ChangeHandler{
+public class DataOverlayPanel  extends FlowPanel implements ChangeHandler{
 
 	private EventBus eventBus;
 	private Map<String, ExpressionTypeEntity> selectorMap;
@@ -74,7 +68,8 @@ public class DataOverlayPanel  extends FlowPanel implements ClickHandler, Change
 		selectionPanel.add(new InlineLabel("Select expression type:"));
 		selectionPanel.add(eTypeSelector = new ListBox());
 		eTypeSelector.setMultipleSelect(false);
-		eTypeButton = new Button("Get Tissues", this);
+		eTypeButton = new Button("Get Tissues");
+		eTypeButton.addClickHandler(e -> expressionTypeButtonClicked());
 		selectionPanel.add(eTypeButton);
 		this.add(selectionPanel);
 		
@@ -91,7 +86,8 @@ public class DataOverlayPanel  extends FlowPanel implements ClickHandler, Change
 		Label contextLabel = new Label("Select a Maximum of 12 tissues");
 		contextLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
 		bottomContainer.add(contextLabel);
-		bottomContainer.add(tissuesSelectedButton = new Button("Overlay!", this));
+		bottomContainer.add(tissuesSelectedButton = new Button("Overlay!"));
+		tissuesSelectedButton.addClickHandler(e -> overlayButtonClicked());
 		tissueSelectionPanel.add(bottomContainer);
 		this.add(tissueSelectionPanel);
 		
@@ -141,32 +137,26 @@ public class DataOverlayPanel  extends FlowPanel implements ClickHandler, Change
 
 		}
 	}
-	
-	@Override
-	public void onClick(ClickEvent event) {
-		
-		//directs loading of tissueTypes
-		if(event.getSource() == eTypeButton) {
-			getTissueTypes(eTypeSelector.getSelectedItemText());
-			currentExpressionType = eTypeSelector.getSelectedItemText();
-		}
-		else if(event.getSource() == tissuesSelectedButton) {
-			
-			//gets return value type to be used in data mediation after server call
-			String valueType = selectorMap.get(currentExpressionType).getDataType();
-			String unit = selectorMap.get(currentExpressionType).getUnit();
-			
-			String expressionPostData = "";
-			if(currentExpressionType == "Target Development Level") {
-				expressionPostData = "\n" + currentExpressionType;
-			}
-			else{
-				expressionPostData = String.join(",",tissueSelector.getSelectedItemsText()) 
-						+ "\n" + currentExpressionType;
-			}
-			eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData, valueType, unit), this);
 
+	private void overlayButtonClicked() {
+		//gets return value type to be used in data mediation after server call
+		String valueType = selectorMap.get(currentExpressionType).getDataType();
+		String unit = selectorMap.get(currentExpressionType).getUnit();
+		
+		String expressionPostData = "";
+		if(currentExpressionType == "Target Development Level") {
+			expressionPostData = "\n" + currentExpressionType;
 		}
+		else{
+			expressionPostData = String.join(",",tissueSelector.getSelectedItemsText()) 
+					+ "\n" + currentExpressionType;
+		}
+		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData, valueType, unit), this);
+	}
+
+	private void expressionTypeButtonClicked() {
+		getTissueTypes(eTypeSelector.getSelectedItemText());
+		currentExpressionType = eTypeSelector.getSelectedItemText();
 	}
 	
 	/**
