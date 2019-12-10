@@ -388,18 +388,16 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	
 	private void clearAnalysisOverlay() {
 		MapSet<String, GraphObject> map = super.context.getContent().getIdentifierMap();
-		if(dataOverlay !=null && dataOverlay.getUniprotToEntitiesMap() != null) {
-			dataOverlay.getUniprotToEntitiesMap().keySet().forEach((key) ->{
-				Set<GraphObject> elements = map.getElements(key);
-				if(elements == null) return;
-				for(GraphObject graphObject: elements) {
-					if(graphObject instanceof GraphPhysicalEntity) {
-						GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
-						pe.resetHit();
-					}
+			map.keySet().forEach((key) ->{
+			Set<GraphObject> elements = map.getElements(key);
+			if(elements == null) return;
+			for(GraphObject graphObject: elements) {
+				if(graphObject instanceof GraphPhysicalEntity) {
+					GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
+					pe.resetHit();
 				}
-			});
-		}
+			}
+		});
 	}
 
 	@Override
