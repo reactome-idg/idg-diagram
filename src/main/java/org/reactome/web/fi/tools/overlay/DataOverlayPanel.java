@@ -32,7 +32,7 @@ import org.reactome.web.fi.common.MultiSelectListBox;
  * @author brunsont
  *
  */
-public class DataOverlayPanel  extends FlowPanel implements ChangeHandler{
+public class DataOverlayPanel  extends FlowPanel{
 
 	private EventBus eventBus;
 	private Map<String, ExpressionTypeEntity> selectorMap;
@@ -119,13 +119,10 @@ public class DataOverlayPanel  extends FlowPanel implements ChangeHandler{
 		} else {
 			tissueSelector.addItem("No tissues. Press 'Overlay' to Overlay Data.");
 		}
-		tissueSelector.addChangeHandler(this);
-		onChange(null);
-		
+		tissueSelector.addChangeHandler(e -> onListBoxChanged());		
 	}
-	
-	@Override
-	public void onChange(ChangeEvent event) {
+
+	private void onListBoxChanged() {
 		List<String> selectedTissues = tissueSelector.getSelectedItemsText();
 		if(selectedTissues == null || selectedTissues.size()>12) {
 			tissuesSelectedButton.setEnabled(false);
@@ -134,7 +131,6 @@ public class DataOverlayPanel  extends FlowPanel implements ChangeHandler{
 		else {
 			tissuesSelectedButton.setEnabled(true);
 			tissuesSelectedButton.setTitle("Perform Overlay");
-
 		}
 	}
 
