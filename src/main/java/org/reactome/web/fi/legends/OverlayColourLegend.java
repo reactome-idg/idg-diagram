@@ -40,21 +40,27 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		
 		LegendPanelCSS css = RESOURCES.getCSS();
 		
+		initPanel(eventBus);
+		
+		initHandlers();
+	}
+
+	/**
+	 * Initialize gui
+	 * @param eventBus
+	 */
+	private void initPanel(EventBus eventBus) {
 		this.innerPanel = new FlowPanel();
 		this.innerPanel.setStyleName(IDGRESOURCES.getCSS().colourMapPanel());
 		this.add(innerPanel);
 		
 		continuousPanel = new ContinuousColorOverlayPanel(eventBus);
 		continuousPanel.getElement().getStyle().setMarginLeft(20, Unit.PX);
-
-		
-		initHandlers();
 		
 		addStyleName(IDGRESOURCES.getCSS().outerPanel());
 		this.getElement().getStyle().setWidth(100, Unit.PX);
 		this.getElement().getStyle().setHeight(270, Unit.PX);
 		this.setVisible(false);
-		
 	}
 
 	private void initHandlers() {

@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Label;
  * @author brunsont
  *
  */
-public class OverlayControlLegend extends LegendPanel implements ClickHandler, OverlayDataLoadedHandler, OverlayDataResetHandler{
+public class OverlayControlLegend extends LegendPanel implements OverlayDataLoadedHandler, OverlayDataResetHandler{
 
 	private PwpButton closeBtn;
 	private FlowPanel innerPanel;
@@ -40,9 +40,16 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 		
 		LegendPanelCSS css = RESOURCES.getCSS();
 		
-		backButton = new PwpButton("Show previous", IDGRESOURCES.getCSS().back(), this);
+		initPanel(css);
+		
+		initHandlers();
+
+	}
+
+	private void initPanel(LegendPanelCSS css) {
+		backButton = new PwpButton("Show previous", IDGRESOURCES.getCSS().back(), e -> backButtonHandler());
 		this.add(backButton);
-		forwardButton = new PwpButton("Show next", IDGRESOURCES.getCSS().forward(), this);
+		forwardButton = new PwpButton("Show next", IDGRESOURCES.getCSS().forward(), e -> forwardButtonHandler());
 		this.add(forwardButton);
 		
 		this.innerPanel = new FlowPanel();
@@ -50,46 +57,44 @@ public class OverlayControlLegend extends LegendPanel implements ClickHandler, O
 		this.add(innerPanel);
 		this.getElement().getStyle().setMarginBottom(10, Unit.PX);
 		
-		this.closeBtn = new PwpButton("Close", css.close(), this);
+		this.closeBtn = new PwpButton("Close", css.close(), e -> closeButtonHandler());
 		this.add(this.closeBtn);
-		
-		initHandlers();
-		
+				
 		addStyleName(RESOURCES.getCSS().enrichmentControl());
 		this.setVisible(false);
+	}
+
+	private void closeButtonHandler() {
+		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
+	}
+
+	private void forwardButtonHandler() {
+		if(this.dataOverlay.getColumn()+1 == this.dataOverlay.getTissueTypes().size()) {
+			this.dataOverlay.setColumn(0);
+			eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(0), this);
+		}
+		else {
+			this.dataOverlay.setColumn(this.dataOverlay.getColumn()+1);
+			eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(this.dataOverlay.getColumn()), this);
+		}
+		updateUI();
+	}
+
+	private void backButtonHandler() {
+		if(this.dataOverlay.getColumn() == 0){
+			this.dataOverlay.setColumn(this.dataOverlay.getTissueTypes().size()-1);
+			eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(this.dataOverlay.getColumn()), this);
+		}
+		else {
+			this.dataOverlay.setColumn(this.dataOverlay.getColumn()-1);
+			eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(this.dataOverlay.getColumn()), this);
+		}
+		updateUI();
 	}
 
 	private void initHandlers() {
 		eventBus.addHandler(OverlayDataLoadedEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
-	}
-
-	@Override
-	public void onClick(ClickEvent event) {
-		if(event.getSource().equals(this.closeBtn))
-			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
-		else if(event.getSource().equals(this.forwardButton)) {
-			if(this.dataOverlay.getColumn()+1 == this.dataOverlay.getTissueTypes().size()) {
-				this.dataOverlay.setColumn(0);
-				eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(0), this);
-			}
-			else {
-				this.dataOverlay.setColumn(this.dataOverlay.getColumn()+1);
-				eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(this.dataOverlay.getColumn()), this);
-			}
-			updateUI();
-		}
-		else if(event.getSource().equals(this.backButton)) {
-			if(this.dataOverlay.getColumn() == 0){
-				this.dataOverlay.setColumn(this.dataOverlay.getTissueTypes().size()-1);
-				eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(this.dataOverlay.getColumn()), this);
-			}
-			else {
-				this.dataOverlay.setColumn(this.dataOverlay.getColumn()-1);
-				eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(this.dataOverlay.getColumn()), this);
-			}
-			updateUI();
-		}
 	}
 
 	@Override
