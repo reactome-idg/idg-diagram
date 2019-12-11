@@ -111,6 +111,9 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 		updateUI();
 	}
 
+	/**
+	 * Sets Text on inner panel based on tissueType number and selected tissue
+	 */
 	private void updateUI() {
 		innerPanel.clear();
 		if(this.dataOverlay.getTissueTypes().size() <= 1)
