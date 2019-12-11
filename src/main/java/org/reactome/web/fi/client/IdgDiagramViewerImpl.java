@@ -1,6 +1,5 @@
 package org.reactome.web.fi.client;
 
-import org.reactome.web.analysis.client.filter.ResultFilter;
 import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.data.loader.LoaderManager;

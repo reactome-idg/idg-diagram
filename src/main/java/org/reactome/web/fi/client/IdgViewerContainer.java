@@ -301,6 +301,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		overlayLauncher.hide();
 	}
 	
+	/**
+	 * Directs rendering of data on diagrams after the base diagram is rendered
+	 */
 	@Override
 	public void onRenderOtherData(RenderOtherDataEvent event) {
 		if(this.renderOverlays == false)
@@ -386,6 +389,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			((FIViewVisualiser)activeVisualiser).overlayNodes(null);
 	}
 	
+	/**
+	 * Removes all expression values from Identifier map during reset overlay so previous overlays
+	 * won't interfere with future ones.
+	 */
 	private void clearAnalysisOverlay() {
 		MapSet<String, GraphObject> map = super.context.getContent().getIdentifierMap();
 			map.keySet().forEach((key) ->{

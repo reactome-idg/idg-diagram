@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.lang.Math;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,6 +17,11 @@ import org.reactome.web.fi.model.OverlayDataType;
 
 import com.google.gwt.core.client.GWT;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class DataOverlayEntityMediator {
 
 	private JensenExperimentDataSplitter splitter = new JensenExperimentDataSplitter();
@@ -49,10 +53,8 @@ public class DataOverlayEntityMediator {
 		DataOverlay result = new DataOverlay();
 		if(entities.getExpressionEntity().size() == 0)
 			return result;
-		String eType = entities.getExpressionEntity().get(0).getEtype();
 		result.setOverlayType(OverlayDataType.lookupType(entities.getDataType()));
 		
-		//TODO: Make the if statements not hard coded
 		if(returnValueType == "Number")
 			return getNumberValueResult(result, entities);
 		else if(returnValueType == "Boolean")
@@ -68,6 +70,12 @@ public class DataOverlayEntityMediator {
 		return result;
 	}
 
+	/**
+	 * Converts TCRD Expression data passed in with StringValue field populated
+	 * @param result
+	 * @param entities
+	 * @return
+	 */
 	private DataOverlay getStringValueResult(DataOverlay result, OverlayEntities entities) {
 		result.setDiscrete(false);
 		
@@ -233,6 +241,7 @@ public class DataOverlayEntityMediator {
 					minValue = entity.getValue();
 			}
 		}
+		
 		result.setEType(entities.getExpressionEntity().get(0).getEtype());
 		result.setTissueTypes(types.stream().sorted().collect(Collectors.toList()));
 		result.setIdentifierValueMap(identifierValueMap);

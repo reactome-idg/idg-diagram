@@ -1,6 +1,5 @@
 package org.reactome.web.fi.client.visualisers.diagram.renderers;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +28,6 @@ import org.reactome.web.fi.client.visualisers.OverlayRenderer;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.overlay.profiles.IDGExpressionGradient;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
@@ -96,6 +94,10 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
         renderDiscreteComplexData(itemsDistribution.getItems("Complex"));
 	}
 
+	/**
+	 * Re-render proteins given a discrete set of data from the TCRD server
+	 * @param target
+	 */
 	private void renderDiscreteProteinData(MapSet<RenderType, DiagramObject> target) {
 		//return if there are no proteins in the visible DiagramObject set
 		if(target == null)
@@ -120,6 +122,10 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
         }
 	}
 	
+	/**
+	 * Re-render complexes given a discrete set of data from the TCRD server
+	 * @param target
+	 */
 	private void renderDiscreteComplexData(MapSet<RenderType, DiagramObject> target) {
 		//return if there are no complexes in the visible DiagramObject set
 		if(target == null) {

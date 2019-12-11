@@ -82,6 +82,10 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         renderContinuousComplexData(itemsDistribution.getItems("Complex"));
 	}
 
+	/**
+	 * Re-renders proteins on diagram based on expression values from TCRD server
+	 * @param target
+	 */
 	private void renderContinuousProteinData(MapSet<RenderType, DiagramObject> target) {
 		//return if there are no proteins in the visible DiagramObject set
 		if(target == null)
@@ -105,6 +109,10 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         }
 	}
 
+	/**
+	 * Re-renderes complexes on diagram based on expression values from TCRD server
+	 * @param target
+	 */
 	private void renderContinuousComplexData(MapSet<RenderType, DiagramObject> target) {
 		//return if there are no Complexes in the visible DiagramObject set
 		if(target == null)
@@ -133,7 +141,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	}
 
 	/**
-	 * Used to recolor and add expression columns to diagram context popups
+	 * Used to re-color and add expression columns to diagram context popups
 	 */
 	@Override
 	public void onRenderOtherContextDialogInfo(RenderOtherContextDialogInfoEvent event) {

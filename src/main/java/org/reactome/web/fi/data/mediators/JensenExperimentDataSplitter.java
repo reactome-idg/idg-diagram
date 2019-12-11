@@ -1,7 +1,17 @@
 package org.reactome.web.fi.data.mediators;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class JensenExperimentDataSplitter {
 
+	/**
+	 * Splits string based on content of string for DataOverlayEntityMediator
+	 * @param toSplit
+	 * @return
+	 */
 	public String split(String toSplit) {
 		
 		String valueString = "";

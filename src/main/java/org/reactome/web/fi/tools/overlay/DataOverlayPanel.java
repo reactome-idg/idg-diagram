@@ -120,6 +120,9 @@ public class DataOverlayPanel  extends FlowPanel{
 		tissueSelector.addChangeHandler(e -> onListBoxChanged());		
 	}
 
+	/**
+	 * Updates tissue selection box based on changes to number of tissues selected
+	 */
 	private void onListBoxChanged() {
 		List<String> selectedTissues = tissueSelector.getSelectedItemsText();
 		if(selectedTissues == null || selectedTissues.size()>12) {
@@ -132,6 +135,10 @@ public class DataOverlayPanel  extends FlowPanel{
 		}
 	}
 
+	/**
+	 * Makes overlay request based on selected eType, the value type of 
+	 * that eType, a unit, and the list of selected tissues.
+	 */
 	private void overlayButtonClicked() {
 		//gets return value type to be used in data mediation after server call
 		String valueType = selectorMap.get(currentExpressionType).getDataType();

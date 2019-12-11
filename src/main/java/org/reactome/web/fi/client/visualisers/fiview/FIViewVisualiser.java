@@ -678,13 +678,29 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		cy.removeNodeClass("flagged");
 	}
 	
+	/**
+	 * Directs overlay of TCRD data onto the Cytoscape. FI view by re-coloring nodes
+	 * @param dataOverlay
+	 */
 	public void overlayNodes(DataOverlay dataOverlay) {
 		cy.resetStyle();
 		this.dataOverlay = dataOverlay;
 		if(dataOverlay == null) {
 			return;
 		}
+		updateIdentifierValueMap(dataOverlay);
 		
+		if(dataOverlay.isDiscrete())
+			overlayDiscreteData(dataOverlay);
+		else if(!dataOverlay.isDiscrete())
+			overlayContinuousData(dataOverlay);
+	}
+
+	/**
+	 * Sets IdentifierValueMap on DataOverlay based on current column
+	 * @param dataOverlay
+	 */
+	private void updateIdentifierValueMap(DataOverlay dataOverlay) {
 		if(dataOverlay.getTissueTypes() != null && dataOverlay.getTissueTypes().size()>1) {
         	Map<String, Double> identifierValueMap = new HashMap<>();
         	dataOverlay.getUniprotToEntitiesMap().forEach((k,v) ->{
@@ -695,13 +711,12 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
     		});
             dataOverlay.setIdentifierValueMap(identifierValueMap);
         }
-		
-		if(dataOverlay.isDiscrete())
-			overlayDiscreteData(dataOverlay);
-		else if(!dataOverlay.isDiscrete())
-			overlayContinuousData(dataOverlay);
 	}
 
+	/**
+	 * Renders overlay for continuous expression data from TCRD server
+	 * @param dataOverlay
+	 */
 	private void overlayContinuousData(DataOverlay dataOverlay) {
 		ThreeColorGradient gradient = AnalysisColours.get().expressionGradient;
 		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
@@ -710,6 +725,10 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		});
 	}
 
+	/**
+	 * Renders overlay for discrete expression data from TCRD server 
+	 * @param dataOverlay
+	 */
 	private void overlayDiscreteData(DataOverlay dataOverlay) {
 		Map<Double, String> colourMap = OverlayColours.get().getColours();
 		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
