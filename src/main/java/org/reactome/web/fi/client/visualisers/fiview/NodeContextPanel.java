@@ -51,6 +51,16 @@ public class NodeContextPanel extends Composite {
 		main.add(panel);
 		
 	}
+	public void updateExpression(Double value) {
+		Label lbl = new Label("Overlay Value: " + value);
+		lbl.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
+		main.add(lbl);
+	}
+	public void updateExpression(String value) {
+		Label lbl = new Label("Overlay Value: " + value);
+		lbl.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
+		main.add(lbl);
+	}
 	
 	public static NodeContextResources NODECONTEXTRESOURCES;
 	static {

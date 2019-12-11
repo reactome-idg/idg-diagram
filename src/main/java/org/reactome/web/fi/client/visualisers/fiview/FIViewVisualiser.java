@@ -340,6 +340,11 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	public void onNodeContextSelect(NodeContextSelectEvent event) {
 		hideContextMenus();
 		nodeContextPanel.updatePanel(event.getName(), event.getId());
+		if(dataOverlay != null && dataOverlay.getUniprotToEntitiesMap().containsKey(event.getId()))
+			if(!dataOverlay.isDiscrete())
+				nodeContextPanel.updateExpression(dataOverlay.getUniprotToEntitiesMap().get(event.getId()).get(dataOverlay.getColumn()).getValue());
+			else
+				nodeContextPanel.updateExpression(dataOverlay.getLegendTypes().get(dataOverlay.getUniprotToEntitiesMap().get(event.getId()).get(dataOverlay.getColumn()).getValue().intValue()));
 		nodeContextPanel.setVisible(true);
 		setPopupLocation(event.getX(), event.getY(), nodeContextPanel);
 
