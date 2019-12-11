@@ -11,13 +11,10 @@ import org.reactome.web.fi.model.DataOverlay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ClientBundle.Source;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -64,10 +61,16 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 		this.setVisible(false);
 	}
 
+	/**
+	 * Handles action when close button is pressed
+	 */
 	private void closeButtonHandler() {
 		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 	}
 
+	/**
+	 * Handles action when forward button is pressed
+	 */
 	private void forwardButtonHandler() {
 		if(this.dataOverlay.getColumn()+1 == this.dataOverlay.getTissueTypes().size()) {
 			this.dataOverlay.setColumn(0);
@@ -80,6 +83,9 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 		updateUI();
 	}
 
+	/*
+	 * Handles Action when back button is pressed
+	 */
 	private void backButtonHandler() {
 		if(this.dataOverlay.getColumn() == 0){
 			this.dataOverlay.setColumn(this.dataOverlay.getTissueTypes().size()-1);
