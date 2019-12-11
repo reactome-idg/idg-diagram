@@ -26,24 +26,28 @@ public class NodeContextPanel extends Composite {
 	}
 
 	public void updatePanel(String name, String id) {
-		if(main.getWidgetCount()>0)
-			main.remove(0);
+		main.clear();
 
-		
-		String shortName = name;
-		String accession = id;
-		String link = URL + accession;
-		
-		Label lbl = new Label("Protein name: " + shortName);
-		lbl.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
-		Anchor linkAnchor = new Anchor(new SafeHtmlBuilder()
-				.appendEscapedLines("Uniprote Identifier: " + accession).toSafeHtml(),
-				link, "_blank");
-		linkAnchor.setStyleName(NODECONTEXTRESOURCES.getCSS().linkAnchor());
-		
 		FlowPanel panel = new FlowPanel();
+		String link = URL + id;
+		
+		Label lbl = new Label("Protein name: " +  name);
+		lbl.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
 		panel.add(lbl);
-		panel.add(linkAnchor);
+
+		if(!id.contains("ENSG")) {
+			Anchor linkAnchor = new Anchor(new SafeHtmlBuilder()
+					.appendEscapedLines("Uniprote Identifier: " + id).toSafeHtml(),
+					link, "_blank");
+			linkAnchor.setStyleName(NODECONTEXTRESOURCES.getCSS().linkAnchor());
+			panel.add(linkAnchor);
+		}
+		else {
+			Label idLbl = new Label("Identifier: " + id);
+			idLbl.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
+			panel.add(idLbl);
+		}
+		
 		main.add(panel);
 		
 	}
