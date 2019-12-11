@@ -75,6 +75,17 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 	
 	public ContinuousColorOverlayPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
+		initPanel();
+		
+		initHandlers();
+		
+		this.setVisible(true);
+	}
+
+	/**
+	 * Initialise gui
+	 */
+	private void initPanel() {
 		this.gradient = createCanvas(30,200);
 		this.flag = createCanvas(50,210);
 		
@@ -97,10 +108,6 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 		this.unitLabel.setSize("40px", "15px");
 		this.unitLabel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		this.add(this.unitLabel, 5, 245);
-		
-		initHandlers();
-		
-		this.setVisible(true);
 	}
 
 	private void initHandlers() {
@@ -317,6 +324,9 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
         ctx.closePath();
     }
 
+    /**
+     * updates Identifier value map when column changes
+     */
 	private void updateIdentifierValueMap() {
 		if(dataOverlay.getTissueTypes() != null && dataOverlay.getTissueTypes().size()>1) {
         	Map<String, Double> identifierValueMap = new HashMap<>();
