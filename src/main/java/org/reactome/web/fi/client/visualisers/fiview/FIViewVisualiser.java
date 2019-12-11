@@ -354,8 +354,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 									.get(event.getId()).get(dataOverlay.getColumn()).getValue().intValue())); //gets Legend type of value associated with uniprote for an expression column
 		nodeContextPanel.setVisible(true);
 		setPopupLocation(event.getX(), event.getY(), nodeContextPanel);
-
-
 	}
 	
 	/**
