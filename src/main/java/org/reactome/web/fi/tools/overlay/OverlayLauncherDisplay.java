@@ -34,6 +34,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 	ClickHandler, CloseHandler<PopupPanel>{
 
+	EventBus eventBus;
 	private Button dataOverlayTypes;
 	private Button entityOverlayTypes;
 	private List<Button> btns = new LinkedList<>();
@@ -42,6 +43,11 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 	
 	public OverlayLauncherDisplay(EventBus eventBus) {
 		super();
+		this.eventBus = eventBus;
+		initPanel();
+	}
+
+	private void initPanel() {
 		this.setAutoHideEnabled(true);
 		this.setModal(true);
 		this.setAnimationEnabled(true);
