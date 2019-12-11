@@ -51,11 +51,21 @@ public class NodeContextPanel extends Composite {
 		main.add(panel);
 		
 	}
+	
+	/**
+	 * will trigger if a DataOverlay is present without discrete values
+	 * @param value
+	 */
 	public void updateExpression(Double value) {
 		Label lbl = new Label("Overlay Value: " + value);
 		lbl.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
 		main.add(lbl);
 	}
+	
+	/**
+	 * will trigger if a DataOverlay is present with discrete values
+	 * @param value
+	 */
 	public void updateExpression(String value) {
 		Label lbl = new Label("Overlay Value: " + value);
 		lbl.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
