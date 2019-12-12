@@ -37,7 +37,6 @@ public class DataOverlayPanel  extends FlowPanel{
 	private FlowPanel selectionPanel;
 	private ListBox eTypeSelector;
 	private MultiSelectListBox tissueSelector;
-	private Button eTypeButton;
 	private Button tissuesSelectedButton;
 	private String currentExpressionType;
 	
@@ -65,10 +64,8 @@ public class DataOverlayPanel  extends FlowPanel{
 		selectionPanel.addStyleName(RESOURCES.getCSS().expressionMainSubmitter());
 		selectionPanel.add(new InlineLabel("Select expression type:"));
 		selectionPanel.add(eTypeSelector = new ListBox());
+		eTypeSelector.addChangeHandler(e -> eTypeChangedHandler());
 		eTypeSelector.setMultipleSelect(false);
-		eTypeButton = new Button("Get Tissues");
-		eTypeButton.addClickHandler(e -> expressionTypeButtonClicked());
-		selectionPanel.add(eTypeButton);
 		this.add(selectionPanel);
 		
 		
@@ -154,10 +151,13 @@ public class DataOverlayPanel  extends FlowPanel{
 		}
 		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData, valueType, unit), this);
 	}
-
-	private void expressionTypeButtonClicked() {
+	
+	/**
+	 * Gets list of tissues for eType when eType is changed
+	 */
+	private void eTypeChangedHandler() {
 		getTissueTypes(eTypeSelector.getSelectedItemText());
-		currentExpressionType = eTypeSelector.getSelectedItemText();
+		currentExpressionType = eTypeSelector.getSelectedItemText();	
 	}
 	
 	/**
@@ -174,6 +174,7 @@ public class DataOverlayPanel  extends FlowPanel{
 			@Override
 			public void onExpressionTypesLoaded(ExpressionTypeEntities entities) {
 				setExpressionTypes(entities);
+				eTypeChangedHandler();
 			}
 		});
 	}
