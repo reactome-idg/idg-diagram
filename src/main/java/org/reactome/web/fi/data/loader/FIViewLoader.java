@@ -16,6 +16,8 @@ public class FIViewLoader implements RequestCallback{
 		void onFIViewLoadedError(String stId, Throwable exception);
 	}
 	
+	
+//	private final static String BASE_URL = "/corews/FIService/network/convertPathwayToFIs/";  //use this on servers for production
 	private final static String BASE_URL = "/FIService/network/convertPathwayToFIs/";
 	
 	private Handler handler;

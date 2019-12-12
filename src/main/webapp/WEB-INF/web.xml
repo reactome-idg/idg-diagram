@@ -342,8 +342,9 @@
     <servlet-mapping>
         <servlet-name>ConvertToFIsProxy</servlet-name>
         <url-pattern>/FIService/*</url-pattern>
+        <!-- <url-pattern>corews/FIService/*</url-pattern> -->
     </servlet-mapping>
-    
+
     <!-- Reactome TCRD proxy -->
     <servlet>
     	<servlet-name>TCRDTargetLevelProxy</servlet-name>

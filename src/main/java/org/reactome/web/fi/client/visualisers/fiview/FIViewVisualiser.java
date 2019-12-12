@@ -680,7 +680,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	@Override
 	public void onCytoscapeLayoutChanged(CytoscapeLayoutChangedEvent event) {
-		cy.setCytoscapeLayout(event.getSelection());
+		cy.setCytoscapeLayout(event.getType().toString().toLowerCase());
 	}
 
 	@Override

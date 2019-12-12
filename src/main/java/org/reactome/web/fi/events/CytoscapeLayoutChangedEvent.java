@@ -1,16 +1,17 @@
 package org.reactome.web.fi.events;
 
 import org.reactome.web.fi.handlers.CytoscapeLayoutChangedHandler;
+import org.reactome.web.fi.model.FILayoutType;
 
 import com.google.gwt.event.shared.GwtEvent;
 
 public class CytoscapeLayoutChangedEvent extends GwtEvent<CytoscapeLayoutChangedHandler> {
     public static Type<CytoscapeLayoutChangedHandler> TYPE = new Type<>();
 
-    private String selection;
+    private FILayoutType type;
     
-    public CytoscapeLayoutChangedEvent(String selection) {
-    	this.selection = selection;
+    public CytoscapeLayoutChangedEvent(FILayoutType type) {
+    	this.type = type;
     }
     
 	@Override
@@ -24,13 +25,13 @@ public class CytoscapeLayoutChangedEvent extends GwtEvent<CytoscapeLayoutChanged
 		
 	}
 	
-	public String getSelection() {
-		return this.selection;
+	public FILayoutType getType() {
+		return this.type;
 	}
 	
 	@Override
 	public String toString() {
-		return "Cytoscape layout changed to: " + getSelection();
+		return "Cytoscape layout changed to: " + getType();
 	}
 
 }

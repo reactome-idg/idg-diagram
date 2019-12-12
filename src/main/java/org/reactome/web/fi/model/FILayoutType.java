@@ -10,18 +10,33 @@ import java.util.List;
  */
 public enum FILayoutType {
 
-	RANDOM,
-	GRID,
-	CIRCLE,
-	FORCE_DIRECTED;
+	COSE("Force Directed"),
+	GRID("Grid"),
+	CIRCLE("Circle"),
+	RANDOM("Random");
+	
+	private String name;
+	
+	FILayoutType(String name){
+		this.name = name;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	public static FILayoutType lookupType(String type) {
+		String look = type.replace(" ", "_").toUpperCase();
+		return valueOf(look);
+	}
 	
 	public static FILayoutType getType(String type) {
-		if(type==null) return FORCE_DIRECTED;
+		if(type==null) return COSE;
 		for(FILayoutType t: values()) {
 			if(t.toString().toLowerCase().equals(type.toLowerCase()))
 				return t;
 		}
-		return FORCE_DIRECTED;
+		return COSE;
 	}
 	
 	public static List<String> getLayouts(){

@@ -35,48 +35,32 @@ public class FILayoutChangerPanel extends DialogBox implements ChangeHandler {
 		
 		layoutSelector = new ListBox();
 		
-		main.add(getLayoutsWidget("Choose Layout:", layoutSelector, FILayoutType.getLayouts()));
+		Label title = new Label("Choose Layout:");
+		title.setStyleName(FICONTEXTRESOURCES.getCSS().layoutLabel());
+		main.add(title);
+		main.add(layoutSelector = new ListBox());
+		layoutSelector.setMultipleSelect(false);
+		setSelections();
 		
-		setSelection(layoutSelector, "force directed");
+		
+//		setSelection(layoutSelector, "force directed");
 		initHandlers();
 		
 		this.add(main);
 		
 	}
 
-	private void setSelection(ListBox layoutListBox, String selection) {
-		if(selection==null)
-			return;
-		for(int i=0; i<layoutListBox.getItemCount(); i++) {
-			if(layoutListBox.getValue(i).equals(selection))
-				layoutListBox.setSelectedIndex(i);
-		}
-		
-	}
-
-	private Widget getLayoutsWidget(String title, ListBox layoutListBox, List<String> layouts) {
-		layoutListBox.setMultipleSelect(false);
-		for(String layout: layouts) {
-			layoutListBox.addItem(layout);
-		}
-		Label lb = new Label(title);
-		lb.setStyleName(FICONTEXTRESOURCES.getCSS().layoutLabel());
-		
-		FlowPanel result = new FlowPanel();
-		result.add(lb);
-		result.add(layoutListBox);
-		
-		return result;
+	private void setSelections() {
+		for(FILayoutType type : FILayoutType.values())
+			layoutSelector.addItem(type.getName());
 	}
 
 	@Override
 	public void onChange(ChangeEvent event) {
+		if(event.getSource()!=layoutSelector) return;
 		ListBox lb = (ListBox) event.getSource();
         String aux = lb.getSelectedValue();
-        if(lb.equals(layoutSelector)) {
-        	eventBus.fireEventFromSource(new CytoscapeLayoutChangedEvent(aux), this);
-        	setSelection(layoutSelector, aux);
-        }
+    	eventBus.fireEventFromSource(new CytoscapeLayoutChangedEvent(FILayoutType.getType(aux)), this);
 	}
 	
 	private void initHandlers() {
