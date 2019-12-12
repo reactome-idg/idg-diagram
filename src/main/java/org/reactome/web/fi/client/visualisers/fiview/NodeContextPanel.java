@@ -31,13 +31,13 @@ public class NodeContextPanel extends Composite {
 		FlowPanel panel = new FlowPanel();
 		String link = URL + id;
 		
-		Label lbl = new Label("Protein name: " +  name);
+		Label lbl = new Label("Gene Symbol: " +  name);
 		lbl.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
 		panel.add(lbl);
 
 		if(!id.contains("ENSG")) {
 			Anchor linkAnchor = new Anchor(new SafeHtmlBuilder()
-					.appendEscapedLines("Uniprote Identifier: " + id).toSafeHtml(),
+					.appendEscapedLines("Uniprot: " + id).toSafeHtml(),
 					link, "_blank");
 			linkAnchor.setStyleName(NODECONTEXTRESOURCES.getCSS().linkAnchor());
 			panel.add(linkAnchor);
@@ -56,8 +56,8 @@ public class NodeContextPanel extends Composite {
 	 * will trigger if a DataOverlay is present without discrete values
 	 * @param value
 	 */
-	public void updateExpression(Double value) {
-		Label lbl = new Label("Overlay Value: " + value);
+	public void updateExpression(String eType, Double value) {
+		Label lbl = new Label(eType + ": " + value);
 		lbl.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
 		main.add(lbl);
 	}
@@ -66,8 +66,8 @@ public class NodeContextPanel extends Composite {
 	 * will trigger if a DataOverlay is present with discrete values
 	 * @param value
 	 */
-	public void updateExpression(String value) {
-		Label lbl = new Label("Overlay Value: " + value);
+	public void updateExpression(String eType, String value) {
+		Label lbl = new Label(eType + ": " + value);
 		lbl.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
 		main.add(lbl);
 	}

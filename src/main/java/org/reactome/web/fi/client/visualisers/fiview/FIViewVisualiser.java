@@ -344,11 +344,11 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		//Send overlay value to context panel if dataOverlay exists
 		if(dataOverlay != null && dataOverlay.getUniprotToEntitiesMap().containsKey(event.getId()))
 			if(!dataOverlay.isDiscrete())
-				nodeContextPanel.updateExpression(
+				nodeContextPanel.updateExpression(dataOverlay.getEType(),
 						dataOverlay.getUniprotToEntitiesMap()
 							.get(event.getId()).get(dataOverlay.getColumn()).getValue()); //gets value associated with expression column for uniprot and passes in
 			else
-				nodeContextPanel.updateExpression(
+				nodeContextPanel.updateExpression(dataOverlay.getEType(),
 						dataOverlay.getLegendTypes()
 							.get(dataOverlay.getUniprotToEntitiesMap()
 									.get(event.getId()).get(dataOverlay.getColumn()).getValue().intValue())); //gets Legend type of value associated with uniprote for an expression column
