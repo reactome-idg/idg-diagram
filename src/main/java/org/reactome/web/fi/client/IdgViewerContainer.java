@@ -360,18 +360,22 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	 * @return
 	 */
 	private List<Double> getDataOverlayValues(String identifier){
+		boolean test;
+		if(identifier == "Q09472")
+			 test = true;
 		int index = identifier.length();
 		if(identifier.contains("-"))
-			index = identifier.indexOf("0");		
+			index = identifier.indexOf("-");		
 		List<Double> result = new ArrayList<>();
 		List<DataOverlayEntity> entities = dataOverlay.getUniprotToEntitiesMap().get(identifier.substring(0, index));
 		while(result.size()<dataOverlay.getTissueTypes().size()) result.add(null);
-		if(entities != null) 
+		if(entities != null) {
 			for(DataOverlayEntity entity : entities) {
 				if(dataOverlay.getTissueTypes().size() != 0)	//if else for data sets that are not tissue specific
 					result.set(dataOverlay.getTissueTypes().indexOf(entity.getTissue()), entity.getValue());
 				else								
 					result.add(entity.getValue());
+			}
 			return result;
 		}
 		return result;
