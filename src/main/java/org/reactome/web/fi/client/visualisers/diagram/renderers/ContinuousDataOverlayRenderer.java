@@ -100,10 +100,8 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         		if(graphObject.getIdentifier().contains("-"))
         			index = graphObject.getIdentifier().indexOf("-");
 
-        		Double identifierDouble = dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier().substring(0, index));
-        		if(identifierDouble == null) continue;
-        		String colour = gradient.getColor(identifierDouble, dataOverlay.getMinValue(), dataOverlay.getMaxValue());
-	        	ctx.setFillStyle(colour);
+        		Double renderValue = dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier().substring(0, index));
+        		if(renderValue == null) continue;
 	        	renderer.drawExpression(ctx, this.originalOverlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
         	}
         }
