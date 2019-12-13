@@ -27,6 +27,46 @@
     gwt-image: 'forwardClicked';
 }
 
+@sprite .play {
+    gwt-image:'playNormal';
+    outline: none;
+    background-repeat:no-repeat;
+    border: 0;
+    cursor: pointer;
+    float: left;
+    margin:5px 0 0 2px;
+}
+
+@sprite .play:hover {
+    gwt-image:'playHovered';
+}
+
+@sprite .play:enabled:active:hover {
+    margin-left: 3px;
+    margin-right: 1px;
+    gwt-image: 'playClicked';
+}
+
+@sprite .pause {
+    gwt-image:'pauseNormal';
+    outline: none;
+    background-repeat:no-repeat;
+    border: 0;
+    cursor: pointer;
+    float: left;
+    margin:5px 0 0 2px;
+}
+
+@sprite .pause:hover {
+    gwt-image:'pauseHovered';
+}
+
+@sprite .pause:enabled:active:hover {
+    margin-left: 3px;
+    margin-right: 1px;
+    gwt-image: 'pauseClicked';
+}
+
 @sprite .back{
     gwt-image: 'backNormal';
     outline: none;

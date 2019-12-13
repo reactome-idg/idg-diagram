@@ -15,6 +15,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ClientBundle.Source;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
@@ -26,10 +28,19 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class OverlayControlLegend extends LegendPanel implements OverlayDataLoadedHandler, OverlayDataResetHandler{
 
+	private static Integer MIN_SPEED = 3000;
+    private static Integer MAX_SPEED = 500;
+    private Integer speed = MIN_SPEED / 2 + MAX_SPEED;
+	
 	private PwpButton closeBtn;
-	private FlowPanel innerPanel;
-	private PwpButton backButton;
+	private PwpButton backButton;	
+	private PwpButton playButton;
+	private PwpButton pauseButton;
 	private PwpButton forwardButton;
+	private FlowPanel innerPanel;
+	
+	private Timer timer;
+	
 	private DataOverlay dataOverlay;
 	
 	public OverlayControlLegend(EventBus eventBus) {
@@ -40,12 +51,20 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 		initPanel(css);
 		
 		initHandlers();
-
+		initTimer();
 	}
 
 	private void initPanel(LegendPanelCSS css) {
 		backButton = new PwpButton("Show previous", IDGRESOURCES.getCSS().back(), e -> backButtonHandler());
 		this.add(backButton);
+		
+		playButton = new PwpButton("Play", IDGRESOURCES.getCSS().play(), e -> playButtonHandler());
+		this.add(playButton);
+		
+		pauseButton = new PwpButton("Pause", IDGRESOURCES.getCSS().pause(), e -> pauseButtonHandler());
+		pauseButton.setVisible(false);
+		this.add(pauseButton);
+		
 		forwardButton = new PwpButton("Show next", IDGRESOURCES.getCSS().forward(), e -> forwardButtonHandler());
 		this.add(forwardButton);
 		
@@ -59,6 +78,37 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 				
 		addStyleName(RESOURCES.getCSS().enrichmentControl());
 		this.setVisible(false);
+	}
+	
+	private void initTimer() {
+		this.timer = new Timer() {
+			@Override
+			public void run() {
+				forwardButtonHandler();
+			}
+		};
+	}
+
+	private void pauseButtonHandler() {
+		this.backButton.setEnabled(true);
+		this.forwardButton.setEnabled(true);
+		
+		this.pauseButton.setVisible(false);
+		this.playButton.setVisible(true);
+		
+		if(timer.isRunning())
+			timer.cancel();
+	}
+
+	private void playButtonHandler() {
+		this.backButton.setEnabled(false);
+		this.forwardButton.setEnabled(false);
+		
+		this.playButton.setVisible(false);
+		this.pauseButton.setVisible(true);
+		
+		forwardButtonHandler();
+		timer.scheduleRepeating(speed);
 	}
 
 	/**
@@ -138,6 +188,7 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 	private void showSingleTissuePanel() {
 		forwardButton.setEnabled(false);
 		backButton.setEnabled(false);
+		playButton.setEnabled(false);
 		String labelString = dataOverlay.getEType();
 		InlineLabel label = new InlineLabel(dataOverlay.getEType());
 		innerPanel.add(label);
@@ -151,8 +202,9 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 	private void showMultipleTissuePanel() {
 		forwardButton.setEnabled(true);
 		backButton.setEnabled(true);
+		playButton.setEnabled(true);
 		FlowPanel infoPanel = new FlowPanel();
-		InlineLabel stepLabel = new InlineLabel((dataOverlay.getColumn()+1) + "/" + dataOverlay.getTissueTypes().size() + "  ");
+		InlineLabel stepLabel = new InlineLabel((dataOverlay.getColumn()+1) + "/" + dataOverlay.getTissueTypes().size());
 		infoPanel.add(stepLabel);
 		InlineLabel typeTissueLabel  = new InlineLabel(dataOverlay.getEType() + " - " + dataOverlay.getTissueTypes().get(dataOverlay.getColumn()));
 		infoPanel.add(typeTissueLabel);
@@ -201,6 +253,30 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 		
 		@Source("images/rewind_normal.png")
 		ImageResource backNormal();
+		
+		@Source("images/play_clicked.png")
+        ImageResource playClicked();
+
+        @Source("images/play_disabled.png")
+        ImageResource playDisabled();
+
+        @Source("images/play_hovered.png")
+        ImageResource playHovered();
+
+        @Source("images/play_normal.png")
+        ImageResource playNormal();
+
+        @Source("images/pause_clicked.png")
+        ImageResource pauseClicked();
+
+        @Source("images/pause_disabled.png")
+        ImageResource pauseDisabled();
+
+        @Source("images/pause_hovered.png")
+        ImageResource pauseHovered();
+
+        @Source("images/pause_normal.png")
+        ImageResource pauseNormal();
 	}
 	
 	@CssResource.ImportedWithPrefix("idgDiagram-OverlayControlLegend")
@@ -212,5 +288,9 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 		String forward();
 		
 		String back();
+		
+		String play();
+		
+		String pause();
 	}
 }
