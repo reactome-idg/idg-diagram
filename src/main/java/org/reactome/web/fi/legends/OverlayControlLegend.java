@@ -75,7 +75,7 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 		this.closeBtn = new PwpButton("Close", css.close(), e -> closeButtonHandler());
 		this.add(this.closeBtn);
 				
-		addStyleName(RESOURCES.getCSS().enrichmentControl());
+		addStyleName(css.expressionControl());
 		this.setVisible(false);
 	}
 	
@@ -205,7 +205,7 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 		FlowPanel infoPanel = new FlowPanel();
 		InlineLabel stepLabel = new InlineLabel((dataOverlay.getColumn()+1) + "/" + dataOverlay.getTissueTypes().size());
 		infoPanel.add(stepLabel);
-		InlineLabel typeTissueLabel  = new InlineLabel(dataOverlay.getEType() + " - " + dataOverlay.getTissueTypes().get(dataOverlay.getColumn()));
+		InlineLabel typeTissueLabel  = new InlineLabel(dataOverlay.getTissueTypes().get(dataOverlay.getColumn()) + " - " + dataOverlay.getEType());
 		infoPanel.add(typeTissueLabel);
 		
 		innerPanel.add(infoPanel);
@@ -291,5 +291,6 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 		String play();
 		
 		String pause();
+		
 	}
 }
