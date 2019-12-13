@@ -2,6 +2,7 @@ package org.reactome.web.fi.legends;
 
 import org.reactome.web.diagram.common.PwpButton;
 import org.reactome.web.diagram.legends.LegendPanel;
+import org.reactome.web.diagram.util.slider.Slider;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
@@ -27,9 +28,7 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class OverlayControlLegend extends LegendPanel implements OverlayDataLoadedHandler, OverlayDataResetHandler{
 
-	private static Integer MIN_SPEED = 3000;
-    private static Integer MAX_SPEED = 500;
-    private Integer speed = MIN_SPEED / 2 + MAX_SPEED;
+    private Integer speed = 1000;
 	
 	private PwpButton closeBtn;
 	private PwpButton backButton;	
