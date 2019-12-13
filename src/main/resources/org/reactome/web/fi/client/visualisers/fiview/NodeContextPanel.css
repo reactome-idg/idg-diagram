@@ -19,10 +19,94 @@
     max-width: 320px;
 }
 
+.mainPanel{
+	border-top: 1px solid rgb(7, 133, 171);
+}
+
 .label{
 	color: white;
 }
 
 .linkAnchor {
 	color: white;
+}
+
+.header {
+    margin: 0 0 2px 4px;
+}
+.header:hover{
+    cursor: move !important;
+}
+
+.header:active:hover{
+    cursor: move !important;
+}
+
+.header button {
+    float: right;
+}
+
+.header span {
+    float: left;
+    color: rgb(0, 90, 117);
+    font-weight: bolder;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    width: 242px;
+}
+
+.header img {
+    float: left;
+    margin: 0 5px 0 2px;
+}
+
+@sprite .pin {
+    float: right;
+    gwt-image: 'pinNormal';
+    outline: none;
+    background-repeat: no-repeat;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 30px;
+}
+
+@sprite .pin:hover {
+    gwt-image: 'pinHovered';
+}
+
+@sprite .pinActive, .pin:active:hover {
+    gwt-image: 'pinClicked' !important;
+    outline: none;
+    background-repeat: no-repeat;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 30px;
+}
+
+@sprite .close {
+    gwt-image: 'closeNormal';
+    outline: none;
+    background-repeat: no-repeat;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    margin-right: 5px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+@sprite .close:hover {
+    gwt-image: 'closeHovered';
+}
+
+@sprite .close:active:hover {
+    gwt-image: 'closeClicked';
 }

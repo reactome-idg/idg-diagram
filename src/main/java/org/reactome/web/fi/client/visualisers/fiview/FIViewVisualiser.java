@@ -57,7 +57,6 @@ import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
 import org.reactome.web.fi.handlers.CytoscapeLayoutChangedHandler;
 import org.reactome.web.fi.handlers.FireGraphObjectSelectedHandler;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
 import com.google.gwt.core.client.GWT;
@@ -96,7 +95,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	private FILayoutChangerPanel fILayoutChangerPanel;
 	private EdgeContextPanel edgeContextPanel;
-	private NodeContextPanel nodeContextPanel;
+	private Map<String, NodeContextPanel> nodeContextPanelMap;
 	
 	private GraphObject selected;
 	
@@ -121,7 +120,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		
 		fILayoutChangerPanel = new FILayoutChangerPanel(eventBus);
 		edgeContextPanel = new EdgeContextPanel(eventBus);
-		nodeContextPanel = new NodeContextPanel();
+		nodeContextPanelMap = new HashMap<>();
 		cyView =  new SimplePanel();
 		
 		hideContextMenus();
@@ -150,7 +149,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 
 			this.add(fILayoutChangerPanel);
 			this.add(edgeContextPanel);
-			this.add(nodeContextPanel);
 			
 			setSize(viewportWidth, viewportHeight);
 			
@@ -338,22 +336,24 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	@Override
 	public void onNodeContextSelect(NodeContextSelectEvent event) {
-		hideContextMenus();
-		nodeContextPanel.updatePanel(event.getName(), event.getId());
+		if(nodeContextPanelMap.containsKey(event.getId())) {
+			setPopupLocation(event.getX(), event.getY(), nodeContextPanelMap.get(event.getId()));
+			nodeContextPanelMap.get(event.getId()).show();
+			return;
+		}
+		
+		NodeContextPanel nodeContextPanel;
 		
 		//Send overlay value to context panel if dataOverlay exists
 		if(dataOverlay != null && dataOverlay.getUniprotToEntitiesMap().containsKey(event.getId()))
-			if(!dataOverlay.isDiscrete())
-				nodeContextPanel.updateExpression(dataOverlay.getEType(),
-						dataOverlay.getUniprotToEntitiesMap()
-							.get(event.getId()).get(dataOverlay.getColumn()).getValue()); //gets value associated with expression column for uniprot and passes in
-			else
-				nodeContextPanel.updateExpression(dataOverlay.getEType(),
-						dataOverlay.getLegendTypes()
-							.get(dataOverlay.getUniprotToEntitiesMap()
-									.get(event.getId()).get(dataOverlay.getColumn()).getValue().intValue())); //gets Legend type of value associated with uniprote for an expression column
-		nodeContextPanel.setVisible(true);
+			nodeContextPanel = new NodeContextPanel(eventBus, event.getName(), event.getId(), dataOverlay);
+		else 
+			nodeContextPanel = new NodeContextPanel(eventBus, event.getName(), event.getId());
 		setPopupLocation(event.getX(), event.getY(), nodeContextPanel);
+		
+		//cache so it doesn't have to be recreated every time
+		nodeContextPanelMap.put(event.getId(), nodeContextPanel);
+		
 	}
 	
 	/**
@@ -371,6 +371,10 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			eventY = eventY - panel.getOffsetHeight();
 		if(this.getOffsetWidth() + this.getElement().getAbsoluteLeft() < eventX + panel.getOffsetWidth())
 			eventX = eventX - panel.getOffsetWidth()-10;
+		if(panel instanceof NodeContextPanel) {
+			((NodeContextPanel) panel).setPopupPosition(eventX, eventY);
+			return;
+		}
 		this.setWidgetPosition(panel, eventX, eventY);
 	}
 	
@@ -395,7 +399,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	private void hideContextMenus() {
 		fILayoutChangerPanel.setVisible(false);
 		edgeContextPanel.setVisible(false);
-		nodeContextPanel.setVisible(false);
 	}
 
 	protected String getAnnotationDirection(JSONObject fi) {
@@ -414,6 +417,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	@Override
 	public void resetContext() {
 		this.context = null;
+		nodeContextPanelMap.clear();
 		cytoscapeInitialised = false;
 	}
 	
@@ -694,8 +698,10 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	 */
 	public void overlayNodes(DataOverlay dataOverlay) {
 		cy.resetStyle();
+		cy.resetSelection();
 		this.dataOverlay = dataOverlay;
 		if(dataOverlay == null) {
+			nodeContextPanelMap.clear();
 			return;
 		}
 		updateIdentifierValueMap(dataOverlay);
