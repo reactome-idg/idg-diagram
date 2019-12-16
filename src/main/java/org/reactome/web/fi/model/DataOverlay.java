@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.reactome.web.fi.data.overlay.model.OverlayProperties;
+
 /**
  * 
  * @author brunsont
@@ -22,8 +24,10 @@ public class DataOverlay {
 	private int column;
 	private Map<String, Double> identifierValueMap;
 	private String eType;
+	private OverlayProperties properties;
 	
-	public DataOverlay() {
+	public DataOverlay(OverlayProperties properties) {
+		this.properties = properties;
 		column = 0;
 	}
 
@@ -31,6 +35,10 @@ public class DataOverlay {
 		return minValue;
 	}
 
+	public OverlayProperties getOverlayProperties() {
+		return this.properties;
+	}
+	
 	public void setMinValue(Double minValue) {
 		this.minValue = minValue;
 	}

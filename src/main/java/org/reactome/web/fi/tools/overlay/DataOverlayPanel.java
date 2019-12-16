@@ -2,6 +2,7 @@ package org.reactome.web.fi.tools.overlay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
@@ -12,8 +13,10 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,7 @@ import java.util.Map;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntity;
+import org.reactome.web.fi.data.overlay.model.OverlayProperties;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.common.MultiSelectListBox;
@@ -39,6 +43,8 @@ public class DataOverlayPanel  extends FlowPanel{
 	private MultiSelectListBox tissueSelector;
 	private Button tissuesSelectedButton;
 	private String currentExpressionType;
+	private FlowPanel sexChoice;
+	private List<RadioButton> radioButtons = new ArrayList<>();
 	
 	public DataOverlayPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
@@ -69,22 +75,33 @@ public class DataOverlayPanel  extends FlowPanel{
 		this.add(selectionPanel);
 		
 		
+		FlowPanel outerPanel = new FlowPanel();
 		FlowPanel tissueSelectionPanel = new FlowPanel();
-		tissueSelectionPanel.addStyleName(RESOURCES.getCSS().tissueSelectorPanel());
+		outerPanel.addStyleName(RESOURCES.getCSS().tissueSelectorPanel());
 		tissueSelectionPanel.add(new Label("Select Tissues (hold Ctrl to select multiple):"));
 		tissueSelector = new MultiSelectListBox();
 		tissueSelector.addStyleName(RESOURCES.getCSS().tissueSelector());
 		tissueSelector.setVisibleItemCount(10);
 		tissueSelector.setMultipleSelect(true);
 		tissueSelectionPanel.add(tissueSelector);
+		
+		sexChoice = getSexChoicePanel();
+		sexChoice.setStyleName(RESOURCES.getCSS().sexChoicePanel());
+		tissueSelectionPanel.add(sexChoice);
+		
+		tissueSelectionPanel.getElement().getStyle().setHeight(210, Unit.PX);
+		
+		outerPanel.add(tissueSelectionPanel);
+		
 		FlowPanel bottomContainer = new FlowPanel();
 		Label contextLabel = new Label("Select a Maximum of 12 tissues");
 		contextLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
 		bottomContainer.add(contextLabel);
 		bottomContainer.add(tissuesSelectedButton = new Button("Overlay!"));
 		tissuesSelectedButton.addClickHandler(e -> overlayButtonClicked());
-		tissueSelectionPanel.add(bottomContainer);
-		this.add(tissueSelectionPanel);
+		bottomContainer.getElement().getStyle().setDisplay(Display.BLOCK);
+		outerPanel.add(bottomContainer);
+		this.add(outerPanel);
 		
 		loadExpressionTypes();
 	}
@@ -114,7 +131,29 @@ public class DataOverlayPanel  extends FlowPanel{
 		} else {
 			tissueSelector.addItem("No tissues. Press 'Overlay' to Overlay Data.");
 		}
-		tissueSelector.addChangeHandler(e -> onListBoxChanged());		
+		tissueSelector.addChangeHandler(e -> onListBoxChanged());
+		
+		sexChoice.setVisible(selectorMap.get(currentExpressionType).getHasGender()); //shows or hides based on EType
+		if(!sexChoice.isVisible())
+			for(RadioButton btn : radioButtons)
+				btn.setValue(false);
+	}
+	
+	/**
+	 * Panel containing radioButtons for choice of sex
+	 * @return
+	 */
+	private FlowPanel getSexChoicePanel() {
+		FlowPanel fp = new FlowPanel();
+		Label lb = new Label("Choose a sex:");
+		RadioButton rb1 = new RadioButton("sex", "Male");
+		RadioButton rb2 = new RadioButton("sex", "Female");
+		radioButtons.add(rb1);
+		radioButtons.add(rb2);
+		fp.add(lb);
+		fp.add(rb1);
+		fp.add(rb2);
+		return fp;
 	}
 
 	/**
@@ -140,6 +179,13 @@ public class DataOverlayPanel  extends FlowPanel{
 		//gets return value type to be used in data mediation after server call
 		String valueType = selectorMap.get(currentExpressionType).getDataType();
 		String unit = selectorMap.get(currentExpressionType).getUnit();
+		String sex = null;
+		if(selectorMap.get(currentExpressionType).getHasGender())
+			for(RadioButton btn : radioButtons)
+				if(btn.getValue())
+					sex = btn.getText();
+		
+		OverlayProperties properties = new OverlayProperties(valueType, unit, sex);
 		
 		String expressionPostData = "";
 		if(currentExpressionType == "Target Development Level") {
@@ -149,7 +195,7 @@ public class DataOverlayPanel  extends FlowPanel{
 			expressionPostData = String.join(",",tissueSelector.getSelectedItemsText()) 
 					+ "\n" + currentExpressionType;
 		}
-		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData, valueType, unit), this);
+		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData, properties), this);
 	}
 	
 	/**
@@ -225,6 +271,8 @@ public class DataOverlayPanel  extends FlowPanel{
     	String tissueSelector();
     	
     	String tissueSelectorPanel();
+    	
+    	String sexChoicePanel();
     	
     }
 

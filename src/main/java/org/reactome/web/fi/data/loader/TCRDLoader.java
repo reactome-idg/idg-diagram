@@ -3,6 +3,7 @@ package org.reactome.web.fi.data.loader;
 import org.reactome.web.fi.data.mediators.DataOverlayEntityMediator;
 import org.reactome.web.fi.data.overlay.model.OverlayEntities;
 import org.reactome.web.fi.data.overlay.model.OverlayEntityDataFactory;
+import org.reactome.web.fi.data.overlay.model.OverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.OverlayDataType;
 
@@ -30,7 +31,7 @@ public class TCRDLoader implements RequestCallback{
 	private Handler handler;
 	private Request request;
 	private OverlayDataType type;
-	private String returnValueType;
+	private OverlayProperties properties;
 	
 	public TCRDLoader(Handler handler){
 		this.handler = handler;
@@ -41,9 +42,9 @@ public class TCRDLoader implements RequestCallback{
 			this.request.cancel();
 	}
 	
-	public void load(String postData, OverlayDataType type, String returnValueType) {
+	public void load(String postData, OverlayDataType type, OverlayProperties properties) {
 		this.type = type;
-		this.returnValueType = returnValueType;
+		this.properties = properties;
 		cancel();
 						
 		if(postData == null) {
@@ -76,7 +77,7 @@ public class TCRDLoader implements RequestCallback{
 				obj.put("dataType", new JSONString(type.getName()));
 				obj.put("valueType", new JSONString("String"));
 				obj.put(getEntityType(), val.isArray());
-				dataOverlay = mediator.transformData(obj.toString(), returnValueType);
+				dataOverlay = mediator.transformData(obj.toString(), properties);
 			}catch(Exception e) {
 				this.handler.onTargetLevelLoadedError(e);
 				return;

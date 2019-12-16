@@ -15,4 +15,6 @@ public interface ExpressionTypeEntity {
 	
 	String getUnit();
 	
+	boolean getHasGender();
+	
 }

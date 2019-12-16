@@ -26,6 +26,7 @@ import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOver
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
+import org.reactome.web.fi.data.overlay.model.OverlayProperties;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
@@ -69,8 +70,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	private boolean renderOverlays = false;
 	
 	private String lastExpressionOverlayPostInfo=null;
-	private String lastExpressionOverlayValueType = null;
-	private String lastExpressionOverlayUnit = null;
+	private OverlayProperties lastOverlayProperties = null;
 	
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
@@ -153,7 +153,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			
 			//don't bother reloading when new content is an SVG
 			if(context.getContent().getType() != Content.Type.SVG)
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(overlayType, this.lastExpressionOverlayPostInfo, this.lastExpressionOverlayValueType, this.lastExpressionOverlayUnit ), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(overlayType, this.lastExpressionOverlayPostInfo, this.lastOverlayProperties), this);
 		}
 	}
 
@@ -172,9 +172,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	public void onMakeOverlayRequest(MakeOverlayRequestEvent event) {
 		
 		//set lastExpressionOverlayValueType in case diagram is changed before reset
-		this.lastExpressionOverlayValueType = event.getReturnValueType();
-		this.lastExpressionOverlayUnit = event.getUnit();
-		this.overlayColourLegend.setUnit(event.getUnit());
+		this.lastOverlayProperties = event.getOverlayProperties();
 		//can't have an overlay and Analysis at the same time
 		if(context.getAnalysisStatus() != null)
 			eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
@@ -212,7 +210,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		
 		if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
 	        postContent += "\n" + event.getExpressionPostdata();
-	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType(), this.lastExpressionOverlayValueType), this);
+	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType(), event.getOverlayProperties()), this);
 		}
 	}
 
@@ -323,6 +321,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		this.overlayLauncher.hide();
 		this.renderOverlays = true;
 		this.dataOverlay = event.getDataOverlay();
+		this.overlayColourLegend.setUnit(dataOverlay.getOverlayProperties().getUnit());
 		context.setDialogMap(new HashMap<>());
 		
 		//testing new way to set is hit for all data so it works in FIViz without overlaying on diagram first

@@ -14,4 +14,6 @@ public interface ExpressionEntity extends OverlayEntity{
 	
 	String getStringValue();
 	
+	String getGender();
+	
 }

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.reactome.web.fi.data.overlay.model.ExpressionEntity;
 import org.reactome.web.fi.data.overlay.model.OverlayEntities;
 import org.reactome.web.fi.data.overlay.model.OverlayEntityDataFactory;
+import org.reactome.web.fi.data.overlay.model.OverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.model.OverlayDataType;
@@ -25,15 +26,16 @@ import com.google.gwt.core.client.GWT;
 public class DataOverlayEntityMediator {
 
 	private JensenExperimentDataSplitter splitter = new JensenExperimentDataSplitter();
-	private String returnValueType;
+	private OverlayProperties properties;
 	/**
 	 * Can be used to direct data mediation based on data type from server
 	 * @param responseText
 	 * @return
 	 */
-	public DataOverlay transformData(String responseText, String returnValueType) {
-		this.returnValueType = returnValueType;
+	public DataOverlay transformData(String responseText, OverlayProperties properties) {
+		this.properties = properties;
 		OverlayEntities entities = null;
+		GWT.log(responseText);
 		try {
 			entities = OverlayEntityDataFactory.getTargetLevelEntity(OverlayEntities.class, responseText);
 		} catch (Exception e) {
@@ -50,16 +52,16 @@ public class DataOverlayEntityMediator {
 	 * @return
 	 */
 	private DataOverlay transformExpressionEntities(OverlayEntities entities) {
-		DataOverlay result = new DataOverlay();
+		DataOverlay result = new DataOverlay(properties);
 		if(entities.getExpressionEntity().size() == 0)
 			return result;
 		result.setOverlayType(OverlayDataType.lookupType(entities.getDataType()));
 		
-		if(returnValueType == "Number")
+		if(properties.getValueType() == "Number")
 			return getNumberValueResult(result, entities);
-		else if(returnValueType == "Boolean")
+		else if(properties.getValueType() == "Boolean")
 			return getBooleanValueResult(result, entities);
-		else if(returnValueType == "String")
+		else if(properties.getValueType() == "String")
 			for(ExpressionEntity entity : entities.getExpressionEntity()) {
 				if(entity.getQualValue() != null)
 					return getQualValueResult(result, entities);
@@ -224,6 +226,7 @@ public class DataOverlayEntityMediator {
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		Map<String, List<DataOverlayEntity>> uniprotToEntitiesMap = new HashMap<>();
 		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
+			if(properties.getSex() != null && !properties.getSex().contains(rawEntity.getGender())) continue;
 			if(rawEntity.getTissue() != null)
 				types.add(rawEntity.getTissue());
 			if(rawEntity.getNumberValue() != null) {
@@ -231,7 +234,7 @@ public class DataOverlayEntityMediator {
 						rawEntity.getNumberValue(), rawEntity.getEtype(), rawEntity.getTissue());
 				identifierValueMap.put(entity.getIdentifier(), entity.getValue());
 				if(!uniprotToEntitiesMap.containsKey(rawEntity.getUniprot()))
-					uniprotToEntitiesMap.put(rawEntity.getUniprot(), new ArrayList<>());	
+					uniprotToEntitiesMap.put(rawEntity.getUniprot(), new ArrayList<>());
 				uniprotToEntitiesMap.get(rawEntity.getUniprot()).add(entity);
 				
 				
