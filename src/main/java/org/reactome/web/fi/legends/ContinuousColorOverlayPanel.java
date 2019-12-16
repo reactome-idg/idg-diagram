@@ -168,6 +168,24 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 		draw(Visualiser.DIAGRAM);
 		
 	}
+	
+	@Override
+	public void onFIViewOverlayEdgeHovered(FIViewOverlayEdgeHoveredEvent event) {
+		if(dataOverlay == null) return;
+		this.fiHoveredExpression = event.getExpression();
+		draw(Visualiser.FIVIEW);
+	}
+
+	@Override
+	public void onFIViewOverlayEdgeSelected(FIViewOverlayEdgeSelectedEvent event) {
+		if(dataOverlay == null) return;
+		this.fiSelectedExpression = event.getExpression();
+		draw(Visualiser.FIVIEW);
+	}
+
+	public void setUnit(String unit) {
+		this.unitLabel.setText(unit != null ? unit:"None");
+	}
 
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
@@ -346,23 +364,5 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 		if(dataOverlay == null) return;
 		dataOverlay.setColumn(event.getColumn());
 		updateIdentifierValueMap();
-	}
-
-	@Override
-	public void onFIViewOverlayEdgeHovered(FIViewOverlayEdgeHoveredEvent event) {
-		if(dataOverlay == null) return;
-		this.fiHoveredExpression = event.getExpression();
-		draw(Visualiser.FIVIEW);
-	}
-
-	@Override
-	public void onFIViewOverlayEdgeSelected(FIViewOverlayEdgeSelectedEvent event) {
-		if(dataOverlay == null) return;
-		this.fiSelectedExpression = event.getExpression();
-		draw(Visualiser.FIVIEW);
-	}
-
-	public void setUnit(String unit) {
-		this.unitLabel.setText(unit != null ? unit:"None");
 	}
 }
