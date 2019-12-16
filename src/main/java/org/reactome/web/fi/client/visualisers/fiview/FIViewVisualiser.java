@@ -367,10 +367,11 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		int y = this.getElement().getAbsoluteTop()-5;
 		eventX -=x;
 		eventY -=y;
-		if(this.getOffsetHeight() + this.getElement().getAbsoluteTop() - 35 < eventY + panel.getOffsetHeight())
+		if((this.getOffsetHeight() + this.getElement().getAbsoluteTop() - 35) < (eventY + panel.getOffsetHeight()))
 			eventY = eventY - panel.getOffsetHeight();
-		if(this.getOffsetWidth() + this.getElement().getAbsoluteLeft() < eventX + panel.getOffsetWidth())
+		if((this.getOffsetWidth() + this.getElement().getAbsoluteLeft()) < (eventX + panel.getOffsetWidth()))
 			eventX = eventX - panel.getOffsetWidth()-10;
+		
 		if(panel instanceof NodeContextPanel) {
 			((NodeContextPanel) panel).setPopupPosition(eventX, eventY);
 			return;

@@ -70,8 +70,9 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 	private List<Double> fiHoveredExpression = new ArrayList<>();
 	private List<Double> fiSelectedExpression = new ArrayList<>();
 	
-	private enum Visualiser{DIAGRAM, FIVIEW}
-	
+	List<Double> hoveredValues = new ArrayList<>();
+	List<Double> selectedValues = new ArrayList<>();
+		
 	private DataOverlay dataOverlay;
 	
 	public ContinuousColorOverlayPanel(EventBus eventBus) {
@@ -158,14 +159,16 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
         DiagramObject item = hoveredObjects != null && !hoveredObjects.isEmpty() ? hoveredObjects.get(0) : null;
         this.hovered = item != null ? item.getGraphObject() : null;
 		this.hovered = event.getGraphObject();
-        draw(Visualiser.DIAGRAM);
+		hoveredValues = getExpressionValues(this.hovered, dataOverlay.getColumn());
+        draw();
 	}
 
 	@Override
 	public void onGraphObjectSelected(GraphObjectSelectedEvent event) {
 		if(dataOverlay == null || event.getSource() instanceof FIViewVisualiser) return;
 		this.selected = event.getGraphObject();
-		draw(Visualiser.DIAGRAM);
+		selectedValues = getExpressionValues(this.selected, dataOverlay.getColumn());
+		draw();
 		
 	}
 	
@@ -173,14 +176,16 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 	public void onFIViewOverlayEdgeHovered(FIViewOverlayEdgeHoveredEvent event) {
 		if(dataOverlay == null) return;
 		this.fiHoveredExpression = event.getExpression();
-		draw(Visualiser.FIVIEW);
+		this.hoveredValues = event.getExpression();
+		draw();
 	}
 
 	@Override
 	public void onFIViewOverlayEdgeSelected(FIViewOverlayEdgeSelectedEvent event) {
 		if(dataOverlay == null) return;
 		this.fiSelectedExpression = event.getExpression();
-		draw(Visualiser.FIVIEW);
+		this.selectedValues = event.getExpression();
+		draw();
 	}
 
 	public void setUnit(String unit) {
@@ -207,24 +212,12 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 	 * Directs drawing of pins
 	 * @param vis 
 	 */
-    private void draw(Visualiser vis) {
+    private void draw() {
     	if(!this.isVisible()) return;
     	
     	try {
     		Context2d ctx = this.flag.getContext2d();
     		ctx.clearRect(0, 0, this.flag.getOffsetWidth(), this.flag.getOffsetHeight());
-    		
-    		//get values for hoverd and selected
-    		List<Double> hoveredValues = new ArrayList<>();
-    		List<Double> selectedValues = new ArrayList<>();
-    		if(vis == Visualiser.DIAGRAM) {
-    			hoveredValues = getExpressionValues(this.hovered, dataOverlay.getColumn());
-    			selectedValues = getExpressionValues(this.selected, dataOverlay.getColumn());
-    		}
-    		else if(vis == Visualiser.FIVIEW) {
-    			hoveredValues = this.fiHoveredExpression;
-    			selectedValues = this.fiSelectedExpression;
-    		}
     			
     		//draw hovered expressions
     		if (!hoveredValues.isEmpty()) {
