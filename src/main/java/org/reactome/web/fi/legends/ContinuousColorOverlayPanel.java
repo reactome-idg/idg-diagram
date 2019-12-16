@@ -37,6 +37,7 @@ import com.google.gwt.canvas.dom.client.CanvasGradient;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -92,7 +93,7 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 		this.getElement().getStyle().setHeight(280, Unit.PX);
 		
 		this.topLabel = new InlineLabel("");
-		this.topLabel.setSize("40px", "15px");
+		this.topLabel.setSize("50px", "15px");
 		this.topLabel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		this.add(this.topLabel, 5, 5);
 		
@@ -100,12 +101,12 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 		this.add(this.flag, 0, 20);
 		
 		this.bottomLabel = new InlineLabel("");
-		this.bottomLabel.setSize("40px", "15px");
+		this.bottomLabel.setSize("50px", "15px");
 		this.bottomLabel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		this.add(this.bottomLabel, 5, 230);
 		
 		this.unitLabel = new Label();
-		this.unitLabel.setSize("40px", "15px");
+		this.unitLabel.setSize("50px", "15px");
 		this.unitLabel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		this.add(this.unitLabel, 5, 245);
 	}
@@ -178,8 +179,8 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 		this.dataOverlay = event.getDataOverlay();
 		this.min = event.getDataOverlay().getMinValue();
 		this.max = event.getDataOverlay().getMaxValue();
-		this.topLabel.setText(max+"");
-		this.bottomLabel.setText(min+"");
+		this.topLabel.setText(NumberFormat.getFormat("#.##E0").format(max));
+		this.bottomLabel.setText(NumberFormat.getFormat("#.##E0").format(min));
 		fillGradient();
 		updateIdentifierValueMap();
 	}
