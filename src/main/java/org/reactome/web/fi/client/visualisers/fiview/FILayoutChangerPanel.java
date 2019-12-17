@@ -30,6 +30,8 @@ public class FILayoutChangerPanel extends DialogBox implements ChangeHandler {
 	
 	public FILayoutChangerPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
+		setAutoHideEnabled(true);
+		setModal(false);
 		this.setStyleName(FICONTEXTRESOURCES.getCSS().fipopup());
 		FlowPanel main = new FlowPanel();
 		

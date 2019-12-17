@@ -74,6 +74,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.DialogBox;
 
 
 /**
@@ -122,9 +123,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		edgeContextPanel = new EdgeContextPanel(eventBus);
 		nodeContextPanelMap = new HashMap<>();
 		cyView =  new SimplePanel();
-		
-		hideContextMenus();
-		
+				
 		initHandlers();
 		
 		//default this value to false
@@ -146,9 +145,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 			
 			this.add(cyView);
 			this.cyView.setSize(viewportWidth+"px", viewportHeight+"px");
-
-			this.add(fILayoutChangerPanel);
-			this.add(edgeContextPanel);
 			
 			setSize(viewportWidth, viewportHeight);
 			
@@ -320,17 +316,15 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	
 	@Override
 	public void onCytoscapeContextSelect(CytoscapeCoreContextEvent event) {
-		hideContextMenus();
+		fILayoutChangerPanel.show();
 		setPopupLocation(event.getX(), event.getY(), fILayoutChangerPanel);
-		fILayoutChangerPanel.setVisible(true);
 	}
 
 	@Override
 	public void onEdgeContextSelect(EdgeContextSelectEvent event) {
-		hideContextMenus();
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getId()).get("data").isObject();
 		edgeContextPanel.updateContext(fi);
-		edgeContextPanel.setVisible(true);
+		edgeContextPanel.show();
 		setPopupLocation(event.getX(), event.getY(), edgeContextPanel);
 	}
 	
@@ -363,8 +357,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	 * @param eventY
 	 * @param panel
 	 */
-	private void setPopupLocation(int eventX, int eventY, Widget panel) {
-
+	private void setPopupLocation(int eventX, int eventY, DialogBox panel) {
 		eventX +=5;
 		eventY +=5;
 		if((this.getOffsetHeight() + this.getElement().getAbsoluteTop() - 35) < (eventY + panel.getOffsetHeight()))
@@ -372,11 +365,8 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		if((this.getOffsetWidth() + this.getElement().getAbsoluteLeft()) < (eventX + panel.getOffsetWidth()))
 			eventX = eventX - panel.getOffsetWidth()-10;
 		
-		if(panel instanceof NodeContextPanel) {
-			((NodeContextPanel) panel).setPopupPosition(eventX, eventY);
-			return;
-		}
-		this.setWidgetPosition(panel, eventX, eventY);
+		panel.setPopupPosition(eventX, eventY);
+		
 	}
 	
 	@Override
@@ -394,12 +384,6 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(null,false), this);
 		if(dataOverlay != null && !dataOverlay.isDiscrete()) 
 			eventBus.fireEventFromSource(new FIViewOverlayEdgeHoveredEvent(new ArrayList<>()), this);
-		hideContextMenus();
-	}
-
-	private void hideContextMenus() {
-		fILayoutChangerPanel.setVisible(false);
-		edgeContextPanel.setVisible(false);
 	}
 
 	protected String getAnnotationDirection(JSONObject fi) {

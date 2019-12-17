@@ -15,6 +15,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -28,7 +29,7 @@ import com.google.gwt.json.client.JSONValue;
  * @author brunsont
  *
  */
-public class EdgeContextPanel extends Composite implements ChangeHandler, ReactomeSourcesLoader.Handler{
+public class EdgeContextPanel extends DialogBox implements ChangeHandler, ReactomeSourcesLoader.Handler{
 	
 	private EventBus eventBus;
 	private ListBox sourcesOptions;
@@ -37,13 +38,14 @@ public class EdgeContextPanel extends Composite implements ChangeHandler, Reacto
 	
 	public EdgeContextPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
-		
+		setAutoHideEnabled(true);
+		setModal(false);
+		this.setStyleName(EDGECONTEXTRESOURCES.getCSS().edgePopup());
+
 		loader = new ReactomeSourcesLoader(this);
 		
-		main = new FlowPanel();
-		main.setStyleName(EDGECONTEXTRESOURCES.getCSS().edgePopup());
-		
-		initWidget(main);
+		main = new FlowPanel();		
+		setWidget(main);
 				
 	}
 
@@ -63,7 +65,7 @@ public class EdgeContextPanel extends Composite implements ChangeHandler, Reacto
 		FlowPanel result = new FlowPanel();
 		
 		//for case where there is only one source
-		if(sourcesList.size() <=1) {
+		if(sourcesList.size() ==1) {
 			lb.setText("Reactome Source:");
 			Label sourceLabel = new Label(sourcesList.get(0));
 			sourceLabel.setStyleName(EDGECONTEXTRESOURCES.getCSS().sourceLabel());
@@ -85,15 +87,6 @@ public class EdgeContextPanel extends Composite implements ChangeHandler, Reacto
 		result.add(lb);
 		result.add(sourcesOptions);
 		return result;
-	}
-	
-	//call this after calling updateContext and pass in correct reactome sourceFile
-	protected void setSelection(String selection) {
-		if(selection==null)
-			return;
-		for(int i=0; i<sourcesOptions.getItemCount(); i++)
-			if(sourcesOptions.getValue(i).substring(0, sourcesOptions.getValue(i).indexOf(" ")).equals(selection))
-				sourcesOptions.setSelectedIndex(i);
 	}
 
 	private List<String> getSourcesList(JSONValue jsonValue) {
