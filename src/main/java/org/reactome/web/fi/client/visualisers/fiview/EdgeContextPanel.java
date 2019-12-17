@@ -47,12 +47,10 @@ public class EdgeContextPanel extends Composite implements ChangeHandler, Reacto
 				
 	}
 
-	
 	public void updateContext(JSONObject fi) {
-		for(int i=0; i<main.getWidgetCount(); i++)
-			main.remove(i);
+		main.clear();
 				
-		List<String> sourcesList = setSourcesList(fi.get("reactomeId"));		
+		List<String> sourcesList = getSourcesList(fi.get("reactomeId"));		
 		
 		loader.load(sourcesList);
 		
@@ -67,16 +65,7 @@ public class EdgeContextPanel extends Composite implements ChangeHandler, Reacto
 		//for case where there is only one source
 		if(sourcesList.size() <=1) {
 			lb.setText("Reactome Source:");
-			Label sourceLabel = new Label();
-			String sourceString = sourcesList.get(0);
-			if(sourceString.length() > 26) {
-				sourceLabel.setTitle(sourceString);
-				sourceLabel.setText(sourceString.substring(0, 26) + "...");
-			}
-			else {
-				sourceLabel.setText(sourceString);
-				sourceLabel.setTitle(sourceString);
-			}
+			Label sourceLabel = new Label(sourcesList.get(0));
 			sourceLabel.setStyleName(EDGECONTEXTRESOURCES.getCSS().sourceLabel());
 			result.add(lb);
 			result.add(sourceLabel);
@@ -107,7 +96,7 @@ public class EdgeContextPanel extends Composite implements ChangeHandler, Reacto
 				sourcesOptions.setSelectedIndex(i);
 	}
 
-	private List<String> setSourcesList(JSONValue jsonValue) {
+	private List<String> getSourcesList(JSONValue jsonValue) {
 		List<String> result = new ArrayList<>();
 		JSONArray sourcesArray = jsonValue.isArray();
 		
@@ -128,7 +117,6 @@ public class EdgeContextPanel extends Composite implements ChangeHandler, Reacto
 		String aux = lb.getSelectedValue().substring(0, lb.getSelectedValue().indexOf(" "));
 		if(lb.equals(sourcesOptions)) {
 			eventBus.fireEventFromSource(new FireGraphObjectSelectedEvent(aux), this);
-			setSelection(aux);
 		}
 	}
 	

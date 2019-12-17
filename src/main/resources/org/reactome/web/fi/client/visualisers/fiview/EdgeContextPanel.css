@@ -16,7 +16,8 @@
     font-family: Arial Unicode MS, Arial, sans-serif !important;
     font-size: small !important;
 
-    max-width: 220px;
+    width: 220px;
+    height: 50px;
 }
 
 .edgePopup select{
@@ -53,6 +54,7 @@
 .sourceLabel{
 	color: white;
 	font-size: medium;
+	text-overflow: ellipsis;
 }
 
 .listBox{

@@ -331,14 +331,15 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getId()).get("data").isObject();
 		edgeContextPanel.updateContext(fi);
 		edgeContextPanel.setVisible(true);
-		setPopupLocation(event.getX(), event.getY(), edgeContextPanel.asWidget());
+		setPopupLocation(event.getX(), event.getY(), edgeContextPanel);
 	}
 	
 	@Override
 	public void onNodeContextSelect(NodeContextSelectEvent event) {
 		if(nodeContextPanelMap.containsKey(event.getId())) {
-			setPopupLocation(event.getX(), event.getY(), nodeContextPanelMap.get(event.getId()));
+			//show popup before setting location so sizing is correct. UI doesn't update fast enough to cause an artifact
 			nodeContextPanelMap.get(event.getId()).show();
+			setPopupLocation(event.getX(), event.getY(), nodeContextPanelMap.get(event.getId())); 
 			return;
 		}
 		
@@ -363,12 +364,11 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	 * @param panel
 	 */
 	private void setPopupLocation(int eventX, int eventY, Widget panel) {
-		int x = this.getElement().getAbsoluteLeft()-5;
-		int y = this.getElement().getAbsoluteTop()-5;
-		eventX -=x;
-		eventY -=y;
+
+		eventX +=5;
+		eventY +=5;
 		if((this.getOffsetHeight() + this.getElement().getAbsoluteTop() - 35) < (eventY + panel.getOffsetHeight()))
-			eventY = eventY - panel.getOffsetHeight();
+			eventY = eventY - panel.getOffsetHeight()-10;
 		if((this.getOffsetWidth() + this.getElement().getAbsoluteLeft()) < (eventX + panel.getOffsetWidth()))
 			eventX = eventX - panel.getOffsetWidth()-10;
 		

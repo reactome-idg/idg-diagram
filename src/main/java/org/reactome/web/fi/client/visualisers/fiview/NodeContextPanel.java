@@ -8,7 +8,6 @@ import org.reactome.web.diagram.common.PwpButton;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.handlers.DataOverlayColumnChangedHandler;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.model.DataOverlayEntity;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -32,6 +31,11 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class NodeContextPanel extends DialogBox implements DataOverlayColumnChangedHandler{
 	
+//	@Override
+//	public void onBrowserEvent(Event event) {
+//		if(event.getButton() == NativeEvent.BUTTON_RIGHT)
+//	}
+
 	private EventBus eventBus;
 	
 	private FlowPanel main;
