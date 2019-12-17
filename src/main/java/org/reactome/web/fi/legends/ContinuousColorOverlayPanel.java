@@ -175,7 +175,6 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 	@Override
 	public void onFIViewOverlayEdgeHovered(FIViewOverlayEdgeHoveredEvent event) {
 		if(dataOverlay == null) return;
-		this.fiHoveredExpression = event.getExpression();
 		this.hoveredValues = event.getExpression();
 		draw();
 	}
@@ -183,7 +182,6 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 	@Override
 	public void onFIViewOverlayEdgeSelected(FIViewOverlayEdgeSelectedEvent event) {
 		if(dataOverlay == null) return;
-		this.fiSelectedExpression = event.getExpression();
 		this.selectedValues = event.getExpression();
 		draw();
 	}
