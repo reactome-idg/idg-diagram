@@ -70,7 +70,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	private DataOverlay dataOverlay;
 	private boolean renderOverlays = false;
 	
-	private String lastExpressionOverlayPostInfo=null;
 	private OverlayProperties lastOverlayProperties = null;
 	
 	public IdgViewerContainer(EventBus eventBus) {
@@ -154,7 +153,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			
 			//don't bother reloading when new content is an SVG
 			if(context.getContent().getType() != Content.Type.SVG)
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(overlayType, this.lastExpressionOverlayPostInfo, this.lastOverlayProperties), this);
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(overlayType, this.lastOverlayProperties), this);
 		}
 	}
 
@@ -193,12 +192,11 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	private void requestOverlayData(MakeOverlayRequestEvent event) {
 		Set<String> identifiers = null;
 		if(dataOverlay != null)
-			if(dataOverlay.getOverlayType() == event.getDataType() && this.lastExpressionOverlayPostInfo == event.getExpressionPostdata())
+			if(dataOverlay.getOverlayType() == event.getDataType() && this.lastOverlayProperties.getExpressionPostData() == event.getOverlayProperties().getExpressionPostData())
 				return;	
 
 		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 		
-		this.lastExpressionOverlayPostInfo = event.getExpressionPostdata();
 		if(activeVisualiser instanceof FIViewVisualiser)
 			identifiers = context.getContent().getIdentifierMap().keySet();
 		

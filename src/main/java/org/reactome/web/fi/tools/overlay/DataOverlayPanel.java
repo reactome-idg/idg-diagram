@@ -205,7 +205,7 @@ public class DataOverlayPanel  extends FlowPanel{
 		OverlayProperties properties = new OverlayProperties(valueType, unit, sex, expressionPostData);
 		
 		loader.setVisible(true);
-		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData, properties), this);
+		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, properties), this);
 	}
 	
 	public void hideLoader() {
