@@ -49,6 +49,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.Window;
 
 /**
  * 
@@ -209,8 +210,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		String postContent = getPostData(identifiers);
 		
 		if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
-	        postContent += "\n" + event.getExpressionPostdata();
-	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(postContent, event.getDataType(), event.getOverlayProperties()), this);
+			event.getOverlayProperties().setExpressionPostData(postContent + "\n" +event.getOverlayProperties().getExpressionPostData());
+	        
+	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(event.getDataType(), event.getOverlayProperties()), this);
 		}
 	}
 

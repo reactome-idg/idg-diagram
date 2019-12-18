@@ -43,19 +43,18 @@ public class DataOverlayPanel  extends FlowPanel{
 	private FlowPanel selectionPanel;
 	private ListBox eTypeSelector;
 	private MultiSelectListBox tissueSelector;
-	private Button tissuesSelectedButton;
+	private Button overlayButton;
 	private String currentExpressionType;
 	private FlowPanel sexChoice;
 	private List<RadioButton> radioButtons = new ArrayList<>();
 	
 	private Image loader;
-	
+		
 	public DataOverlayPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
 		this.getElement().getStyle().setMargin(5, Unit.PX);
-		
+				
 		initPanel();
-		
 	}
 
 	private void initPanel() {
@@ -101,8 +100,8 @@ public class DataOverlayPanel  extends FlowPanel{
 		Label contextLabel = new Label("Select a Maximum of 12 tissues");
 		contextLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
 		bottomContainer.add(contextLabel);
-		bottomContainer.add(tissuesSelectedButton = new Button("Overlay!"));
-		tissuesSelectedButton.addClickHandler(e -> overlayButtonClicked());
+		bottomContainer.add(overlayButton = new Button("Overlay!"));
+		overlayButton.addClickHandler(e -> overlayButtonClicked());
 		
 		bottomContainer.add(loader = new Image(RESOURCES.loader()));
 		loader.setStyleName(RESOURCES.getCSS().tissuesLoading());
@@ -171,12 +170,12 @@ public class DataOverlayPanel  extends FlowPanel{
 	private void onListBoxChanged() {
 		List<String> selectedTissues = tissueSelector.getSelectedItemsText();
 		if(selectedTissues == null || selectedTissues.size()>12) {
-			tissuesSelectedButton.setEnabled(false);
-			tissuesSelectedButton.setTitle("Please choose between 1 and 12 tissues");
+			overlayButton.setEnabled(false);
+			overlayButton.setTitle("Please choose between 1 and 12 tissues");
 		}
 		else {
-			tissuesSelectedButton.setEnabled(true);
-			tissuesSelectedButton.setTitle("Perform Overlay");
+			overlayButton.setEnabled(true);
+			overlayButton.setTitle("Perform Overlay");
 		}
 	}
 
@@ -185,7 +184,6 @@ public class DataOverlayPanel  extends FlowPanel{
 	 * that eType, a unit, and the list of selected tissues.
 	 */
 	private void overlayButtonClicked() {
-		loader.setVisible(true);
 		//gets return value type to be used in data mediation after server call
 		String valueType = selectorMap.get(currentExpressionType).getDataType();
 		String unit = selectorMap.get(currentExpressionType).getUnit();
@@ -194,9 +192,7 @@ public class DataOverlayPanel  extends FlowPanel{
 			for(RadioButton btn : radioButtons)
 				if(btn.getValue())
 					sex = btn.getText();
-		
-		OverlayProperties properties = new OverlayProperties(valueType, unit, sex);
-		
+				
 		String expressionPostData = "";
 		if(currentExpressionType == "Target Development Level") {
 			expressionPostData = "\n" + currentExpressionType;
@@ -205,6 +201,10 @@ public class DataOverlayPanel  extends FlowPanel{
 			expressionPostData = String.join(",",tissueSelector.getSelectedItemsText()) 
 					+ "\n" + currentExpressionType;
 		}
+
+		OverlayProperties properties = new OverlayProperties(valueType, unit, sex, expressionPostData);
+		
+		loader.setVisible(true);
 		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData, properties), this);
 	}
 	

@@ -5,11 +5,13 @@ public class OverlayProperties {
 	String valueType;
 	String unit;
 	String sex;
+	String expressionPostData;
 	
-	public OverlayProperties(String valueType, String unit, String sex) {
+	public OverlayProperties(String valueType, String unit, String sex, String expressionPostData) {
 		this.valueType = valueType;
 		this.unit = unit;
 		this.sex = sex;
+		this.expressionPostData = expressionPostData;
 	}
 
 	public String getValueType() {
@@ -35,4 +37,13 @@ public class OverlayProperties {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
+
+	public String getExpressionPostData() {
+		return expressionPostData;
+	}
+
+	public void setExpressionPostData(String expressionPostData) {
+		this.expressionPostData = expressionPostData;
+	}
+	
 }
