@@ -47,7 +47,7 @@ public class TCRDLoader implements RequestCallback{
 		this.properties = properties;
 		cancel();
 						
-		if(properties.getExpressionPostData() == null) {
+		if(properties.getUniprots() == null) {
 			Exception exception = new Exception("Cannot request overlay data for 0 ids.");
 			this.handler.onTargetLevelLoadedError(exception);
 		}
@@ -56,13 +56,20 @@ public class TCRDLoader implements RequestCallback{
 
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
 		requestBuilder.setHeader("Accept", "application/json");
-		requestBuilder.setRequestData(properties.getExpressionPostData());
+		requestBuilder.setRequestData(getPostData(properties));
 		requestBuilder.setCallback(this);
 		try {
 			this.request = requestBuilder.send();
 		} catch(RequestException e) {
 			this.handler.onTargetLevelLoadedError(e);
 		}
+	}
+
+	private String getPostData(OverlayProperties properties) {
+		String result = properties.getUniprots() +
+						"\n" + properties.getTissues() +
+						"\n" + properties.geteType();
+		return result;
 	}
 
 	@Override

@@ -49,6 +49,8 @@ public class DataOverlayPanel  extends FlowPanel{
 	private List<RadioButton> radioButtons = new ArrayList<>();
 	
 	private Image loader;
+	
+	private OverlayProperties currentProperties;
 		
 	public DataOverlayPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
@@ -192,21 +194,19 @@ public class DataOverlayPanel  extends FlowPanel{
 			for(RadioButton btn : radioButtons)
 				if(btn.getValue())
 					sex = btn.getText();
-				
-		String expressionPostData = "";
-		if(currentExpressionType == "Target Development Level") {
-			expressionPostData = "\n" + currentExpressionType;
-		}
-		else{
-			expressionPostData = String.join(",",tissueSelector.getSelectedItemsText()) 
-					+ "\n" + currentExpressionType;
-		}
 
-		OverlayProperties properties = new OverlayProperties(valueType, unit, sex, expressionPostData);
+		OverlayProperties properties = new OverlayProperties(valueType, unit, sex, 
+															 String.join(",", tissueSelector.getSelectedItemsText()), 
+															 currentExpressionType);
 		
+		if(currentProperties != null && currentProperties.equals(properties))
+			return;
+		
+		currentProperties = properties;
 		loader.setVisible(true);
 		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, properties), this);
 	}
+	
 	
 	public void hideLoader() {
 		loader.setVisible(false);

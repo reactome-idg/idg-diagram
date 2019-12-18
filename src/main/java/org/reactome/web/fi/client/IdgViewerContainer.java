@@ -191,9 +191,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 
 	private void requestOverlayData(MakeOverlayRequestEvent event) {
 		Set<String> identifiers = null;
-		if(dataOverlay != null)
-			if(dataOverlay.getOverlayType() == event.getDataType() && this.lastOverlayProperties.getExpressionPostData() == event.getOverlayProperties().getExpressionPostData())
-				return;	
 
 		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 		
@@ -205,11 +202,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			identifiers = collectDiagramInteractors(identifiers);
 		}
 		
-		String postContent = getPostData(identifiers);
+		event.getOverlayProperties().setUniprots(getPostData(identifiers));
 		
 		if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
-			event.getOverlayProperties().setExpressionPostData(postContent + "\n" +event.getOverlayProperties().getExpressionPostData());
-	        
 	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(event.getDataType(), event.getOverlayProperties()), this);
 		}
 	}
