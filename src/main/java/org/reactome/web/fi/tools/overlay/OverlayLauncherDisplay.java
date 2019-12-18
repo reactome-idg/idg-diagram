@@ -37,6 +37,9 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 	EventBus eventBus;
 	private Button dataOverlayTypes;
 	private Button entityOverlayTypes;
+	
+	private DataOverlayPanel dataOverlayPanel;
+	
 	private List<Button> btns = new LinkedList<>();
 	
 	private DeckLayoutPanel container;
@@ -79,7 +82,7 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
         
         this.container = new DeckLayoutPanel();
         this.container.addStyleName(RESOURCES.getCSS().container());
-        this.container.add(new DataOverlayPanel(eventBus));
+        this.container.add(dataOverlayPanel = new DataOverlayPanel(eventBus));
         this.container.add(new Label("Relationship overlay!"));
         this.container.showWidget(0);
         this.container.setAnimationVertical(true);
@@ -129,6 +132,12 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 		closeBtn.setTitle("Close Overlay Tool");
 		closeBtn.addClickHandler(clickEvent -> OverlayLauncherDisplay.this.hide());
 		return closeBtn;
+	}
+	
+	@Override
+	public void hide() {
+		dataOverlayPanel.hideLoader();
+		super.hide();
 	}
 
 	@Override

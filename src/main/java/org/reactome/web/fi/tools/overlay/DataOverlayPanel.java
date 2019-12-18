@@ -7,9 +7,11 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -45,6 +47,8 @@ public class DataOverlayPanel  extends FlowPanel{
 	private String currentExpressionType;
 	private FlowPanel sexChoice;
 	private List<RadioButton> radioButtons = new ArrayList<>();
+	
+	private Image loader;
 	
 	public DataOverlayPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
@@ -99,6 +103,11 @@ public class DataOverlayPanel  extends FlowPanel{
 		bottomContainer.add(contextLabel);
 		bottomContainer.add(tissuesSelectedButton = new Button("Overlay!"));
 		tissuesSelectedButton.addClickHandler(e -> overlayButtonClicked());
+		
+		bottomContainer.add(loader = new Image(RESOURCES.loader()));
+		loader.setStyleName(RESOURCES.getCSS().tissuesLoading());
+		loader.setVisible(false);
+		
 		bottomContainer.getElement().getStyle().setDisplay(Display.BLOCK);
 		outerPanel.add(bottomContainer);
 		this.add(outerPanel);
@@ -176,6 +185,7 @@ public class DataOverlayPanel  extends FlowPanel{
 	 * that eType, a unit, and the list of selected tissues.
 	 */
 	private void overlayButtonClicked() {
+		loader.setVisible(true);
 		//gets return value type to be used in data mediation after server call
 		String valueType = selectorMap.get(currentExpressionType).getDataType();
 		String unit = selectorMap.get(currentExpressionType).getUnit();
@@ -196,6 +206,10 @@ public class DataOverlayPanel  extends FlowPanel{
 					+ "\n" + currentExpressionType;
 		}
 		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, expressionPostData, properties), this);
+	}
+	
+	public void hideLoader() {
+		loader.setVisible(false);
 	}
 	
 	/**
@@ -254,6 +268,9 @@ public class DataOverlayPanel  extends FlowPanel{
     	
     	@Source("TissueExpressionInfo.html")
     	TextResource tissueExpressionInfo();
+    	
+    	@Source("images/loader.gif")
+    	ImageResource loader();
     }
     
     @CssResource.ImportedWithPrefix("idg-overlayData")
@@ -271,6 +288,8 @@ public class DataOverlayPanel  extends FlowPanel{
     	String tissueSelector();
     	
     	String tissueSelectorPanel();
+    	
+    	String tissuesLoading();
     	
     	String sexChoicePanel();
     	

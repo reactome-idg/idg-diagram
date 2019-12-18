@@ -119,6 +119,11 @@
  	float: left;
 }
 
+.tissuesLoading {
+    float: right;
+    margin: 7px 10px 0 0;
+}
+
 .sexChoicePanel{
 	display: inline-block;
 	padding: 5px;
