@@ -35,7 +35,6 @@ public class DataOverlayEntityMediator {
 	public DataOverlay transformData(String responseText, OverlayProperties properties) {
 		this.properties = properties;
 		OverlayEntities entities = null;
-		GWT.log(responseText);
 		try {
 			entities = OverlayEntityDataFactory.getTargetLevelEntity(OverlayEntities.class, responseText);
 		} catch (Exception e) {
