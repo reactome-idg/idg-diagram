@@ -22,6 +22,7 @@
   <source path='legends' />
   <source path='overlay' />
   <source path='tools' />
+  <source path='messages' />
   
     <!-- allow Super Dev Mode -->
   <add-linker name="xsiframe"/>

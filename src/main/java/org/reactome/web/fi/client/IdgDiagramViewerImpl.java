@@ -40,14 +40,7 @@ OverlayDataRequestedHandler{
 	@Override
 	public void onCytoscapeToggled(CytoscapeToggledEvent event) {
 		load(event.getContext().getContent().getStableId());
-	}
-	
-//	@Override
-//	public void setAnalysisToken(String token, ResultFilter filter) {
-////		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
-//		super.setAnalysisToken(token, filter);
-//	}
-	
+	}	
 
 	@Override
 	public void onAnalysisResultLoaded(AnalysisResultLoadedEvent event) {

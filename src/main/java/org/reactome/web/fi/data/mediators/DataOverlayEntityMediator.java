@@ -42,7 +42,6 @@ public class DataOverlayEntityMediator {
 		}
 		
 		return transformExpressionEntities(entities);
-		
 	}
 
 	/**
