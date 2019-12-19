@@ -187,7 +187,7 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 	}
 
 	public void setUnit(String unit) {
-		this.unitLabel.setText(unit != null ? unit:"None");
+		this.unitLabel.setText(unit != null ? unit:"Units");
 	}
 
 	@Override
