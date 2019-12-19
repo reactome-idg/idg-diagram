@@ -41,6 +41,11 @@
     gwt-image:'playHovered';
 }
 
+@sprite .play:disabled, .play:disabled:hover, .play:disabled:active {
+	gwt-image: 'playDisabled';
+	cursor: auto;
+}
+
 @sprite .play:enabled:active:hover {
     margin-left: 3px;
     margin-right: 1px;
