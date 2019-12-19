@@ -5,6 +5,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
@@ -37,6 +38,7 @@ import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntity;
 import org.reactome.web.fi.data.overlay.model.OverlayProperties;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.model.OverlayDataType;
+import org.reactome.web.fi.common.IDGTextBox;
 import org.reactome.web.fi.common.MultiSelectListBox;
 
 /**
@@ -51,7 +53,7 @@ public class DataOverlayPanel  extends FlowPanel{
 	private FlowPanel selectionPanel;
 	private ListBox eTypeSelector;
 	private MultiSelectListBox tissueSelector;
-	private TextBox tissueFilter;
+	private IDGTextBox tissueFilter;
 	private Button overlayButton;
 	private String currentExpressionType;
 	private FlowPanel sexChoice;
@@ -81,6 +83,7 @@ public class DataOverlayPanel  extends FlowPanel{
 		explanation.setStyleName(RESOURCES.getCSS().expressionText());
 		this.add(explanation);
 		
+		//make eType selection above tissue selector
 		selectionPanel = new FlowPanel();
 		selectionPanel.addStyleName(RESOURCES.getCSS().expressionSubmission());
 		selectionPanel.addStyleName(RESOURCES.getCSS().expressionMainSubmitter());
@@ -90,15 +93,19 @@ public class DataOverlayPanel  extends FlowPanel{
 		eTypeSelector.setMultipleSelect(false);
 		this.add(selectionPanel);
 				
+		//make container for left side of outerPanel
 		FlowPanel leftContainer = new FlowPanel();
 		leftContainer.setStyleName(RESOURCES.getCSS().leftContainerPanel());
 		leftContainer.add(new Label("Select Tissues (hold Ctrl to select multiple):"));
 		
-		leftContainer.add(tissueFilter = new TextBox());
-		tissueFilter.addChangeHandler(e -> onTissueFilterChange(e));
+		//add filter text box
+		leftContainer.add(tissueFilter = new IDGTextBox());
+		tissueFilter.addValueChangeHandler(e -> onTissueFilterChange(e));
+		tissueFilter.addKeyUpHandler(e -> tissueFilterKeyUp(e));
 		tissueFilter.getElement().setPropertyString("placeholder", "Type a filter and press Enter");
 		tissueFilter.setStyleName(RESOURCES.getCSS().tissueFilter());
 
+		//add tissue selector
 		tissueSelector = new MultiSelectListBox();
 		tissueSelector.addStyleName(RESOURCES.getCSS().tissueSelector());
 		tissueSelector.setVisibleItemCount(9);
@@ -133,6 +140,7 @@ public class DataOverlayPanel  extends FlowPanel{
 		outerPanel.addStyleName(RESOURCES.getCSS().tissueSelectorPanel());
 		outerPanel.add(optionsPanel);
 		
+		//make bottomContainer contining the overlay button and some helper text for the maximum number of tissues selectable at once.
 		FlowPanel bottomContainer = new FlowPanel();
 		bottomContainer.getElement().getStyle().setMarginTop(35, Unit.PX);
 		Label contextLabel = new Label("Select a Maximum of 12 tissues");
@@ -142,6 +150,7 @@ public class DataOverlayPanel  extends FlowPanel{
 		bottomContainer.add(overlayButton = new Button("Overlay!"));
 		overlayButton.addClickHandler(e -> overlayButtonClicked());
 		
+		//adds loading icon to bottomContainer when server call is being made
 		bottomContainer.add(loader = new Image(RESOURCES.loader()));
 		loader.setStyleName(RESOURCES.getCSS().tissuesLoading());
 		loader.setVisible(false);
@@ -152,11 +161,6 @@ public class DataOverlayPanel  extends FlowPanel{
 		this.add(outerPanel);
 		
 		loadExpressionTypes();
-	}
-
-	private void onTissueFilterChange(ChangeEvent e) {
-		TextBox text = (TextBox) e.getSource();
-		
 	}
 
 	/**
@@ -243,6 +247,21 @@ public class DataOverlayPanel  extends FlowPanel{
 		Collections.sort(selectedTissues);
 		String currentSelection = String.join(", ", selectedTissues);
 		currentSelectionLabel.setText(currentSelection);
+	}
+	/**
+	 * causes onbrowserEvent to be fired on key up from textbox
+	 * @param e
+	 */
+	private void tissueFilterKeyUp(KeyUpEvent e) {
+		GWT.log(tissueFilter.getText());
+	}
+
+	/**
+	 * gets textbox value on every key up
+	 * @param e
+	 */
+	private void onTissueFilterChange(ValueChangeEvent<String> e) {
+		GWT.log(e.getValue());
 	}
 
 	/**
