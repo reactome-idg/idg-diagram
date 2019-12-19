@@ -37,7 +37,7 @@
 	background-color: #58c3e5;
 	border: 1px solid #0e7cd3;
 	border-radius: 5px;
-	height: 220px;
+	height: 210px;
 }
 .tissueSelectorPanel button{
 	background: #1e95cf;
@@ -115,8 +115,7 @@
 }
 
 .tissueSelector{
-	width: 50%;
- 	float: left;
+	width: 100%;
 }
 
 .tissuesLoading {
@@ -124,10 +123,43 @@
     margin: 7px 10px 0 0;
 }
 
-.sexChoicePanel{
-	display: inline-block;
+.propertiesPanel{
+	height: 50%;
+}
+
+.rightContainerPanel{
+	display: block;
 	padding: 5px;
-	height: 40px;
+	height: 100%;
 	width:40%;
     float: left;
+}
+
+.leftContainerPanel{
+	display: block;
+	padding: 5px;
+	height: 100%;
+	width: 50%;
+	float: left;
+}
+
+.currentSelectionScrollPanel{
+	height: 98px;
+    border: 1px solid #0e7cd3;
+    border-radius: 5px;
+    padding:0 5px 0 5px;
+}
+
+.tissueFilter{
+	border: 1px solid #0e7cd3;
+	border-radius: 5px;
+	margin: 5px 0 5px 0;
+	height: 20px;
+	width: 99%;
+}
+
+.tissueFilter input{
+	margin: 5px 0 5px 0;
+	border-radius: 5px;
+	text-size: medium;
 }

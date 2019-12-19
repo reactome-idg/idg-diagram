@@ -4,11 +4,15 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -16,9 +20,13 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,10 +51,13 @@ public class DataOverlayPanel  extends FlowPanel{
 	private FlowPanel selectionPanel;
 	private ListBox eTypeSelector;
 	private MultiSelectListBox tissueSelector;
+	private TextBox tissueFilter;
 	private Button overlayButton;
 	private String currentExpressionType;
 	private FlowPanel sexChoice;
 	private List<RadioButton> radioButtons = new ArrayList<>();
+	
+	private Label currentSelectionLabel;
 	
 	private Image loader;
 	
@@ -78,29 +89,55 @@ public class DataOverlayPanel  extends FlowPanel{
 		eTypeSelector.addChangeHandler(e -> eTypeChangedHandler());
 		eTypeSelector.setMultipleSelect(false);
 		this.add(selectionPanel);
+				
+		FlowPanel leftContainer = new FlowPanel();
+		leftContainer.setStyleName(RESOURCES.getCSS().leftContainerPanel());
+		leftContainer.add(new Label("Select Tissues (hold Ctrl to select multiple):"));
 		
-		
-		FlowPanel outerPanel = new FlowPanel();
-		FlowPanel tissueSelectionPanel = new FlowPanel();
-		outerPanel.addStyleName(RESOURCES.getCSS().tissueSelectorPanel());
-		tissueSelectionPanel.add(new Label("Select Tissues (hold Ctrl to select multiple):"));
+		leftContainer.add(tissueFilter = new TextBox());
+		tissueFilter.addChangeHandler(e -> onTissueFilterChange(e));
+		tissueFilter.getElement().setPropertyString("placeholder", "Type a filter and press Enter");
+		tissueFilter.setStyleName(RESOURCES.getCSS().tissueFilter());
+
 		tissueSelector = new MultiSelectListBox();
 		tissueSelector.addStyleName(RESOURCES.getCSS().tissueSelector());
-		tissueSelector.setVisibleItemCount(10);
+		tissueSelector.setVisibleItemCount(9);
 		tissueSelector.setMultipleSelect(true);
-		tissueSelectionPanel.add(tissueSelector);
+		leftContainer.add(tissueSelector);
 		
+		//make right container panel
+		FlowPanel rightContainer = new FlowPanel();
+		rightContainer.setStyleName(RESOURCES.getCSS().rightContainerPanel());
+		
+		//getThe sexChoice Panel
 		sexChoice = getSexChoicePanel();
-		sexChoice.setStyleName(RESOURCES.getCSS().sexChoicePanel());
-		tissueSelectionPanel.add(sexChoice);
+		sexChoice.setStyleName(RESOURCES.getCSS().propertiesPanel());
 		
-		tissueSelectionPanel.getElement().getStyle().setHeight(210, Unit.PX);
+		//panel for extra properties
+		FlowPanel propertiesPanel = new FlowPanel();
+		propertiesPanel.getElement().getStyle().setHeight(105, Unit.PX);
+		propertiesPanel.add(sexChoice);
+		rightContainer.add(propertiesPanel);
 		
-		outerPanel.add(tissueSelectionPanel);
+		//panel for visualising selected tissues
+		rightContainer.add(getCurrentSelectionPanel());
+		
+		//adding right panel to options panel
+		FlowPanel optionsPanel = new FlowPanel();
+		optionsPanel.add(leftContainer);
+		optionsPanel.add(rightContainer);
+		optionsPanel.getElement().getStyle().setHeight(200, Unit.PX);
+		
+		//add options panel to the outerPanel
+		FlowPanel outerPanel = new FlowPanel();
+		outerPanel.addStyleName(RESOURCES.getCSS().tissueSelectorPanel());
+		outerPanel.add(optionsPanel);
 		
 		FlowPanel bottomContainer = new FlowPanel();
+		bottomContainer.getElement().getStyle().setMarginTop(35, Unit.PX);
 		Label contextLabel = new Label("Select a Maximum of 12 tissues");
 		contextLabel.getElement().getStyle().setFloat(Style.Float.LEFT);
+		contextLabel.getElement().getStyle().setPaddingLeft(5, Unit.PX);
 		bottomContainer.add(contextLabel);
 		bottomContainer.add(overlayButton = new Button("Overlay!"));
 		overlayButton.addClickHandler(e -> overlayButtonClicked());
@@ -111,9 +148,33 @@ public class DataOverlayPanel  extends FlowPanel{
 		
 		bottomContainer.getElement().getStyle().setDisplay(Display.BLOCK);
 		outerPanel.add(bottomContainer);
+		outerPanel.getElement().getStyle().setHeight(230, Unit.PX);
 		this.add(outerPanel);
 		
 		loadExpressionTypes();
+	}
+
+	private void onTissueFilterChange(ChangeEvent e) {
+		TextBox text = (TextBox) e.getSource();
+		
+	}
+
+	/**
+	 * Panel to display currently selected tissues/cell lines
+	 * @return
+	 */
+	private FlowPanel getCurrentSelectionPanel() {
+		FlowPanel result = new FlowPanel();
+		
+		ScrollPanel sp = new ScrollPanel();
+		sp.setStyleName(RESOURCES.getCSS().currentSelectionScrollPanel());
+		sp.setAlwaysShowScrollBars(true);
+		
+		sp.add(currentSelectionLabel = new Label());
+		
+		result.add(new Label("Currently Selected Types:"));
+		result.add(sp);
+		return result;
 	}
 
 	/**
@@ -179,6 +240,9 @@ public class DataOverlayPanel  extends FlowPanel{
 			overlayButton.setEnabled(true);
 			overlayButton.setTitle("Perform Overlay");
 		}
+		Collections.sort(selectedTissues);
+		String currentSelection = String.join(", ", selectedTissues);
+		currentSelectionLabel.setText(currentSelection);
 	}
 
 	/**
@@ -291,7 +355,15 @@ public class DataOverlayPanel  extends FlowPanel{
     	
     	String tissuesLoading();
     	
-    	String sexChoicePanel();
+    	String rightContainerPanel();
+    	
+    	String leftContainerPanel();
+    	
+    	String propertiesPanel();
+    	
+    	String currentSelectionScrollPanel();
+    	
+    	String tissueFilter();
     	
     }
 
