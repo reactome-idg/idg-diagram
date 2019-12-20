@@ -201,8 +201,7 @@ public class DataOverlayPanel  extends FlowPanel{
 	protected void setTissueListBoxTypes(List<String> tissueList) {
 		tissueSelector.clear();
 		if(tissueList.size() > 0) {
-			for(String tissue : tissueList)
-				tissueSelector.addItem(tissue);
+			tissueSelector.setListItems(tissueList);
 		} else {
 			tissueSelector.addItem("No tissues. Press 'Overlay' to Overlay Data.");
 		}
@@ -261,7 +260,7 @@ public class DataOverlayPanel  extends FlowPanel{
 	 * @param e
 	 */
 	private void onTissueFilterChange(ValueChangeEvent<String> e) {
-		GWT.log(e.getValue());
+		tissueSelector.filter(e.getValue());
 	}
 
 	/**

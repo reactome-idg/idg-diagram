@@ -64,7 +64,8 @@ public class EntityOverlayPanel extends FlowPanel {
 	
 	private void getRelationshipTypePanels() {
 		FlowPanel relationshipsFlowPanel = new FlowPanel();
-		relationshipsFlowPanel.add(new PairwisePanel("YEE YEE!"));
+		relationshipsFlowPanel.add(new PairwisePanel("Gene Coexpression"));
+		relationshipsFlowPanel.add(new PairwisePanel("Protein Interactions"));
 		relationshipsPanel.add(relationshipsFlowPanel);
 	}
 
