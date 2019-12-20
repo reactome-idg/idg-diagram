@@ -33,6 +33,7 @@ public class MultiSelectListBox extends ListBox{
 	 * @param e
 	 */
 	private void onChange(ChangeEvent e) {
+		//add all selected items to selectedItems set if not already present
 		List<String> add = new ArrayList<>();
 		for(int i=0; i<getItemCount(); i++) {
 			if(isItemSelected(i))
@@ -40,6 +41,7 @@ public class MultiSelectListBox extends ListBox{
 		}
 		selectedItems.addAll(add);
 		
+		//Functionally removes an item if it is unselected by trying to removed all items from selectedItems that aren't currently selected in view
 		List<String> remove = new ArrayList<>();
 		for(int i=0; i<getItemCount(); i++) {
 			if(!isItemSelected(i))
