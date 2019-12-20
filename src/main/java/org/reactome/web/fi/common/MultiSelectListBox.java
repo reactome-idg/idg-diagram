@@ -89,6 +89,7 @@ public class MultiSelectListBox extends ListBox{
 	 */
 	public void setListItems(List<String> items) {
 		this.totalItems = items;
+		selectedItems.clear();
 		
 		for(String item : items)
 			this.addItem(item);
