@@ -50,10 +50,18 @@ public class MultiSelectListBox extends ListBox{
 		selectedItems.removeAll(remove);
 	}
 
+	/**
+	 * Method returns a list of all user selected items regardless of filter state.
+	 * @return
+	 */
 	public List<String> getSelectedItemsText(){
 		return selectedItems.stream().collect(Collectors.toList());
 	}
 	
+	/**
+	 * Filteres MultiSelectListBox items based on a passed in String.
+	 * @param filter
+	 */
 	public void filter(String filter) {
 		if(totalItems == null) return;
 		
@@ -65,6 +73,9 @@ public class MultiSelectListBox extends ListBox{
 		resetSelected();
 	}
 	
+	/**
+	 * Makes sure all user selected items are selected in gui after a filter event is complete
+	 */
 	private void resetSelected() {
 		for(int i=0; i<this.getItemCount(); i++) {
 			if(selectedItems.contains(this.getItemText(i)))
@@ -72,6 +83,11 @@ public class MultiSelectListBox extends ListBox{
 		}
 	}
 
+	/**
+	 * Call this function to add a List of string items to MultiSelectListBox.
+	 * Adding items 1-by-1 will break filter and getSelectedItemsText functionality.
+	 * @param items
+	 */
 	public void setListItems(List<String> items) {
 		this.totalItems = items;
 		
