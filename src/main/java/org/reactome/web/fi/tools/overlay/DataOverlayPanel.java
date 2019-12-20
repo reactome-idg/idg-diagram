@@ -59,6 +59,7 @@ public class DataOverlayPanel  extends FlowPanel{
 	private FlowPanel sexChoice;
 	private List<RadioButton> radioButtons = new ArrayList<>();
 	
+	private Label currentSelectionTitle;
 	private Label currentSelectionLabel;
 	
 	private Image loader;
@@ -176,7 +177,7 @@ public class DataOverlayPanel  extends FlowPanel{
 		
 		sp.add(currentSelectionLabel = new Label());
 		
-		result.add(new Label("Currently Selected Types:"));
+		result.add(currentSelectionTitle = new Label("Currently Selected Types (" + 0 + " selected):"));
 		result.add(sp);
 		return result;
 	}
@@ -206,6 +207,8 @@ public class DataOverlayPanel  extends FlowPanel{
 			tissueSelector.addItem("No tissues. Press 'Overlay' to Overlay Data.");
 		}
 		tissueSelector.addChangeHandler(e -> onListBoxChanged());
+		onListBoxChanged();
+
 		
 		sexChoice.setVisible(selectorMap.get(currentExpressionType).getHasGender()); //shows or hides based on EType
 		if(!sexChoice.isVisible())
@@ -221,6 +224,7 @@ public class DataOverlayPanel  extends FlowPanel{
 		FlowPanel fp = new FlowPanel();
 		Label lb = new Label("Choose a sex:");
 		RadioButton rb1 = new RadioButton("sex", "Male");
+		rb1.setValue(true);
 		RadioButton rb2 = new RadioButton("sex", "Female");
 		radioButtons.add(rb1);
 		radioButtons.add(rb2);
@@ -246,6 +250,7 @@ public class DataOverlayPanel  extends FlowPanel{
 		Collections.sort(selectedTissues);
 		String currentSelection = String.join(", ", selectedTissues);
 		currentSelectionLabel.setText(currentSelection);
+		currentSelectionTitle.setText("Currently Selected Types (" + selectedTissues.size() + " selected):");
 	}
 	/**
 	 * causes onbrowserEvent to be fired on key up from textbox
@@ -299,7 +304,7 @@ public class DataOverlayPanel  extends FlowPanel{
 	 */
 	private void eTypeChangedHandler() {
 		getTissueTypes(eTypeSelector.getSelectedItemText());
-		currentExpressionType = eTypeSelector.getSelectedItemText();	
+		currentExpressionType = eTypeSelector.getSelectedItemText();
 	}
 	
 	/**
