@@ -1,0 +1,47 @@
+.title{
+	text-align: center;
+	margin-bottom: 5px;
+	width: 100%;
+}
+
+.title span {
+	color: rgb(14, 124, 179);
+	font-size: x-large;
+	font-weight: bolder;
+}
+
+.relationshipText{
+    color: rgb(14, 124, 179);
+    font-size: medium;
+    font-weight: bold;
+    text-align: justify;
+    margin: 10px 5px;	
+}
+
+.outerPanel {
+	background-color: #58c3e5;
+	border: 1px solid #0e7cd3;
+	border-radius: 5px;
+	height: 345px;
+}
+
+.relationshipsPanel{
+	height: 275px;
+	margin: 10px;
+	background-color: white;
+	border: 1px solid #0e7cd3;
+	border-radius: 5px;
+}
+
+.outerPanel button{
+	background: #1e95cf;
+	color: white;
+	border-radius: 16px;
+	border: 1px solid #037cb3;
+	float:right;
+	font-size: 13px;
+	font-weight: bold;
+	padding: 5px 10px;
+	margin-right: 10px;
+	outline: none;
+}

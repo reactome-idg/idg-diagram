@@ -39,6 +39,7 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 	private Button entityOverlayTypes;
 	
 	private DataOverlayPanel dataOverlayPanel;
+	private EntityOverlayPanel entityOverlayPanel;
 	
 	private List<Button> btns = new LinkedList<>();
 	
@@ -76,13 +77,10 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
         this.dataOverlayTypes.addStyleName(RESOURCES.getCSS()
 				   .buttonSelected());
         
-        //DISABLED UNTIL DATA IS AVAILABLE
-        entityOverlayTypes.setEnabled(false);
-        //DISABLED UNTIL DATA IS AVAILABLE
-        
         this.container = new DeckLayoutPanel();
         this.container.addStyleName(RESOURCES.getCSS().container());
         this.container.add(dataOverlayPanel = new DataOverlayPanel(eventBus));
+        this.container.add(entityOverlayPanel = new EntityOverlayPanel(eventBus));
         this.container.add(new Label("Relationship overlay!"));
         this.container.showWidget(0);
         this.container.setAnimationVertical(true);

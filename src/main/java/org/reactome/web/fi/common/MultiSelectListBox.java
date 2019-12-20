@@ -29,4 +29,8 @@ public class MultiSelectListBox extends ListBox{
 		}
 		return result;
 	}
+	
+	public void filter(String filter) {
+		
+	}
 }

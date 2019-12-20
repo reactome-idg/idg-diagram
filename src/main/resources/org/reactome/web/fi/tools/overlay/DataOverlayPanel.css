@@ -15,7 +15,7 @@
     font-size: medium;
     font-weight: bold;
     text-align: justify;
-    margin: 15px 5px;
+    margin: 10px 5px;
 }
 
 .expressionSubmission{
@@ -28,7 +28,7 @@
 	background-color: #58c3e5;
 	border: 1px solid #0e7cd3;
 	border-radius: 5px;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 	height: 10px;
 }
 
@@ -77,7 +77,7 @@
     float: right;
     font-size: 13px;
     font-weight: bold;
-    padding: 5px 10px;
+    padding: 5px 5px;
     outline: none;
 }
 
