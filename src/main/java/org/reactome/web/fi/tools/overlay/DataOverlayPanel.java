@@ -259,16 +259,14 @@ public class DataOverlayPanel  extends FlowPanel{
 	 * @param e
 	 */
 	private void tissueFilterKeyUp(KeyUpEvent e) {
-		GWT.log(tissueFilter.getText());
+		tissueSelector.filter(tissueFilter.getText() != null ? tissueFilter.getText():"");
 	}
 
 	/**
-	 * gets textbox value on every key up
+	 * needed to cause tissueFilterKeyUp to fire. Has no innner function
 	 * @param e
 	 */
-	private void onTissueFilterChange(ValueChangeEvent<String> e) {
-		tissueSelector.filter(e.getValue());
-	}
+	private void onTissueFilterChange(ValueChangeEvent<String> e) {}
 
 	/**
 	 * Makes overlay request based on selected eType, the value type of 
