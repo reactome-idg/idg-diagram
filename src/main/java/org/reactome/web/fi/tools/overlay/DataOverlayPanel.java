@@ -61,6 +61,7 @@ public class DataOverlayPanel  extends FlowPanel{
 	
 	private Label currentSelectionTitle;
 	private Label currentSelectionLabel;
+	private Label warningLabel;
 	
 	private Image loader;
 	
@@ -124,6 +125,8 @@ public class DataOverlayPanel  extends FlowPanel{
 		//panel for extra properties
 		FlowPanel propertiesPanel = new FlowPanel();
 		propertiesPanel.getElement().getStyle().setHeight(105, Unit.PX);
+		propertiesPanel.add(warningLabel = new Label());
+		warningLabel.getElement().getStyle().setColor("#FF0000");
 		propertiesPanel.add(sexChoice);
 		rightContainer.add(propertiesPanel);
 		
@@ -224,7 +227,6 @@ public class DataOverlayPanel  extends FlowPanel{
 		FlowPanel fp = new FlowPanel();
 		Label lb = new Label("Choose a sex:");
 		RadioButton rb1 = new RadioButton("sex", "Male");
-		rb1.setValue(true);
 		RadioButton rb2 = new RadioButton("sex", "Female");
 		radioButtons.add(rb1);
 		radioButtons.add(rb2);
@@ -277,10 +279,16 @@ public class DataOverlayPanel  extends FlowPanel{
 		String valueType = selectorMap.get(currentExpressionType).getDataType();
 		String unit = selectorMap.get(currentExpressionType).getUnit();
 		String sex = null;
-		if(selectorMap.get(currentExpressionType).getHasGender())
+		if(selectorMap.get(currentExpressionType).getHasGender()) {
 			for(RadioButton btn : radioButtons)
 				if(btn.getValue())
 					sex = btn.getText();
+			if(sex == null) {
+				warningLabel.setText("You must select a gender!");
+				return;
+			}
+		}
+		warningLabel.setText("");
 
 		OverlayProperties properties = new OverlayProperties(valueType, unit, sex, 
 															 String.join(",", tissueSelector.getSelectedItemsText()), 
