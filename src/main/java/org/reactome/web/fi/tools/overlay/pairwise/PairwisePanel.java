@@ -31,7 +31,8 @@ public class PairwisePanel extends FlowPanel{
 	private ListBox lineStyleListBox;
 	
 	private DeckPanel optionsDeckPanel;
-	private ScrollPanel bottomContainer;
+	private ScrollPanel bottomContainerScroll;
+	private FlowPanel bottomContainer;
 	private Label infoLabel;
 	
 	private boolean expanded;
@@ -77,9 +78,10 @@ public class PairwisePanel extends FlowPanel{
 		container.add(leftContainer);
 		container.add(rightContainer);
 		result.add(container);
-		result.add(bottomContainer = new ScrollPanel());
-		bottomContainer.add(getInfoPanel());
-		bottomContainer.setStyleName(RESOURCES.getCSS().bottomContainer());
+		result.add(bottomContainerScroll = new ScrollPanel());
+		bottomContainerScroll.add(bottomContainer = new FlowPanel());
+		bottomContainerScroll.setStyleName(RESOURCES.getCSS().bottomContainer());
+		updateInfo();
 		return result;
 	}
 	/**
@@ -123,7 +125,7 @@ public class PairwisePanel extends FlowPanel{
 		List<String> currentListBoxSelected = ((IDGListBox)optionsDeckPanel.getWidget(sources.getSelectedIndex())).getSelectedItemsText();
 		sourceToTypesMap.get(sources.getSelectedItemText()).clear();
 		sourceToTypesMap.get(sources.getSelectedItemText()).addAll(currentListBoxSelected);
-		updateInfoLabel();
+		updateInfo();
 	}
 
 	/**
@@ -150,32 +152,22 @@ public class PairwisePanel extends FlowPanel{
 		lineStyleListBox.setStyleName(RESOURCES.getCSS().sourcesSelectBox());
 		return result;
 	}
-	
-	/**
-	 * gets info panel that displays info about current selections
-	 * @return
-	 */
-	private FlowPanel getInfoPanel() {
-		FlowPanel result = new FlowPanel();
-		result.add(new Label("Current sources: "));
-		result.add(infoLabel = new Label());
-		return result;
-	}
 
 	/**
 	 * Called to update info label with current state of selections
 	 */
-	private void updateInfoLabel() {
-		String info = "";
+	private void updateInfo() {
+		bottomContainer.clear();
+		bottomContainer.add(new Label("Current sources:"));
 		
 		for(String key : sourceToTypesMap.keySet()) 
-			if(sourceToTypesMap.get(key).size() > 0) 
-				info += key + 
+			if(sourceToTypesMap.get(key).size() > 0) {
+				Label lbl = new Label();
+				lbl.setText(key + 
 						" -> " + 
-						String.join(", ", sourceToTypesMap.get(key)) + 
-						"\n";
-		
-		infoLabel.setText(info);
+						String.join(", ", sourceToTypesMap.get(key)));
+				bottomContainer.add(lbl);
+			}
 	}
 	
 	private void onSourcesListBoxChanged() {
