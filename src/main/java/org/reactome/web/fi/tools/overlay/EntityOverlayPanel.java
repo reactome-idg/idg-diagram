@@ -8,9 +8,11 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -26,6 +28,8 @@ public class EntityOverlayPanel extends FlowPanel {
 	
 	private ScrollPanel relationshipsPanel;
 	private Button overlayButton;
+	
+	private Image loader;
 	
 	public EntityOverlayPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
@@ -56,6 +60,9 @@ public class EntityOverlayPanel extends FlowPanel {
 		FlowPanel bottomContainer = new FlowPanel();
 		bottomContainer.add(overlayButton = new Button("Overlay!"));
 		overlayButton.addClickHandler(e -> overlayButtonClicked());
+		bottomContainer.add(loader = new Image(RESOURCES.loader()));
+		loader.setStyleName(RESOURCES.getCSS().tissuesLoading());
+		loader.setVisible(true);
 		
 		outerPanel.add(bottomContainer);
 		
@@ -73,9 +80,15 @@ public class EntityOverlayPanel extends FlowPanel {
 	 * Handles agregation of data needed for overlay server call
 	 */
 	private void overlayButtonClicked() {
-		// TODO Auto-generated method stub
+		loader.setVisible(true);
 	}
 
+	/**
+	 * Callable method to hide loading pinwheel
+	 */
+	public void hideLoader() {
+		loader.setVisible(false);
+	}
 
 	public static Resources RESOURCES;
 	static {
@@ -90,6 +103,9 @@ public class EntityOverlayPanel extends FlowPanel {
 		@Source("pairwiseRelationshipInfo.html")
 		TextResource pairwiseRelationshipInfo();
 		
+		@Source("images/loader.gif")
+		ImageResource loader();
+		
 	}
 	
 	@CssResource.ImportedWithPrefix("idg-overlayEntities")
@@ -103,5 +119,7 @@ public class EntityOverlayPanel extends FlowPanel {
 		String outerPanel();
 		
 		String relationshipsPanel();
+		
+		String tissuesLoading();
 	}
 }

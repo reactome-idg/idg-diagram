@@ -45,3 +45,8 @@
 	margin-right: 10px;
 	outline: none;
 }
+
+.tissuesLoading{
+	float: right;
+	margin: 7px 10px 0 0;
+}
