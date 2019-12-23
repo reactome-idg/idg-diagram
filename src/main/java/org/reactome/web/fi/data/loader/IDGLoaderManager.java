@@ -5,6 +5,7 @@ import org.reactome.web.diagram.data.GraphObjectFactory;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.data.loader.SVGLoader;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
+import org.reactome.web.diagram.events.DiagramInternalErrorEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.data.overlay.model.OverlayProperties;
@@ -101,7 +102,10 @@ TCRDLoader.Handler{
 	@Override
 	public void onFIViewLoadedError(String stId, Throwable exception) {
 		eventBus.fireEventFromSource(new FIViewMessageEvent(false), this);
-		GWT.log("Error loading FIView interaction data: " + exception.getMessage());
+		eventBus.fireEventFromSource(
+                new DiagramInternalErrorEvent("There was a problem while loading the Functional Interactions",
+                        "Layout content error: " + exception.getMessage()
+                ), this);
 	}
 	
 	@Override 
