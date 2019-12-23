@@ -5,6 +5,7 @@ import org.reactome.web.fi.common.MultiSelectListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -24,6 +25,8 @@ public class PairwisePanel extends FlowPanel{
 	private MultiSelectListBox sources;
 	private ListBox lineStyleListBox;
 	private FlowPanel properties;
+	
+	DeckPanel optionsDeckPanel;
 	
 	private boolean expanded;
 	
@@ -73,10 +76,10 @@ public class PairwisePanel extends FlowPanel{
 	private FlowPanel getRightContainer() {
 		FlowPanel result = new FlowPanel();
 		result.add(new Label("Other Options:"));
-		ScrollPanel optionsScrollPanel = new ScrollPanel();
-		optionsScrollPanel.setStyleName(RESOURCES.getCSS().optionsScrollPanel());
-		optionsScrollPanel.add(getOptionsPanel());
-		result.add(optionsScrollPanel);
+		optionsDeckPanel = new DeckPanel();
+		optionsDeckPanel.setStyleName(RESOURCES.getCSS().optionsDeckPanel());
+		getDeck();
+		result.add(optionsDeckPanel);
 		
 		result.add(new Label("Choose a line color (Enter a hex value):"));
 		TextBox colorSelector = new TextBox();
@@ -87,10 +90,10 @@ public class PairwisePanel extends FlowPanel{
 	}
 
 	//Override to provide extra options to a PairwisePanel
-	private FlowPanel getOptionsPanel() {
-		FlowPanel result = new FlowPanel();
-		result.add(new Label("No extra options for this relationship type!"));
-		return result;
+	private void getDeck() {
+		for(int i=0; i < sources.getItemCount(); i++) {
+			optionsDeckPanel.add(new Label(sources.getItemText(i)));
+		}
 	}
 
 	private FlowPanel getLeftContainer() {
@@ -99,13 +102,19 @@ public class PairwisePanel extends FlowPanel{
 		result.add(lbl);
 		sources = new MultiSelectListBox();
 		sources.setStyleName(RESOURCES.getCSS().sourcesSelectBox());
+		sources.addChangeHandler(e -> onListBoxChanged());
 		sources.setVisibleItemCount(5);
-		sources.setMultipleSelect(true);
+		sources.setMultipleSelect(false);
 		result.add(sources);
 		result.add(new Label("Choose a line style:"));
 		result.add(lineStyleListBox = new ListBox());
 		lineStyleListBox.setStyleName(RESOURCES.getCSS().sourcesSelectBox());
 		return result;
+	}
+
+	private Object onListBoxChanged() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private void toggleCollapse() {
@@ -141,7 +150,7 @@ public class PairwisePanel extends FlowPanel{
 		
 		String sourcesSelectBox();
 		
-		String optionsScrollPanel();
+		String optionsDeckPanel();
 		
 		String colorPickerTextBox();
 	}
