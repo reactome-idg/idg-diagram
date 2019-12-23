@@ -12,7 +12,7 @@
 
 .relationshipText{
     color: rgb(14, 124, 179);
-    font-size: medium;
+    font-size: small;
     font-weight: bold;
     text-align: justify;
     margin: 10px 5px;	
@@ -22,11 +22,11 @@
 	background-color: #58c3e5;
 	border: 1px solid #0e7cd3;
 	border-radius: 5px;
-	height: 345px;
+	height: 360px;
 }
 
 .relationshipsPanel{
-	height: 275px;
+	height: 300px;
 	margin: 10px;
 	background-color: white;
 	border: 1px solid #0e7cd3;

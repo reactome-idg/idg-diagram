@@ -4,6 +4,7 @@ package org.reactome.web.fi.tools.overlay;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwisePanel;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
@@ -16,6 +17,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.StackLayoutPanel;
+import com.google.gwt.user.client.ui.StackPanel;
 
 /**
  * 
@@ -71,6 +74,11 @@ public class EntityOverlayPanel extends FlowPanel {
 	
 	private void getRelationshipTypePanels() {
 		FlowPanel relationshipsFlowPanel = new FlowPanel();
+//		StackPanel test = new StackPanel();
+//		test.getElement().getStyle().setWidth(100, Unit.PCT);
+//		test.add(new PairwisePanel("Gene Coexpression"), "Gene Coexpression");
+//		test.add(new PairwisePanel("Protein Interactions"), "Protein Interactions");
+//		relationshipsFlowPanel.add(test);
 		relationshipsFlowPanel.add(new PairwisePanel("Gene Coexpression"));
 		relationshipsFlowPanel.add(new PairwisePanel("Protein Interactions"));
 		relationshipsPanel.add(relationshipsFlowPanel);
