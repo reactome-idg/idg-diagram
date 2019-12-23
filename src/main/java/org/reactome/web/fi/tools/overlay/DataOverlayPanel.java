@@ -34,7 +34,7 @@ import org.reactome.web.fi.data.overlay.model.OverlayProperties;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.common.IDGTextBox;
-import org.reactome.web.fi.common.MultiSelectListBox;
+import org.reactome.web.fi.common.IDGListBox;
 
 /**
  * 
@@ -47,7 +47,7 @@ public class DataOverlayPanel  extends FlowPanel{
 	private Map<String, ExpressionTypeEntity> selectorMap;
 	private FlowPanel selectionPanel;
 	private ListBox eTypeSelector;
-	private MultiSelectListBox tissueSelector;
+	private IDGListBox tissueSelector;
 	private IDGTextBox tissueFilter;
 	private Button overlayButton;
 	private String currentExpressionType;
@@ -103,7 +103,7 @@ public class DataOverlayPanel  extends FlowPanel{
 		tissueFilter.setStyleName(RESOURCES.getCSS().tissueFilter());
 
 		//add tissue selector
-		tissueSelector = new MultiSelectListBox();
+		tissueSelector = new IDGListBox();
 		tissueSelector.addStyleName(RESOURCES.getCSS().tissueSelector());
 		tissueSelector.setVisibleItemCount(9);
 		tissueSelector.setMultipleSelect(true);

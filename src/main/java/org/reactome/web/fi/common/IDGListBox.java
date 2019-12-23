@@ -14,12 +14,12 @@ import com.google.gwt.user.client.ui.ListBox;
  * @author brunsont
  *
  */
-public class MultiSelectListBox extends ListBox{
+public class IDGListBox extends ListBox{
 
 	private List<String> totalItems;
 	private Set<String> selectedItems;
 	
-	public MultiSelectListBox() {
+	public IDGListBox() {
 		selectedItems = new HashSet<>();
 		this.addChangeHandler(e -> onChange(e));
 	}	
@@ -58,7 +58,7 @@ public class MultiSelectListBox extends ListBox{
 	}
 	
 	/**
-	 * Filteres MultiSelectListBox items based on a passed in String.
+	 * Filteres IDGListBox items based on a passed in String.
 	 * @param filter
 	 */
 	public void filter(String filter) {
@@ -83,7 +83,7 @@ public class MultiSelectListBox extends ListBox{
 	}
 
 	/**
-	 * Call this function to add a List of string items to MultiSelectListBox.
+	 * Call this function to add a List of string items to IDGListBox.
 	 * Adding items 1-by-1 will break filter and getSelectedItemsText functionality.
 	 * @param items
 	 */

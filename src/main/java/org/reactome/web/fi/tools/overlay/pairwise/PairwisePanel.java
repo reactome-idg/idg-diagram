@@ -1,6 +1,6 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
-import org.reactome.web.fi.common.MultiSelectListBox;
+import org.reactome.web.fi.common.IDGListBox;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -22,7 +22,7 @@ public class PairwisePanel extends FlowPanel{
 	private FocusPanel headerPanel;
 	private FlowPanel main;
 	
-	private MultiSelectListBox sources;
+	private IDGListBox sources;
 	private ListBox lineStyleListBox;
 	private FlowPanel properties;
 	
@@ -100,7 +100,7 @@ public class PairwisePanel extends FlowPanel{
 		FlowPanel result = new FlowPanel();
 		Label lbl = new Label("Select Sources (Hold Ctrl for multiple):");
 		result.add(lbl);
-		sources = new MultiSelectListBox();
+		sources = new IDGListBox();
 		sources.setStyleName(RESOURCES.getCSS().sourcesSelectBox());
 		sources.addChangeHandler(e -> onListBoxChanged());
 		sources.setVisibleItemCount(5);
