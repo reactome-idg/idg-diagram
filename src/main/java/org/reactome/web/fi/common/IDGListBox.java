@@ -94,4 +94,11 @@ public class IDGListBox extends ListBox{
 		for(String item : items)
 			this.addItem(item);
 	}
+	
+	@Override
+	public void clear() {
+		super.clear();
+		this.totalItems.clear();
+		this.selectedItems.clear();
+	}
 }
