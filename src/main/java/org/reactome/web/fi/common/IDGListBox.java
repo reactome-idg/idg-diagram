@@ -20,6 +20,7 @@ public class IDGListBox extends ListBox{
 	private Set<String> selectedItems;
 	
 	public IDGListBox() {
+		totalItems = new ArrayList<>();
 		selectedItems = new HashSet<>();
 		this.addChangeHandler(e -> onChange(e));
 	}	
