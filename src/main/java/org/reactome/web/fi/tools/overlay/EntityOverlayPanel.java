@@ -1,6 +1,7 @@
 package org.reactome.web.fi.tools.overlay;
 
 
+import org.reactome.web.fi.tools.overlay.pairwise.PairwiseFormPanel;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwisePanel;
 
 import com.google.gwt.core.client.GWT;
@@ -19,13 +20,14 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.ui.StackPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
  * @author brunsont
  *
  */
-public class EntityOverlayPanel extends FlowPanel {
+public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.Handler{
 	
 	private EventBus eventBus;
 	
@@ -55,10 +57,7 @@ public class EntityOverlayPanel extends FlowPanel {
 		FlowPanel outerPanel = new FlowPanel();
 		outerPanel.setStyleName(RESOURCES.getCSS().outerPanel());
 		
-		relationshipsPanel = new ScrollPanel();
-		relationshipsPanel.setStyleName(RESOURCES.getCSS().relationshipsPanel());
-		getRelationshipTypePanels();
-		outerPanel.add(relationshipsPanel);
+		outerPanel.add(new PairwiseFormPanel(this)); //so panel can pass back additions and removals from form
 		
 		FlowPanel bottomContainer = new FlowPanel();
 		bottomContainer.add(overlayButton = new Button("Overlay!"));
@@ -71,19 +70,13 @@ public class EntityOverlayPanel extends FlowPanel {
 		
 		this.add(outerPanel);
 	}
-	
-	private void getRelationshipTypePanels() {
-		FlowPanel relationshipsFlowPanel = new FlowPanel();
-//		StackPanel test = new StackPanel();
-//		test.getElement().getStyle().setWidth(100, Unit.PCT);
-//		test.add(new PairwisePanel("Gene Coexpression"), "Gene Coexpression");
-//		test.add(new PairwisePanel("Protein Interactions"), "Protein Interactions");
-//		relationshipsFlowPanel.add(test);
-		relationshipsFlowPanel.add(new PairwisePanel("Gene Coexpression"));
-		relationshipsFlowPanel.add(new PairwisePanel("Protein Interactions"));
-		relationshipsPanel.add(relationshipsFlowPanel);
-	}
 
+	@Override
+	public void onAddClicked(String addClicked) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	/**
 	 * Handles agregation of data needed for overlay server call
 	 */
@@ -125,9 +118,9 @@ public class EntityOverlayPanel extends FlowPanel {
 		String relationshipText();
 		
 		String outerPanel();
-		
-		String relationshipsPanel();
-		
+				
 		String tissuesLoading();
+		
+		String formPanel();
 	}
 }

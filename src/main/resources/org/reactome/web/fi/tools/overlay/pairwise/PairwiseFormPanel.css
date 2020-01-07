@@ -1,0 +1,43 @@
+.panel{
+	margin: 10px;
+	height: 250px;
+	border: 1px solid #0e7cd3;
+	border-radius: 5px;
+}
+
+.dataTypeListBox{
+	width: 100%;
+}
+
+.topContainer{
+	margin: 5px;
+}
+
+.leftContainer{
+	width:50%;
+	padding:5px;
+	float: left;
+}
+
+.rightContainer{
+	width: 45%;
+	padding: 5px;
+	float:left;
+}
+
+.multiSelectListBox{
+	width: 100%;
+}
+
+.bottomPanel button{
+    background: #1e95cf;
+    color: white;
+    border-radius: 16px;
+    border: 1px solid #037cb3;
+    float:right;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 5px 10px;
+    margin-right: 10px;
+    outline: none;
+}

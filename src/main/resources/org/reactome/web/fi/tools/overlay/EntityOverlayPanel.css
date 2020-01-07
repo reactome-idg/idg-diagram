@@ -22,13 +22,12 @@
 	background-color: #58c3e5;
 	border: 1px solid #0e7cd3;
 	border-radius: 5px;
-	height: 360px;
+	height: 400px;
 }
 
-.relationshipsPanel{
+.formPanel{
 	height: 300px;
 	margin: 10px;
-	background-color: white;
 	border: 1px solid #0e7cd3;
 	border-radius: 5px;
 }
