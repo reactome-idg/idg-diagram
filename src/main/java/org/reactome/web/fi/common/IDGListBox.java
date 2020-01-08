@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -94,6 +95,14 @@ public class IDGListBox extends ListBox{
 		
 		for(String item : items)
 			this.addItem(item);
+	}
+	
+	/**
+	 * Allows for adding a Set of items instead of a list
+	 * @param items
+	 */
+	public void setListItems(Set<String> items) {
+		setListItems(items.stream().collect(Collectors.toList()));
 	}
 	
 	@Override
