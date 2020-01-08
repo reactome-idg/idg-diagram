@@ -363,7 +363,7 @@
     	</init-param>
     </servlet>
     <servlet-mapping>
-    	<servlet-name>TCRDTargetLevelProxy</servlet-name>
+    	<servlet-name>TCRDProxy</servlet-name>
     	<url-pattern>/tcrdws/*</url-pattern>
     </servlet-mapping>
     
@@ -385,7 +385,7 @@
         </init-param>
     </servlet>
     <servlet-mapping>
-        <servlet-name>TCRDTargetLevelProxy</servlet-name>
+        <servlet-name>idgPairwiseProxy</servlet-name>
         <url-pattern>/idgpairwise/*</url-pattern>
     </servlet-mapping>
 </web-app>
