@@ -1,5 +1,10 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.reactome.web.fi.common.IDGListBox;
 import org.reactome.web.fi.data.loader.IdgPairwiseLoader;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
@@ -8,6 +13,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntity
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -25,27 +31,50 @@ public class PairwiseFormPanel extends FlowPanel{
 	
 	private Handler handler;
 	
+	private List<PairwiseDescriptionEntity> entityList;
+	private List<String> dataTypesList;
+	private boolean includeTertiary = false;
+	
+	private ListBox dataType;
+	private ListBox provenanceListBox;
+	private IDGListBox bioSourcesListBox;
+	private IDGListBox tertiaryOptionsListBox;
+	private ListBox lineStyleListBox;
+	private ListBox lineColorListBox;
+	
 	public PairwiseFormPanel(Handler handler) {
 		this.handler = handler;
-				
-		initPanel();
+		dataTypesList = new ArrayList<>();
+		
 		loadDataDesc();
+		initPanel();
 	}
 
-	//loads pairwiseDesc data to populate form
+	/**
+	 * loads pairwiseDesc data to populate form. Then causes form panel to initialize
+	 */
 	private void loadDataDesc() {
 		IdgPairwiseLoader.loadDataDesc(new IdgPairwiseLoader.dataDescHandler() {
 			@Override
 			public void onDataDescLoadedError(Throwable exception) {
-				// TODO Auto-generated method stub
-				
+				exception.printStackTrace();
 			}
 			@Override
 			public void onDataDescLoaded(PairwiseDescriptionEntities entities) {
-				for(PairwiseDescriptionEntity entity: entities.getPairwiseDescriptionEntities())
-					GWT.log(entity.getBioSource());
+				entityList = entities.getPairwiseDescriptionEntities();
+				updateDesData();
+				setDataTypeListBox();
+				onDataTypeChanged();
+				onProvenanceListBoxChanged();
+				onBioSourcesListBoxChanged();
 			}
 		});
+	}
+
+	protected void updateDesData() {
+		for(PairwiseDescriptionEntity entity: entityList)
+			if(!dataTypesList.contains(entity.getDataType()))
+				dataTypesList.add(entity.getDataType());
 	}
 
 	private void initPanel() {
@@ -70,41 +99,90 @@ public class PairwiseFormPanel extends FlowPanel{
 		result.setStyleName(RESOURCES.getCSS().leftContainer());
 		
 		result.add(new Label("Choose a relationship type:"));
-		ListBox dataType = new ListBox();
+		dataType = new ListBox();
 		dataType.setStyleName(RESOURCES.getCSS().dataTypeListBox());
+		dataType.addChangeHandler(e -> onDataTypeChanged());
 		result.add(dataType);
 		
-		result.add(new Label("Choose a source:"));
-		ListBox sourceType = new ListBox();
-		sourceType.setStyleName(RESOURCES.getCSS().dataTypeListBox());
-		result.add(sourceType);
+		result.add(new Label("Choose a provenance:"));
+		provenanceListBox = new ListBox();
+		provenanceListBox.setStyleName(RESOURCES.getCSS().dataTypeListBox());
+		provenanceListBox.addChangeHandler(e -> onProvenanceListBoxChanged());
+		result.add(provenanceListBox);
 		
 		result.add(new Label("Choose bioSources:"));
-		IDGListBox bioSourcesListBox = new IDGListBox();
+		bioSourcesListBox = new IDGListBox();
 		bioSourcesListBox.setStyleName(RESOURCES.getCSS().multiSelectListBox());
-		bioSourcesListBox.setVisibleItemCount(5);
+		bioSourcesListBox.addChangeHandler(e -> onBioSourcesListBoxChanged());
 		result.add(bioSourcesListBox);
 		
 		return result;
 	}
-	
+
+	private void onBioSourcesListBoxChanged() {
+		String currentDataType = dataType.getSelectedItemText();
+		String currentProvenance = provenanceListBox.getSelectedItemText();
+		String currentBioSource = bioSourcesListBox.getSelectedItemText();
+		Set<String> tertiaryOptions = new HashSet<>();
+		for(PairwiseDescriptionEntity entity: entityList) 
+			if(entity.getDataType() == currentDataType && entity.getProvenance() == currentProvenance && entity.getBioSource() == currentBioSource)
+				//add origin to tertiaryOption
+				
+		tertiaryOptionsListBox.clear();
+		if(tertiaryOptions.size() > 0) {
+			tertiaryOptionsListBox.setListItems(tertiaryOptions);
+			includeTertiary = true;
+		}
+		else{
+			tertiaryOptionsListBox.addItem("No options to select...");
+			includeTertiary = false;
+		}
+	}
+
+	private void onProvenanceListBoxChanged() {
+		
+		String currentDataType = dataType.getSelectedItemText();
+		String currentProvenance = provenanceListBox.getSelectedItemText();
+		Set<String> bioSources = new HashSet<>();
+		for(PairwiseDescriptionEntity entity : entityList)
+			if(entity.getDataType() == currentDataType && entity.getProvenance() == currentProvenance)
+				bioSources.add(entity.getBioSource());
+		
+		bioSourcesListBox.clear();
+		bioSourcesListBox.setListItems(bioSources);
+	}
+
+	private void onDataTypeChanged() {
+		// TODO Auto-generated method stub
+		String currentDataType = dataType.getSelectedItemText();
+		Set<String> provenances = new HashSet<>();
+		for(PairwiseDescriptionEntity entity : entityList)
+			if(entity.getDataType() == currentDataType)
+				provenances.add(entity.getProvenance());
+		
+		provenanceListBox.clear();
+		for(String provenance : provenances)
+			provenanceListBox.addItem(provenance);
+			
+		onProvenanceListBoxChanged();
+	}
+
 	private FlowPanel getRightContainer() {
 		FlowPanel result = new FlowPanel();
 		result.setStyleName(RESOURCES.getCSS().rightContainer());
 		
 		result.add(new Label("Select Options:"));
-		IDGListBox tertiaryOptions = new IDGListBox();
-		tertiaryOptions.setStyleName(RESOURCES.getCSS().multiSelectListBox());
-		tertiaryOptions.setVisibleItemCount(5);
-		result.add(tertiaryOptions);
+		tertiaryOptionsListBox = new IDGListBox();
+		tertiaryOptionsListBox.setStyleName(RESOURCES.getCSS().multiSelectListBox());
+		result.add(tertiaryOptionsListBox);
 		
 		result.add(new Label("Choose Line Style:"));
-		ListBox lineStyleListBox = new ListBox();
+		lineStyleListBox = new ListBox();
 		lineStyleListBox.setStyleName(RESOURCES.getCSS().dataTypeListBox());
 		result.add(lineStyleListBox);
 		
 		result.add(new Label("Choose Line Color:"));
-		ListBox lineColorListBox = new ListBox();
+		lineColorListBox = new ListBox();
 		lineColorListBox.setStyleName(RESOURCES.getCSS().dataTypeListBox());
 		result.add(lineColorListBox);
 		
@@ -120,10 +198,27 @@ public class PairwiseFormPanel extends FlowPanel{
 		result.add(addButton);
 		return result;
 	}
+	
+	/**
+	 * Sets Data Type list box that directs fill of other list boxes
+	 */
+	private void setDataTypeListBox() {
+		for(String type : dataTypesList)
+			dataType.addItem(type);
+			
+	}
 
 	private void onAddButtonClicked() {
-		// TODO Auto-generated method stub
+		String relationship = provenanceListBox.getSelectedItemText() + "|"
+							  +bioSourcesListBox.getSelectedItemText() + "|"
+							  + dataType.getSelectedItemText();
+		if(includeTertiary) relationship += "|" + tertiaryOptionsListBox.getSelectedItemText();
 		
+		Window.alert(relationship);
+		
+//		handler.onAddClicked(relationship);
+		
+							  
 	}
 
 	/**
