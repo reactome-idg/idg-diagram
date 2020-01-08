@@ -59,6 +59,7 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		
 		FlowPanel bottomContainer = new FlowPanel();
 		bottomContainer.add(overlayButton = new Button("Overlay!"));
+		overlayButton.setStyleName(RESOURCES.getCSS().overlayButton());
 		overlayButton.addClickHandler(e -> overlayButtonClicked());
 		bottomContainer.add(loader = new Image(RESOURCES.loader()));
 		loader.setStyleName(RESOURCES.getCSS().tissuesLoading());
@@ -120,5 +121,7 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		String tissuesLoading();
 		
 		String formPanel();
+		
+		String overlayButton();
 	}
 }

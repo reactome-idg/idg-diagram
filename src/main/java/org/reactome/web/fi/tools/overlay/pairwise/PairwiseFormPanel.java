@@ -5,16 +5,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.reactome.web.fi.common.IDGListBox;
 import org.reactome.web.fi.data.loader.IdgPairwiseLoader;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntity;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 
@@ -38,17 +43,19 @@ public class PairwiseFormPanel extends FlowPanel{
 	private List<PairwiseDescriptionEntity> entityList;
 	private List<String> dataTypesList;
 	private boolean includeOrigin = false;
+	private int lineStyleSelectedIndex;
 	
 	private ListBox dataType;
 	private ListBox provenanceListBox;
 	private ListBox bioSourcesListBox;
 	private ListBox originListBox;
-	private ListBox lineStyleListBox;
 	private ListBox lineColorListBox;
+	private List<Button> lineStyleButtons;
 	
 	public PairwiseFormPanel(Handler handler) {
 		this.handler = handler;
 		dataTypesList = new ArrayList<>();
+		lineStyleButtons = new ArrayList<>();
 		
 		loadDataDesc();
 		initPanel();
@@ -206,9 +213,8 @@ public class PairwiseFormPanel extends FlowPanel{
 		result.add(originListBox);
 		
 		result.add(new Label("Choose Line Style:"));
-		lineStyleListBox = new ListBox();
-		lineStyleListBox.setStyleName(RESOURCES.getCSS().dataTypeListBox());
-		result.add(lineStyleListBox);
+		FlowPanel lineStylePanel = getLineStyles();
+		result.add(lineStylePanel);
 		
 		result.add(new Label("Choose Line Color:"));
 		lineColorListBox = new ListBox();
@@ -218,14 +224,46 @@ public class PairwiseFormPanel extends FlowPanel{
 		return result;
 	}
 	
+	private FlowPanel getLineStyles() {
+		FlowPanel result = new FlowPanel();
+		
+		FlowPanel top = new FlowPanel();
+		Image solidImg = new Image(RESOURCES.solidLine());
+		SafeHtml solidSafe = SafeHtmlUtils.fromTrustedString(solidImg.toString());
+		Button solid = new Button(solidSafe);
+		solid.setStyleName(RESOURCES.getCSS().lineStyleButton());
+		lineStyleButtons.add(solid);
+		top.add(solid);
+		Image closeImg = new Image(RESOURCES.closeDashed());
+		SafeHtml closeSafe = SafeHtmlUtils.fromTrustedString(closeImg.toString());
+		Button close = new Button(closeSafe);
+		close.setStyleName(RESOURCES.getCSS().lineStyleButton());
+		lineStyleButtons.add(close);
+		top.add(close);
+		
+		for(Button btn : lineStyleButtons)
+			btn.addClickHandler(e -> onLineStyleButtonSelected(e));
+		
+		result.add(top);
+		return result;
+	}
+	
+	private void onLineStyleButtonSelected(ClickEvent e) {
+		Button selected = (Button) e.getSource();
+		for(Button btn : lineStyleButtons)
+			btn.removeStyleName(RESOURCES.getCSS().lineStyleButtonSelected());
+		selected.addStyleName(RESOURCES.getCSS().lineStyleButtonSelected());
+		lineStyleSelectedIndex = lineStyleButtons.indexOf(selected);
+	}
+
 	/*
 	 * Generates bottom panel for add button
 	 */
 	private FlowPanel getBottomContainer() {
 		FlowPanel result = new FlowPanel();
-		result.setStyleName(RESOURCES.getCSS().bottomPanel());
 		
 		Button addButton = new Button("Add");
+		addButton.setStyleName(RESOURCES.getCSS().addButton());
 		addButton.addClickHandler(e -> onAddButtonClicked());
 		result.add(addButton);
 		return result;
@@ -263,6 +301,12 @@ public class PairwiseFormPanel extends FlowPanel{
 	public interface Resources extends ClientBundle{
 		@Source(ResourceCSS.CSS)
 		ResourceCSS getCSS();
+		
+		@Source("images/solid_line.jpg")
+		ImageResource solidLine();
+		
+		@Source("images/close_dashed.jpg")
+		ImageResource closeDashed();
 	}
 	
 	@CssResource.ImportedWithPrefix("idg-PairwiseFormPanel")
@@ -280,7 +324,11 @@ public class PairwiseFormPanel extends FlowPanel{
 		String rightContainer();
 		
 		String multiSelectListBox();
+				
+		String addButton();
 		
-		String bottomPanel();
+		String lineStyleButton();
+		
+		String lineStyleButtonSelected();
 	}
 }
