@@ -124,14 +124,16 @@ public class PairwiseFormPanel extends FlowPanel{
 		String currentProvenance = provenanceListBox.getSelectedItemText();
 		String currentBioSource = bioSourcesListBox.getSelectedItemText();
 		Set<String> tertiaryOptions = new HashSet<>();
-		for(PairwiseDescriptionEntity entity: entityList) 
-			if(entity.getDataType() == currentDataType && entity.getProvenance() == currentProvenance && entity.getBioSource() == currentBioSource)
-				//add origin to tertiaryOption
+		for(PairwiseDescriptionEntity entity: entityList) {
+			if(entity.getDataType() == currentDataType && entity.getProvenance() == currentProvenance && entity.getBioSource() == currentBioSource && entity.getOrigin() !=null)
+				tertiaryOptions.add(entity.getOrigin());
+		}
 				
 		tertiaryOptionsListBox.clear();
 		if(tertiaryOptions.size() > 0) {
 			tertiaryOptionsListBox.setListItems(tertiaryOptions);
 			includeTertiary = true;
+			
 		}
 		else{
 			tertiaryOptionsListBox.addItem("No options to select...");
@@ -144,12 +146,14 @@ public class PairwiseFormPanel extends FlowPanel{
 		String currentDataType = dataType.getSelectedItemText();
 		String currentProvenance = provenanceListBox.getSelectedItemText();
 		Set<String> bioSources = new HashSet<>();
-		for(PairwiseDescriptionEntity entity : entityList)
+		for(PairwiseDescriptionEntity entity : entityList) {
 			if(entity.getDataType() == currentDataType && entity.getProvenance() == currentProvenance)
 				bioSources.add(entity.getBioSource());
+		}
 		
 		bioSourcesListBox.clear();
 		bioSourcesListBox.setListItems(bioSources);
+		onBioSourcesListBoxChanged();
 	}
 
 	private void onDataTypeChanged() {
@@ -213,10 +217,8 @@ public class PairwiseFormPanel extends FlowPanel{
 							  +bioSourcesListBox.getSelectedItemText() + "|"
 							  + dataType.getSelectedItemText();
 		if(includeTertiary) relationship += "|" + tertiaryOptionsListBox.getSelectedItemText();
-		
-		Window.alert(relationship);
-		
-//		handler.onAddClicked(relationship);
+				
+		handler.onAddClicked(relationship);
 		
 							  
 	}

@@ -14,4 +14,6 @@ public interface PairwiseDescriptionEntity {
 	String getDataType();
 	
 	String getBioSource();
+	
+	String getOrigin();
 }
