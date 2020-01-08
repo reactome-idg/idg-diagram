@@ -1,7 +1,7 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
 import org.reactome.web.fi.common.IDGListBox;
-import org.reactome.web.fi.tools.overlay.DataOverlayPanel.Resources;
+import org.reactome.web.fi.data.loader.IdgPairwiseLoader;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -27,6 +27,22 @@ public class PairwiseFormPanel extends FlowPanel{
 		this.handler = handler;
 				
 		initPanel();
+		loadDataDesc();
+	}
+
+	private void loadDataDesc() {
+		IdgPairwiseLoader.loadDataDesc(new IdgPairwiseLoader.dataDescHandler() {
+			@Override
+			public void onDataDescLoaded() {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void onDataDescLoadedError(Throwable exception) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	private void initPanel() {
