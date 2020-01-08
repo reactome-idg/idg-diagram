@@ -2,8 +2,6 @@ package org.reactome.web.fi.tools.overlay;
 
 
 import org.reactome.web.fi.tools.overlay.pairwise.PairwiseFormPanel;
-import org.reactome.web.fi.tools.overlay.pairwise.PairwisePanel;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;

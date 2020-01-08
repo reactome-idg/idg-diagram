@@ -50,7 +50,6 @@ public class PairwiseFormPanel extends FlowPanel{
 
 	private void initPanel() {
 		//create necessary containers
-//		FlowPanel topContainer = getTopContainer();
 		FlowPanel leftContainer = getLeftContainer();
 		FlowPanel rightContainer = getRightContainer();
 		FlowPanel bottomContainer = getBottomContainer();
@@ -60,27 +59,10 @@ public class PairwiseFormPanel extends FlowPanel{
 		//add containers to this
 		FlowPanel main = new FlowPanel();
 		main.setStyleName(RESOURCES.getCSS().panel());
-//		main.add(topContainer);
 		main.add(leftContainer);
 		main.add(rightContainer);
 		main.add(bottomContainer);
 		this.add(main);
-	}
-
-	/**
-	 * Top container for choosing a relationship type
-	 * @return
-	 */
-	private FlowPanel getTopContainer() {
-		FlowPanel result = new FlowPanel();
-		result.setStyleName(RESOURCES.getCSS().topContainer());
-		ListBox dataType = new ListBox();
-		dataType.setStyleName(RESOURCES.getCSS().dataTypeListBox());
-		
-		result.add(new Label("Choose a relationship type:"));
-		result.add(dataType);
-		
-		return result;
 	}
 
 	private FlowPanel getLeftContainer() {
