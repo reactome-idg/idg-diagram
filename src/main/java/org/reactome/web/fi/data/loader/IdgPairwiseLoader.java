@@ -1,5 +1,8 @@
 package org.reactome.web.fi.data.loader;
 
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionFactory;
+
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -17,7 +20,7 @@ import com.google.gwt.json.client.JSONValue;
 public class IdgPairwiseLoader {
 
 	public interface dataDescHandler{
-		void onDataDescLoaded();
+		void onDataDescLoaded(PairwiseDescriptionEntities entities);
 		void onDataDescLoadedError(Throwable exception);
 	}
 	
@@ -40,7 +43,8 @@ public class IdgPairwiseLoader {
 						JSONObject obj = new JSONObject();
 						obj.put("pairwiseDescriptionEntities", val);
 						try {
-							
+							PairwiseDescriptionEntities entities = PairwiseDescriptionFactory.getExpressionTypeEntities(PairwiseDescriptionEntities.class, obj.toString());
+							handler.onDataDescLoaded(entities);
 						} catch(Exception e) {
 							handler.onDataDescLoadedError(e);
 						}

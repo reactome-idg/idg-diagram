@@ -2,6 +2,8 @@ package org.reactome.web.fi.tools.overlay.pairwise;
 
 import org.reactome.web.fi.common.IDGListBox;
 import org.reactome.web.fi.data.loader.IdgPairwiseLoader;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntity;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -30,17 +32,18 @@ public class PairwiseFormPanel extends FlowPanel{
 		loadDataDesc();
 	}
 
+	//loads pairwiseDesc data to populate form
 	private void loadDataDesc() {
 		IdgPairwiseLoader.loadDataDesc(new IdgPairwiseLoader.dataDescHandler() {
-			@Override
-			public void onDataDescLoaded() {
-				// TODO Auto-generated method stub
-				
-			}
 			@Override
 			public void onDataDescLoadedError(Throwable exception) {
 				// TODO Auto-generated method stub
 				
+			}
+			@Override
+			public void onDataDescLoaded(PairwiseDescriptionEntities entities) {
+				for(PairwiseDescriptionEntity entity: entities.getPairwiseDescriptionEntities())
+					GWT.log(entity.getBioSource());
 			}
 		});
 	}
