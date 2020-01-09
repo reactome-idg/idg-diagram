@@ -17,13 +17,13 @@ public class PairwiseDescriptionFactory {
 		AutoBean<PairwiseDescriptionEntity> pairwsieDescriptionEntity();
 	}
 	
-	public static <T> T getExpressionTypeEntities(Class<T> cls, String json) throws Exception {
+	public static <T> T getPairwiseDescriptionEntities(Class<T> cls, String json) throws Exception {
 		try {
 			AutoBeanFactory factory = GWT.create(ModelAutoBeanFactory.class);
 			AutoBean<T> bean = AutoBeanCodex.decode(factory, cls, json);
 			return bean.as();
 		}catch(Throwable e) {
-			throw new Exception("Autobean could not be generated");
+			throw new Exception("Autobean could not be generated pairwise descriptions entities.");
 		}
 	}
 }

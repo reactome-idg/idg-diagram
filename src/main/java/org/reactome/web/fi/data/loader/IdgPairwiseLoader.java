@@ -43,7 +43,7 @@ public class IdgPairwiseLoader {
 						JSONObject obj = new JSONObject();
 						obj.put("pairwiseDescriptionEntities", val);
 						try {
-							PairwiseDescriptionEntities entities = PairwiseDescriptionFactory.getExpressionTypeEntities(PairwiseDescriptionEntities.class, obj.toString());
+							PairwiseDescriptionEntities entities = PairwiseDescriptionFactory.getPairwiseDescriptionEntities(PairwiseDescriptionEntities.class, obj.toString());
 							handler.onDataDescLoaded(entities);
 						} catch(Exception e) {
 							handler.onDataDescLoadedError(e);
