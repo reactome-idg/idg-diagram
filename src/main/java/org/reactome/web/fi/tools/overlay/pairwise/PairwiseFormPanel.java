@@ -1,6 +1,7 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -79,9 +80,7 @@ public class PairwiseFormPanel extends FlowPanel{
 				entityList = entities.getPairwiseDescriptionEntities();
 				updateDesData();
 				setDataTypeListBox();
-				onDataTypeChanged();
-				onProvenanceListBoxChanged();
-				onBioSourcesListBoxChanged();
+				cascadeFormUpdate();
 			}
 		});
 	}
@@ -339,6 +338,42 @@ public class PairwiseFormPanel extends FlowPanel{
 		PairwiseOverlayObject obj = new PairwiseOverlayObject(relationship, lineStyleSelectedIndex, lineColorTextBox.getText());
 				
 		handler.onAddClicked(obj);					  
+	}
+	
+	/**
+	 * Sets all options based on passed in instance of PairwiseOverlayObject
+	 * @param obj
+	 */
+	public void insertData(PairwiseOverlayObject obj) {
+		List<String> idList = Arrays.asList(obj.getId().split("\\|"));
+		
+		//set dataType
+		for(int i=0; i<dataType.getItemCount(); i++)
+			if(dataType.getItemText(i) == idList.get(2)) {
+				dataType.setSelectedIndex(i);
+				onDataTypeChanged();
+			}
+		for(int i=0; i<provenanceListBox.getItemCount(); i++)
+			if(provenanceListBox.getItemText(i) == idList.get(0)) {
+				provenanceListBox.setSelectedIndex(i);
+				onProvenanceListBoxChanged();
+			}
+		for(int i=0; i<bioSourcesListBox.getItemCount(); i++)
+			if(bioSourcesListBox.getItemText(i) == idList.get(1)) {
+				bioSourcesListBox.setSelectedIndex(i);
+				onBioSourcesListBoxChanged();
+			}
+		if(idList.size() == 4)
+			for(int i=0; i<originListBox.getItemCount(); i++)
+				if(originListBox.getItemText(i) == idList.get(3)) {
+					originListBox.setSelectedIndex(i);
+				}
+	}
+	
+	private void cascadeFormUpdate() {
+		onDataTypeChanged();
+		onProvenanceListBoxChanged();
+		onBioSourcesListBoxChanged();
 	}
 
 	/**

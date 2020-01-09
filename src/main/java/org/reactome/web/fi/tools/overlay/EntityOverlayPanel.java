@@ -34,9 +34,9 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 	
 	private EventBus eventBus;
 	
-	private ScrollPanel relationshipsPanel;
 	private Button overlayButton;
 	private FlowPanel existingFilterPanel;
+	private PairwiseFormPanel pairwiseFormPanel;
 	
 	private Map<String, PairwiseOverlayObject> selectedFilters;
 	private Map<Button, String> removeToFilterMap;
@@ -66,7 +66,7 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		FlowPanel outerPanel = new FlowPanel();
 		outerPanel.setStyleName(RESOURCES.getCSS().outerPanel());
 		
-		outerPanel.add(new PairwiseFormPanel(this)); //so panel can pass back additions and removals from form
+		outerPanel.add(pairwiseFormPanel = new PairwiseFormPanel(this)); //so panel can pass back additions and removals from form
 		
 		existingFilterPanel = new FlowPanel();
 		existingFilterPanel.setStyleName(RESOURCES.getCSS().existingFilterPanel());
@@ -100,6 +100,7 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 			FlowPanel filterPanel = new FlowPanel();
 			filterPanel.setStyleName(RESOURCES.getCSS().filterItemPanel());
 			Button labelButton = new Button(k);
+			labelButton.addClickHandler(e -> onLabelClicked(e));
 			labelButton.setStyleName(RESOURCES.getCSS().filterItemLabelButton());
 			filterPanel.add(labelButton);
 			Button removeButton = new Button("X");
@@ -112,6 +113,16 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		});
 	}
 
+	private void onLabelClicked(ClickEvent e) {
+		Button btn = (Button) e.getSource();
+		PairwiseOverlayObject obj = selectedFilters.get(btn.getText());
+		pairwiseFormPanel.insertData(obj);
+	}
+
+	/**
+	 * Removes filter option from panel and selectedFilters map
+	 * @param e
+	 */
 	private void onRemoveClicked(ClickEvent e) {
 		for(int i=0; i<existingFilterPanel.getWidgetCount(); i++) {
 			FlowPanel widget = (FlowPanel) existingFilterPanel.getWidget(i);
