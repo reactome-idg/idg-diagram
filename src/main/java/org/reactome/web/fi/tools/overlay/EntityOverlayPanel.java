@@ -37,6 +37,7 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 	private Button overlayButton;
 	private FlowPanel existingFilterPanel;
 	private PairwiseFormPanel pairwiseFormPanel;
+	private InlineLabel infoLabel;
 	
 	private Map<String, PairwiseOverlayObject> selectedFilters;
 	private Map<Button, String> removeToFilterMap;
@@ -77,6 +78,11 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		overlayButton.setStyleName(RESOURCES.getCSS().overlayButton());
 		overlayButton.addClickHandler(e -> overlayButtonClicked());
 		bottomContainer.add(loader = new Image(RESOURCES.loader()));
+		
+		bottomContainer.add(infoLabel = new InlineLabel());
+		infoLabel.setStyleName(RESOURCES.getCSS().infoLabel());
+		setInfoLabel();
+		
 		loader.setStyleName(RESOURCES.getCSS().tissuesLoading());
 		loader.setVisible(true);
 		
@@ -85,10 +91,18 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		this.add(outerPanel);
 	}
 
+	private void setInfoLabel() {
+		infoLabel.setText(selectedFilters.size() + " of 6 selected.");
+	}
+
 	@Override
 	public void onAddClicked(PairwiseOverlayObject obj) {
+		if(selectedFilters.size() >= 6) {
+			return;
+		}
 		selectedFilters.put(obj.getId(), obj);
 		updateExistingFilterPanel();
+		setInfoLabel();
 	}
 	
 	/**
@@ -131,14 +145,18 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 				existingFilterPanel.remove(i);
 				break;
 			}
-				
 		}
+		setInfoLabel();
 	}
 
 	/**
 	 * Handles agregation of data needed for overlay server call
 	 */
 	private void overlayButtonClicked() {
+		if(selectedFilters.size() > 6) {
+			return;
+		}
+		
 		loader.setVisible(true);
 	}
 
@@ -190,5 +208,7 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		String filterItemRemoveButton();
 		
 		String existingFilterPanel();
+		
+		String infoLabel();
 	}
 }

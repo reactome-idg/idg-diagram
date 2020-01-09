@@ -70,3 +70,8 @@
 .existingFilterPanel{
 	height: 80px;
 }
+
+.infoLabel{
+    padding: 5px 10px 0 10px;
+    float: right;
+}
