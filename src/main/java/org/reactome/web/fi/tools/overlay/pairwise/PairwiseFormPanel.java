@@ -280,6 +280,14 @@ public class PairwiseFormPanel extends FlowPanel{
 	
 	private void onLineStyleButtonSelected(ClickEvent e) {
 		Button selected = (Button) e.getSource();
+		selectLineStyleButton(selected);
+	}
+
+	/**
+	 * Selects line style button based on passed in button
+	 * @param selected
+	 */
+	private void selectLineStyleButton(Button selected) {
 		for(Button btn : lineStyleButtons)
 			btn.removeStyleName(RESOURCES.getCSS().lineStyleButtonSelected());
 		selected.addStyleName(RESOURCES.getCSS().lineStyleButtonSelected());
@@ -347,7 +355,7 @@ public class PairwiseFormPanel extends FlowPanel{
 	public void insertData(PairwiseOverlayObject obj) {
 		List<String> idList = Arrays.asList(obj.getId().split("\\|"));
 		
-		//set dataType
+		//set list boxes
 		for(int i=0; i<dataType.getItemCount(); i++)
 			if(dataType.getItemText(i) == idList.get(2)) {
 				dataType.setSelectedIndex(i);
@@ -368,6 +376,12 @@ public class PairwiseFormPanel extends FlowPanel{
 				if(originListBox.getItemText(i) == idList.get(3)) {
 					originListBox.setSelectedIndex(i);
 				}
+		
+		//set line style
+		selectLineStyleButton(lineStyleButtons.get(obj.getLineStyleIndex()));
+		
+		//set text of lineColorTextBox
+		lineColorTextBox.setText(obj.getLineColorHex());
 	}
 	
 	private void cascadeFormUpdate() {
