@@ -49,3 +49,24 @@
 	float: right;
 	margin: 7px 10px 0 0;
 }
+
+.filterItemPanel{
+	margin: 5px 0 0 10px;
+	float: left;
+}
+
+.filterItemLabelButton{
+	background: #1e95cf;
+	color: white;
+	border:  1px solid #037cb3;
+}
+
+.filterItemRemoveButton{
+	background: #1e95cf;
+	color: white;
+	border: 1px solid #037cb3
+}
+
+.existingFilterPanel{
+	height: 80px;
+}

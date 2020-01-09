@@ -1,6 +1,10 @@
 package org.reactome.web.fi.tools.overlay;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwiseFormPanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
@@ -31,11 +35,15 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 	
 	private ScrollPanel relationshipsPanel;
 	private Button overlayButton;
+	private FlowPanel existingFilterPanel;
+	
+	private Map<String, PairwiseOverlayObject> selectedFilters;
 	
 	private Image loader;
 	
 	public EntityOverlayPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
+		selectedFilters = new HashMap<>();
 		this.getElement().getStyle().setMargin(5, Unit.PX);
 		
 		initPanel();
@@ -57,7 +65,11 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		
 		outerPanel.add(new PairwiseFormPanel(this)); //so panel can pass back additions and removals from form
 		
+		existingFilterPanel = new FlowPanel();
+		existingFilterPanel.setStyleName(RESOURCES.getCSS().existingFilterPanel());
+		
 		FlowPanel bottomContainer = new FlowPanel();
+		bottomContainer.add(existingFilterPanel);
 		bottomContainer.add(overlayButton = new Button("Overlay!"));
 		overlayButton.setStyleName(RESOURCES.getCSS().overlayButton());
 		overlayButton.addClickHandler(e -> overlayButtonClicked());
@@ -71,11 +83,26 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 	}
 
 	@Override
-	public void onAddClicked(String addClicked) {
-		// TODO Auto-generated method stub
-		
+	public void onAddClicked(PairwiseOverlayObject obj) {
+		selectedFilters.put(obj.getId(), obj);
+		updateExistingFilterPanel();
 	}
 	
+	private void updateExistingFilterPanel() {
+		existingFilterPanel.clear();
+		selectedFilters.keySet().forEach(k -> {
+			FlowPanel filterPanel = new FlowPanel();
+			filterPanel.setStyleName(RESOURCES.getCSS().filterItemPanel());
+			Button labelButton = new Button(k);
+			labelButton.setStyleName(RESOURCES.getCSS().filterItemLabelButton());
+			filterPanel.add(labelButton);
+			Button removeButton = new Button("X");
+			removeButton.setStyleName(RESOURCES.getCSS().filterItemRemoveButton());
+			filterPanel.add(removeButton);
+			existingFilterPanel.add(filterPanel);
+		});
+	}
+
 	/**
 	 * Handles agregation of data needed for overlay server call
 	 */
@@ -123,5 +150,13 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		String formPanel();
 		
 		String overlayButton();
+		
+		String filterItemPanel();
+		
+		String filterItemLabelButton();
+		
+		String filterItemRemoveButton();
+		
+		String existingFilterPanel();
 	}
 }

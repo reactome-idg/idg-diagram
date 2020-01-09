@@ -1,6 +1,6 @@
 .panel{
 	margin: 10px;
-	height: 250px;
+	height: 220px;
 	border: 1px solid #0e7cd3;
 	border-radius: 5px;
 }
@@ -51,4 +51,10 @@
 	border: 3px solid blue;
 	border-radius: 5px;
 	
+}
+
+.warningLabel{
+	color: red;
+	float:right;
+	padding: 5px 10px 0 0;
 }

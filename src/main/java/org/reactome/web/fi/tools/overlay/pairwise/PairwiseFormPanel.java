@@ -8,6 +8,7 @@ import java.util.Set;
 import org.reactome.web.fi.data.loader.IdgPairwiseLoader;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntity;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -20,8 +21,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * 
@@ -35,7 +38,7 @@ public class PairwiseFormPanel extends FlowPanel{
 	 * @author brunsont
 	 */
 	public interface Handler{
-		void onAddClicked(String addClicked);
+		void onAddClicked(PairwiseOverlayObject obj);
 	}
 	
 	private Handler handler;
@@ -43,13 +46,14 @@ public class PairwiseFormPanel extends FlowPanel{
 	private List<PairwiseDescriptionEntity> entityList;
 	private List<String> dataTypesList;
 	private boolean includeOrigin = false;
-	private int lineStyleSelectedIndex;
+	private int lineStyleSelectedIndex = -1;
 	
 	private ListBox dataType;
 	private ListBox provenanceListBox;
 	private ListBox bioSourcesListBox;
 	private ListBox originListBox;
-	private ListBox lineColorListBox;
+	private TextBox lineColorTextBox;
+	private InlineLabel warningLabel;
 	private List<Button> lineStyleButtons;
 	
 	public PairwiseFormPanel(Handler handler) {
@@ -217,9 +221,9 @@ public class PairwiseFormPanel extends FlowPanel{
 		result.add(lineStylePanel);
 		
 		result.add(new Label("Choose Line Color:"));
-		lineColorListBox = new ListBox();
-		lineColorListBox.setStyleName(RESOURCES.getCSS().dataTypeListBox());
-		result.add(lineColorListBox);
+		lineColorTextBox = new TextBox();
+		lineColorTextBox.setStyleName(RESOURCES.getCSS().dataTypeListBox());
+		result.add(lineColorTextBox);
 		
 		return result;
 	}
@@ -293,6 +297,12 @@ public class PairwiseFormPanel extends FlowPanel{
 		addButton.setStyleName(RESOURCES.getCSS().addButton());
 		addButton.addClickHandler(e -> onAddButtonClicked());
 		result.add(addButton);
+		
+		warningLabel = new InlineLabel();
+		warningLabel.setStyleName(RESOURCES.getCSS().warningLabel());
+		result.add(warningLabel);
+		
+		
 		return result;
 	}
 	
@@ -308,12 +318,29 @@ public class PairwiseFormPanel extends FlowPanel{
 	 * Fires when add button is clicked to push selection back to parent panel.
 	 */
 	private void onAddButtonClicked() {
+		warningLabel.setText(""); //reset warning label to empy string every time add button is clicked
+		
 		String relationship = provenanceListBox.getSelectedItemText() + "|"
 							  +bioSourcesListBox.getSelectedItemText() + "|"
 							  + dataType.getSelectedItemText();
 		if(includeOrigin) relationship += "|" + originListBox.getSelectedItemText();
+		
+		//check to make sure a line style and color are selected
+		String color = lineColorTextBox.getText();
+		if(color.length() != 3) {
+			if(color.length() !=6) {
+				warningLabel.setText("Please Select a line color");
+				return;
+			}
+		}
+		else if(lineStyleSelectedIndex == -1) {
+			warningLabel.setText("Please Select a line style");
+			return;
+		}
+		
+		PairwiseOverlayObject obj = new PairwiseOverlayObject(relationship, lineStyleSelectedIndex, lineColorTextBox.getText());
 				
-		handler.onAddClicked(relationship);					  
+		handler.onAddClicked(obj);					  
 	}
 
 	/**
@@ -369,5 +396,7 @@ public class PairwiseFormPanel extends FlowPanel{
 		String lineStyleButton();
 		
 		String lineStyleButtonSelected();
+		
+		String warningLabel();
 	}
 }
