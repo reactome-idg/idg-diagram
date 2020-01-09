@@ -43,9 +43,12 @@
 }
 .lineStyleButton{
 	margin-right: 10px;
+	margin-bottom: 15px;
 	outline:none;
 	padding: 0;
 }
 .lineStyleButtonSelected{
-	outline: 5px solid green;
+	border: 3px solid blue;
+	border-radius: 5px;
+	
 }

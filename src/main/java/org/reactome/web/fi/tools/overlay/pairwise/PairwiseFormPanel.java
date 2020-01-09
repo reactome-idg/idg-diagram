@@ -135,6 +135,11 @@ public class PairwiseFormPanel extends FlowPanel{
 		bioSourcesListBox.addChangeHandler(e -> onBioSourcesListBoxChanged());
 		result.add(bioSourcesListBox);
 		
+		result.add(new Label("Select Options:"));
+		originListBox = new ListBox();
+		originListBox.setStyleName(RESOURCES.getCSS().multiSelectListBox());
+		result.add(originListBox);
+		
 		return result;
 	}
 
@@ -207,11 +212,6 @@ public class PairwiseFormPanel extends FlowPanel{
 		FlowPanel result = new FlowPanel();
 		result.setStyleName(RESOURCES.getCSS().rightContainer());
 		
-		result.add(new Label("Select Options:"));
-		originListBox = new ListBox();
-		originListBox.setStyleName(RESOURCES.getCSS().multiSelectListBox());
-		result.add(originListBox);
-		
 		result.add(new Label("Choose Line Style:"));
 		FlowPanel lineStylePanel = getLineStyles();
 		result.add(lineStylePanel);
@@ -227,6 +227,7 @@ public class PairwiseFormPanel extends FlowPanel{
 	private FlowPanel getLineStyles() {
 		FlowPanel result = new FlowPanel();
 		
+		//block adds the top row of line style choices
 		FlowPanel top = new FlowPanel();
 		Image solidImg = new Image(RESOURCES.solidLine());
 		SafeHtml solidSafe = SafeHtmlUtils.fromTrustedString(solidImg.toString());
@@ -240,6 +241,32 @@ public class PairwiseFormPanel extends FlowPanel{
 		close.setStyleName(RESOURCES.getCSS().lineStyleButton());
 		lineStyleButtons.add(close);
 		top.add(close);
+		Image mediumImg = new Image(RESOURCES.mediumDashed());
+		SafeHtml mediumSafe = SafeHtmlUtils.fromTrustedString(mediumImg.toString());
+		Button medium = new Button(mediumSafe);
+		medium.setStyleName(RESOURCES.getCSS().lineStyleButton());
+		lineStyleButtons.add(medium);
+		top.add(medium);
+		
+		//block adds bottom row of line style choices
+		Image farImg = new Image(RESOURCES.farDashed());
+		SafeHtml farSafe = SafeHtmlUtils.fromTrustedString(farImg.toString());
+		Button far = new Button(farSafe);
+		far.setStyleName(RESOURCES.getCSS().lineStyleButton());
+		lineStyleButtons.add(far);
+		top.add(far);
+		Image dottedImg = new Image(RESOURCES.dotted());
+		SafeHtml dottedSafe = SafeHtmlUtils.fromTrustedString(dottedImg.toString());
+		Button dotted = new Button(dottedSafe);
+		dotted.setStyleName(RESOURCES.getCSS().lineStyleButton());
+		lineStyleButtons.add(dotted);
+		top.add(dotted);
+		Image farDottedImg = new Image(RESOURCES.farDotted());
+		SafeHtml farDottedSafe = SafeHtmlUtils.fromTrustedString(farDottedImg.toString());
+		Button farDotted = new Button(farDottedSafe);
+		farDotted.setStyleName(RESOURCES.getCSS().lineStyleButton());
+		lineStyleButtons.add(farDotted);
+		top.add(farDotted);
 		
 		for(Button btn : lineStyleButtons)
 			btn.addClickHandler(e -> onLineStyleButtonSelected(e));
@@ -307,6 +334,18 @@ public class PairwiseFormPanel extends FlowPanel{
 		
 		@Source("images/close_dashed.jpg")
 		ImageResource closeDashed();
+		
+		@Source("images/medium_dashed.jpg")
+		ImageResource mediumDashed();
+		
+		@Source("images/far_dashed.jpg")
+		ImageResource farDashed();
+		
+		@Source("images/close_dotted.jpg")
+		ImageResource dotted();
+		
+		@Source("images/far_dotted.jpg")
+		ImageResource farDotted();
 	}
 	
 	@CssResource.ImportedWithPrefix("idg-PairwiseFormPanel")
