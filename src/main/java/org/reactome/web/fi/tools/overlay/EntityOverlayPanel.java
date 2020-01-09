@@ -9,6 +9,7 @@ import org.reactome.web.fi.tools.overlay.pairwise.PairwiseFormPanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
@@ -38,12 +39,14 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 	private FlowPanel existingFilterPanel;
 	
 	private Map<String, PairwiseOverlayObject> selectedFilters;
+	private Map<Button, String> removeToFilterMap;
 	
 	private Image loader;
 	
 	public EntityOverlayPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
 		selectedFilters = new HashMap<>();
+		removeToFilterMap = new HashMap<>();
 		this.getElement().getStyle().setMargin(5, Unit.PX);
 		
 		initPanel();
@@ -88,6 +91,9 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		updateExistingFilterPanel();
 	}
 	
+	/**
+	 * Add button pair for every PairwiseOverlayObject passed in
+	 */
 	private void updateExistingFilterPanel() {
 		existingFilterPanel.clear();
 		selectedFilters.keySet().forEach(k -> {
@@ -97,10 +103,25 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 			labelButton.setStyleName(RESOURCES.getCSS().filterItemLabelButton());
 			filterPanel.add(labelButton);
 			Button removeButton = new Button("X");
+			removeButton.addClickHandler(e -> onRemoveClicked(e));
 			removeButton.setStyleName(RESOURCES.getCSS().filterItemRemoveButton());
 			filterPanel.add(removeButton);
 			existingFilterPanel.add(filterPanel);
+			
+			removeToFilterMap.put(removeButton, k);
 		});
+	}
+
+	private void onRemoveClicked(ClickEvent e) {
+		for(int i=0; i<existingFilterPanel.getWidgetCount(); i++) {
+			FlowPanel widget = (FlowPanel) existingFilterPanel.getWidget(i);
+			if(widget.getWidget(1) == e.getSource()) {
+				selectedFilters.remove(removeToFilterMap.get(widget.getWidget(1)));
+				existingFilterPanel.remove(i);
+				break;
+			}
+				
+		}
 	}
 
 	/**
