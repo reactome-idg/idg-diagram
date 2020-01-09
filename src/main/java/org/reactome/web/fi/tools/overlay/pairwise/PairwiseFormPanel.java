@@ -327,11 +327,9 @@ public class PairwiseFormPanel extends FlowPanel{
 		
 		//check to make sure a line style and color are selected
 		String color = lineColorTextBox.getText();
-		if(color.length() != 3) {
-			if(color.length() !=6) {
-				warningLabel.setText("Please Select a line color");
-				return;
-			}
+		if(color.length() != 3 && color.length() !=6) {
+			warningLabel.setText("Please Select a line color");
+			return;
 		}
 		else if(lineStyleSelectedIndex == -1) {
 			warningLabel.setText("Please Select a line style");
