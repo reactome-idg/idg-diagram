@@ -29,10 +29,11 @@ import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
-import org.reactome.web.fi.events.OverlayDataRequestedEvent;
+import org.reactome.web.fi.events.OverlayRequestedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
@@ -175,7 +176,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	public void onMakeOverlayRequest(MakeOverlayRequestEvent event) {
 		
 		//set lastOverlayProperties in case diagram is changed before reset
-		this.lastOverlayProperties = event.getOverlayProperties();
+		this.lastOverlayProperties = event.getDataOverlayProperties();
 		
 		//can't have an overlay and Analysis at the same time
 		if(context.getAnalysisStatus() != null)
@@ -183,37 +184,23 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		
 		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 		
-		if(event.getOverlayProperties() != null)
-			requstDataOverlay(event.getOverlayProperties());
-		else if(event.getPairwiseOverlayObjects() != null)
-			requestPairwiseOverlay(event.getPairwiseOverlayObjects());
+		if(event.getDataOverlayProperties() != null) {
+			event.getDataOverlayProperties().setUniprots(collectInteractors());
+		    eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getDataOverlayProperties()), this);
+		}
+		else if(event.getPairwiseOverlayProperties() != null) {
+			event.getPairwiseOverlayProperties().setUniprots(collectInteractors());
+			eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getPairwiseOverlayProperties()), this);
+		}
+			
 
-	}
-
-	/**
-	 * Make a request for a pairwise overlay
-	 * @param pairwiseOverlayObjects
-	 */
-	private void requestPairwiseOverlay(Collection<PairwiseOverlayObject> pairwiseOverlayObjects) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
-	 * Make a request for a data Overlay
-	 * @param dataOverlayProperties
-	 */
-	private void requstDataOverlay(DataOverlayProperties dataOverlayProperties) {
-		dataOverlayProperties.setUniprots(collectDiagramInteractors());
-		
-	    eventBus.fireEventFromSource(new OverlayDataRequestedEvent(dataOverlayProperties), this);
 	}
 
 	/**
 	 * Collects uniprots for all participants in a diagram or FIView
 	 * @return
 	 */
-	private String collectDiagramInteractors() {
+	private String collectInteractors() {
 		Set<String> identifiers = new HashSet<>();
 		
 		//get identifiers from identifierMap if active visualizer is FIViewVisualizer

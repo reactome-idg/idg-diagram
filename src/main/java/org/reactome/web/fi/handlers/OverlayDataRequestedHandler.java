@@ -1,6 +1,6 @@
 package org.reactome.web.fi.handlers;
 
-import org.reactome.web.fi.events.OverlayDataRequestedEvent;
+import org.reactome.web.fi.events.OverlayRequestedEvent;
 
 import com.google.gwt.event.shared.EventHandler;
 
@@ -10,5 +10,5 @@ import com.google.gwt.event.shared.EventHandler;
  *
  */
 public interface OverlayDataRequestedHandler extends EventHandler {
-	void onDataOverlayRequested(OverlayDataRequestedEvent event);
+	void onDataOverlayRequested(OverlayRequestedEvent event);
 }

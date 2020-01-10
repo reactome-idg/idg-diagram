@@ -6,7 +6,7 @@ import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.events.AnalysisResultLoadedEvent;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
-import org.reactome.web.fi.events.OverlayDataRequestedEvent;
+import org.reactome.web.fi.events.OverlayRequestedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;	
@@ -23,7 +23,7 @@ OverlayDataRequestedHandler{
 		super();
 		
 		eventBus.addHandler(CytoscapeToggledEvent.TYPE, this);
-		eventBus.addHandler(OverlayDataRequestedEvent.TYPE, this);
+		eventBus.addHandler(OverlayRequestedEvent.TYPE, this);
 		
 	}
 	
@@ -49,7 +49,10 @@ OverlayDataRequestedHandler{
 	}
 
 	@Override
-	public void onDataOverlayRequested(OverlayDataRequestedEvent event) {
-		((IDGLoaderManager)loaderManager).loadTCRDTargetLevel(event.getOverlayProperties());
+	public void onDataOverlayRequested(OverlayRequestedEvent event) {
+		if(event.getDataOverlayProperties() != null)
+			((IDGLoaderManager)loaderManager).loadTCRDData(event.getDataOverlayProperties());
+		else if(event.getPairwiseOverlayProperties() != null)
+			((IDGLoaderManager)loaderManager).loadPairwiseData(event.getPairwiseOverlayProperties());
 	}
 }

@@ -9,6 +9,7 @@ import org.reactome.web.diagram.events.DiagramInternalErrorEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.model.OverlayDataType;
@@ -62,11 +63,10 @@ TCRDLoader.Handler{
 	}
 	
 	/**
-	 * Directs loading of TCRD target level data for an input of ids.
-	 * Multiple ids should be passed in as a String separated by commas.
+	 * Directs loading of TCRD data.
 	 * @param postData
 	 */
-	public void loadTCRDTargetLevel(DataOverlayProperties properties) { 
+	public void loadTCRDData(DataOverlayProperties properties) { 
 		tcrdLoader.load(properties);
 	}
 	
@@ -76,6 +76,15 @@ TCRDLoader.Handler{
 		if (!CytoscapeViewFlag.isCytoscapeViewFlag())
 			return false;
 		return true;
+	}
+	
+	/**
+	 * Directs loading of Pairwise Overlays.
+	 * @param pairwiseOverlayProperties
+	 */
+	public void loadPairwiseData(PairwiseOverlayProperties pairwiseOverlayProperties) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -117,5 +126,4 @@ TCRDLoader.Handler{
 	public void onTargetLevelLoadedError(Throwable exception) {
 		GWT.log("onTargetLevelLoadedError: " + exception.getMessage());
 	}
-
 }

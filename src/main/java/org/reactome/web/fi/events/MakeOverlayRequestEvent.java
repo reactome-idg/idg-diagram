@@ -1,9 +1,8 @@
 package org.reactome.web.fi.events;
 
-import java.util.Collection;
 
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -17,14 +16,14 @@ public class MakeOverlayRequestEvent extends GwtEvent<MakeOverlayRequestHandler>
     public static Type<MakeOverlayRequestHandler> TYPE = new Type<>();
 
     private DataOverlayProperties properties;
-    private Collection<PairwiseOverlayObject> pairwiseOverlayObjects;
+    private PairwiseOverlayProperties pairwiseOverlayProperties;
     
     public MakeOverlayRequestEvent(DataOverlayProperties properties) {
     	this.properties = properties;
     }
     
-    public MakeOverlayRequestEvent(Collection<PairwiseOverlayObject> pairwiseOverlayObjects) {
-    	this.pairwiseOverlayObjects = pairwiseOverlayObjects;
+    public MakeOverlayRequestEvent(PairwiseOverlayProperties pairwiseOverlayProperties) {
+    	this.pairwiseOverlayProperties = pairwiseOverlayProperties;
     }
      
 	@Override
@@ -37,12 +36,12 @@ public class MakeOverlayRequestEvent extends GwtEvent<MakeOverlayRequestHandler>
 		handler.onMakeOverlayRequest(this);
 	}
 	
-	public DataOverlayProperties getOverlayProperties() {
+	public DataOverlayProperties getDataOverlayProperties() {
 		return this.properties;
 	}
 	
-	public Collection<PairwiseOverlayObject> getPairwiseOverlayObjects(){
-		return this.pairwiseOverlayObjects;
+	public PairwiseOverlayProperties getPairwiseOverlayProperties(){
+		return this.pairwiseOverlayProperties;
 	}
 	
 }

@@ -3,6 +3,7 @@ package org.reactome.web.fi.events;
 import java.util.Set;
 
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
 import org.reactome.web.fi.model.OverlayDataType;
 
@@ -13,13 +14,19 @@ import com.google.gwt.event.shared.GwtEvent;
  * @author brunsont
  *
  */
-public class OverlayDataRequestedEvent extends GwtEvent<OverlayDataRequestedHandler> {
+public class OverlayRequestedEvent extends GwtEvent<OverlayDataRequestedHandler> {
 	public static Type<OverlayDataRequestedHandler> TYPE = new Type<>();
 	
-	private DataOverlayProperties properties;
+	private DataOverlayProperties dataOverlayProperties;
+	private PairwiseOverlayProperties pairwiseOverlayProperties;
 	
-	public OverlayDataRequestedEvent(DataOverlayProperties properties) {
-		this.properties = properties;
+	
+	public OverlayRequestedEvent(DataOverlayProperties properties) {
+		this.dataOverlayProperties = properties;
+	}
+	
+	public OverlayRequestedEvent(PairwiseOverlayProperties properties) {
+		this.pairwiseOverlayProperties = properties;
 	}
 	
 	@Override
@@ -32,13 +39,20 @@ public class OverlayDataRequestedEvent extends GwtEvent<OverlayDataRequestedHand
 		handler.onDataOverlayRequested(this);
 	}
 	
-	public DataOverlayProperties getOverlayProperties() {
-		return this.properties;
+	public DataOverlayProperties getDataOverlayProperties() {
+		return this.dataOverlayProperties;
 	}
 
+	public PairwiseOverlayProperties getPairwiseOverlayProperties() {
+		return this.pairwiseOverlayProperties;
+	}
+	
 	@Override
 	public String toString() {
-		return "TCRD Target Level data requested.";
+		if(dataOverlayProperties != null)
+			return "Data Overlay Requested!";
+		else
+			return "Pairwise Overlay Requested!";
 	}
 
 }
