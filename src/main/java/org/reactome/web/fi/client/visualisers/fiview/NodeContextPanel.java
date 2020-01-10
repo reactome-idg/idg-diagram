@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.reactome.web.diagram.common.PwpButton;
+import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.handlers.DataOverlayColumnChangedHandler;
 import org.reactome.web.fi.model.DataOverlay;
@@ -106,6 +107,7 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		main = new FlowPanel();
 		main.setStyleName(NODECONTEXTRESOURCES.getCSS().mainPanel());
 		
+		main.add(new PwpButton("Show Pairwise Relationships", NODECONTEXTRESOURCES.getCSS().pairwise(), e -> pairwiseHandler()));
 		main.add(pin = new PwpButton("Keeps the panel visible", NODECONTEXTRESOURCES.getCSS().pin(), e -> pinHandler()));
 		main.add(new PwpButton("Close", NODECONTEXTRESOURCES.getCSS().close(), e -> closeHandler()));
 		
@@ -117,6 +119,10 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		setTitlePanel();
 		setWidget(main);
 		show();
+	}
+
+	private void pairwiseHandler() {
+		eventBus.fireEventFromSource(new PairwiseOverlayButtonClickedEvent(name), this);
 	}
 
 	private void updateOverlayValue() {
@@ -229,6 +235,15 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
         
         @Source("images/entity.gif")
         ImageResource entity();
+        
+        @Source("images/pairwise_normal.png")
+        ImageResource pairwiseNormal();
+        
+        @Source("images/pairwise_hovered.png")
+        ImageResource pairwiseHovered();
+        
+        @Source("images/pairwise_clicked.png")
+        ImageResource pairwiseClicked();
 	}
 	
 	@CssResource.ImportedWithPrefix("idgDiagram-NodeContextPanel")
@@ -250,5 +265,7 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		String close();
 		
 		String pinActive();
+		
+		String pairwise();
 	}
 }
