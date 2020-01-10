@@ -58,3 +58,9 @@
 	float:right;
 	padding: 5px 10px 0 0;
 }
+
+.colorTextBox{
+	width: 45%;
+	display:inline;
+    margin-right: 5px;
+}

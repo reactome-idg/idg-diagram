@@ -4,12 +4,14 @@ public class PairwiseOverlayObject {
 
 	private String id;
 	private int lineStyleIndex;
-	private String lineColorHex;
+	private String negativeLineColorHex;
+	private String positiveLineColorHex;
 	
-	public PairwiseOverlayObject(String id, int lineStyleIndex, String lineColorHex) {
+	public PairwiseOverlayObject(String id, int lineStyleIndex, String negativeLineColorHex, String positiveLineColorHex) {
 		this.id = id;
 		this.lineStyleIndex = lineStyleIndex;
-		this.lineColorHex = lineColorHex;
+		this.negativeLineColorHex = negativeLineColorHex;
+		this.positiveLineColorHex = positiveLineColorHex;
 	}
 
 	public String getId() {
@@ -28,12 +30,20 @@ public class PairwiseOverlayObject {
 		this.lineStyleIndex = lineStyleIndex;
 	}
 
-	public String getLineColorHex() {
-		return lineColorHex;
+	public String getNegativeLineColorHex() {
+		return negativeLineColorHex;
 	}
 
-	public void setLineColorHex(String lineColorHex) {
-		this.lineColorHex = lineColorHex;
+	public void setNegativeLineColorHex(String negativeLineColorHex) {
+		this.negativeLineColorHex = negativeLineColorHex;
+	}
+
+	public String getPositiveLineColorHex() {
+		return positiveLineColorHex;
+	}
+
+	public void setPositiveLineColorHex(String positiveLineColorHex) {
+		this.positiveLineColorHex = positiveLineColorHex;
 	}
 	
 }
