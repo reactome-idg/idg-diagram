@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.reactome.web.fi.data.loader.IdgPairwiseLoader;
+import org.reactome.web.fi.data.loader.PairwiseDescLoader;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
@@ -70,7 +70,7 @@ public class PairwiseFormPanel extends FlowPanel{
 	 * loads pairwiseDesc data to populate form. Then causes form panel to initialize
 	 */
 	private void loadDataDesc() {
-		IdgPairwiseLoader.loadDataDesc(new IdgPairwiseLoader.dataDescHandler() {
+		PairwiseDescLoader.loadDataDesc(new PairwiseDescLoader.dataDescHandler() {
 			@Override
 			public void onDataDescLoadedError(Throwable exception) {
 				exception.printStackTrace();

@@ -17,7 +17,7 @@ import com.google.gwt.json.client.JSONValue;
  * @author brunsont
  *
  */
-public class IdgPairwiseLoader {
+public class PairwiseDescLoader {
 
 	public interface dataDescHandler{
 		void onDataDescLoaded(PairwiseDescriptionEntities entities);
