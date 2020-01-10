@@ -1,6 +1,6 @@
 package org.reactome.web.fi.data.overlay.model;
 
-public class OverlayProperties {
+public class DataOverlayProperties {
 
 	private String valueType;
 	private String unit;
@@ -9,7 +9,7 @@ public class OverlayProperties {
 	private String eType;
 	private String uniprots;
 	
-	public OverlayProperties(String valueType, String unit, String sex, String tissues, String eType) {
+	public DataOverlayProperties(String valueType, String unit, String sex, String tissues, String eType) {
 		this.valueType = valueType;
 		this.unit = unit;
 		this.sex = sex;
@@ -78,7 +78,7 @@ public class OverlayProperties {
 	public boolean equals(Object obj) {
 		if(this == obj) return true;
 		if(obj == null || getClass() != obj.getClass()) return false;
-		OverlayProperties prop = (OverlayProperties) obj;
+		DataOverlayProperties prop = (DataOverlayProperties) obj;
 		return valueType == prop.getValueType() &&
 			   unit == prop.getUnit() &&
 			   sex == prop.getSex() &&

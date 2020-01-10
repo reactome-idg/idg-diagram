@@ -8,7 +8,7 @@ import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.diagram.events.DiagramInternalErrorEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
-import org.reactome.web.fi.data.overlay.model.OverlayProperties;
+import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.model.OverlayDataType;
@@ -66,7 +66,7 @@ TCRDLoader.Handler{
 	 * Multiple ids should be passed in as a String separated by commas.
 	 * @param postData
 	 */
-	public void loadTCRDTargetLevel(OverlayProperties properties) { 
+	public void loadTCRDTargetLevel(DataOverlayProperties properties) { 
 		tcrdLoader.load(properties);
 	}
 	

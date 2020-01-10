@@ -3,7 +3,7 @@ package org.reactome.web.fi.data.loader;
 import org.reactome.web.fi.data.mediators.DataOverlayEntityMediator;
 import org.reactome.web.fi.data.overlay.model.OverlayEntities;
 import org.reactome.web.fi.data.overlay.model.OverlayEntityDataFactory;
-import org.reactome.web.fi.data.overlay.model.OverlayProperties;
+import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.OverlayDataType;
 
@@ -30,7 +30,7 @@ public class TCRDLoader implements RequestCallback{
 	
 	private Handler handler;
 	private Request request;
-	private OverlayProperties properties;
+	private DataOverlayProperties properties;
 	
 	public TCRDLoader(Handler handler){
 		this.handler = handler;
@@ -41,7 +41,7 @@ public class TCRDLoader implements RequestCallback{
 			this.request.cancel();
 	}
 	
-	public void load(OverlayProperties properties) {
+	public void load(DataOverlayProperties properties) {
 		this.properties = properties;
 		cancel();
 						
@@ -63,7 +63,7 @@ public class TCRDLoader implements RequestCallback{
 		}
 	}
 
-	private String getPostData(OverlayProperties properties) {
+	private String getPostData(DataOverlayProperties properties) {
 		String result = properties.getUniprots() +
 						"\n" + properties.getTissues() +
 						"\n" + properties.geteType();

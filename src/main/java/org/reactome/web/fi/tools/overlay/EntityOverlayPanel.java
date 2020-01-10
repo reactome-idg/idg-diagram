@@ -158,6 +158,8 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		}
 		
 		loader.setVisible(true);
+		
+		
 	}
 
 	/**

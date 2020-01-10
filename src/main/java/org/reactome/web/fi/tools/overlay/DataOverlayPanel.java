@@ -30,7 +30,7 @@ import java.util.Map;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntity;
-import org.reactome.web.fi.data.overlay.model.OverlayProperties;
+import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.common.IDGTextBox;
@@ -60,7 +60,7 @@ public class DataOverlayPanel  extends FlowPanel{
 	
 	private Image loader;
 	
-	private OverlayProperties currentProperties;
+	private DataOverlayProperties currentProperties;
 		
 	public DataOverlayPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
@@ -283,7 +283,7 @@ public class DataOverlayPanel  extends FlowPanel{
 		}
 		warningLabel.setText("");
 
-		OverlayProperties properties = new OverlayProperties(valueType, unit, sex, 
+		DataOverlayProperties properties = new DataOverlayProperties(valueType, unit, sex, 
 															 String.join(",", tissueSelector.getSelectedItemsText()), 
 															 currentExpressionType);
 		

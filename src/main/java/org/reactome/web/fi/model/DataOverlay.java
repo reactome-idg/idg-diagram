@@ -1,11 +1,9 @@
 package org.reactome.web.fi.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.reactome.web.fi.data.overlay.model.OverlayProperties;
+import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 
 /**
  * 
@@ -23,9 +21,9 @@ public class DataOverlay {
 	private int column;
 	private Map<String, Double> identifierValueMap;
 	private String eType;
-	private OverlayProperties properties;
+	private DataOverlayProperties properties;
 	
-	public DataOverlay(OverlayProperties properties) {
+	public DataOverlay(DataOverlayProperties properties) {
 		this.properties = properties;
 		column = 0;
 	}
@@ -34,7 +32,7 @@ public class DataOverlay {
 		return minValue;
 	}
 
-	public OverlayProperties getOverlayProperties() {
+	public DataOverlayProperties getOverlayProperties() {
 		return this.properties;
 	}
 	

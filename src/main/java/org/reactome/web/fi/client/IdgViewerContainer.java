@@ -1,6 +1,7 @@
 package org.reactome.web.fi.client;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +27,8 @@ import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOver
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualizer;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
-import org.reactome.web.fi.data.overlay.model.OverlayProperties;
+import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
@@ -70,7 +72,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	private DataOverlay dataOverlay;
 	private boolean renderOverlays = false;
 	
-	private OverlayProperties lastOverlayProperties = null;
+	private DataOverlayProperties lastOverlayProperties = null;
 	
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
@@ -181,10 +183,30 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		
 		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 		
-		event.getOverlayProperties().setUniprots(collectDiagramInteractors());
-		
-	    eventBus.fireEventFromSource(new OverlayDataRequestedEvent(event.getOverlayProperties()), this);
+		if(event.getOverlayProperties() != null)
+			requstDataOverlay(event.getOverlayProperties());
+		else if(event.getPairwiseOverlayObjects() != null)
+			requestPairwiseOverlay(event.getPairwiseOverlayObjects());
 
+	}
+
+	/**
+	 * Make a request for a pairwise overlay
+	 * @param pairwiseOverlayObjects
+	 */
+	private void requestPairwiseOverlay(Collection<PairwiseOverlayObject> pairwiseOverlayObjects) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * Make a request for a data Overlay
+	 * @param dataOverlayProperties
+	 */
+	private void requstDataOverlay(DataOverlayProperties dataOverlayProperties) {
+		dataOverlayProperties.setUniprots(collectDiagramInteractors());
+		
+	    eventBus.fireEventFromSource(new OverlayDataRequestedEvent(dataOverlayProperties), this);
 	}
 
 	/**

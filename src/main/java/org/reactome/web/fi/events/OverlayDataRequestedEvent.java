@@ -2,7 +2,7 @@ package org.reactome.web.fi.events;
 
 import java.util.Set;
 
-import org.reactome.web.fi.data.overlay.model.OverlayProperties;
+import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
 import org.reactome.web.fi.model.OverlayDataType;
 
@@ -16,9 +16,9 @@ import com.google.gwt.event.shared.GwtEvent;
 public class OverlayDataRequestedEvent extends GwtEvent<OverlayDataRequestedHandler> {
 	public static Type<OverlayDataRequestedHandler> TYPE = new Type<>();
 	
-	private OverlayProperties properties;
+	private DataOverlayProperties properties;
 	
-	public OverlayDataRequestedEvent(OverlayProperties properties) {
+	public OverlayDataRequestedEvent(DataOverlayProperties properties) {
 		this.properties = properties;
 	}
 	
@@ -32,7 +32,7 @@ public class OverlayDataRequestedEvent extends GwtEvent<OverlayDataRequestedHand
 		handler.onDataOverlayRequested(this);
 	}
 	
-	public OverlayProperties getOverlayProperties() {
+	public DataOverlayProperties getOverlayProperties() {
 		return this.properties;
 	}
 

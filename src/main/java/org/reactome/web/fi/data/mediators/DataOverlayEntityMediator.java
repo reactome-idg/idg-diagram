@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.reactome.web.fi.data.overlay.model.ExpressionEntity;
 import org.reactome.web.fi.data.overlay.model.OverlayEntities;
 import org.reactome.web.fi.data.overlay.model.OverlayEntityDataFactory;
-import org.reactome.web.fi.data.overlay.model.OverlayProperties;
+import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.model.OverlayDataType;
@@ -26,13 +26,13 @@ import com.google.gwt.core.client.GWT;
 public class DataOverlayEntityMediator {
 
 	private JensenExperimentDataSplitter splitter = new JensenExperimentDataSplitter();
-	private OverlayProperties properties;
+	private DataOverlayProperties properties;
 	/**
 	 * Can be used to direct data mediation based on data type from server
 	 * @param responseText
 	 * @return
 	 */
-	public DataOverlay transformData(String responseText, OverlayProperties properties) {
+	public DataOverlay transformData(String responseText, DataOverlayProperties properties) {
 		this.properties = properties;
 		OverlayEntities entities = null;
 		try {
