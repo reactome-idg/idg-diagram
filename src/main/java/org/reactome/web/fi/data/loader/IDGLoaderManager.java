@@ -118,12 +118,12 @@ TCRDLoader.Handler{
 	}
 	
 	@Override 
-	public void onTargetLevelLoaded(DataOverlay dataOverlay) {
+	public void onDataOverlayLoaded(DataOverlay dataOverlay) {
 		eventBus.fireEventFromSource(new OverlayDataLoadedEvent(dataOverlay), this);
 	}
 	
 	@Override
-	public void onTargetLevelLoadedError(Throwable exception) {
+	public void onDataOverlayLoadedError(Throwable exception) {
 		GWT.log("onTargetLevelLoadedError: " + exception.getMessage());
 	}
 }

@@ -22,8 +22,8 @@ import com.google.gwt.json.client.JSONValue;
 public class TCRDLoader implements RequestCallback{
 
 	public interface Handler{
-		void onTargetLevelLoaded(DataOverlay dataOverlay);
-		void onTargetLevelLoadedError(Throwable exception);
+		void onDataOverlayLoaded(DataOverlay dataOverlay);
+		void onDataOverlayLoadedError(Throwable exception);
 	}
 	
 	private final static String BASE_URL = "/tcrdws/";
@@ -47,7 +47,7 @@ public class TCRDLoader implements RequestCallback{
 						
 		if(properties.getUniprots() == null) {
 			Exception exception = new Exception("Cannot request overlay data for 0 ids.");
-			this.handler.onTargetLevelLoadedError(exception);
+			this.handler.onDataOverlayLoadedError(exception);
 		}
 		
 		String url = BASE_URL + "expressions/uniprots";
@@ -59,7 +59,7 @@ public class TCRDLoader implements RequestCallback{
 		try {
 			this.request = requestBuilder.send();
 		} catch(RequestException e) {
-			this.handler.onTargetLevelLoadedError(e);
+			this.handler.onDataOverlayLoadedError(e);
 		}
 	}
 
@@ -83,19 +83,19 @@ public class TCRDLoader implements RequestCallback{
 				obj.put("expressionEntity", val.isArray());
 				dataOverlay = mediator.transformData(obj.toString(), properties);
 			}catch(Exception e) {
-				this.handler.onTargetLevelLoadedError(e);
+				this.handler.onDataOverlayLoadedError(e);
 				return;
 			}
-			this.handler.onTargetLevelLoaded(dataOverlay);
+			this.handler.onDataOverlayLoaded(dataOverlay);
 			break;
 		default:
-			this.handler.onTargetLevelLoadedError(new Exception(response.getStatusText()));
+			this.handler.onDataOverlayLoadedError(new Exception(response.getStatusText()));
 		}
 	}
 	
 	@Override
 	public void onError(Request request, Throwable exception) {
-		this.handler.onTargetLevelLoadedError(exception);
+		this.handler.onDataOverlayLoadedError(exception);
 	}
 
 }
