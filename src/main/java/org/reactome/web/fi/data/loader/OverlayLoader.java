@@ -125,8 +125,7 @@ public class OverlayLoader implements RequestCallback{
 	}
 
 	private void pariwiseOverlayReturned(String text) {
-		// TODO Auto-generated method stub
-		
+		GWT.log(text);
 	}
 
 	private void dataOverlayReturned(String responseText) {
