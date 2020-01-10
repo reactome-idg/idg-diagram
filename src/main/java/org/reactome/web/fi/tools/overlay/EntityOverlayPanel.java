@@ -1,7 +1,9 @@
 package org.reactome.web.fi.tools.overlay;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
@@ -160,8 +162,8 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		}
 		
 		loader.setVisible(true);
-		
-		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(new PairwiseOverlayProperties(selectedFilters.values())), this);
+		List<PairwiseOverlayObject> overlayObjects = new ArrayList<PairwiseOverlayObject>(selectedFilters.values());
+		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(new PairwiseOverlayProperties(overlayObjects)), this);
 	}
 
 	/**

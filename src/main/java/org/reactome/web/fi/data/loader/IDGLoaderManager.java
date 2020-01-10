@@ -24,11 +24,11 @@ import com.google.gwt.event.shared.EventBus;
  *
  */
 public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Handler,
-TCRDLoader.Handler{
+OverlayLoader.Handler{
 
 	private EventBus eventBus;
 	private FIViewLoader fIViewLoader;
-	private TCRDLoader tcrdLoader;
+	private OverlayLoader overlayLoader;
 	
 	private final String SPECIES = "Homo sapiens";
 			
@@ -38,7 +38,7 @@ TCRDLoader.Handler{
 		this.eventBus = eventBus;
 		
 		fIViewLoader = new FIViewLoader(this);
-		tcrdLoader = new TCRDLoader(this);
+		overlayLoader = new OverlayLoader(this);
 	}
 	
 	@Override
@@ -67,7 +67,7 @@ TCRDLoader.Handler{
 	 * @param postData
 	 */
 	public void loadTCRDData(DataOverlayProperties properties) { 
-		tcrdLoader.load(properties);
+		overlayLoader.load(properties);
 	}
 	
 	private boolean isFIViewNeeded(String identifier) {
@@ -83,8 +83,7 @@ TCRDLoader.Handler{
 	 * @param pairwiseOverlayProperties
 	 */
 	public void loadPairwiseData(PairwiseOverlayProperties pairwiseOverlayProperties) {
-		// TODO Auto-generated method stub
-		
+		overlayLoader.load(pairwiseOverlayProperties);
 	}
 
 	@Override
@@ -123,7 +122,7 @@ TCRDLoader.Handler{
 	}
 	
 	@Override
-	public void onDataOverlayLoadedError(Throwable exception) {
+	public void onOverlayLoadedError(Throwable exception) {
 		GWT.log("onTargetLevelLoadedError: " + exception.getMessage());
 	}
 }

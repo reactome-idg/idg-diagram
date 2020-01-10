@@ -1,6 +1,6 @@
 package org.reactome.web.fi.data.overlay.model.pairwise;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * 
@@ -9,18 +9,18 @@ import java.util.Collection;
  */
 public class PairwiseOverlayProperties {
 
-	private Collection<PairwiseOverlayObject> pairwiseOverlayObjects;
+	private List<PairwiseOverlayObject> pairwiseOverlayObjects;
 	private String uniprots;
 	
-	public PairwiseOverlayProperties(Collection<PairwiseOverlayObject> pairwiseOverlayObjects) {
+	public PairwiseOverlayProperties(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 	}
 
-	public Collection<PairwiseOverlayObject> getPairwiseOverlayObjects() {
+	public List<PairwiseOverlayObject> getPairwiseOverlayObjects() {
 		return pairwiseOverlayObjects;
 	}
 
-	public void setPairwiseOverlayObjects(Collection<PairwiseOverlayObject> pairwiseOverlayObjects) {
+	public void setPairwiseOverlayObjects(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 	}
 
