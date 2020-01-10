@@ -20,7 +20,7 @@ import org.reactome.web.diagram.profiles.diagram.DiagramColours;
 import org.reactome.web.diagram.util.Console;
 import org.reactome.web.diagram.util.ExpressionUtil;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
-import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
+import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualizer;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.events.FIViewOverlayEdgeHoveredEvent;
 import org.reactome.web.fi.events.FIViewOverlayEdgeSelectedEvent;
@@ -154,7 +154,7 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 
 	@Override
 	public void onGraphObjectHovered(GraphObjectHoveredEvent event) {
-		if(dataOverlay == null || event.getSource() instanceof FIViewVisualiser) return;
+		if(dataOverlay == null || event.getSource() instanceof FIViewVisualizer) return;
 		List<DiagramObject> hoveredObjects = event.getHoveredObjects();
         DiagramObject item = hoveredObjects != null && !hoveredObjects.isEmpty() ? hoveredObjects.get(0) : null;
         this.hovered = item != null ? item.getGraphObject() : null;
@@ -165,7 +165,7 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 
 	@Override
 	public void onGraphObjectSelected(GraphObjectSelectedEvent event) {
-		if(dataOverlay == null || event.getSource() instanceof FIViewVisualiser) return;
+		if(dataOverlay == null || event.getSource() instanceof FIViewVisualizer) return;
 		this.selected = event.getGraphObject();
 		selectedValues = getExpressionValues(this.selected, dataOverlay.getColumn());
 		draw();

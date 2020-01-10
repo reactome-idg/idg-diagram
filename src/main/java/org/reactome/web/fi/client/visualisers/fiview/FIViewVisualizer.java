@@ -83,7 +83,7 @@ import com.google.gwt.user.client.ui.DialogBox;
  * @author brunsont
  *
  */
-public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
+public class FIViewVisualizer extends AbsolutePanel implements Visualiser,
 	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler,
 	NodeHoveredHandler, NodeMouseOutHandler, AnalysisProfileChangedHandler,
 	ExpressionColumnChangedHandler, CytoscapeLayoutChangedHandler, CytoscapeCoreContextHandler,
@@ -115,7 +115,7 @@ public class FIViewVisualiser extends AbsolutePanel implements Visualiser,
 	private SimplePanel cyView;
 	private DataOverlay dataOverlay;
     
-	public FIViewVisualiser(EventBus eventBus) {
+	public FIViewVisualizer(EventBus eventBus) {
 		super();
 		this.getElement().addClassName("pwp-FIViz"); //IMPORTANT!
 		this.eventBus = eventBus;

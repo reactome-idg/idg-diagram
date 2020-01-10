@@ -23,7 +23,7 @@ import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.fi.client.visualisers.OverlayDataHandler;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.ContinuousDataOverlayRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOverlayRenderer;
-import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualiser;
+import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualizer;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
 import org.reactome.web.fi.data.overlay.model.OverlayProperties;
@@ -61,7 +61,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
-	private FIViewVisualiser fIViewVisualiser;
+	private FIViewVisualizer fIViewVisualizer;
 	private IDGIconButton overlayButton;
 	private OverlayColourLegend overlayColourLegend;
 	private OverlayControlLegend overlayControlLegend;
@@ -121,8 +121,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	
 	@Override
 	protected void addExternalVisualisers() {
-		fIViewVisualiser = new FIViewVisualiser(eventBus);
-		super.add(fIViewVisualiser);
+		fIViewVisualizer = new FIViewVisualizer(eventBus);
+		super.add(fIViewVisualizer);
 	}
 
 	@Override
@@ -132,9 +132,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			for (Visualiser vis : visualisers.values()) {
 				vis.asWidget().setVisible(false);
 			}
-			fIViewVisualiser.asWidget().setVisible(true);
+			fIViewVisualizer.asWidget().setVisible(true);
 			showDiagramButton();
-			activeVisualiser = fIViewVisualiser;
+			activeVisualiser = fIViewVisualizer;
 			return;
 		}
 		else if(context.getContent().getType() == Content.Type.DIAGRAM && !CytoscapeViewFlag.isCytoscapeViewFlag()) {
@@ -188,30 +188,33 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	}
 
 	private void requestOverlayDataEntities(MakeOverlayRequestEvent event) {
-		GWT.log("Request overlay data entities!");
+		GWT.log("Request Pairwise Overlay!");
 	}
 
 	private void requestOverlayData(MakeOverlayRequestEvent event) {
-		Set<String> identifiers = null;
-
 		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 		
-		if(activeVisualiser instanceof FIViewVisualiser)
-			identifiers = context.getContent().getIdentifierMap().keySet();
-		
-		//in case of DiagramVisualiser, get each physical entity identifier and add to set
-		else if(activeVisualiser instanceof DiagramVisualiser) {
-			identifiers = collectDiagramInteractors(identifiers);
-		}
-		
-		event.getOverlayProperties().setUniprots(getPostData(identifiers));
+		event.getOverlayProperties().setUniprots(collectDiagramInteractors());
 		
 		if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
 	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(event.getDataType(), event.getOverlayProperties()), this);
 		}
 	}
 
-	private Set<String> collectDiagramInteractors(Set<String> identifiers) {
+	/**
+	 * Collects uniprots for all participants in a diagram or FIView
+	 * @return
+	 */
+	private String collectDiagramInteractors() {
+		Set<String> identifiers = new HashSet<>();
+		
+		//get identifiers from identifierMap if active visualizer is FIViewVisualizer
+		if(activeVisualiser instanceof FIViewVisualizer) {
+			identifiers = context.getContent().getIdentifierMap().keySet();
+			return getPostData(identifiers);
+		}
+
+		//if activeVisualiser is DiagramVisualiser
 		//iterate over all diagram objects in a diagram
 		for(DiagramObject  diagramObject: context.getContent().getDiagramObjects()) {
 			Set<GraphPhysicalEntity> participants = null;
@@ -235,7 +238,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 				}
 			}
 		}
-		return identifiers;
+		return getPostData(identifiers);
 	}
 	
 	/**
@@ -326,8 +329,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();
-		else if(activeVisualiser instanceof FIViewVisualiser)
-			((FIViewVisualiser)activeVisualiser).overlayNodes(dataOverlay);
+		else if(activeVisualiser instanceof FIViewVisualizer)
+			((FIViewVisualizer)activeVisualiser).overlayNodes(dataOverlay);
 	}
 	
 	/**
@@ -382,8 +385,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		context.setDialogMap(new HashMap<>());
 		if(activeVisualiser instanceof DiagramVisualiser)
 			activeVisualiser.loadAnalysis();
-		else if(activeVisualiser instanceof FIViewVisualiser)
-			((FIViewVisualiser)activeVisualiser).overlayNodes(null);
+		else if(activeVisualiser instanceof FIViewVisualizer)
+			((FIViewVisualizer)activeVisualiser).overlayNodes(null);
 	}
 	
 	/**
@@ -410,14 +413,14 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		context.setDialogMap(new HashMap<>());
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();
-		else if(activeVisualiser instanceof FIViewVisualiser)
-			((FIViewVisualiser)activeVisualiser).overlayNodes(dataOverlay);
+		else if(activeVisualiser instanceof FIViewVisualizer)
+			((FIViewVisualizer)activeVisualiser).overlayNodes(dataOverlay);
 	}
 	
 	@Override
 	public void onResize() {
 		super.onResize();
-		fIViewVisualiser.setSize(this.getOffsetWidth(), this.getOffsetHeight());
+		fIViewVisualizer.setSize(this.getOffsetWidth(), this.getOffsetHeight());
 	}
 	
 	/**
