@@ -18,14 +18,11 @@ public class MakeOverlayRequestEvent extends GwtEvent<MakeOverlayRequestHandler>
     public static Type<MakeOverlayRequestHandler> TYPE = new Type<>();
 
     private OverlayProperties properties;
-
-    
     
     public MakeOverlayRequestEvent(OverlayProperties properties) {
     	this.properties = properties;
     }
-    
-    
+     
 	@Override
 	public Type<MakeOverlayRequestHandler> getAssociatedType() {
 		return TYPE;
