@@ -53,7 +53,6 @@ public class DataOverlayEntityMediator {
 		DataOverlay result = new DataOverlay(properties);
 		if(entities.getExpressionEntity().size() == 0)
 			return result;
-		result.setOverlayType(OverlayDataType.lookupType(entities.getDataType()));
 		
 		if(properties.getValueType() == "Number")
 			return getNumberValueResult(result, entities);

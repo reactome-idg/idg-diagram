@@ -17,14 +17,12 @@ import com.google.gwt.event.shared.GwtEvent;
 public class MakeOverlayRequestEvent extends GwtEvent<MakeOverlayRequestHandler>{
     public static Type<MakeOverlayRequestHandler> TYPE = new Type<>();
 
-    private OverlayDataType dataType;
     private OverlayEntityType entityType;
     private OverlayProperties properties;
 
     
     
-    public MakeOverlayRequestEvent(OverlayDataType dataType, OverlayProperties properties) {
-    	this.dataType = dataType;
+    public MakeOverlayRequestEvent(OverlayProperties properties) {
     	this.properties = properties;
     }
     
@@ -40,10 +38,6 @@ public class MakeOverlayRequestEvent extends GwtEvent<MakeOverlayRequestHandler>
 	@Override
 	protected void dispatch(MakeOverlayRequestHandler handler) {
 		handler.onMakeOverlayRequest(this);
-	}
-
-	public OverlayDataType getDataType() {
-		return this.dataType;
 	}
 	
 	public OverlayEntityType getEntityType() {

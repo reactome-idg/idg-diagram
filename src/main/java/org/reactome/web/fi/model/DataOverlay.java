@@ -17,7 +17,6 @@ public class DataOverlay {
 	private Double minValue;
 	private Double maxValue;
 	private boolean isDiscrete;
-	private OverlayDataType overlayType;
 	private Map<String, List<DataOverlayEntity>> uniprotToEntitiesMap;
 	private List<String> legendTypes;
 	private List<String> tissueTypes;
@@ -73,14 +72,6 @@ public class DataOverlay {
 
 	public void setIdentifierValueMap(Map<String, Double> identifierValueMap) {
 		this.identifierValueMap = identifierValueMap;
-	}
-
-	public OverlayDataType getOverlayType() {
-		return overlayType;
-	}
-
-	public void setOverlayType(OverlayDataType overlayType) {
-		this.overlayType = overlayType;
 	}
 
 	public String getEType() {

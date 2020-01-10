@@ -30,7 +30,6 @@ public class TCRDLoader implements RequestCallback{
 	
 	private Handler handler;
 	private Request request;
-	private OverlayDataType type;
 	private OverlayProperties properties;
 	
 	public TCRDLoader(Handler handler){
@@ -42,8 +41,7 @@ public class TCRDLoader implements RequestCallback{
 			this.request.cancel();
 	}
 	
-	public void load(OverlayDataType type, OverlayProperties properties) {
-		this.type = type;
+	public void load(OverlayProperties properties) {
 		this.properties = properties;
 		cancel();
 						
@@ -81,9 +79,8 @@ public class TCRDLoader implements RequestCallback{
 			try {
 				JSONValue val = JSONParser.parseStrict(response.getText());
 				JSONObject obj = new JSONObject();
-				obj.put("dataType", new JSONString(type.getName()));
 				obj.put("valueType", new JSONString("String"));
-				obj.put(getEntityType(), val.isArray());
+				obj.put("expressionEntity", val.isArray());
 				dataOverlay = mediator.transformData(obj.toString(), properties);
 			}catch(Exception e) {
 				this.handler.onTargetLevelLoadedError(e);
@@ -94,15 +91,6 @@ public class TCRDLoader implements RequestCallback{
 		default:
 			this.handler.onTargetLevelLoadedError(new Exception(response.getStatusText()));
 		}
-	}
-	
-	private String getEntityType() {
-		if(type == OverlayDataType.TARGET_DEVELOPMENT_LEVEL)
-			return "targetLevelEntity";
-		else if(type == OverlayDataType.TISSUE_EXPRESSION) {
-			return "expressionEntity";
-		}
-		return "overlayEntity";
 	}
 	
 	@Override

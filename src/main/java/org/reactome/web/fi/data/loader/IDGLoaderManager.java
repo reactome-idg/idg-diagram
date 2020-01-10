@@ -66,8 +66,8 @@ TCRDLoader.Handler{
 	 * Multiple ids should be passed in as a String separated by commas.
 	 * @param postData
 	 */
-	public void loadTCRDTargetLevel(OverlayDataType type, OverlayProperties properties) { 
-		tcrdLoader.load(type, properties);
+	public void loadTCRDTargetLevel(OverlayProperties properties) { 
+		tcrdLoader.load(properties);
 	}
 	
 	private boolean isFIViewNeeded(String identifier) {

@@ -292,7 +292,7 @@ public class DataOverlayPanel  extends FlowPanel{
 		
 		currentProperties = properties;
 		loader.setVisible(true);
-		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(OverlayDataType.TISSUE_EXPRESSION, properties), this);
+		eventBus.fireEventFromSource(new MakeOverlayRequestEvent(properties), this);
 	}
 	
 	

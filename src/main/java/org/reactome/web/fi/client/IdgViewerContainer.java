@@ -150,12 +150,11 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		
 		//check if overlay should be loaded and if so, load new TCRD data
 		if(dataOverlay != null) {
-			OverlayDataType overlayType = dataOverlay.getOverlayType();
 			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 			
-			//don't bother reloading when new content is an SVG
-			if(context.getContent().getType() != Content.Type.SVG)
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(overlayType, this.lastOverlayProperties), this);
+		//don't bother reloading when new content is an SVG
+		if(context.getContent().getType() != Content.Type.SVG)
+			eventBus.fireEventFromSource(new MakeOverlayRequestEvent(this.lastOverlayProperties), this);
 		}
 	}
 
@@ -173,32 +172,19 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	@Override
 	public void onMakeOverlayRequest(MakeOverlayRequestEvent event) {
 		
-		//set lastExpressionOverlayValueType in case diagram is changed before reset
+		//set lastOverlayProperties in case diagram is changed before reset
 		this.lastOverlayProperties = event.getOverlayProperties();
+		
 		//can't have an overlay and Analysis at the same time
 		if(context.getAnalysisStatus() != null)
 			eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
 		
-		if(event.getEntityType() != null) 
-			requestOverlayDataEntities(event);
-		else if(event.getDataType() != null)
-			requestOverlayData(event);
-		else
-			GWT.log("Cant figure out what overlay type to request!");
-	}
-
-	private void requestOverlayDataEntities(MakeOverlayRequestEvent event) {
-		GWT.log("Request Pairwise Overlay!");
-	}
-
-	private void requestOverlayData(MakeOverlayRequestEvent event) {
 		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 		
 		event.getOverlayProperties().setUniprots(collectDiagramInteractors());
 		
-		if(event.getDataType() == OverlayDataType.TISSUE_EXPRESSION) {
-	        eventBus.fireEventFromSource(new OverlayDataRequestedEvent(event.getDataType(), event.getOverlayProperties()), this);
-		}
+	    eventBus.fireEventFromSource(new OverlayDataRequestedEvent(event.getOverlayProperties()), this);
+
 	}
 
 	/**
