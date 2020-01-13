@@ -47,6 +47,7 @@ import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.tools.overlay.OverlayLauncherDisplay;
+import org.reactome.web.fi.tools.overlay.pairwise.PairwisePopout;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -69,6 +70,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	private OverlayColourLegend overlayColourLegend;
 	private OverlayControlLegend overlayControlLegend;
 	private OverlayLauncherDisplay overlayLauncher;
+	private PairwisePopout pairwisePopout;
 	
 	private DataOverlay dataOverlay;
 	private boolean renderOverlays = false;
@@ -101,7 +103,8 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		diagramButton = new IDGIconButton(IDGRESOURCES.diagramIcon(), IDGRESOURCES.getCSS().diagram(), "Diagram View");
 		overlayButton = new IDGIconButton(IDGRESOURCES.overlayIcon(), IDGRESOURCES.getCSS().cytoscape(), "Select An Overlay");
 		overlayLauncher = new OverlayLauncherDisplay(eventBus);
-				
+		pairwisePopout = new PairwisePopout(eventBus);
+		
 		//adds diagramButton and fiviewButton. sets fiview button as default to show
 		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
 		super.leftTopLauncher.getMainControlPanel().getWidget(
@@ -112,6 +115,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		overlayControlLegend = new OverlayControlLegend(eventBus);
 		super.bottomContainerPanel.add(overlayControlLegend);
 		this.add(overlayLauncher);
+		this.add(pairwisePopout);
 		
 		
 		

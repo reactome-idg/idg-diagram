@@ -24,7 +24,7 @@ public class FIViewLoader implements RequestCallback{
 	private String stId;
 	private String dbId;
 	
-	FIViewLoader(Handler handler){
+	public FIViewLoader(Handler handler){
 		this.handler = handler;
 	}
 	

@@ -220,10 +220,13 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser,
 	public void setContext(Context context) {
 		this.context = context;
 		Content content = context.getContent();
+		GWT.log(((FIViewContent)content).getFIArray());
 		if(!cytoscapeInitialised) {
 			cy.cytoscapeInit(((FIViewContent)content).getProteinArray(), 
 							 ((FIViewContent)content).getFIArray(),  
-							 "cose");
+							 "cose", 
+							 "cy",
+							 true); // sets the container to use
 			cy.setCytoscapeLayout("cose");
 			cytoscapeInitialised = true;
 		}

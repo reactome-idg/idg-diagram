@@ -1,0 +1,64 @@
+.popupPanel{
+	border: 3px solid gray !important;
+    border-radius: 15px;
+    padding: 5px 10px 10px 0;
+    background-color: rgb(30,148,208)!important;
+    z-index:100;
+}
+
+.header{
+    padding: 2px 0 2px 0;
+    width: 100%;
+}
+
+.container{
+	min-width: 800px;
+    min-height: 500px;
+}
+
+.innerContainer{
+	width: 98%;
+    height: 100%;
+    border-radius: 15px;
+    background-color: #f5f5f5;
+    margin: 2%;
+}
+
+.cyView{
+	float: left;
+    width: 75%;
+    height: 100%;
+}
+
+.unselectable {
+    -webkit-touch-callout: none; /* Prevents selection */
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.overlayInfo{
+	border-left: 2px solid grey;
+	float: left;
+	width: 24%;
+	height: 100%;
+}
+
+@sprite .close{
+    gwt-image: 'closeNormal';
+    outline: none;
+    background-repeat: no-repeat;
+    border: 0;
+    cursor: pointer;
+    float: right;
+    margin-bottom: 10px;
+}
+@sprite .close:hover {
+    gwt-image: 'closeHovered';
+}
+
+@sprite .close:active:hover {
+    gwt-image: 'closeClicked' ;
+}
