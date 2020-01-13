@@ -1,4 +1,4 @@
-package org.reactome.web.fi.tools.overlay;
+package org.reactome.web.fi.tools.overlay.pairwise;
 
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.Map;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
-import org.reactome.web.fi.tools.overlay.pairwise.PairwiseFormPanel;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
