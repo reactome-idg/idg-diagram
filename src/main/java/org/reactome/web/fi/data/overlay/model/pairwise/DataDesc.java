@@ -7,7 +7,7 @@ import java.util.List;
  * @author brunsont
  *
  */
-public interface DataDescription {
+public interface DataDesc {
 
 	List<String> getId();
 	

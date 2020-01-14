@@ -15,7 +15,7 @@ public class PairwiseEntitiesFactory {
 	interface ModelAutoBeanFactory extends AutoBeanFactory{
 		AutoBean<PairwiseEntities> pairwiseEntities();
 		AutoBean<PairwiseEntity> pairwiseEntity();
-		AutoBean<DataDescription> dataDescription();
+		AutoBean<DataDesc> dataDesc();
 	}
 	
 	public static <T> T getPairwiseEntities(Class<T> cls, String json) throws Exception{

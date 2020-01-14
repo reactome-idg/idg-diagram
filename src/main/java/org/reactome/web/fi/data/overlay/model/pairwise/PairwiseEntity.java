@@ -11,7 +11,7 @@ public interface PairwiseEntity {
 
 	String getGene();
 	
-	List<DataDescription> getDataDesc();
+	DataDesc getDataDesc();
 	
 	List<String> getPosGenes();
 	
