@@ -12,6 +12,8 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.reactome.web.fi.events.PairwiseDataLoadedEvent;
+import org.reactome.web.fi.handlers.PairwiseDataLoadedHandler;
 import org.reactome.web.fi.tools.overlay.pairwise.EntityOverlayPanel;
 
 import com.google.gwt.core.client.GWT;
@@ -34,7 +36,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
  *
  */
 public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
-	ClickHandler, CloseHandler<PopupPanel>{
+	ClickHandler, CloseHandler<PopupPanel>, PairwiseDataLoadedHandler{
 
 	EventBus eventBus;
 	private Button dataOverlayTypes;
@@ -51,6 +53,8 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 		super();
 		this.eventBus = eventBus;
 		initPanel();
+		
+		eventBus.addHandler(PairwiseDataLoadedEvent.TYPE, this);
 	}
 
 	private void initPanel() {
@@ -168,6 +172,11 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 		this.hide();
 	}
 	
+	@Override
+	public void onPairwisieDataLoaded(PairwiseDataLoadedEvent event) {
+		this.hide();
+	}
+	
 	public static Resources RESOURCES;
 	static {
 		RESOURCES = GWT.create(Resources.class);
@@ -224,5 +233,4 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 		String buttonSelected();
 				
 	}
-	
 }
