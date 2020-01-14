@@ -1,6 +1,9 @@
 package org.reactome.web.fi.events;
 
+import java.util.List;
+
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntities;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.handlers.PairwiseDataLoadedHandler;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -8,13 +11,13 @@ import com.google.gwt.event.shared.GwtEvent;
 public class PairwiseDataLoadedEvent extends GwtEvent<PairwiseDataLoadedHandler>{
 	public static Type<PairwiseDataLoadedHandler> TYPE = new Type<>();
 
-	private PairwiseEntities entities;
+	private List<PairwiseEntity> entities;
 	
-	public PairwiseDataLoadedEvent(PairwiseEntities entities) {
+	public PairwiseDataLoadedEvent(List<PairwiseEntity> entities) {
 		this.entities = entities;
 	}
 	
-	public PairwiseEntities getEntities() {
+	public List<PairwiseEntity> getEntities() {
 		return this.entities;
 	}
 	

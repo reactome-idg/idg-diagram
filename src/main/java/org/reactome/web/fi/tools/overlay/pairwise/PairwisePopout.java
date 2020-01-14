@@ -9,6 +9,9 @@ import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
 import org.reactome.web.diagram.handlers.PairwiseOverlayButtonClickedHandler;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
+import org.reactome.web.fi.events.PairwiseDataLoadedEvent;
+import org.reactome.web.fi.handlers.PairwiseDataLoadedHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -30,7 +33,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public class PairwisePopout extends PopupPanel implements ResizeHandler, PairwiseOverlayButtonClickedHandler{
+public class PairwisePopout extends PopupPanel implements ResizeHandler, PairwiseOverlayButtonClickedHandler, PairwiseDataLoadedHandler{
 
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -40,13 +43,18 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	private JSONArray currentNodeArray;
 	private JSONArray currentEdgeArray;
 	
+	private List<PairwiseEntity> currentPairwiseOverlay;
+	
 	public PairwisePopout(EventBus eventBus) {
 		this.eventBus = eventBus;
+		currentPairwiseOverlay = new ArrayList<>();
 		this.setStyleName(RESOURCES.getCSS().popupPanel());
 		
 		this.cy = new CytoscapeEntity(eventBus, RESOURCES.fiviewStyle().getText());
 		initPanel();
+		
 		eventBus.addHandler(PairwiseOverlayButtonClickedEvent.TYPE, this);
+		eventBus.addHandler(PairwiseDataLoadedEvent.TYPE, this);
 	}
 
 	private void initPanel() {
@@ -112,8 +120,9 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	
 	@Override
 	public void onPairwiseOverlayButtonClicked(PairwiseOverlayButtonClickedEvent event) {
-		currentNodeArray = new JSONArray();
+		if(currentPairwiseOverlay.size()==0) return;
 		
+		currentNodeArray = new JSONArray();
 		
 		if(event.getGraphObject() != null) constructFIs(event.getGraphObject());
 		else if(event.getUniprot() != null) constructFIs(event.getUniprot());
@@ -189,6 +198,11 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		
 		return result;
 	}
+	
+	@Override
+	public void onPairwisieDataLoaded(PairwiseDataLoadedEvent event) {
+		currentPairwiseOverlay = event.getEntities();
+	}
 
 	public static Resources RESOURCES;
 	static {
@@ -215,7 +229,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	
 	@CssResource.ImportedWithPrefix("idg-pairwisePopup")
 	public interface ResourceCSS extends CssResource{
-		String CSS = "org/reactome/web/fi/tools/overlay/pairwise/PairwisePopup.css";
+		String CSS = "org/reactome/web/fi/tools/overlay/pairwise/PairwisePopout.css";
 		
 		String popupPanel();
 		

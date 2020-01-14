@@ -16,6 +16,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
+import org.reactome.web.fi.events.PairwiseDataLoadedEvent;
 import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.model.DataOverlay;
 
@@ -131,7 +132,7 @@ OverlayLoader.Handler{
 	}
 
 	@Override
-	public void onPairwiseOverlayLoaded(PairwiseEntities pairwiseEntities) {
-		List<PairwiseEntity> entities = pairwiseEntities.getPairwiseEntities();
+	public void onPairwiseOverlayLoaded(List<PairwiseEntity> pairwiseEntities) {
+		eventBus.fireEventFromSource(new PairwiseDataLoadedEvent(pairwiseEntities), this);
 	}
 }

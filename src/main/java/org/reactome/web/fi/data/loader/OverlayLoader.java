@@ -8,6 +8,7 @@ import org.reactome.web.fi.data.overlay.model.OverlayEntities;
 import org.reactome.web.fi.data.overlay.model.OverlayEntityDataFactory;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntitiesFactory;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
@@ -31,7 +32,7 @@ public class OverlayLoader implements RequestCallback{
 	public interface Handler{
 		void onDataOverlayLoaded(DataOverlay dataOverlay);
 		void onOverlayLoadedError(Throwable exception);
-		void onPairwiseOverlayLoaded(PairwiseEntities pairwiseEntities);
+		void onPairwiseOverlayLoaded(List<PairwiseEntity> pairwiseEntities);
 	}
 	
 	private final static String TCRD_BASE_URL = "/tcrdws/";
@@ -134,7 +135,7 @@ public class OverlayLoader implements RequestCallback{
 			JSONObject obj = new JSONObject();
 			obj.put("pairwiseEntities", val.isArray());
 			entities = PairwiseEntitiesFactory.getPairwiseEntities(PairwiseEntities.class, obj.toString());
-			handler.onPairwiseOverlayLoaded(entities);
+			handler.onPairwiseOverlayLoaded(entities.getPairwiseEntities());
 		}catch(Exception e) {
 			this.handler.onOverlayLoadedError(e);
 		}
