@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public class PairwisePopout extends PopupPanel implements ResizeHandler, PairwiseOverlayButtonClickedHandler, PairwiseDataLoadedHandler{
+public class PairwisePopout extends PopupPanel implements ResizeHandler, PairwiseOverlayButtonClickedHandler, PairwiseDataLoadedHandler, CytoscapeEntity.Handler{
 
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -50,7 +50,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		currentPairwiseOverlay = new ArrayList<>();
 		this.setStyleName(RESOURCES.getCSS().popupPanel());
 		
-		this.cy = new CytoscapeEntity(eventBus, RESOURCES.fiviewStyle().getText());
+		this.cy = new CytoscapeEntity(eventBus, RESOURCES.fiviewStyle().getText(), this);
 		initPanel();
 		
 		eventBus.addHandler(PairwiseOverlayButtonClickedEvent.TYPE, this);
@@ -202,6 +202,66 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	@Override
 	public void onPairwisieDataLoaded(PairwiseDataLoadedEvent event) {
 		currentPairwiseOverlay = event.getEntities();
+	}
+	
+	@Override
+	public void onNodeClicked(String id, String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEdgeClicked(String id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onNodeHovered(String id, String name, int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEdgeHovered(String id, int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onNodeMouseOut() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEdgeMouseOut() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCytoscapeCoreContextEvent(int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCytoscapeCoreSelectedEvent() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEdgeContextSelectEvent(String id, int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public static Resources RESOURCES;

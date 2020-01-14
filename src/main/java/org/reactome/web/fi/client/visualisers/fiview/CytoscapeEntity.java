@@ -14,8 +14,8 @@ public class CytoscapeEntity extends CytoscapeWrapper{
 	EventBus eventBus;
 	String baseStyle;
 	
-	public CytoscapeEntity(EventBus eventBus, String baseStyle) {
-		super(eventBus, baseStyle);
+	public CytoscapeEntity(EventBus eventBus, String baseStyle, Handler handler) {
+		super(eventBus, baseStyle, handler);
 		this.eventBus = eventBus;
 		this.baseStyle = baseStyle;
 	}	

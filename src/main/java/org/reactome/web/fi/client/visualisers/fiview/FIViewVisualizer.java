@@ -83,12 +83,8 @@ import com.google.gwt.user.client.ui.DialogBox;
  * @author brunsont
  *
  */
-public class FIViewVisualizer extends AbsolutePanel implements Visualiser,
-	EdgeClickedHandler, EdgeHoveredHandler, EdgeMouseOutHandler, NodeClickedHandler,
-	NodeHoveredHandler, NodeMouseOutHandler, AnalysisProfileChangedHandler,
-	ExpressionColumnChangedHandler, CytoscapeLayoutChangedHandler, CytoscapeCoreContextHandler,
-	CytoscapeCoreSelectedHandler, EdgeContextSelectHandler, FireGraphObjectSelectedHandler,
-	NodeContextSelectHandler{
+public class FIViewVisualizer extends AbsolutePanel implements Visualiser, AnalysisProfileChangedHandler,
+	ExpressionColumnChangedHandler, CytoscapeLayoutChangedHandler, FireGraphObjectSelectedHandler, CytoscapeEntity.Handler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -140,7 +136,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser,
 			ScriptInjector.fromString(FIVIEWPORTRESOURCES.cytoscapeLibrary().getText()).setWindow(ScriptInjector.TOP_WINDOW).inject();
 			
 			//created once and reused every time a new context is loaded
-			cy = new CytoscapeEntity(this.eventBus, FIVIEWPORTRESOURCES.fiviewStyle().getText());
+			cy = new CytoscapeEntity(this.eventBus, FIVIEWPORTRESOURCES.fiviewStyle().getText(), this);
 			
 			cyView.getElement().setId("cy");
 			
@@ -160,18 +156,9 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser,
 	
 	private void initHandlers() {        
 		eventBus.addHandler(AnalysisProfileChangedEvent.TYPE, this);
-		eventBus.addHandler(EdgeClickedEvent.TYPE, this);
-		eventBus.addHandler(EdgeHoveredEvent.TYPE, this);
-		eventBus.addHandler(EdgeMouseOutEvent.TYPE, this);
-		eventBus.addHandler(NodeClickedEvent.TYPE, this);
-		eventBus.addHandler(NodeHoveredEvent.TYPE, this);
 		eventBus.addHandler(ExpressionColumnChangedEvent.TYPE, this);
 		eventBus.addHandler(CytoscapeLayoutChangedEvent.TYPE, this);
-		eventBus.addHandler(CytoscapeCoreContextEvent.TYPE, this);
-		eventBus.addHandler(CytoscapeCoreSelectedEvent.TYPE, this);
-		eventBus.addHandler(EdgeContextSelectEvent.TYPE, this);
 		eventBus.addHandler(FireGraphObjectSelectedEvent.TYPE, this);
-		eventBus.addHandler(NodeContextSelectEvent.TYPE, this);
 	}
 
 	@Override
@@ -240,24 +227,24 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser,
 	}
 
 	@Override
-	public void onNodeClicked(NodeClickedEvent event) {
+	public void onNodeClicked(String id, String name) {
 		infoPopup.hide();		
 	}
 	
 	@Override
-	public void onNodeHovered(NodeHoveredEvent event) {
+	public void onNodeHovered(String id, String name, int x, int y) {
 		infoPopup.hide();
 		HTML html = new HTML(new SafeHtmlBuilder()
-				.appendEscapedLines(event.getName() + " (" + event.getNodeId() + ")")
+				.appendEscapedLines(name + " (" + id + ")")
 				.toSafeHtml());
 		html.setStyleName(FIVIEWPORTRESOURCES.getCSS().label());
 		infoPopup.setHtmlLabel(html);
-		infoPopup.setPopupPosition(event.getX()+10, event.getY()+10);
+		infoPopup.setPopupPosition(x+10, y+10);
 		infoPopup.show();
 	}
 
 	@Override
-	public void onEdgeMouseOut(EdgeMouseOutEvent event) {
+	public void onEdgeMouseOut() {
 		infoPopup.hide();
 		eventBus.fireEventFromSource(new GraphObjectHoveredEvent(), this);
 		
@@ -266,9 +253,8 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser,
 	}
 
 	@Override
-	public void onEdgeHovered(EdgeHoveredEvent event) {
-		
-		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getEdgeId()).get("data").isObject();
+	public void onEdgeHovered(String id, int x, int y) {
+		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(id).get("data").isObject();
 		
 		HTML html = new HTML(new SafeHtmlBuilder()
 				.appendEscapedLines( 
@@ -277,7 +263,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser,
 				.toSafeHtml());
 		html.setStyleName(FIVIEWPORTRESOURCES.getCSS().label());
 		infoPopup.setHtmlLabel(html);
-		infoPopup.setPopupPosition(event.getX()+10, event.getY()+10);
+		infoPopup.setPopupPosition(x+10, y+10);
 		infoPopup.show();
 		
 		//set edgeHoveredFlag to true
@@ -293,10 +279,10 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser,
 	}
 
 	@Override
-	public void onEdgeClicked(EdgeClickedEvent event) {
+	public void onEdgeClicked(String id) {
 		infoPopup.hide();
 		
-		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getEdgeId()).get("data").isObject();
+		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(id).get("data").isObject();
 		
 		//set cytoscapeClickedFlag to true
 		cytoscapeClickedFlag = true;
@@ -320,40 +306,39 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser,
 	}
 	
 	@Override
-	public void onCytoscapeContextSelect(CytoscapeCoreContextEvent event) {
+	public void onCytoscapeCoreContextEvent(int x, int y) {
 		fILayoutChangerPanel.show();
-		setPopupLocation(event.getX(), event.getY(), fILayoutChangerPanel);
+		setPopupLocation(x, y, fILayoutChangerPanel);
 	}
 
 	@Override
-	public void onEdgeContextSelect(EdgeContextSelectEvent event) {
-		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(event.getId()).get("data").isObject();
+	public void onEdgeContextSelectEvent(String id, int x, int y) {
+		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(id).get("data").isObject();
 		edgeContextPanel.updateContext(fi);
 		edgeContextPanel.show();
-		setPopupLocation(event.getX(), event.getY(), edgeContextPanel);
+		setPopupLocation(x, y, edgeContextPanel);
 	}
 	
 	@Override
-	public void onNodeContextSelect(NodeContextSelectEvent event) {
-		if(nodeContextPanelMap.containsKey(event.getId())) {
+	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
+		if(nodeContextPanelMap.containsKey(id)) {
 			//show popup before setting location so sizing is correct. UI doesn't update fast enough to cause an artifact
-			nodeContextPanelMap.get(event.getId()).show();
-			setPopupLocation(event.getX(), event.getY(), nodeContextPanelMap.get(event.getId())); 
+			nodeContextPanelMap.get(id).show();
+			setPopupLocation(x, y, nodeContextPanelMap.get(id)); 
 			return;
 		}
 		
 		NodeContextPanel nodeContextPanel;
 		
 		//Send overlay value to context panel if dataOverlay exists
-		if(dataOverlay != null && dataOverlay.getUniprotToEntitiesMap().containsKey(event.getId()))
-			nodeContextPanel = new NodeContextPanel(eventBus, event.getName(), event.getId(), dataOverlay);
+		if(dataOverlay != null && dataOverlay.getUniprotToEntitiesMap().containsKey(id))
+			nodeContextPanel = new NodeContextPanel(eventBus, name, id, dataOverlay);
 		else 
-			nodeContextPanel = new NodeContextPanel(eventBus, event.getName(), event.getId());
-		setPopupLocation(event.getX(), event.getY(), nodeContextPanel);
+			nodeContextPanel = new NodeContextPanel(eventBus, name, id);
+		setPopupLocation(x, y, nodeContextPanel);
 		
 		//cache so it doesn't have to be recreated every time
-		nodeContextPanelMap.put(event.getId(), nodeContextPanel);
-		
+		nodeContextPanelMap.put(id, nodeContextPanel);
 	}
 	
 	/**
@@ -384,7 +369,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser,
 	}
 	
 	@Override
-	public void onCytoscapeCoreSelected(CytoscapeCoreSelectedEvent event) {
+	public void onCytoscapeCoreSelectedEvent() {
 		cytoscapeClickedFlag = true;
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(null,false), this);
 		if(dataOverlay != null && !dataOverlay.isDiscrete()) 
@@ -400,7 +385,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser,
 	}
 	
 	@Override
-	public void onNodeMouseOut(NodeMouseOutEvent event) {
+	public void onNodeMouseOut() {
 		infoPopup.hide();
 	}
 	
