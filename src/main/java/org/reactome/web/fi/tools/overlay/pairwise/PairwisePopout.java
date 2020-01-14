@@ -43,11 +43,11 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	private JSONArray currentNodeArray;
 	private JSONArray currentEdgeArray;
 	
-	private List<PairwiseEntity> currentPairwiseOverlay;
+	private List<PairwiseEntity> currentPairwiseEntities;
 	
 	public PairwisePopout(EventBus eventBus) {
 		this.eventBus = eventBus;
-		currentPairwiseOverlay = new ArrayList<>();
+		currentPairwiseEntities = new ArrayList<>();
 		this.setStyleName(RESOURCES.getCSS().popupPanel());
 		
 		this.cy = new CytoscapeEntity(eventBus, RESOURCES.fiviewStyle().getText(), this);
@@ -120,7 +120,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	
 	@Override
 	public void onPairwiseOverlayButtonClicked(PairwiseOverlayButtonClickedEvent event) {
-		if(currentPairwiseOverlay.size()==0) return;
+		if(currentPairwiseEntities.size()==0) return;
 		
 		currentNodeArray = new JSONArray();
 		
@@ -133,12 +133,15 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	}
 
 	private void updateView() {
-		if(!initialized) 
+		if(!initialized) {
 			cy.cytoscapeInit(currentNodeArray.toString(),
 							 currentEdgeArray.toString(),
 							 "cose",
 							 "cy-popout",
 							 false);
+			cy.setCytoscapeLayout("cose");
+			initialized = true;
+		}
 		else {
 			cy.clearCytoscapeGraph();
 			cy.addCytoscapeNodes(currentNodeArray.toString());
@@ -164,6 +167,11 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 				nodeArr.set(nodeArr.size(), getProtein(entities.get(i)));
 				for(int j=i+1; j<entities.size(); j++) {
 					edgeArr.set(edgeArr.size(), makeFI(edgeArr.size(), entities.get(i).getIdentifier(), entities.get(j).getIdentifier()));
+				}
+				for(PairwiseEntity entity: currentPairwiseEntities) {
+					if(entity.getGene() == entities.get(i).getIdentifier()) {
+						
+					}
 				}
 					
 			}
@@ -201,7 +209,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	
 	@Override
 	public void onPairwisieDataLoaded(PairwiseDataLoadedEvent event) {
-		currentPairwiseOverlay = event.getEntities();
+		currentPairwiseEntities = event.getEntities();
 	}
 	
 	@Override
