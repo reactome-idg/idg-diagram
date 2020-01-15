@@ -189,22 +189,51 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 		
 		if(event.getDataOverlayProperties() != null) {
-			event.getDataOverlayProperties().setUniprots(collectInteractors());
+			event.getDataOverlayProperties().setUniprots(collectAllDiagramUniprots());
 		    eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getDataOverlayProperties()), this);
 		}
 		else if(event.getPairwiseOverlayProperties() != null) {
-			event.getPairwiseOverlayProperties().setUniprots(collectInteractors());
+			event.getPairwiseOverlayProperties().setGeneNames(collectAllDiagramGeneNames());
 			eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getPairwiseOverlayProperties()), this);
 		}
 			
 
+	}
+	
+	/**
+	 * collects all gene names for displayed proteins in diagram or FIView
+	 * @return
+	 */
+	private String collectAllDiagramGeneNames() {
+		Set<String> result = new HashSet<>();
+		
+		if(activeVisualiser instanceof FIViewVisualizer) {
+			Set<GraphObject> graphObjects = context.getContent().getIdentifierMap().values();
+			for(GraphObject object : graphObjects) {
+				result.add(object.getDisplayName());
+			}
+			return getPostData(result);
+		}
+		
+		//works same as getting identifiers in colelctAllDiagramUniprots
+		for(DiagramObject diagramObject: context.getContent().getDiagramObjects()) {
+			GraphObject graphObject = diagramObject.getGraphObject();
+			if(graphObject instanceof GraphPhysicalEntity) {
+				GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
+				for(GraphPhysicalEntity participant : pe.getParticipants()) {
+					result.addAll(participant.getGeneNames());
+				}
+			}
+		}
+		
+		return getPostData(result);
 	}
 
 	/**
 	 * Collects uniprots for all participants in a diagram or FIView
 	 * @return
 	 */
-	private String collectInteractors() {
+	private String collectAllDiagramUniprots() {
 		Set<String> identifiers = new HashSet<>();
 		
 		//get identifiers from identifierMap if active visualizer is FIViewVisualizer
@@ -216,7 +245,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		//if activeVisualiser is DiagramVisualiser
 		//iterate over all diagram objects in a diagram
 		for(DiagramObject  diagramObject: context.getContent().getDiagramObjects()) {
-			Set<GraphPhysicalEntity> participants = null;
 			
 			//Get graph object of each diagramObject, check if its a GraphPhysicalEntity,
 			//and get each participant if so. Then add identifier of each participant
@@ -224,10 +252,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			GraphObject graphObject = diagramObject.getGraphObject();
 			if(graphObject instanceof GraphPhysicalEntity) {
 				GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
-				participants = pe.getParticipants();
-				if(identifiers==null)
-					identifiers = new HashSet<>();
-				for(GraphPhysicalEntity participant: participants) {
+				for(GraphPhysicalEntity participant: pe.getParticipants()) {
 					if(participant instanceof GraphEntityWithAccessionedSequence || participant instanceof GraphProteinDrug) {
 						int i= participant.getIdentifier().length();
 						if(participant.getIdentifier().contains("-"))

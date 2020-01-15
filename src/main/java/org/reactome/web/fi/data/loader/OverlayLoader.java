@@ -56,7 +56,7 @@ public class OverlayLoader implements RequestCallback{
 	
 	public void load(PairwiseOverlayProperties properties) {
 		//make sure uniprots exits before doing anything
-		if(properties.getUniprots() == null) {
+		if(properties.getGeneNames() == null) {
 			Exception exception = new Exception("Cannot request overlay data for 0 ids.");
 			this.handler.onOverlayLoadedError(exception);
 			return;
@@ -64,7 +64,7 @@ public class OverlayLoader implements RequestCallback{
 		cancel();
 		this.pairwiseOverlayProperties = properties;
 		String postData = getPostData(pairwiseOverlayProperties);
-		String url = PAIRWISE_BASE_URL + "/pairwise/uniprots";
+		String url = PAIRWISE_BASE_URL + "/pairwise/genes";
 		makeRequest(postData, url);
 	}
 
@@ -102,7 +102,7 @@ public class OverlayLoader implements RequestCallback{
 			ids.add(obj.getId());
 		}
 		result = String.join(",",ids) + 
-				 "\n" + pairwiseOverlayProperties.getUniprots();
+				 "\n" + pairwiseOverlayProperties.getGeneNames();
 		
 		return result;
 	}
