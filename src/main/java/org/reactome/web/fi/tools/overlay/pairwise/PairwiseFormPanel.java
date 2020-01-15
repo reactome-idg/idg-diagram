@@ -47,7 +47,6 @@ public class PairwiseFormPanel extends FlowPanel{
 	private List<PairwiseDescriptionEntity> entityList;
 	private List<String> dataTypesList;
 	private boolean includeOrigin = false;
-	private int lineStyleSelectedIndex = -1;
 	
 	private ListBox dataType;
 	private ListBox provenanceListBox;
@@ -216,10 +215,6 @@ public class PairwiseFormPanel extends FlowPanel{
 		FlowPanel result = new FlowPanel();
 		result.setStyleName(RESOURCES.getCSS().rightContainer());
 		
-		result.add(new Label("Choose Line Style:"));
-		FlowPanel lineStylePanel = getLineStyles();
-		result.add(lineStylePanel);
-		
 		result.add(new Label("Choose Line Color:"));
 		negativeLineColorTextBox = new TextBox();
 		negativeLineColorTextBox.setStyleName(RESOURCES.getCSS().colorTextBox());
@@ -231,72 +226,6 @@ public class PairwiseFormPanel extends FlowPanel{
 		result.add(positiveLineColorTextBox);
 		
 		return result;
-	}
-	
-	private FlowPanel getLineStyles() {
-		FlowPanel result = new FlowPanel();
-		
-		//block adds the top row of line style choices
-		FlowPanel top = new FlowPanel();
-		Image solidImg = new Image(RESOURCES.solidLine());
-		SafeHtml solidSafe = SafeHtmlUtils.fromTrustedString(solidImg.toString());
-		Button solid = new Button(solidSafe);
-		solid.setStyleName(RESOURCES.getCSS().lineStyleButton());
-		lineStyleButtons.add(solid);
-		top.add(solid);
-		Image closeImg = new Image(RESOURCES.closeDashed());
-		SafeHtml closeSafe = SafeHtmlUtils.fromTrustedString(closeImg.toString());
-		Button close = new Button(closeSafe);
-		close.setStyleName(RESOURCES.getCSS().lineStyleButton());
-		lineStyleButtons.add(close);
-		top.add(close);
-		Image mediumImg = new Image(RESOURCES.mediumDashed());
-		SafeHtml mediumSafe = SafeHtmlUtils.fromTrustedString(mediumImg.toString());
-		Button medium = new Button(mediumSafe);
-		medium.setStyleName(RESOURCES.getCSS().lineStyleButton());
-		lineStyleButtons.add(medium);
-		top.add(medium);
-		
-		//block adds bottom row of line style choices
-		Image farImg = new Image(RESOURCES.farDashed());
-		SafeHtml farSafe = SafeHtmlUtils.fromTrustedString(farImg.toString());
-		Button far = new Button(farSafe);
-		far.setStyleName(RESOURCES.getCSS().lineStyleButton());
-		lineStyleButtons.add(far);
-		top.add(far);
-		Image dottedImg = new Image(RESOURCES.dotted());
-		SafeHtml dottedSafe = SafeHtmlUtils.fromTrustedString(dottedImg.toString());
-		Button dotted = new Button(dottedSafe);
-		dotted.setStyleName(RESOURCES.getCSS().lineStyleButton());
-		lineStyleButtons.add(dotted);
-		top.add(dotted);
-		Image farDottedImg = new Image(RESOURCES.farDotted());
-		SafeHtml farDottedSafe = SafeHtmlUtils.fromTrustedString(farDottedImg.toString());
-		Button farDotted = new Button(farDottedSafe);
-		farDotted.setStyleName(RESOURCES.getCSS().lineStyleButton());
-		lineStyleButtons.add(farDotted);
-		top.add(farDotted);
-		
-		for(Button btn : lineStyleButtons)
-			btn.addClickHandler(e -> onLineStyleButtonSelected(e));
-		
-		result.add(top);
-		return result;
-	}
-	
-	private void onLineStyleButtonSelected(ClickEvent e) {
-		Button selected = (Button) e.getSource();
-		selectLineStyleButton(selected);
-	}
-
-	/**
-	 * Selects line style button based on passed in button
-	 * @param selected
-	 */
-	private void selectLineStyleButton(Button selected) {
-		resetButtonSelection();
-		selected.addStyleName(RESOURCES.getCSS().lineStyleButtonSelected());
-		lineStyleSelectedIndex = lineStyleButtons.indexOf(selected);
 	}
 
 	/*
@@ -340,11 +269,8 @@ public class PairwiseFormPanel extends FlowPanel{
 		//check to make sure a line style and color are selected
 		String negColor = negativeLineColorTextBox.getText();
 		String posColor = positiveLineColorTextBox.getText();
-		if(lineStyleSelectedIndex == -1) {
-			warningLabel.setText("Please Select a line style");
-			return;
-		}
-		else if(negColor.length() != 3 && negColor.length() !=6) {
+
+		if(negColor.length() != 3 && negColor.length() !=6) {
 			warningLabel.setText("Please Select a negative line color");
 			return;
 		}
@@ -354,7 +280,6 @@ public class PairwiseFormPanel extends FlowPanel{
 		}
 		
 		PairwiseOverlayObject obj = new PairwiseOverlayObject(relationship, 
-															  lineStyleSelectedIndex, 
 															  negColor,
 															  posColor);
 		handler.onAddClicked(obj);
@@ -401,10 +326,7 @@ public class PairwiseFormPanel extends FlowPanel{
 				if(originListBox.getItemText(i) == idList.get(3)) {
 					originListBox.setSelectedIndex(i);
 				}
-		
-		//set line style
-		selectLineStyleButton(lineStyleButtons.get(obj.getLineStyleIndex()));
-		
+				
 		//set text of lineColorTextBox
 		negativeLineColorTextBox.setText(obj.getNegativeLineColorHex());
 		positiveLineColorTextBox.setText(obj.getPositiveLineColorHex());

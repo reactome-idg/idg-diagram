@@ -3,13 +3,11 @@ package org.reactome.web.fi.data.overlay.model.pairwise;
 public class PairwiseOverlayObject {
 
 	private String id;
-	private int lineStyleIndex;
 	private String negativeLineColorHex;
 	private String positiveLineColorHex;
 	
-	public PairwiseOverlayObject(String id, int lineStyleIndex, String negativeLineColorHex, String positiveLineColorHex) {
+	public PairwiseOverlayObject(String id, String negativeLineColorHex, String positiveLineColorHex) {
 		this.id = id;
-		this.lineStyleIndex = lineStyleIndex;
 		this.negativeLineColorHex = negativeLineColorHex;
 		this.positiveLineColorHex = positiveLineColorHex;
 	}
@@ -20,14 +18,6 @@ public class PairwiseOverlayObject {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public int getLineStyleIndex() {
-		return lineStyleIndex;
-	}
-
-	public void setLineStyleIndex(int lineStyleIndex) {
-		this.lineStyleIndex = lineStyleIndex;
 	}
 
 	public String getNegativeLineColorHex() {
