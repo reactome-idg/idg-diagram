@@ -176,8 +176,9 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 				}
 				for(PairwiseEntity entity: currentPairwiseOverlay) {
 					if(entities.get(i).getDisplayName().contains(entity.getGene())) {
-						GWT.log(entity.getPosGenes().toString());
-						GWT.log(entity.getNegGenes().toString());
+						if(entity.getPosGenes()!= null && entity.getPosGenes().size() > 0)
+							for(int k=0; k<10; k++)
+								nodeArr.set(nodeArr.size(), getProtein(entity.getPosGenes().get(k)));
 					}
 				}
 					
@@ -211,6 +212,18 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		
 		result.put("data", node);
 		
+		return result;
+	}
+	
+	private JSONValue getProtein(String gene) {
+		JSONObject result = new JSONObject();
+		result.put("group", new JSONString("nodes"));
+		
+		JSONObject node = new JSONObject();
+		node.put("id", new JSONString(gene));
+		node.put("name", new JSONString(gene));
+		
+		result.put("data", node);
 		return result;
 	}
 	
