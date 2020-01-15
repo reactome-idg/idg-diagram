@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface DataDesc {
 
-	List<String> getId();
+	String getId();
 	
 }
