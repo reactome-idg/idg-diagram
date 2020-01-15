@@ -32,7 +32,7 @@ public class OverlayLoader implements RequestCallback{
 	public interface Handler{
 		void onDataOverlayLoaded(DataOverlay dataOverlay);
 		void onOverlayLoadedError(Throwable exception);
-		void onPairwiseOverlayLoaded(List<PairwiseEntity> pairwiseEntities);
+		void onPairwiseOverlayLoaded(List<PairwiseEntity> pairwiseEntities, List<PairwiseOverlayObject> pairwiseOverlayObjects);
 	}
 	
 	private final static String TCRD_BASE_URL = "/tcrdws/";
@@ -135,7 +135,7 @@ public class OverlayLoader implements RequestCallback{
 			JSONObject obj = new JSONObject();
 			obj.put("pairwiseEntities", val.isArray());
 			entities = PairwiseEntitiesFactory.getPairwiseEntities(PairwiseEntities.class, obj.toString());
-			handler.onPairwiseOverlayLoaded(entities.getPairwiseEntities());
+			handler.onPairwiseOverlayLoaded(entities.getPairwiseEntities(), pairwiseOverlayProperties.getPairwiseOverlayObjects());
 		}catch(Exception e) {
 			this.handler.onOverlayLoadedError(e);
 		}
