@@ -1,6 +1,7 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.reactome.web.diagram.data.graph.model.GraphComplex;
@@ -44,10 +45,16 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	private JSONArray currentEdgeArray;
 	
 	private List<PairwiseEntity> currentPairwiseOverlay;
+	private List<PairwiseEntity> currentlyDisplayedGenes;
+	private List<String> diagramGeneNames;
+	private List<String> displayedNodes;
+
 	
 	public PairwisePopout(EventBus eventBus) {
 		this.eventBus = eventBus;
 		currentPairwiseOverlay = new ArrayList<>();
+		diagramGeneNames = new ArrayList<>();
+		currentlyDisplayedGenes = new ArrayList<>();
 		this.setStyleName(RESOURCES.getCSS().popupPanel());
 		
 		this.cy = new CytoscapeEntity(eventBus, RESOURCES.fiviewStyle().getText(), this);
@@ -125,12 +132,16 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		}
 		
 		currentNodeArray = new JSONArray();
+		currentEdgeArray = new JSONArray();
+		currentlyDisplayedGenes = new ArrayList<>();
+		diagramGeneNames = new ArrayList<>();
+		displayedNodes = new ArrayList<>();
 		
 		if(event.getGraphObject() != null) {
-			constructFIs(event.getGraphObject());
+			constructBaseFIs(event.getGraphObject());
 		}
 		else if(event.getGeneName() != null) {
-			constructFIs(event.getGeneName());
+			constructBaseFIs(event.getGeneName());
 		}
 		
 		updateView();
@@ -145,24 +156,43 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 							 "cose",
 							 "cy-popout",
 							 false);
-			cy.setCytoscapeLayout("cose");
 			initialized = true;
 		}
 		else {
 			cy.clearCytoscapeGraph();
 			cy.addCytoscapeNodes(currentNodeArray.toString());
 			cy.addCytoscapeEdge(currentEdgeArray.toString());
-			cy.setCytoscapeLayout("cose");
 		}
-
+		setCurrentlyDisplayedGenes();
+		addInitialPairwiseRelationships();
+		cy.setCytoscapeLayout("cose");
 	}
 
-	private void constructFIs(String uniprot) {
+	/**
+	 * Narrows list of Pairwise entities to iterate over for a given popup diagram set
+	 */
+	private void setCurrentlyDisplayedGenes() {
+		for(PairwiseEntity entity: currentPairwiseOverlay)
+			if(diagramGeneNames.contains(entity.getGene()))
+				currentlyDisplayedGenes.add(entity);
+			
+	}
+
+	/**
+	 * adds initial node to graph for popup opened from FIView
+	 * @param uniprot
+	 */
+	private void constructBaseFIs(String uniprot) {
 //		JSONArray nodeArr = new JSONArray();
 //		nodeArr.set(nodeArr.size(), getProtein())
 	}
 
-	private void constructFIs(GraphObject graphObject) {
+	/**
+	 * Adds nodes and edges for complex or protein opened from diagram.
+	 * Does not add any pairwise relationship data
+	 * @param graphObject
+	 */
+	private void constructBaseFIs(GraphObject graphObject) {
 		JSONArray nodeArr = new JSONArray();
 		JSONArray edgeArr = new JSONArray();
 		if(graphObject instanceof GraphComplex) {
@@ -170,30 +200,92 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 			List<GraphPhysicalEntity> entities = new ArrayList<>();
 			entities.addAll(complex.getParticipants());
 			for(int i=0; i<entities.size(); i++) {
+				List<String> genes = entities.get(i).getGeneNames();
 				nodeArr.set(nodeArr.size(), getProtein(entities.get(i)));
+				addDiagramGeneName(entities.get(i).getDisplayName());
 				for(int j=i+1; j<entities.size(); j++) {
-					edgeArr.set(edgeArr.size(), makeFI(edgeArr.size(), entities.get(i).getIdentifier(), entities.get(j).getIdentifier()));
+					edgeArr.set(edgeArr.size(), makeFI(edgeArr.size(), entities.get(i).getDisplayName(), entities.get(j).getDisplayName()));
 				}
-				for(PairwiseEntity entity: currentPairwiseOverlay) {
-					if(entities.get(i).getDisplayName().contains(entity.getGene())) {
-						if(entity.getPosGenes()!= null && entity.getPosGenes().size() > 0)
-							for(int k=0; k<10; k++)
-								nodeArr.set(nodeArr.size(), getProtein(entity.getPosGenes().get(k)));
-					}
-				}
-					
 			}
 		}
 		currentNodeArray = nodeArr;
 		currentEdgeArray = edgeArr;
 	}
+	
+	private void addInitialPairwiseRelationships() {
+		
+		for(PairwiseEntity entity: currentlyDisplayedGenes) {
+			if(entity.getPosGenes() != null) {
+				Collections.sort(entity.getPosGenes());
+				for(int i=0; i<10; i++) {
+					if(entity.getPosGenes().get(i) == null) break;
+					addNode(entity.getPosGenes().get(i));
+					addEdge(entity.getGene(), entity.getPosGenes().get(i));
+				}
+			}
+			if(entity.getNegGenes() != null) {
+				Collections.sort(entity.getNegGenes());
+				for(int i=0; i<10; i++) {
+					if(entity.getNegGenes().get(i) == null) break;
+					addNode(entity.getNegGenes().get(i));
+					addEdge(entity.getGene(), entity.getNegGenes().get(i));
+				}
+			}
+		}
+	}
 
-	private JSONValue makeFI(int size, String source, String target) {
+	/**
+	 * Add a node based on just a gene name
+	 * @param gene
+	 */
+	private void addNode(String gene) {
+		if(displayedNodes.contains(gene)) return;
+		JSONValue val = getProtein(gene);
+		currentNodeArray.set(currentNodeArray.size(), val);
+		displayedNodes.add(gene);
+		cy.addCytoscapeNodes(val.toString());
+	}
+	
+	private void addEdge(String source, String target) {
+		JSONValue val = makeFI(currentEdgeArray.size(), source, target);
+		currentEdgeArray.set(currentEdgeArray.size(), val);
+		cy.addCytoscapeEdge(val.toString());
+	}
+	
+	/**
+	 * Adds passed in gene name to set of gene names from diagram.
+	 * Removes any identifiers to the actual gene name
+	 * @param displayName
+	 */
+	private void addDiagramGeneName(String displayName) {
+		int index  = displayName.indexOf(" ");
+		if(index > 0)
+			displayName = displayName.substring(0, index);
+		diagramGeneNames.add(displayName);
+		displayedNodes.add(displayName);
+	}
+
+	/**
+	 * Makes a FI edge bassed on a passed in id, target and source
+	 * @param id
+	 * @param source
+	 * @param target
+	 * @return
+	 */
+	private JSONValue makeFI(int id, String source, String target) {
 		JSONObject result = new JSONObject();
 		result.put("group", new JSONString("edges"));
 		
+		int index = source.indexOf(" ");
+		if(index>0)
+			source = source.substring(0, index);
+		
+		index = target.indexOf(" ");
+		if(index>0)
+			target = target.substring(0, index);
+		
 		JSONObject edge = new JSONObject();
-		edge.put("id", new JSONString(size+""));
+		edge.put("id", new JSONString(id+""));
 		edge.put("source", new JSONString(source));
 		edge.put("target", new JSONString(target));
 		edge.put("direction", new JSONString("-"));
@@ -202,19 +294,36 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		return result;
 	}
 
+	/**
+	 * Makes a node for a passed in GraphPhysicalEntity
+	 * @param entity
+	 * @return
+	 */
 	private JSONValue getProtein(GraphPhysicalEntity entity) {
 		JSONObject result = new JSONObject();
 		result.put("group", new JSONString("nodes"));
 		
 		JSONObject node = new JSONObject();
-		node.put("id", new JSONString(entity.getIdentifier()));
-		node.put("name", new JSONString(entity.getDisplayName()));
+		
+		List<String> genes = entity.getGeneNames();
+		
+		String gene = entity.getDisplayName();
+		int index = gene.indexOf(" ");
+		if(index > 0)
+			gene = gene.substring(0, index);
+		node.put("id", new JSONString(gene));
+		node.put("name", new JSONString(gene));
 		
 		result.put("data", node);
 		
 		return result;
 	}
 	
+	/**
+	 * Makes a node for only a passed in gene name string
+	 * @param gene
+	 * @return
+	 */
 	private JSONValue getProtein(String gene) {
 		JSONObject result = new JSONObject();
 		result.put("group", new JSONString("nodes"));
@@ -222,6 +331,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		JSONObject node = new JSONObject();
 		node.put("id", new JSONString(gene));
 		node.put("name", new JSONString(gene));
+		node.put("interactor", new JSONString("true"));
 		
 		result.put("data", node);
 		return result;
@@ -302,7 +412,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		@Source(ResourceCSS.CSS)
 		ResourceCSS getCSS();
 		
-		@Source("org/reactome/web/fi/client/visualisers/fiview/cytoscape-style.json")
+		@Source("org/reactome/web/fi/tools/overlay/pairwise/cytoscape-style.json")
 		public TextResource fiviewStyle();
 		
 		@Source("images/close_clicked.png")
