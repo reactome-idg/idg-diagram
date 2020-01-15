@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+//import java.util.regex.Matcher;
+//import java.util.regex.Pattern;
 
 import org.reactome.web.fi.data.loader.PairwiseDescLoader;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
@@ -43,6 +45,9 @@ public class PairwiseFormPanel extends FlowPanel{
 	}
 	
 	private Handler handler;
+//	private static final String HEX_PATTERN = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";
+//	private Pattern pattern;
+//	private Matcher matcher;
 	
 	private List<PairwiseDescriptionEntity> entityList;
 	private List<String> dataTypesList;
@@ -61,6 +66,7 @@ public class PairwiseFormPanel extends FlowPanel{
 		this.handler = handler;
 		dataTypesList = new ArrayList<>();
 		lineStyleButtons = new ArrayList<>();
+//		pattern = Pattern.compile(HEX_PATTERN);
 		
 		loadDataDesc();
 		initPanel();
@@ -270,15 +276,24 @@ public class PairwiseFormPanel extends FlowPanel{
 		String negColor = negativeLineColorTextBox.getText();
 		String posColor = positiveLineColorTextBox.getText();
 
-		if(negColor.length() != 3 && negColor.length() !=6) {
-			warningLabel.setText("Please Select a negative line color");
+		if(negColor.length() != 4 && negColor.length() !=7|| negColor.charAt(0) != '#') {
+			warningLabel.setText("Please Select a negative line hexidecimal color");
 			return;
 		}
-		else if(posColor.length() !=3 && posColor.length() !=6) {
-			warningLabel.setText("Please Select a positive line color");
+		else if(posColor.length() !=4 && posColor.length() !=7 || posColor.charAt(0) != '#') {
+			warningLabel.setText("Please Select a positive line hexidecimal color");
 			return;
 		}
 		
+//		if(!validate(negColor)) {
+//			warningLabel.setText("Please Select a negative line hexidecimal color");
+//			return;
+//		}
+//		else if(!validate(posColor)) {
+//			warningLabel.setText("Please Select a positive line hexidecimal color");
+//			return;
+//		}
+				
 		PairwiseOverlayObject obj = new PairwiseOverlayObject(relationship, 
 															  negColor,
 															  posColor);
@@ -286,7 +301,12 @@ public class PairwiseFormPanel extends FlowPanel{
 		
 		resetForm();
 	}
-
+	
+//	private boolean validate(String hex) {
+//		matcher = pattern.matcher(hex);
+//		return matcher.matches();
+//	}
+	
 	private void resetForm() {
 		negativeLineColorTextBox.setText("");
 		positiveLineColorTextBox.setText("");
