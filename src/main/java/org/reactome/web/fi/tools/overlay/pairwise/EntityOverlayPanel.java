@@ -50,7 +50,6 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		this.getElement().getStyle().setMargin(5, Unit.PX);
 		
 		initPanel();
-		
 	}
 	
 	private void initPanel() {
