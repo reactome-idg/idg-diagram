@@ -11,6 +11,7 @@ import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
 import org.reactome.web.diagram.handlers.PairwiseOverlayButtonClickedHandler;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.events.PairwiseDataLoadedEvent;
 import org.reactome.web.fi.handlers.PairwiseDataLoadedHandler;
 
@@ -45,6 +46,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	private JSONArray currentEdgeArray;
 	
 	private List<PairwiseEntity> currentPairwiseOverlay;
+	private List<PairwiseOverlayObject> pairwiseOverlayProperties;
 	private List<PairwiseEntity> currentlyDisplayedGenes;
 	private List<String> diagramGeneNames;
 	private List<String> displayedNodes;
@@ -200,11 +202,10 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 			List<GraphPhysicalEntity> entities = new ArrayList<>();
 			entities.addAll(complex.getParticipants());
 			for(int i=0; i<entities.size(); i++) {
-				List<String> genes = entities.get(i).getGeneNames();
 				nodeArr.set(nodeArr.size(), getProtein(entities.get(i)));
 				addDiagramGeneName(entities.get(i).getDisplayName());
 				for(int j=i+1; j<entities.size(); j++) {
-					edgeArr.set(edgeArr.size(), makeFI(edgeArr.size(), entities.get(i).getDisplayName(), entities.get(j).getDisplayName()));
+					edgeArr.set(edgeArr.size(), makeFI(edgeArr.size(), entities.get(i).getDisplayName(), entities.get(j).getDisplayName(), "solid"));
 				}
 			}
 		}
@@ -220,7 +221,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 				for(int i=0; i<10; i++) {
 					if(entity.getPosGenes().get(i) == null) break;
 					addNode(entity.getPosGenes().get(i));
-					addEdge(entity.getGene(), entity.getPosGenes().get(i));
+					addEdge(entity.getGene(), entity.getPosGenes().get(i), "positive", entity.getDataDesc().getId());
 				}
 			}
 			if(entity.getNegGenes() != null) {
@@ -228,7 +229,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 				for(int i=0; i<10; i++) {
 					if(entity.getNegGenes().get(i) == null) break;
 					addNode(entity.getNegGenes().get(i));
-					addEdge(entity.getGene(), entity.getNegGenes().get(i));
+					addEdge(entity.getGene(), entity.getNegGenes().get(i), "negative", entity.getDataDesc().getId());
 				}
 			}
 		}
@@ -246,10 +247,17 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		cy.addCytoscapeNodes(val.toString());
 	}
 	
-	private void addEdge(String source, String target) {
-		JSONValue val = makeFI(currentEdgeArray.size(), source, target);
+	private void addEdge(String source, String target, String relationship, String dataDesc) {
+		int edgeId = currentEdgeArray.size();
+		JSONValue val = makeFI(edgeId, source, target, relationship);
 		currentEdgeArray.set(currentEdgeArray.size(), val);
 		cy.addCytoscapeEdge(val.toString());
+		for(PairwiseOverlayObject prop:  pairwiseOverlayProperties) {
+			if(prop.getId() == dataDesc && relationship == "positive")
+				cy.recolorEdge(edgeId+"", prop.getPositiveLineColorHex());
+			else if(prop.getId() == dataDesc & relationship == "negative")
+				cy.recolorEdge(edgeId+"", prop.getNegativeLineColorHex());
+		}
 	}
 	
 	/**
@@ -272,7 +280,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	 * @param target
 	 * @return
 	 */
-	private JSONValue makeFI(int id, String source, String target) {
+	private JSONValue makeFI(int id, String source, String target, String relationship) {
 		JSONObject result = new JSONObject();
 		result.put("group", new JSONString("edges"));
 		
@@ -289,6 +297,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		edge.put("source", new JSONString(source));
 		edge.put("target", new JSONString(target));
 		edge.put("direction", new JSONString("-"));
+		edge.put("lineStyle", new JSONString(relationship));
 		
 		result.put("data", edge);
 		return result;
@@ -305,7 +314,6 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		
 		JSONObject node = new JSONObject();
 		
-		List<String> genes = entity.getGeneNames();
 		
 		String gene = entity.getDisplayName();
 		int index = gene.indexOf(" ");
@@ -340,6 +348,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	@Override
 	public void onPairwisieDataLoaded(PairwiseDataLoadedEvent event) {
 		currentPairwiseOverlay = event.getEntities();
+		this.pairwiseOverlayProperties = event.getPairwiseOverlayObjects();
 	}
 	
 	@Override

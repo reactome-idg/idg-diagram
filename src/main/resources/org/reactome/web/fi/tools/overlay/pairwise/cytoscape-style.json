@@ -167,5 +167,16 @@
         "shape": "triangle",
         "background-color": "#66aacc"
     }
-    
+},
+{
+    "selector": "edge[lineStyle=\"positive\"]",
+    "style": {
+        "line-style": "dashed"
+    }
+},
+{
+    "selector": "edge[lineStyle=\"negative\"]",
+    "style": {
+        "line-style": "dotted"
+    }
 }]
