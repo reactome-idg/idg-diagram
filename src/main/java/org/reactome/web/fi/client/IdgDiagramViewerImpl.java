@@ -5,6 +5,7 @@ import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.events.AnalysisResultLoadedEvent;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
+import org.reactome.web.fi.data.loader.PairwiseServiceLoader;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
@@ -21,7 +22,7 @@ OverlayDataRequestedHandler{
 	
 	public IdgDiagramViewerImpl() {
 		super();
-		
+		PairwiseServiceLoader.loadUniprotToGeneMap();
 		eventBus.addHandler(CytoscapeToggledEvent.TYPE, this);
 		eventBus.addHandler(OverlayRequestedEvent.TYPE, this);
 		

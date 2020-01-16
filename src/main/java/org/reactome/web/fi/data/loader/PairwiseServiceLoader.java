@@ -1,9 +1,11 @@
 package org.reactome.web.fi.data.loader;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionFactory;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -18,7 +20,7 @@ import com.google.gwt.json.client.JSONValue;
  * @author brunsont
  *
  */
-public class PairwiseDescLoader {
+public class PairwiseServiceLoader {
 
 	public interface dataDescHandler{
 		void onDataDescLoaded(PairwiseDescriptionEntities entities);
@@ -27,6 +29,8 @@ public class PairwiseDescLoader {
 	
 	private static final String BASE_URL = "/idgpairwise/";
 	private static Request request;
+	
+	public static Map<String, String> geneToUniprotMap;
 	
 	public static void loadDataDesc(dataDescHandler handler) {
 		if(request != null && request.isPending())
@@ -60,6 +64,44 @@ public class PairwiseDescLoader {
 		} catch(RequestException ex) {
 			handler.onDataDescLoadedError(ex);
 		}
+	}
+	
+	public static void loadUniprotToGeneMap() {
+		if(request != null && request.isPending())
+			request.cancel();
+		
+		String url  = BASE_URL + "uniprot2gene";
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
+		requestBuilder.setHeader("Accept", "application/json");
+		try {
+			request = requestBuilder.sendRequest(null, new RequestCallback() {
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					if(response.getStatusCode() == Response.SC_OK)
+						createMap(response.getText());
+				}
+				@Override
+				public void onError(Request request, Throwable exception) {
+					exception.printStackTrace();
+				}
+			});
+		} catch(RequestException ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Creates a map from gene name to uniprot and stores in a global variable
+	 * @param text
+	 */
+	private static void createMap(String text) {
+		Map<String, String> result = new HashMap<>();
+		String[] lines = text.split("\n");
+		for(String line : lines) {
+			String[] mapTo = line.split("\t");
+			result.put(mapTo[1], mapTo[0]);
+		}
+		geneToUniprotMap = result;
 	}
 	
 }
