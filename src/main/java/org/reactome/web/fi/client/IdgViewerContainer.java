@@ -73,6 +73,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	private PairwisePopout pairwisePopout;
 	
 	private DataOverlay dataOverlay;
+	private DataOverlay targetLevelOverlay;
 	private boolean renderOverlays = false;
 	
 	private DataOverlayProperties lastOverlayProperties = null;
@@ -155,14 +156,22 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	public void contentLoaded(Context context) {
 		super.contentLoaded(context);
 		
-		//check if overlay should be loaded and if so, load new TCRD data
+		//check if overlay should be loaded and if so, load new Overlay data
 		if(dataOverlay != null) {
 			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 			
-		//don't bother reloading when new content is an SVG
-		if(context.getContent().getType() != Content.Type.SVG)
-			eventBus.fireEventFromSource(new MakeOverlayRequestEvent(this.lastOverlayProperties), this);
+			//don't bother reloading when new content is an SVG
+			if(context.getContent().getType() != Content.Type.SVG)
+				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(this.lastOverlayProperties), this);
 		}
+		else {
+			eventBus.fireEventFromSource(new MakeOverlayRequestEvent(getTargetLevelProperties()), this);
+		}
+	}
+
+	private DataOverlayProperties getTargetLevelProperties() {
+		DataOverlayProperties result = new DataOverlayProperties("String", null, null, null, "Target Development Level");
+		return result;
 	}
 
 	private void bind() {
@@ -190,6 +199,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		
 		if(event.getDataOverlayProperties() != null) {
 			event.getDataOverlayProperties().setUniprots(collectAllDiagramUniprots());
+			event.getDataOverlayProperties().setPathwayStableId(context.getContent().getStableId());
 		    eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getDataOverlayProperties()), this);
 		}
 		else if(event.getPairwiseOverlayProperties() != null) {
@@ -342,6 +352,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	
 	@Override
 	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
+		if(event.getDataOverlay().getOverlayProperties().geteType() == "Target Development Level") {
+			this.targetLevelOverlay = event.getDataOverlay();
+		}
 		this.overlayLauncher.hide();
 		this.renderOverlays = true;
 		this.dataOverlay = event.getDataOverlay();
@@ -411,6 +424,12 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualizer)
 			((FIViewVisualizer)activeVisualiser).overlayNodes(null);
+		
+		if(this.targetLevelOverlay != null && event.getSource() instanceof OverlayControlLegend)
+			if(this.context.getContent().getStableId() == targetLevelOverlay.getOverlayProperties().getPathwayStableId())
+				this.eventBus.fireEventFromSource(new OverlayDataLoadedEvent(this.targetLevelOverlay), this);
+			else
+				this.eventBus.fireEventFromSource(new MakeOverlayRequestEvent(getTargetLevelProperties()), this);
 	}
 	
 	/**
