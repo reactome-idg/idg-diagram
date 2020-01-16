@@ -8,6 +8,7 @@ public class DataOverlayProperties {
 	private String tissues;
 	private String eType;
 	private String uniprots;
+	private String pathwayStableId;
 	
 	public DataOverlayProperties(String valueType, String unit, String sex, String tissues, String eType) {
 		this.valueType = valueType;
@@ -21,7 +22,14 @@ public class DataOverlayProperties {
 		return tissues;
 	}
 
-
+	public String getPathwayStableId() {
+		return this.pathwayStableId;
+	}
+	
+	public void setPathwayStableId(String pathwayStableId) {
+		this.pathwayStableId = pathwayStableId;
+	}
+	
 	public void setTissues(String tissues) {
 		this.tissues = tissues;
 	}
