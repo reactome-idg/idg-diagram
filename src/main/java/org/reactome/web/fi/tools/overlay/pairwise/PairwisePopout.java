@@ -133,16 +133,17 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 			return;
 		}
 		
+		//resets values for when new popup is opened
 		currentNodeArray = new JSONArray();
 		currentEdgeArray = new JSONArray();
 		currentlyDisplayedGenes = new ArrayList<>();
 		diagramGeneNames = new ArrayList<>();
 		displayedNodes = new ArrayList<>();
 		
-		if(event.getGraphObject() != null) {
+		if(event.getGraphObject() != null) { //used when popup opened from diagram view
 			constructBaseFIs(event.getGraphObject());
 		}
-		else if(event.getGeneName() != null) {
+		else if(event.getGeneName() != null) { //used when popup opened from FIView
 			constructBaseFIs(event.getGeneName());
 		}
 		
@@ -151,6 +152,9 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		this.show();
 	}
 
+	/**
+	 * directs updating when panel opens
+	 */
 	private void updateView() {
 		if(!initialized) {
 			cy.cytoscapeInit(currentNodeArray.toString(),
@@ -184,9 +188,11 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	 * adds initial node to graph for popup opened from FIView
 	 * @param uniprot
 	 */
-	private void constructBaseFIs(String uniprot) {
-//		JSONArray nodeArr = new JSONArray();
-//		nodeArr.set(nodeArr.size(), getProtein())
+	private void constructBaseFIs(String geneName) {
+		JSONArray nodeArr = new JSONArray();
+		nodeArr.set(nodeArr.size(), getProtein(geneName, false));
+		this.currentNodeArray = nodeArr;
+		addDiagramGeneName(geneName);
 	}
 
 	/**
@@ -213,6 +219,10 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		currentEdgeArray = edgeArr;
 	}
 	
+	/**
+	 * Directs addition of first 10 positive and negative relationships for each gene present in base diagram object
+	 * Adds 10 relationships based in alphabetical order
+	 */
 	private void addInitialPairwiseRelationships() {
 		
 		for(PairwiseEntity entity: currentlyDisplayedGenes) {
@@ -241,12 +251,20 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	 */
 	private void addNode(String gene) {
 		if(displayedNodes.contains(gene)) return;
-		JSONValue val = getProtein(gene);
+		JSONValue val = getProtein(gene, true);
 		currentNodeArray.set(currentNodeArray.size(), val);
 		displayedNodes.add(gene);
 		cy.addCytoscapeNodes(val.toString());
 	}
 	
+	/**
+	 * Directs creation of an edge based on passed in source and target
+	 * Uses relationship and dataDesc to change style and color of the line.
+	 * @param source
+	 * @param target
+	 * @param relationship
+	 * @param dataDesc
+	 */
 	private void addEdge(String source, String target, String relationship, String dataDesc) {
 		int edgeId = currentEdgeArray.size();
 		JSONValue val = makeFI(edgeId, source, target, relationship);
@@ -332,14 +350,17 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	 * @param gene
 	 * @return
 	 */
-	private JSONValue getProtein(String gene) {
+	private JSONValue getProtein(String gene, boolean interactor) {
 		JSONObject result = new JSONObject();
 		result.put("group", new JSONString("nodes"));
 		
 		JSONObject node = new JSONObject();
 		node.put("id", new JSONString(gene));
 		node.put("name", new JSONString(gene));
-		node.put("interactor", new JSONString("true"));
+		if(interactor == true)
+			node.put("interactor", new JSONString("true"));
+		else
+			node.put("interactor", new JSONString("false"));
 		
 		result.put("data", node);
 		return result;
