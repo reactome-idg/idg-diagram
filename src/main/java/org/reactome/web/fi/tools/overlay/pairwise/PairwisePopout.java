@@ -34,6 +34,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class PairwisePopout extends PopupPanel implements ResizeHandler, PairwiseOverlayButtonClickedHandler, PairwiseDataLoadedHandler, CytoscapeEntity.Handler{
 
@@ -94,11 +95,30 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		FlowPanel overlayInfo = new FlowPanel();
 		overlayInfo.setStyleName(RESOURCES.getCSS().overlayInfo());
 		innerContainer.add(overlayInfo);
+		overlayInfo.add(getOverlayInfo());
 		
 		container.add(innerContainer);
 		this.add(container);
 	}
 	
+	/**
+	 * Gets the right hand side of the popout 
+	 * @return
+	 */
+	private FlowPanel getOverlayInfo() {
+		FlowPanel result = new FlowPanel();
+		
+		FlowPanel filter = new FlowPanel();
+		filter.setStyleName(RESOURCES.getCSS().filter());
+		result.add(filter);
+		
+		FlowPanel controls = new FlowPanel();
+		controls.setStyleName(RESOURCES.getCSS().controls());
+		result.add(controls);
+		
+		return result;
+	}
+
 	private FlowPanel setTitlePanel() {
 		FlowPanel result = new FlowPanel();
 		result.setStyleName(RESOURCES.getCSS().header());
@@ -474,5 +494,9 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		String innerContainer();
 		
 		String overlayInfo();
+		
+		String filter();
+		
+		String controls();
 	}
 }

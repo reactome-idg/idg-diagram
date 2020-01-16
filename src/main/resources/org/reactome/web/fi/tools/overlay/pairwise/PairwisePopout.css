@@ -39,10 +39,23 @@
     user-select: none;
 }
 
+.filter{
+	height: 400px;
+	width: 100%;
+	border-radius: 0px 15px 0px 0px;
+}
+
+.controls{
+	border-top: 2px solid grey;
+	height:116px;
+	width: 100%;
+	border-radius: 0px 0px 15px 0px;
+}
+
 .overlayInfo{
 	border-left: 2px solid grey;
 	float: left;
-	width: 24%;
+	width: 24.70%;
 	height: 100%;
 }
 
