@@ -190,10 +190,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		//can't have an overlay and Analysis at the same time
 		if(context.getAnalysisStatus() != null)
 			eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
-		
-		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
-		
+				
 		if(event.getDataOverlayProperties() != null) {
+			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
 			event.getDataOverlayProperties().setUniprots(collectAllDiagramUniprots());
 			event.getDataOverlayProperties().setPathwayStableId(context.getContent().getStableId());
 		    eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getDataOverlayProperties()), this);
@@ -202,8 +201,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			event.getPairwiseOverlayProperties().setGeneNames(collectAllDiagramGeneNames());
 			eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getPairwiseOverlayProperties()), this);
 		}
-			
-
 	}
 	
 	/**
