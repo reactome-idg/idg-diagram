@@ -40,9 +40,7 @@ public class PairwiseFormPanel extends FlowPanel{
 	}
 	
 	private Handler handler;
-//	private static final String HEX_PATTERN = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";
-//	private Pattern pattern;
-//	private Matcher matcher;
+
 	
 	private List<PairwiseDescriptionEntity> entityList;
 	private List<String> dataTypesList;
@@ -61,7 +59,6 @@ public class PairwiseFormPanel extends FlowPanel{
 		this.handler = handler;
 		dataTypesList = new ArrayList<>();
 		lineStyleButtons = new ArrayList<>();
-//		pattern = Pattern.compile(HEX_PATTERN);
 		
 		loadDataDesc();
 		initPanel();
@@ -279,15 +276,6 @@ public class PairwiseFormPanel extends FlowPanel{
 			warningLabel.setText("Please Select a positive line hexidecimal color");
 			return;
 		}
-		
-//		if(!validate(negColor)) {
-//			warningLabel.setText("Please Select a negative line hexidecimal color");
-//			return;
-//		}
-//		else if(!validate(posColor)) {
-//			warningLabel.setText("Please Select a positive line hexidecimal color");
-//			return;
-//		}
 				
 		PairwiseOverlayObject obj = new PairwiseOverlayObject(relationship, 
 															  negColor,
@@ -296,11 +284,6 @@ public class PairwiseFormPanel extends FlowPanel{
 		
 		resetForm();
 	}
-	
-//	private boolean validate(String hex) {
-//		matcher = pattern.matcher(hex);
-//		return matcher.matches();
-//	}
 	
 	private void resetForm() {
 		negativeLineColorTextBox.setText("");

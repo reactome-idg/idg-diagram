@@ -67,8 +67,6 @@ public class PairwiseServiceLoader {
 	}
 	
 	public static void loadUniprotToGeneMap() {
-		if(request != null && request.isPending())
-			request.cancel();
 		
 		String url  = BASE_URL + "uniprot2gene";
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
