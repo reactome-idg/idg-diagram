@@ -59,7 +59,6 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		this.setStyleName(RESOURCES.getCSS().popupPanel());
 		
 		this.cy = new CytoscapeEntity(eventBus, RESOURCES.fiviewStyle().getText(), this);
-//		cy.cytoscapeInit("cy-popout");
 		initPanel();
 		
 		eventBus.addHandler(PairwiseOverlayButtonClickedEvent.TYPE, this);
@@ -90,7 +89,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		cyView.getElement().setId("cy-popout");
 		cyView.setStyleName(RESOURCES.getCSS().cyView());
 		innerContainer.add(cyView);
-		
+				
 		FlowPanel overlayInfo = new FlowPanel();
 		overlayInfo.setStyleName(RESOURCES.getCSS().overlayInfo());
 		innerContainer.add(overlayInfo);

@@ -89,7 +89,7 @@ OverlayLoader.Handler{
 	 * @param pairwiseOverlayProperties
 	 */
 	public void loadPairwiseData(PairwiseOverlayProperties pairwiseOverlayProperties) {
-		overlayLoader.load(pairwiseOverlayProperties);
+//		overlayLoader.load(pairwiseOverlayProperties);
 	}
 
 	@Override
@@ -130,10 +130,5 @@ OverlayLoader.Handler{
 	@Override
 	public void onOverlayLoadedError(Throwable exception) {
 		GWT.log("onTargetLevelLoadedError: " + exception.getMessage());
-	}
-
-	@Override
-	public void onPairwiseOverlayLoaded(List<PairwiseEntity> pairwiseEntities, List<PairwiseOverlayObject> pairwiseOverlayObjects) {
-		eventBus.fireEventFromSource(new PairwiseDataLoadedEvent(pairwiseEntities, pairwiseOverlayObjects), this);
 	}
 }

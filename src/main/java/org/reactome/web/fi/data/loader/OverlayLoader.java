@@ -32,16 +32,13 @@ public class OverlayLoader implements RequestCallback{
 	public interface Handler{
 		void onDataOverlayLoaded(DataOverlay dataOverlay);
 		void onOverlayLoadedError(Throwable exception);
-		void onPairwiseOverlayLoaded(List<PairwiseEntity> pairwiseEntities, List<PairwiseOverlayObject> pairwiseOverlayObjects);
 	}
 	
 	private final static String TCRD_BASE_URL = "/tcrdws/";
-	private final static String PAIRWISE_BASE_URL = "idgpairwise";
 	
 	private Handler handler;
 	private Request request;
 	private DataOverlayProperties dataOverlayProperties;
-	private PairwiseOverlayProperties pairwiseOverlayProperties;
 	
 	public OverlayLoader(Handler handler){
 		this.handler = handler;
@@ -49,23 +46,8 @@ public class OverlayLoader implements RequestCallback{
 	
 	public void cancel() {
 		dataOverlayProperties = null;
-		pairwiseOverlayProperties = null;
 		if(this.request != null && this.request.isPending())
 			this.request.cancel();
-	}
-	
-	public void load(PairwiseOverlayProperties properties) {
-		//make sure uniprots exits before doing anything
-		if(properties.getGeneNames() == null) {
-			Exception exception = new Exception("Cannot request overlay data for 0 ids.");
-			this.handler.onOverlayLoadedError(exception);
-			return;
-		}
-		cancel();
-		this.pairwiseOverlayProperties = properties;
-		String postData = getPostData(pairwiseOverlayProperties);
-		String url = PAIRWISE_BASE_URL + "/pairwise/genes";
-		makeRequest(postData, url);
 	}
 
 	public void load(DataOverlayProperties properties) {
@@ -94,18 +76,6 @@ public class OverlayLoader implements RequestCallback{
 			this.handler.onOverlayLoadedError(e);
 		}
 	}
-	
-	private String getPostData(PairwiseOverlayProperties pairwiseOverlayProperties) {
-		String result = "";
-		List<String> ids = new ArrayList<>();
-		for(PairwiseOverlayObject obj : pairwiseOverlayProperties.getPairwiseOverlayObjects()) {
-			ids.add(obj.getId());
-		}
-		result = String.join(",",ids) + 
-				 "\n" + pairwiseOverlayProperties.getGeneNames();
-		
-		return result;
-	}
 
 	private String getPostData(DataOverlayProperties properties) {
 		String result = properties.getUniprots() +
@@ -118,43 +88,23 @@ public class OverlayLoader implements RequestCallback{
 	public void onResponseReceived(Request request, Response response) {
 		switch(response.getStatusCode()) {
 		case Response.SC_OK:
-			if(dataOverlayProperties != null)
-				dataOverlayReturned(response.getText());
-			else if(pairwiseOverlayProperties != null)
-				pariwiseOverlayReturned(response.getText());
+			DataOverlayEntityMediator mediator = new DataOverlayEntityMediator();
+			DataOverlay dataOverlay;
+			try {
+				JSONValue val = JSONParser.parseStrict(response.getText());
+				JSONObject obj = new JSONObject();
+				obj.put("valueType", new JSONString("String"));
+				obj.put("expressionEntity", val.isArray());
+				dataOverlay = mediator.transformData(obj.toString(), dataOverlayProperties);
+			}catch(Exception e) {
+				this.handler.onOverlayLoadedError(e);
+				return;
+			}
+			this.handler.onDataOverlayLoaded(dataOverlay);
 			break;
 		default:
 			this.handler.onOverlayLoadedError(new Exception(response.getStatusText()));
 		}
-	}
-
-	private void pariwiseOverlayReturned(String responseText) {
-		PairwiseEntities entities;
-		try {
-			JSONValue val = JSONParser.parseStrict(responseText);
-			JSONObject obj = new JSONObject();
-			obj.put("pairwiseEntities", val.isArray());
-			entities = PairwiseEntitiesFactory.getPairwiseEntities(PairwiseEntities.class, obj.toString());
-			handler.onPairwiseOverlayLoaded(entities.getPairwiseEntities(), pairwiseOverlayProperties.getPairwiseOverlayObjects());
-		}catch(Exception e) {
-			this.handler.onOverlayLoadedError(e);
-		}
-	}
-
-	private void dataOverlayReturned(String responseText) {
-		DataOverlayEntityMediator mediator = new DataOverlayEntityMediator();
-		DataOverlay dataOverlay;
-		try {
-			JSONValue val = JSONParser.parseStrict(responseText);
-			JSONObject obj = new JSONObject();
-			obj.put("valueType", new JSONString("String"));
-			obj.put("expressionEntity", val.isArray());
-			dataOverlay = mediator.transformData(obj.toString(), dataOverlayProperties);
-		}catch(Exception e) {
-			this.handler.onOverlayLoadedError(e);
-			return;
-		}
-		this.handler.onDataOverlayLoaded(dataOverlay);
 	}
 	
 	@Override
