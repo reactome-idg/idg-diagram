@@ -12,8 +12,6 @@ import org.reactome.web.diagram.handlers.PairwiseOverlayButtonClickedHandler;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
-import org.reactome.web.fi.events.PairwiseDataLoadedEvent;
-import org.reactome.web.fi.handlers.PairwiseDataLoadedHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -36,7 +34,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PairwisePopout extends PopupPanel implements ResizeHandler, PairwiseOverlayButtonClickedHandler, PairwiseDataLoadedHandler, CytoscapeEntity.Handler{
+public class PairwisePopout extends PopupPanel implements ResizeHandler, PairwiseOverlayButtonClickedHandler, CytoscapeEntity.Handler{
 
 	private CytoscapeEntity cy;
 	private SimplePanel cyView;
@@ -62,7 +60,6 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		initPanel();
 		
 		eventBus.addHandler(PairwiseOverlayButtonClickedEvent.TYPE, this);
-		eventBus.addHandler(PairwiseDataLoadedEvent.TYPE, this);
 	}
 
 	private void initPanel() {
@@ -399,11 +396,12 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		return result;
 	}
 	
-	@Override
-	public void onPairwisieDataLoaded(PairwiseDataLoadedEvent event) {
-		currentPairwiseOverlay = event.getEntities();
-		this.pairwiseOverlayProperties = event.getPairwiseOverlayObjects();
-	}
+	//keeping for reference with new popup 
+//	@Override
+//	public void onPairwisieDataLoaded(PairwiseDataLoadedEvent event) {
+//		currentPairwiseOverlay = event.getEntities();
+//		this.pairwiseOverlayProperties = event.getPairwiseOverlayObjects();
+//	}
 	
 	@Override
 	public void onNodeClicked(String id, String name) {
