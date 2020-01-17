@@ -20,7 +20,7 @@ import com.google.gwt.json.client.JSONValue;
  * @author brunsont
  *
  */
-public class PairwiseServiceLoader {
+public class PairwiseInfoService {
 
 	public interface dataDescHandler{
 		void onDataDescLoaded(PairwiseDescriptionEntities entities);
@@ -55,7 +55,6 @@ public class PairwiseServiceLoader {
 						}
 					}
 				}
-
 				@Override
 				public void onError(Request request, Throwable exception) {
 					handler.onDataDescLoadedError(new Exception(exception.getMessage()));

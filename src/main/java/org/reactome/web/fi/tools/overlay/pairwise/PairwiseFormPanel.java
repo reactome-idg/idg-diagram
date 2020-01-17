@@ -8,7 +8,7 @@ import java.util.Set;
 //import java.util.regex.Matcher;
 //import java.util.regex.Pattern;
 
-import org.reactome.web.fi.data.loader.PairwiseServiceLoader;
+import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
@@ -68,7 +68,7 @@ public class PairwiseFormPanel extends FlowPanel{
 	 * loads pairwiseDesc data to populate form. Then causes form panel to initialize
 	 */
 	private void loadDataDesc() {
-		PairwiseServiceLoader.loadDataDesc(new PairwiseServiceLoader.dataDescHandler() {
+		PairwiseInfoService.loadDataDesc(new PairwiseInfoService.dataDescHandler() {
 			@Override
 			public void onDataDescLoadedError(Throwable exception) {
 				exception.printStackTrace();
