@@ -123,7 +123,7 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 
 	private void pairwiseHandler() {
 		String gene = name;
-		eventBus.fireEventFromSource(new PairwiseOverlayButtonClickedEvent(gene), this);
+		eventBus.fireEventFromSource(new PairwiseOverlayButtonClickedEvent(id, gene), this);
 	}
 
 	private void updateOverlayValue() {

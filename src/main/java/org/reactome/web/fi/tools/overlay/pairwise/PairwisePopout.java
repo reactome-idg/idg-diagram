@@ -32,9 +32,8 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
-public class PairwisePopout extends PopupPanel implements ResizeHandler, PairwiseOverlayButtonClickedHandler, CytoscapeEntity.Handler{
+public class PairwisePopout extends PopupPanel implements ResizeHandler, CytoscapeEntity.Handler{
 
 	private CytoscapeEntity cy;
 	private SimplePanel cyView;
@@ -59,7 +58,6 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		this.cy = new CytoscapeEntity(eventBus, RESOURCES.fiviewStyle().getText(), this);
 		initPanel();
 		
-		eventBus.addHandler(PairwiseOverlayButtonClickedEvent.TYPE, this);
 	}
 
 	private void initPanel() {
@@ -166,31 +164,32 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
         }
 	}
 	
-	@Override
-	public void onPairwiseOverlayButtonClicked(PairwiseOverlayButtonClickedEvent event) {
-		if(currentPairwiseOverlay.size()==0) {
-			return;
-		}
-		
-		//resets values for when new popup is opened
-		currentNodeArray = new JSONArray();
-		currentEdgeArray = new JSONArray();
-		baseNodeArray = new JSONArray();
-		baseEdgeArray = new JSONArray();
-		diagramGeneNames = new ArrayList<>();
-		displayedNodes = new ArrayList<>();
-		
-		if(event.getGraphObject() != null) { //used when popup opened from diagram view
-			constructBaseFIs(event.getGraphObject());
-		}
-		else if(event.getGeneName() != null) { //used when popup opened from FIView
-			constructBaseFIs(event.getGeneName());
-		}
-		
-		updateView();
-		
-		this.show();
-	}
+	//keeping around for use in new iteration of popup
+//	@Override
+//	public void onPairwiseOverlayButtonClicked(PairwiseOverlayButtonClickedEvent event) {
+//		if(currentPairwiseOverlay.size()==0) {
+//			return;
+//		}
+//		
+//		//resets values for when new popup is opened
+//		currentNodeArray = new JSONArray();
+//		currentEdgeArray = new JSONArray();
+//		baseNodeArray = new JSONArray();
+//		baseEdgeArray = new JSONArray();
+//		diagramGeneNames = new ArrayList<>();
+//		displayedNodes = new ArrayList<>();
+//		
+//		if(event.getGraphObject() != null) { //used when popup opened from diagram view
+//			constructBaseFIs(event.getGraphObject());
+//		}
+//		else if(event.getGeneName() != null) { //used when popup opened from FIView
+//			constructBaseFIs(event.getGeneName());
+//		}
+//		
+//		updateView();
+//		
+//		this.show();
+//	}
 
 	/**
 	 * directs updating when panel opens

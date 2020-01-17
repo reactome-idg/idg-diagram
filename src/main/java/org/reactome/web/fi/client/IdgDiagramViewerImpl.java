@@ -4,13 +4,16 @@ import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.events.AnalysisResultLoadedEvent;
+import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
+import org.reactome.web.diagram.handlers.PairwiseOverlayButtonClickedHandler;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
-import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;	
+import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;	
 
 /**
  * 
@@ -18,13 +21,14 @@ import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
  *
  */
 public class IdgDiagramViewerImpl extends DiagramViewerImpl implements CytoscapeToggledHandler,
-OverlayDataRequestedHandler{
+OverlayDataRequestedHandler, PairwiseOverlayButtonClickedHandler{
 	
 	public IdgDiagramViewerImpl() {
 		super();
 		PairwiseInfoService.loadUniprotToGeneMap();
 		eventBus.addHandler(CytoscapeToggledEvent.TYPE, this);
 		eventBus.addHandler(OverlayRequestedEvent.TYPE, this);
+		eventBus.addHandler(PairwiseOverlayButtonClickedEvent.TYPE, this);
 		
 	}
 	
@@ -52,5 +56,13 @@ OverlayDataRequestedHandler{
 	@Override
 	public void onDataOverlayRequested(OverlayRequestedEvent event) {
 		((IDGLoaderManager)loaderManager).loadTCRDData(event.getDataOverlayProperties());
+	}
+
+	@Override
+	public void onPairwiseOverlayButtonClicked(PairwiseOverlayButtonClickedEvent event) {
+		if(event.getGraphObject() != null)
+			PairwisePopupFactory.get().openPopup(event.getGraphObject());
+		else
+			PairwisePopupFactory.get().openPopup(event.getUniprot(), event.getGeneName());
 	}
 }
