@@ -1,6 +1,5 @@
 package org.reactome.web.fi.data.loader;
 
-import java.util.List;
 
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
@@ -11,14 +10,9 @@ import org.reactome.web.diagram.events.DiagramInternalErrorEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntities;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
-import org.reactome.web.fi.events.PairwiseDataLoadedEvent;
-import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.model.DataOverlay;
 
 import com.google.gwt.core.client.GWT;
