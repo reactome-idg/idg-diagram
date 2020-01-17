@@ -93,13 +93,12 @@ public class PairwiseServiceLoader {
 	 * @param text
 	 */
 	private static void createMap(String text) {
-		Map<String, String> result = new HashMap<>();
+		geneToUniprotMap = new HashMap<>();
 		String[] lines = text.split("\n");
 		for(String line : lines) {
 			String[] mapTo = line.split("\t");
-			result.put(mapTo[1], mapTo[0]);
+			geneToUniprotMap.put(mapTo[1], mapTo[0]);
 		}
-		geneToUniprotMap = result;
 	}
 	
 }
