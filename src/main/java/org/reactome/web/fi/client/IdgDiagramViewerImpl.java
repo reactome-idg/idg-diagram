@@ -51,9 +51,6 @@ OverlayDataRequestedHandler{
 
 	@Override
 	public void onDataOverlayRequested(OverlayRequestedEvent event) {
-		if(event.getDataOverlayProperties() != null)
-			((IDGLoaderManager)loaderManager).loadTCRDData(event.getDataOverlayProperties());
-		else if(event.getPairwiseOverlayProperties() != null)
-			((IDGLoaderManager)loaderManager).loadPairwiseData(event.getPairwiseOverlayProperties());
+		((IDGLoaderManager)loaderManager).loadTCRDData(event.getDataOverlayProperties());
 	}
 }

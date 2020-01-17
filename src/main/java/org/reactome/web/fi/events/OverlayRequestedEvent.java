@@ -15,15 +15,10 @@ public class OverlayRequestedEvent extends GwtEvent<OverlayDataRequestedHandler>
 	public static Type<OverlayDataRequestedHandler> TYPE = new Type<>();
 	
 	private DataOverlayProperties dataOverlayProperties;
-	private PairwiseOverlayProperties pairwiseOverlayProperties;
 	
 	
 	public OverlayRequestedEvent(DataOverlayProperties properties) {
 		this.dataOverlayProperties = properties;
-	}
-	
-	public OverlayRequestedEvent(PairwiseOverlayProperties properties) {
-		this.pairwiseOverlayProperties = properties;
 	}
 	
 	@Override
@@ -38,10 +33,6 @@ public class OverlayRequestedEvent extends GwtEvent<OverlayDataRequestedHandler>
 	
 	public DataOverlayProperties getDataOverlayProperties() {
 		return this.dataOverlayProperties;
-	}
-
-	public PairwiseOverlayProperties getPairwiseOverlayProperties() {
-		return this.pairwiseOverlayProperties;
 	}
 	
 	@Override

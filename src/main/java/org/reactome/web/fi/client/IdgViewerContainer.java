@@ -191,45 +191,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		if(context.getAnalysisStatus() != null)
 			eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
 				
-		if(event.getDataOverlayProperties() != null) {
-			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
-			event.getDataOverlayProperties().setUniprots(collectAllDiagramUniprots());
-			event.getDataOverlayProperties().setPathwayStableId(context.getContent().getStableId());
-		    eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getDataOverlayProperties()), this);
-		}
-		else if(event.getPairwiseOverlayProperties() != null) {
-			event.getPairwiseOverlayProperties().setGeneNames(collectAllDiagramGeneNames());
-			eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getPairwiseOverlayProperties()), this);
-		}
-	}
-	
-	/**
-	 * collects all gene names for displayed proteins in diagram or FIView
-	 * @return
-	 */
-	private String collectAllDiagramGeneNames() {
-		Set<String> result = new HashSet<>();
-		
-		if(activeVisualiser instanceof FIViewVisualizer) {
-			Set<GraphObject> graphObjects = context.getContent().getIdentifierMap().values();
-			for(GraphObject object : graphObjects) {
-				result.add(object.getDisplayName());
-			}
-			return getPostData(result);
-		}
-		
-		//works same as getting identifiers in colelctAllDiagramUniprots
-		for(DiagramObject diagramObject: context.getContent().getDiagramObjects()) {
-			GraphObject graphObject = diagramObject.getGraphObject();
-			if(graphObject instanceof GraphPhysicalEntity) {
-				GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
-				for(GraphPhysicalEntity participant : pe.getParticipants()) {
-					result.addAll(participant.getGeneNames());
-				}
-			}
-		}
-		
-		return getPostData(result);
+		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
+		event.getDataOverlayProperties().setUniprots(collectAllDiagramUniprots());
+		event.getDataOverlayProperties().setPathwayStableId(context.getContent().getStableId());
+	    eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getDataOverlayProperties()), this);
 	}
 
 	/**

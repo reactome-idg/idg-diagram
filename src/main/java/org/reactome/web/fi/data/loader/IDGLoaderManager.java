@@ -10,7 +10,6 @@ import org.reactome.web.diagram.events.DiagramInternalErrorEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.model.DataOverlay;
@@ -76,14 +75,6 @@ OverlayLoader.Handler{
 		if (!CytoscapeViewFlag.isCytoscapeViewFlag())
 			return false;
 		return true;
-	}
-	
-	/**
-	 * Directs loading of Pairwise Overlays.
-	 * @param pairwiseOverlayProperties
-	 */
-	public void loadPairwiseData(PairwiseOverlayProperties pairwiseOverlayProperties) {
-//		overlayLoader.load(pairwiseOverlayProperties);
 	}
 
 	@Override
