@@ -40,14 +40,14 @@
 }
 
 .filter{
-	height: 400px;
+	height: 380px;
 	width: 100%;
 	border-radius: 0px 15px 0px 0px;
 }
 
 .controls{
 	border-top: 2px solid grey;
-	height:116px;
+	height:120px;
 	width: 100%;
 	border-radius: 0px 0px 15px 0px;
 }
@@ -74,4 +74,21 @@
 
 @sprite .close:active:hover {
     gwt-image: 'closeClicked' ;
+}
+
+.smallButton{
+	margin-top: 2px;
+	background: #1e95cf;
+    color: white;
+    border-radius: 16px;
+    border: 1px solid #037cb3;
+    float:right;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px 5px;
+    outline: none;
+}
+
+.controlLabel{
+	padding: 5px;
 }

@@ -38,29 +38,28 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class PairwisePopout extends PopupPanel implements ResizeHandler, PairwiseOverlayButtonClickedHandler, PairwiseDataLoadedHandler, CytoscapeEntity.Handler{
 
-	private EventBus eventBus;
 	private CytoscapeEntity cy;
 	private SimplePanel cyView;
 	private boolean initialized = false;
 	
 	private JSONArray currentNodeArray;
 	private JSONArray currentEdgeArray;
+	private JSONArray baseNodeArray;
+	private JSONArray baseEdgeArray;
 	
 	private List<PairwiseEntity> currentPairwiseOverlay;
 	private List<PairwiseOverlayObject> pairwiseOverlayProperties;
-	private List<PairwiseEntity> currentlyDisplayedGenes;
 	private List<String> diagramGeneNames;
 	private List<String> displayedNodes;
 
 	
 	public PairwisePopout(EventBus eventBus) {
-		this.eventBus = eventBus;
 		currentPairwiseOverlay = new ArrayList<>();
 		diagramGeneNames = new ArrayList<>();
-		currentlyDisplayedGenes = new ArrayList<>();
 		this.setStyleName(RESOURCES.getCSS().popupPanel());
 		
 		this.cy = new CytoscapeEntity(eventBus, RESOURCES.fiviewStyle().getText(), this);
+//		cy.cytoscapeInit("cy-popout");
 		initPanel();
 		
 		eventBus.addHandler(PairwiseOverlayButtonClickedEvent.TYPE, this);
@@ -112,11 +111,35 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		filter.setStyleName(RESOURCES.getCSS().filter());
 		result.add(filter);
 		
-		FlowPanel controls = new FlowPanel();
+		FlowPanel controls = getControls();
 		controls.setStyleName(RESOURCES.getCSS().controls());
 		result.add(controls);
 		
 		return result;
+	}
+
+	private FlowPanel getControls() {
+		FlowPanel result = new FlowPanel();
+		
+		InlineLabel clearLabel = new InlineLabel("Clear all relationships");
+		clearLabel.setStyleName(RESOURCES.getCSS().controlLabel());
+		Button clearButton = new Button("Clear");
+		clearButton.setStyleName(RESOURCES.getCSS().smallButton());
+		clearButton.addClickHandler(e -> onClearButtonClicked());
+		result.add(clearLabel);
+		result.add(clearButton);
+		
+		return result;
+	}
+
+	private void onClearButtonClicked() {
+		cy.clearCytoscapeGraph();
+		this.currentNodeArray = new JSONArray();
+		this.currentEdgeArray = new JSONArray();
+		cy.addCytoscapeNodes(baseNodeArray.toString());
+		cy.addCytoscapeEdge(baseEdgeArray.toString());
+		cy.setCytoscapeLayout("cose");
+		
 	}
 
 	private FlowPanel setTitlePanel() {
@@ -156,7 +179,8 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		//resets values for when new popup is opened
 		currentNodeArray = new JSONArray();
 		currentEdgeArray = new JSONArray();
-		currentlyDisplayedGenes = new ArrayList<>();
+		baseNodeArray = new JSONArray();
+		baseEdgeArray = new JSONArray();
 		diagramGeneNames = new ArrayList<>();
 		displayedNodes = new ArrayList<>();
 		
@@ -177,31 +201,19 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	 */
 	private void updateView() {
 		if(!initialized) {
-			cy.cytoscapeInit(currentNodeArray.toString(),
-							 currentEdgeArray.toString(),
+			cy.cytoscapeInit(baseNodeArray.toString(),
+							 baseEdgeArray.toString(),
 							 "cose",
-							 "cy-popout",
-							 false);
+							 "cy-popout");
 			initialized = true;
 		}
 		else {
 			cy.clearCytoscapeGraph();
-			cy.addCytoscapeNodes(currentNodeArray.toString());
-			cy.addCytoscapeEdge(currentEdgeArray.toString());
+			cy.addCytoscapeNodes(baseNodeArray.toString());
+			cy.addCytoscapeEdge(baseEdgeArray.toString());
 		}
-		setCurrentlyDisplayedGenes();
 		addInitialPairwiseRelationships();
 		cy.setCytoscapeLayout("cose");
-	}
-
-	/**
-	 * Narrows list of Pairwise entities to iterate over for a given popup diagram set
-	 */
-	private void setCurrentlyDisplayedGenes() {
-		for(PairwiseEntity entity: currentPairwiseOverlay)
-			if(diagramGeneNames.contains(entity.getGene()))
-				currentlyDisplayedGenes.add(entity);
-			
 	}
 
 	/**
@@ -211,6 +223,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	private void constructBaseFIs(String geneName) {
 		JSONArray nodeArr = new JSONArray();
 		nodeArr.set(nodeArr.size(), getProtein(geneName, false));
+		baseNodeArray = nodeArr;
 		this.currentNodeArray = nodeArr;
 		addDiagramGeneName(geneName);
 	}
@@ -235,8 +248,8 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 				}
 			}
 		}
-		currentNodeArray = nodeArr;
-		currentEdgeArray = edgeArr;
+		baseNodeArray = nodeArr;
+		baseEdgeArray = edgeArr;
 	}
 	
 	/**
@@ -245,7 +258,8 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	 */
 	private void addInitialPairwiseRelationships() {
 		
-		for(PairwiseEntity entity: currentlyDisplayedGenes) {
+		for(PairwiseEntity entity: currentPairwiseOverlay) {
+			if(!diagramGeneNames.contains(entity.getGene())) continue;
 			if(entity.getPosGenes() != null) {
 				Collections.sort(entity.getPosGenes());
 				for(int i=0; i<10; i++) {
@@ -272,7 +286,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	private void addNode(String gene) {
 		if(displayedNodes.contains(gene)) return;
 		JSONValue val = getProtein(gene, true);
-		currentNodeArray.set(currentNodeArray.size(), val);
+		currentNodeArray.set(currentNodeArray.size() + baseNodeArray.size(), val);
 		displayedNodes.add(gene);
 		cy.addCytoscapeNodes(val.toString());
 	}
@@ -286,9 +300,9 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 	 * @param dataDesc
 	 */
 	private void addEdge(String source, String target, String relationship, String dataDesc) {
-		int edgeId = currentEdgeArray.size();
+		int edgeId = currentEdgeArray.size() + baseEdgeArray.size();
 		JSONValue val = makeFI(edgeId, source, target, relationship);
-		currentEdgeArray.set(currentEdgeArray.size(), val);
+		currentEdgeArray.set(currentEdgeArray.size() + baseEdgeArray.size(), val);
 		cy.addCytoscapeEdge(val.toString());
 		for(PairwiseOverlayObject prop:  pairwiseOverlayProperties) {
 			if(prop.getId() == dataDesc && relationship == "positive")
@@ -498,5 +512,9 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Pairwis
 		String filter();
 		
 		String controls();
+		
+		String smallButton();
+		
+		String controlLabel();
 	}
 }
