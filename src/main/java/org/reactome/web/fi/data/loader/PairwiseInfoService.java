@@ -90,7 +90,6 @@ public class PairwiseInfoService {
 		} catch(RequestException ex) {
 			ex.printStackTrace();
 		}
-		
 	}
 	
 	/**
