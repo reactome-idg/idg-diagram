@@ -7,13 +7,12 @@ import org.reactome.web.diagram.events.AnalysisResultLoadedEvent;
 import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
 import org.reactome.web.diagram.handlers.PairwiseOverlayButtonClickedHandler;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
-import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;	
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 
 /**
  * 
@@ -25,7 +24,6 @@ OverlayDataRequestedHandler, PairwiseOverlayButtonClickedHandler{
 	
 	public IdgDiagramViewerImpl() {
 		super();
-		PairwiseInfoService.loadUniprotToGeneMap();
 		eventBus.addHandler(CytoscapeToggledEvent.TYPE, this);
 		eventBus.addHandler(OverlayRequestedEvent.TYPE, this);
 		eventBus.addHandler(PairwiseOverlayButtonClickedEvent.TYPE, this);
