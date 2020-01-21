@@ -1,5 +1,6 @@
 package org.reactome.web.fi.tools.overlay.pairwise.factory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.reactome.web.diagram.data.graph.model.GraphObject;
@@ -14,7 +15,10 @@ public class PairwisePopupFactory {
 	private List<PairwiseOverlayObject> currentPairwiseProperties;
 	
 	
-	private PairwisePopupFactory() {/*Nothing Here*/}
+	private PairwisePopupFactory() {
+		currentPopups = new ArrayList<>();
+		currentPairwiseProperties = new ArrayList<>();
+	}
 	
 	public static PairwisePopupFactory get() {
 		if(factory == null)

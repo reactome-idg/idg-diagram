@@ -74,7 +74,6 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Cytosca
 		this.setHeight(height + "px");
 		
 		FlowPanel container = new FlowPanel();
-		container.setStyleName(RESOURCES.getCSS().container());
 		container.add(setTitlePanel());
 		
 		FlowPanel innerContainer = new FlowPanel();
@@ -490,9 +489,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Cytosca
 		String CSS = "org/reactome/web/fi/tools/overlay/pairwise/PairwisePopout.css";
 		
 		String popupPanel();
-		
-		String container();
-		
+				
 		String cyView();
 		
 		String header();
@@ -512,5 +509,9 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Cytosca
 		String smallButton();
 		
 		String controlLabel();
+		
+		String infoButton();
+		
+		String container();
 	}
 }
