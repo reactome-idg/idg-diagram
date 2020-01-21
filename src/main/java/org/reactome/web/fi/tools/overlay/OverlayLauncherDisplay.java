@@ -141,7 +141,6 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 	@Override
 	public void hide() {
 		dataOverlayPanel.hideLoader();
-		entityOverlayPanel.hideLoader();
 		super.hide();
 	}
 

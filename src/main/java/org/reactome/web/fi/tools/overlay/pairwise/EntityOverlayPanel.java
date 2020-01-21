@@ -42,9 +42,7 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 	
 	private Map<String, PairwiseOverlayObject> selectedFilters;
 	private Map<Button, String> removeToFilterMap;
-	
-	private Image loader;
-	
+		
 	public EntityOverlayPanel(EventBus eventBus) {
 		this.eventBus = eventBus;
 		selectedFilters = new HashMap<>();
@@ -78,14 +76,11 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		bottomContainer.add(overlayButton = new Button("Overlay!"));
 		overlayButton.setStyleName(RESOURCES.getCSS().overlayButton());
 		overlayButton.addClickHandler(e -> overlayButtonClicked());
-		bottomContainer.add(loader = new Image(RESOURCES.loader()));
 		
 		bottomContainer.add(infoLabel = new InlineLabel());
 		infoLabel.setStyleName(RESOURCES.getCSS().infoLabel());
 		setInfoLabel();
 		
-		loader.setStyleName(RESOURCES.getCSS().tissuesLoading());
-		loader.setVisible(true);
 		
 		outerPanel.add(bottomContainer);
 		
@@ -162,13 +157,6 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		eventBus.fireEventFromSource(new HideOverlayLauncherEvent(), this);
 	}
 
-	/**
-	 * Callable method to hide loading pinwheel
-	 */
-	public void hideLoader() {
-		loader.setVisible(false);
-	}
-
 	public static Resources RESOURCES;
 	static {
 		RESOURCES = GWT.create(Resources.class);
@@ -197,7 +185,6 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		
 		String outerPanel();
 				
-		String tissuesLoading();
 		
 		String formPanel();
 		
