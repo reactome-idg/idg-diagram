@@ -13,6 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.reactome.web.fi.tools.overlay.pairwise.EntityOverlayPanel;
+import org.reactome.web.fi.events.HideOverlayLauncherEvent;
+import org.reactome.web.fi.handlers.HideOverlayLauncherHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,7 +36,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
  *
  */
 public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
-	ClickHandler, CloseHandler<PopupPanel>{
+	ClickHandler, CloseHandler<PopupPanel>, HideOverlayLauncherHandler{
 
 	EventBus eventBus;
 	private Button dataOverlayTypes;
@@ -51,6 +53,8 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 		super();
 		this.eventBus = eventBus;
 		initPanel();
+		
+		eventBus.addHandler(HideOverlayLauncherEvent.TYPE, this);
 	}
 
 	private void initPanel() {
@@ -168,6 +172,11 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 		this.hide();
 	}
 	
+	@Override
+	public void onHideOverlayLauncher(HideOverlayLauncherEvent event) {
+		this.hide();
+	}
+	
 	public static Resources RESOURCES;
 	static {
 		RESOURCES = GWT.create(Resources.class);
@@ -222,6 +231,6 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
 		String innerPanel();
 		
 		String buttonSelected();
-				
+
 	}
 }

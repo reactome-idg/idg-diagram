@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
+import org.reactome.web.fi.events.HideOverlayLauncherEvent;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 
@@ -157,8 +158,8 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 			return;
 		}
 		
-		loader.setVisible(true);
 		PairwisePopupFactory.get().setCurrentPairwiseProperties(new ArrayList<PairwiseOverlayObject>(selectedFilters.values()));
+		eventBus.fireEventFromSource(new HideOverlayLauncherEvent(), this);
 	}
 
 	/**
