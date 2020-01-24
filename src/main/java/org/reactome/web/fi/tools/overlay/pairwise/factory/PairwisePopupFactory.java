@@ -27,7 +27,7 @@ public class PairwisePopupFactory {
 	}
 	
 	public void openPopup(GraphObject graphObject) {
-		if(!currentPopups.contains(graphObject.getStId()) && currentPairwiseObjects != null) {
+		if(!currentPopups.contains(graphObject.getStId()) && currentPairwiseObjects.size() > 0) {
 			currentPopups.add(graphObject.getStId());
 			PairwisePopup popup = new PairwisePopup(graphObject, currentPairwiseObjects);
 			popup.show();
@@ -35,7 +35,7 @@ public class PairwisePopupFactory {
 	}
 	
 	public void openPopup(String uniprot, String geneName) {
-		if(!currentPopups.contains(uniprot) && currentPairwiseObjects != null) {
+		if(!currentPopups.contains(uniprot) && currentPairwiseObjects.size() > 0) {
 			currentPopups.add(uniprot);
 			PairwisePopup popup = new PairwisePopup(uniprot, geneName, currentPairwiseObjects);
 			popup.show();

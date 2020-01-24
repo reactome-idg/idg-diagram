@@ -11,6 +11,7 @@ import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
+import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
@@ -27,6 +28,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -37,6 +39,8 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private String popupId;
 	private String containerId;
 	private List<PairwiseOverlayObject> pairwiseOverlayObjects;
+	private Map<String, List<PairwiseEntity>> pairwiseOverlayMap;
+	private Map<String,String> uniprotToGeneMap;
 	
 	private CytoscapeEntity cy;
 	private Boolean cytoscapeInitialized = false;
@@ -153,7 +157,6 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			for(GraphPhysicalEntity entity: entities)
 				uniprots.add(entity.getIdentifier());
 		}
-		PairwiseOverlayProperties properties = new PairwiseOverlayProperties(pairwiseOverlayObjects, String.join(",", uniprots));
 		load(new PairwiseOverlayProperties(pairwiseOverlayObjects, String.join(",", uniprots)));
 	}
 
@@ -171,8 +174,35 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			}
 			@Override
 			public void onPairwiseDataLoaded(Map<String, List<PairwiseEntity>> uniprotToPairwiseEntityMap) {
-//				
+				loadUniprotToGeneMap(); //need to load this after loading the overlay items for connecting genes to uniprots for display
+				pairwiseOverlayMap = uniprotToPairwiseEntityMap;
 			}
+		});
+	}
+	
+	private void loadUniprotToGeneMap() {
+		PairwiseInfoService.loadUniprotToGeneMap(new AsyncCallback<Map<String,String>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void onSuccess(Map<String, String> uniprotToGeneNameMap) {
+				uniprotToGeneMap = uniprotToGeneNameMap;
+				addInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
+			}
+		});
+	}
+
+	private void addInitialInteractors() {
+		pairwiseOverlayMap.forEach((k,v) -> {
+			v.forEach(entity -> {
+				if(entity.getPosGenes() != null)
+					GWT.log("Bing");
+				if(entity.getNegGenes() != null)
+					GWT.log("Bong");
+			});
 		});
 	}
 
