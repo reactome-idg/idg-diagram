@@ -40,7 +40,6 @@ public class PairwisePopup extends AbstractPairwisePopup {
 		setModal(false);
 		
 		main = new FlowPanel();
-//		main.add(new PwpButton("Close", RESOURCES.getCSS().close(), e -> hide()));
 		
 		main.add(getMainPanel());
 		

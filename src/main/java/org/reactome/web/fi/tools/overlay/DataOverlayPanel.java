@@ -188,6 +188,7 @@ public class DataOverlayPanel  extends FlowPanel{
 		selectorMap = new HashMap<>();
 		List<ExpressionTypeEntity> entityList = entities.getExpressionTypeEntity();
 		for(int i=0; i < entityList.size(); i++) {
+			if(entityList.get(i).getName() == "Target Development Level") continue;
 			eTypeSelector.addItem(entityList.get(i).getName());
 			selectorMap.put(entityList.get(i).getName(), entityList.get(i));
 		}		
