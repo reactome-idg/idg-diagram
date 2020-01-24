@@ -48,7 +48,6 @@ public class PairwiseDataLoader {
 						JSONValue val = JSONParser.parseStrict(response.getText());
 						JSONObject obj = new JSONObject();
 						obj.put("pairwiseEntities", val.isArray());
-						GWT.log(obj.toString());
 						entities = PairwiseEntitiesFactory.getPairwiseEntities(PairwiseEntities.class, obj.toString());
 						handler.onPairwiseDataLoaded(getEntitiesMap(entities));
 					}catch(Exception e) {
