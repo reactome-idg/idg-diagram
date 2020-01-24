@@ -136,7 +136,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 			ScriptInjector.fromString(FIVIEWPORTRESOURCES.cytoscapeLibrary().getText()).setWindow(ScriptInjector.TOP_WINDOW).inject();
 			
 			//created once and reused every time a new context is loaded
-			cy = new CytoscapeEntity(this.eventBus, FIVIEWPORTRESOURCES.fiviewStyle().getText(), this);
+			cy = new CytoscapeEntity(FIVIEWPORTRESOURCES.fiviewStyle().getText(), this);
 			
 			cyView.getElement().setId("cy");
 			

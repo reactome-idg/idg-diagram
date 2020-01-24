@@ -11,12 +11,10 @@ import com.google.gwt.event.shared.EventBus;
  */
 public class CytoscapeEntity extends CytoscapeWrapper{
 
-	EventBus eventBus;
 	String baseStyle;
 	
-	public CytoscapeEntity(EventBus eventBus, String baseStyle, Handler handler) {
-		super(eventBus, baseStyle, handler);
-		this.eventBus = eventBus;
+	public CytoscapeEntity(String baseStyle, Handler handler) {
+		super(baseStyle, handler);
 		this.baseStyle = baseStyle;
 	}	
 }
