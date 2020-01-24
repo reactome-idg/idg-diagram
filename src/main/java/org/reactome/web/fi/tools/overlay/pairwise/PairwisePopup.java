@@ -2,12 +2,18 @@ package org.reactome.web.fi.tools.overlay.pairwise;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.reactome.web.diagram.common.PwpButton;
 import org.reactome.web.diagram.data.graph.model.GraphComplex;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
+import org.reactome.web.fi.data.loader.PairwiseDataLoader;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -26,10 +32,12 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public class PairwisePopup extends AbstractPairwisePopup {
+public class PairwisePopup extends AbstractPairwisePopup{
 
 	private String popupId;
 	private String containerId;
+	private List<PairwiseOverlayObject> pairwiseOverlayObjects;
+	
 	private CytoscapeEntity cy;
 	private Boolean cytoscapeInitialized = false;
 	
@@ -37,16 +45,18 @@ public class PairwisePopup extends AbstractPairwisePopup {
 	
 	private FlowPanel infoPanel;
 	
-	public PairwisePopup(GraphObject graphObject) {
+	public PairwisePopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.popupId = graphObject.getStId();
+		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		initPanel();
 		loadNetwork(graphObject);
 	}
 
-	public PairwisePopup(String uniprot, String geneName) {
+	public PairwisePopup(String uniprot, String geneName, List<PairwiseOverlayObject> properties) {
 		this.popupId = uniprot;
+		this.pairwiseOverlayObjects = properties;
 		initPanel();
-		loadNetwork(geneName);
+		loadNetwork(uniprot, geneName);
 	}
 
 	private void initPanel() {
@@ -55,7 +65,7 @@ public class PairwisePopup extends AbstractPairwisePopup {
 		setModal(false);
 		
 		main = new FlowPanel();
-		main.add(new PwpButton("Close", RESOURCES.getCSS().close(), e -> onCloseButtonClicked()));
+		main.add(new PwpButton("Close", RESOURCES.getCSS().close(), e -> hide()));
 
 		main.add(getMainPanel());
 		
@@ -129,17 +139,43 @@ public class PairwisePopup extends AbstractPairwisePopup {
 		loadPairwiseRelationships(graphObject);
 	}
 
-	private void loadNetwork(String geneName) {
+	private void loadNetwork(String uniprot, String geneName) {
 		JSONArray nodeArr = new JSONArray();
-		nodeArr.set(nodeArr.size(), getProtein(geneName, false));
+		nodeArr.set(nodeArr.size(), getProtein(uniprot, geneName, false));
 		updateView(nodeArr, new JSONArray());
+		loadPairwiseRelationships(geneName, uniprot);
 	}
 
 	private void loadPairwiseRelationships(GraphObject graphObject) {
+		List<String> uniprots = new ArrayList<>();
+		if(graphObject instanceof GraphComplex) {
+			Set<GraphPhysicalEntity> entities = ((GraphComplex)graphObject).getParticipants();
+			for(GraphPhysicalEntity entity: entities)
+				uniprots.add(entity.getIdentifier());
+		}
+		PairwiseOverlayProperties properties = new PairwiseOverlayProperties(pairwiseOverlayObjects, String.join(",", uniprots));
+		load(new PairwiseOverlayProperties(pairwiseOverlayObjects, String.join(",", uniprots)));
+	}
+
+	private void loadPairwiseRelationships(String geneName, String uniprot) {
 		// TODO Auto-generated method stub
 		
 	}
 	
+	private void load(PairwiseOverlayProperties pairwiseOverlayProperties) {
+		PairwiseDataLoader loader = new PairwiseDataLoader();
+		loader.loadPairwiseData(pairwiseOverlayProperties, new PairwiseDataLoader.Handler() {
+			@Override
+			public void onPairwiseDataLoadedError(Exception e) {
+				GWT.log(e.toString());
+			}
+			@Override
+			public void onPairwiseDataLoaded(Map<String, List<PairwiseEntity>> uniprotToPairwiseEntityMap) {
+//				
+			}
+		});
+	}
+
 	/**
 	 * Makes a node for a passed in GraphPhysicalEntity
 	 * @param entity
@@ -164,12 +200,12 @@ public class PairwisePopup extends AbstractPairwisePopup {
 	 * @param gene
 	 * @return
 	 */
-	private JSONValue getProtein(String gene, boolean interactor) {
+	private JSONValue getProtein(String uniprot, String gene, boolean interactor) {
 		JSONObject result = new JSONObject();
 		result.put("group", new JSONString("nodes"));
 		
 		JSONObject node = new JSONObject();
-		node.put("id", new JSONString(gene));
+		node.put("id", new JSONString(uniprot));
 		node.put("name", new JSONString(gene));
 		if(interactor == true)
 			node.put("interactor", new JSONString("true"));
@@ -200,10 +236,6 @@ public class PairwisePopup extends AbstractPairwisePopup {
 		
 		result.put("data", edge);
 		return result;
-	}
-	
-	private void onCloseButtonClicked() {
-		this.hide();
 	}
 	
 	@Override

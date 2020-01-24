@@ -10,10 +10,11 @@ import java.util.List;
 public class PairwiseOverlayProperties {
 
 	private List<PairwiseOverlayObject> pairwiseOverlayObjects;
-	private String geneNames;
+	private String uniprots;
 	
-	public PairwiseOverlayProperties(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
+	public PairwiseOverlayProperties(List<PairwiseOverlayObject> pairwiseOverlayObjects, String uniprots) {
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
+		this.uniprots = uniprots;
 	}
 
 	public List<PairwiseOverlayObject> getPairwiseOverlayObjects() {
@@ -25,11 +26,11 @@ public class PairwiseOverlayProperties {
 	}
 
 	public String getGeneNames() {
-		return geneNames;
+		return uniprots;
 	}
 
 	public void setGeneNames(String uniprots) {
-		this.geneNames = uniprots;
+		this.uniprots = uniprots;
 	}
 	
 }

@@ -12,12 +12,12 @@ public class PairwisePopupFactory {
 	private static PairwisePopupFactory factory;
 	
 	private List<String> currentPopups;
-	private List<PairwiseOverlayObject> currentPairwiseProperties;
+	private List<PairwiseOverlayObject> currentPairwiseObjects;
 	
 	
 	private PairwisePopupFactory() {
 		currentPopups = new ArrayList<>();
-		currentPairwiseProperties = new ArrayList<>();
+		currentPairwiseObjects = new ArrayList<>();
 	}
 	
 	public static PairwisePopupFactory get() {
@@ -27,17 +27,17 @@ public class PairwisePopupFactory {
 	}
 	
 	public void openPopup(GraphObject graphObject) {
-		if(!currentPopups.contains(graphObject.getStId()) && currentPairwiseProperties != null) {
+		if(!currentPopups.contains(graphObject.getStId()) && currentPairwiseObjects != null) {
 			currentPopups.add(graphObject.getStId());
-			PairwisePopup popup = new PairwisePopup(graphObject);
+			PairwisePopup popup = new PairwisePopup(graphObject, currentPairwiseObjects);
 			popup.show();
 		}
 	}
 	
 	public void openPopup(String uniprot, String geneName) {
-		if(!currentPopups.contains(uniprot) && currentPairwiseProperties != null) {
+		if(!currentPopups.contains(uniprot) && currentPairwiseObjects != null) {
 			currentPopups.add(uniprot);
-			PairwisePopup popup = new PairwisePopup(uniprot, geneName);
+			PairwisePopup popup = new PairwisePopup(uniprot, geneName, currentPairwiseObjects);
 			popup.show();
 		}
 	}
@@ -46,11 +46,11 @@ public class PairwisePopupFactory {
 		currentPopups.remove(id);
 	}
 	
-	public void setCurrentPairwiseProperties(List<PairwiseOverlayObject> properties) {
-		this.currentPairwiseProperties = properties;
+	public void setCurrentPairwiseProperties(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
+		this.currentPairwiseObjects = pairwiseOverlayObjects;
 	}
 	
 	public List<PairwiseOverlayObject> getCurrentPairwiseProperties(){
-		return this.currentPairwiseProperties;
+		return this.currentPairwiseObjects;
 	}
 }

@@ -11,6 +11,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -23,7 +24,7 @@ import com.google.gwt.json.client.JSONValue;
 public class PairwiseDataLoader {
 
 	public interface Handler{
-		void onPairwiseDataLoaded(Map<String, List<PairwiseEntity>> geneToPairwiseEntityMap);
+		void onPairwiseDataLoaded(Map<String, List<PairwiseEntity>> uniprotToPairwiseEntityMap);
 		void onPairwiseDataLoadedError(Exception e);
 	}
 	
@@ -47,6 +48,7 @@ public class PairwiseDataLoader {
 						JSONValue val = JSONParser.parseStrict(response.getText());
 						JSONObject obj = new JSONObject();
 						obj.put("pairwiseEntities", val.isArray());
+						GWT.log(obj.toString());
 						entities = PairwiseEntitiesFactory.getPairwiseEntities(PairwiseEntities.class, obj.toString());
 						handler.onPairwiseDataLoaded(getEntitiesMap(entities));
 					}catch(Exception e) {
