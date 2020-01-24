@@ -122,7 +122,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 * @param nodeArr
 	 * @param edgeArr
 	 */
-	private void updateView(JSONArray nodeArr, JSONArray edgeArr) {
+	private void initializeCytoscape(JSONArray nodeArr, JSONArray edgeArr) {
 		if(!cytoscapeInitialized) {
 			this.cy = new CytoscapeEntity(RESOURCES.fiviewStyle().getText(), this);
 			cy.cytoscapeInit(nodeArr.toString(),edgeArr.toString(), "cose", containerId);
@@ -139,8 +139,8 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private void loadNetwork(GraphObject graphObject) {
 		JSONArray nodeArr = new JSONArray();
 		JSONArray edgeArr = new JSONArray();
-		if(graphObject instanceof GraphComplex) {
-			GraphComplex complex = (GraphComplex) graphObject;
+		if(graphObject instanceof GraphPhysicalEntity) {
+			GraphPhysicalEntity complex = (GraphPhysicalEntity) graphObject;
 			List<GraphPhysicalEntity> entities = new ArrayList<>();
 			entities.addAll(complex.getParticipants());
 			for(int i=0; i<entities.size(); i++) {
@@ -155,7 +155,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 				}
 			}
 		}
-		updateView(nodeArr, edgeArr); //initializes and adds diagram nodes and edges
+		initializeCytoscape(nodeArr, edgeArr); //initializes and adds diagram nodes and edges
 		loadPairwiseRelationships(graphObject);
 	}
 
@@ -168,7 +168,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private void loadNetwork(String uniprot, String geneName) {
 		JSONArray nodeArr = new JSONArray();
 		nodeArr.set(nodeArr.size(), getProtein(uniprot, geneName, false));
-		updateView(nodeArr, new JSONArray());
+		initializeCytoscape(nodeArr, new JSONArray());
 		load(new PairwiseOverlayProperties(pairwiseOverlayObjects, uniprot));
 	}
 
@@ -178,8 +178,8 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 */
 	private void loadPairwiseRelationships(GraphObject graphObject) {
 		List<String> uniprots = new ArrayList<>();
-		if(graphObject instanceof GraphComplex) {
-			Set<GraphPhysicalEntity> entities = ((GraphComplex)graphObject).getParticipants();
+		if(graphObject instanceof GraphPhysicalEntity) {
+			Set<GraphPhysicalEntity> entities = ((GraphPhysicalEntity)graphObject).getParticipants();
 			for(GraphPhysicalEntity entity: entities)
 				uniprots.add(entity.getIdentifier());
 		}
@@ -200,8 +200,8 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			}
 			@Override
 			public void onPairwiseDataLoaded(Map<String, List<PairwiseEntity>> uniprotToPairwiseEntityMap) {
-				loadUniprotToGeneMap(); //need to load this after loading the overlay items for connecting genes to uniprots for display
 				pairwiseOverlayMap = uniprotToPairwiseEntityMap;
+				loadUniprotToGeneMap(); //need to load this after loading the overlay items for connecting genes to uniprots for display
 			}
 		});
 	}
@@ -248,7 +248,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 * @param id
 	 */
 	private void addInteractorSet(String source, List<String> uniprots, String interaction, String id) {
-		for(int i=0; i<10; i++) {
+		for(int i=0; i<5; i++) {
 			if(uniprots.get(i) == null) break;
 			addNode(uniprots.get(i));
 			addEdge(source, uniprots.get(i), interaction, id);
@@ -379,7 +379,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	
 	@CssResource.ImportedWithPrefix("idg-pairwisePopup")
 	public interface ResourceCSS extends CssResource{
-		String CSS = "org/reactome/web/fi/tools/overlay/pairwise/PairwisePopout.css";
+		String CSS = "org/reactome/web/fi/tools/overlay/pairwise/PairwisePopup.css";
 		
 		String popupPanel();
 				
