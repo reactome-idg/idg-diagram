@@ -1,6 +1,7 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,9 +39,11 @@ public class PairwisePopup extends AbstractPairwisePopup{
 
 	private String popupId;
 	private String containerId;
+	private int edgeCount = 0;
 	private List<PairwiseOverlayObject> pairwiseOverlayObjects;
 	private Map<String, List<PairwiseEntity>> pairwiseOverlayMap;
 	private Map<String,String> uniprotToGeneMap;
+	private List<String> displayedNodes;
 	
 	private CytoscapeEntity cy;
 	private Boolean cytoscapeInitialized = false;
@@ -52,6 +55,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	public PairwisePopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.popupId = graphObject.getStId();
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
+		this.displayedNodes = new ArrayList<>();
 		initPanel();
 		loadNetwork(graphObject);
 	}
@@ -59,6 +63,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	public PairwisePopup(String uniprot, String geneName, List<PairwiseOverlayObject> properties) {
 		this.popupId = uniprot;
 		this.pairwiseOverlayObjects = properties;
+		this.displayedNodes = new ArrayList<>();
 		initPanel();
 		loadNetwork(uniprot, geneName);
 	}
@@ -112,6 +117,11 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		getCaption().asWidget().setStyleName(RESOURCES.getCSS().header());
 	}
 
+	/**
+	 * initializes cytoscape with the base nodes and edges passed into the above constructors.
+	 * @param nodeArr
+	 * @param edgeArr
+	 */
 	private void updateView(JSONArray nodeArr, JSONArray edgeArr) {
 		if(!cytoscapeInitialized) {
 			this.cy = new CytoscapeEntity(RESOURCES.fiviewStyle().getText(), this);
@@ -121,6 +131,11 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		cy.setCytoscapeLayout("cose");
 	}
 
+	/**
+	 * Loads base nodes and edges from Graph object that is of type GraphComplex or GraphPhysicalEntity.
+	 * Directs loading of pairwise relationhips for displayed nodes.
+	 * @param graphObject
+	 */
 	private void loadNetwork(GraphObject graphObject) {
 		JSONArray nodeArr = new JSONArray();
 		JSONArray edgeArr = new JSONArray();
@@ -130,8 +145,9 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			entities.addAll(complex.getParticipants());
 			for(int i=0; i<entities.size(); i++) {
 				nodeArr.set(nodeArr.size(), getProtein(entities.get(i)));
+				displayedNodes.add(entities.get(i).getIdentifier());
 				for(int j=i+1; j<entities.size(); j++) {
-					edgeArr.set(edgeArr.size(), 
+					edgeArr.set(edgeCount++, 
 								makeFI(edgeArr.size(), 
 								entities.get(i).getIdentifier(), 
 								entities.get(j).getIdentifier(), 
@@ -143,13 +159,23 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		loadPairwiseRelationships(graphObject);
 	}
 
+	/**
+	 * Loads base node when opened from FIViz or single protein GraphObject.
+	 * Directs loading of pairwise entities.
+	 * @param uniprot
+	 * @param geneName
+	 */
 	private void loadNetwork(String uniprot, String geneName) {
 		JSONArray nodeArr = new JSONArray();
 		nodeArr.set(nodeArr.size(), getProtein(uniprot, geneName, false));
 		updateView(nodeArr, new JSONArray());
-		loadPairwiseRelationships(geneName, uniprot);
+		load(new PairwiseOverlayProperties(pairwiseOverlayObjects, uniprot));
 	}
 
+	/**
+	 * collects uniprots of a graphObject and directs loading of pairwise entities;
+	 * @param graphObject
+	 */
 	private void loadPairwiseRelationships(GraphObject graphObject) {
 		List<String> uniprots = new ArrayList<>();
 		if(graphObject instanceof GraphComplex) {
@@ -159,12 +185,12 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		}
 		load(new PairwiseOverlayProperties(pairwiseOverlayObjects, String.join(",", uniprots)));
 	}
-
-	private void loadPairwiseRelationships(String geneName, String uniprot) {
-		// TODO Auto-generated method stub
-		
-	}
 	
+	/**
+	 * performs loading of pairwise entities based on passed in pairwiseOverlayProperties.
+	 * PairwiseOverlayProperties must contain a list of PairwiseOverlaObjects and a list of uniprots as a string.
+	 * @param pairwiseOverlayProperties
+	 */
 	private void load(PairwiseOverlayProperties pairwiseOverlayProperties) {
 		PairwiseDataLoader loader = new PairwiseDataLoader();
 		loader.loadPairwiseData(pairwiseOverlayProperties, new PairwiseDataLoader.Handler() {
@@ -180,12 +206,14 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		});
 	}
 	
+	/**
+	 * Loads Uniprot to gene name map and directs addition of initial interactors after successful loading.
+	 */
 	private void loadUniprotToGeneMap() {
 		PairwiseInfoService.loadUniprotToGeneMap(new AsyncCallback<Map<String,String>>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
+				GWT.log(caught.getMessage());
 			}
 			@Override
 			public void onSuccess(Map<String, String> uniprotToGeneNameMap) {
@@ -195,17 +223,69 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		});
 	}
 
+	/**
+	 * Iterates over pairwiseOverlayMap of entities.
+	 * Directs the overlay of positive and negative interactions.
+	 */
 	private void addInitialInteractors() {
 		pairwiseOverlayMap.forEach((k,v) -> {
 			v.forEach(entity -> {
-				if(entity.getPosGenes() != null)
-					GWT.log("Bing");
-				if(entity.getNegGenes() != null)
-					GWT.log("Bong");
+				if(entity.getPosGenes() != null) 
+					addInteractorSet(entity.getGene(), entity.getPosGenes(), "positive", entity.getDataDesc().getId());
+				if(entity.getNegGenes() != null) 
+					addInteractorSet(entity.getGene(), entity.getNegGenes(), "negative", entity.getDataDesc().getId());
 			});
 		});
+		cy.setCytoscapeLayout("cose");
+	}
+	
+	/**
+	 * Given a diagram gene source, add a set of uniprotes as connected nodes with either "positive"
+	 * or "negative" for interaction. id is used to determine line color in addEdge().
+	 * @param source
+	 * @param uniprots
+	 * @param interaction
+	 * @param id
+	 */
+	private void addInteractorSet(String source, List<String> uniprots, String interaction, String id) {
+		for(int i=0; i<10; i++) {
+			if(uniprots.get(i) == null) break;
+			addNode(uniprots.get(i));
+			addEdge(source, uniprots.get(i), interaction, id);
+		}
+	}
+	
+	/**
+	 * Add a node based on just a gene name
+	 * @param uniprot
+	 */
+	private void addNode(String uniprot) {
+		if(displayedNodes.contains(uniprot)) return;
+		JSONValue val = getProtein(uniprot, uniprotToGeneMap.get(uniprot), true);
+		displayedNodes.add(uniprot);
+		cy.addCytoscapeNodes(val.toString());
 	}
 
+	/**
+	 * Directs creation of an edge based on passed in source and target
+	 * Uses relationship and dataDesc to change style and color of the line.
+	 * @param source
+	 * @param target
+	 * @param relationship
+	 * @param dataDesc
+	 */
+	private void addEdge(String source, String target, String relationship, String dataDesc) {
+		int edgeId = edgeCount++;
+		JSONValue val = makeFI(edgeId, source, target, relationship);
+		cy.addCytoscapeEdge(val.toString());
+		for(PairwiseOverlayObject prop:  pairwiseOverlayObjects) {
+			if(prop.getId() == dataDesc && relationship == "positive")
+				cy.recolorEdge(edgeId+"", prop.getPositiveLineColorHex());
+			else if(prop.getId() == dataDesc & relationship == "negative")
+				cy.recolorEdge(edgeId+"", prop.getNegativeLineColorHex());
+		}
+	}
+	
 	/**
 	 * Makes a node for a passed in GraphPhysicalEntity
 	 * @param entity
