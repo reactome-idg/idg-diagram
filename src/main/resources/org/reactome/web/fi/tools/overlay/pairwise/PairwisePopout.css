@@ -78,10 +78,13 @@
     gwt-image: 'closeNormal';
     outline: none;
     background-repeat: no-repeat;
-    border: 0;
+    border: none;
+    border-radius: 16px;
     cursor: pointer;
-    float: right;
-    margin-bottom: 10px;
+    margin-right: 5px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }
 @sprite .close:hover {
     gwt-image: 'closeHovered';

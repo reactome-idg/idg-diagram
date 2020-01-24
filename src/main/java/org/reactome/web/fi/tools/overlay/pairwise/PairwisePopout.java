@@ -55,7 +55,7 @@ public class PairwisePopout extends PopupPanel implements ResizeHandler, Cytosca
 		diagramGeneNames = new ArrayList<>();
 		this.setStyleName(RESOURCES.getCSS().popupPanel());
 		
-		this.cy = new CytoscapeEntity(eventBus, RESOURCES.fiviewStyle().getText(), this);
+		this.cy = new CytoscapeEntity(RESOURCES.fiviewStyle().getText(), this);
 		initPanel();
 		
 	}
