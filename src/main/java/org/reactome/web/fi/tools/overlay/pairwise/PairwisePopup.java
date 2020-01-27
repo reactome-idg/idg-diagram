@@ -370,8 +370,9 @@ public class PairwisePopup extends AbstractPairwisePopup{
 				Console.log(exception);
 			}
 			@Override
-			public void onDataOverlayLoaded(DataOverlay dataOverlay) {
-				overlayData(dataOverlay);
+			public void onDataOverlayLoaded(DataOverlay data) {
+				dataOverlay = data;
+				overlayData();
 			}
 		});
 	}
@@ -387,10 +388,9 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		return String.join(",", uniprots);
 	}
 
-	private void overlayData(DataOverlay dataOverlay) {
+	private void overlayData() {
 		cy.resetStyle();
 		cy.resetSelection();
-		this.dataOverlay = dataOverlay;
 		this.dataOverlay.updateIdentifierValueMap();
 		if(dataOverlay.isDiscrete())
 			overlayDiscreteData();
@@ -415,6 +415,12 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			cy.highlightNode(uniprot, colourMap.get(dataOverlay.getIdentifierValueMap().get(uniprot)), ".8");
 	}
 
+	public void changeOverlayColumn(int column) {
+		if(dataOverlay != null)
+			dataOverlay.setColumn(column);
+		overlayData();
+	}
+	
 	@Override
 	public void hide() {
 		PairwisePopupFactory.get().removePopup(this.popupId);

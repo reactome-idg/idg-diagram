@@ -69,4 +69,9 @@ public class PairwisePopupFactory{
 		return this.dataOverlayProperties;
 	}
 
+	public void setOverlayColumn(int column) {
+		for(PairwisePopup popup: popupMap.values())
+			popup.changeOverlayColumn(column);
+	}
+
 }

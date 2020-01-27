@@ -402,6 +402,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	@Override
 	public void onDataOverlayColumnChanged(DataOverlayColumnChangedEvent event) {
 		this.dataOverlay.setColumn(event.getColumn());
+		PairwisePopupFactory.get().setOverlayColumn(event.getColumn());
 		context.setDialogMap(new HashMap<>());
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();
