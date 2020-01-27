@@ -1,22 +1,26 @@
 package org.reactome.web.fi.tools.overlay.pairwise.factory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.reactome.web.diagram.data.graph.model.GraphObject;
+import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwisePopup;
 
-public class PairwisePopupFactory {
+public class PairwisePopupFactory{
 
 	private static PairwisePopupFactory factory;
 	
-	private List<String> currentPopups;
+	private Map<String, PairwisePopup> popupMap;
 	private List<PairwiseOverlayObject> currentPairwiseObjects;
 	
+	private DataOverlayProperties dataOverlayProperties;
 	
 	private PairwisePopupFactory() {
-		currentPopups = new ArrayList<>();
+		popupMap = new HashMap<>();
 		currentPairwiseObjects = new ArrayList<>();
 	}
 	
@@ -27,23 +31,24 @@ public class PairwisePopupFactory {
 	}
 	
 	public void openPopup(GraphObject graphObject) {
-		if(!currentPopups.contains(graphObject.getStId()) && currentPairwiseObjects.size() > 0) {
-			currentPopups.add(graphObject.getStId());
-			PairwisePopup popup = new PairwisePopup(graphObject, currentPairwiseObjects);
+		if(!popupMap.keySet().contains(graphObject.getStId()) && currentPairwiseObjects.size() > 0) {
+			PairwisePopup popup = new PairwisePopup(graphObject, currentPairwiseObjects, dataOverlayProperties);
+			popupMap.put(graphObject.getStId(), popup);
+			
 			popup.show();
 		}
 	}
 	
 	public void openPopup(String uniprot, String geneName) {
-		if(!currentPopups.contains(uniprot) && currentPairwiseObjects.size() > 0) {
-			currentPopups.add(uniprot);
-			PairwisePopup popup = new PairwisePopup(uniprot, geneName, currentPairwiseObjects);
+		if(!popupMap.keySet().contains(uniprot) && currentPairwiseObjects.size() > 0) {
+			PairwisePopup popup = new PairwisePopup(uniprot, geneName, currentPairwiseObjects, dataOverlayProperties);
+			popupMap.put(uniprot, popup);
 			popup.show();
 		}
 	}
 	
 	public void removePopup(String id) {
-		currentPopups.remove(id);
+		popupMap.remove(id);
 	}
 	
 	public void setCurrentPairwiseProperties(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
@@ -53,4 +58,11 @@ public class PairwisePopupFactory {
 	public List<PairwiseOverlayObject> getCurrentPairwiseProperties(){
 		return this.currentPairwiseObjects;
 	}
+
+	public void setDataOverlayProperties(DataOverlayProperties dataOverlayProperties) {
+		this.dataOverlayProperties = dataOverlayProperties;
+		for(PairwisePopup popup : popupMap.values())
+			popup.loadOverlay(this.dataOverlayProperties);
+	}
+
 }
