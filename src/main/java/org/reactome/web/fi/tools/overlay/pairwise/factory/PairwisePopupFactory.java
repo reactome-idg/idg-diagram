@@ -34,7 +34,6 @@ public class PairwisePopupFactory{
 		if(!popupMap.keySet().contains(graphObject.getStId()) && currentPairwiseObjects.size() > 0) {
 			PairwisePopup popup = new PairwisePopup(graphObject, currentPairwiseObjects);
 			popupMap.put(graphObject.getStId(), popup);
-			
 			popup.show();
 		}
 	}

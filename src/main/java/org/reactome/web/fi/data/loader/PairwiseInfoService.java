@@ -67,8 +67,10 @@ public class PairwiseInfoService {
 	}
 	
 	public static void loadUniprotToGeneMap(AsyncCallback<Map<String, String>> callback) {
-		if(geneToUniprotMap != null)
+		if(geneToUniprotMap != null) {
 			callback.onSuccess(geneToUniprotMap);
+			return; //calling the callback does not return the method.
+		}
 		
 		String url  = BASE_URL + "uniprot2gene";
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
