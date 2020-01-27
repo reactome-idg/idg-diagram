@@ -680,16 +680,16 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
         this.dataOverlay.updateIdentifierValueMap();
 		
 		if(dataOverlay.isDiscrete())
-			overlayDiscreteData(dataOverlay);
+			overlayDiscreteData();
 		else if(!dataOverlay.isDiscrete())
-			overlayContinuousData(dataOverlay);
+			overlayContinuousData();
 	}
 
 	/**
 	 * Renders overlay for continuous expression data from TCRD server
 	 * @param dataOverlay
 	 */
-	private void overlayContinuousData(DataOverlay dataOverlay) {
+	private void overlayContinuousData() {
 		ThreeColorGradient gradient = AnalysisColours.get().expressionGradient;
 		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
 			String color = gradient.getColor(k,dataOverlay.getMinValue(),dataOverlay.getMaxValue());
@@ -701,7 +701,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	 * Renders overlay for discrete expression data from TCRD server 
 	 * @param dataOverlay
 	 */
-	private void overlayDiscreteData(DataOverlay dataOverlay) {
+	private void overlayDiscreteData() {
 		Map<Double, String> colourMap = OverlayColours.get().getColours();
 		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
 			String color = colourMap.get(new Double(k));

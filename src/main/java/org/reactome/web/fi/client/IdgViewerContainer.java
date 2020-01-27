@@ -185,7 +185,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
 				
 		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
-		PairwisePopupFactory.get().setDataOverlayProperties(event.getDataOverlayProperties());
 		event.getDataOverlayProperties().setUniprots(collectAllDiagramUniprots());
 		event.getDataOverlayProperties().setPathwayStableId(context.getContent().getStableId());
 	    eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getDataOverlayProperties()), this);
@@ -311,6 +310,9 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		this.dataOverlay = event.getDataOverlay();
 		this.overlayColourLegend.setUnit(dataOverlay.getOverlayProperties().getUnit());
 		context.setDialogMap(new HashMap<>());
+		
+		PairwisePopupFactory.get().setDataOverlayProperties(event.getDataOverlay().getOverlayProperties());
+
 		
 		//testing new way to set is hit for all data so it works in FIViz without overlaying on diagram first
 		setIsHitValues();

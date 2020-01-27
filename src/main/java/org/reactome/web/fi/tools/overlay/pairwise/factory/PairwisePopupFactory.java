@@ -32,7 +32,7 @@ public class PairwisePopupFactory{
 	
 	public void openPopup(GraphObject graphObject) {
 		if(!popupMap.keySet().contains(graphObject.getStId()) && currentPairwiseObjects.size() > 0) {
-			PairwisePopup popup = new PairwisePopup(graphObject, currentPairwiseObjects, dataOverlayProperties);
+			PairwisePopup popup = new PairwisePopup(graphObject, currentPairwiseObjects);
 			popupMap.put(graphObject.getStId(), popup);
 			
 			popup.show();
@@ -41,7 +41,7 @@ public class PairwisePopupFactory{
 	
 	public void openPopup(String uniprot, String geneName) {
 		if(!popupMap.keySet().contains(uniprot) && currentPairwiseObjects.size() > 0) {
-			PairwisePopup popup = new PairwisePopup(uniprot, geneName, currentPairwiseObjects, dataOverlayProperties);
+			PairwisePopup popup = new PairwisePopup(uniprot, geneName, currentPairwiseObjects);
 			popupMap.put(uniprot, popup);
 			popup.show();
 		}
@@ -62,7 +62,11 @@ public class PairwisePopupFactory{
 	public void setDataOverlayProperties(DataOverlayProperties dataOverlayProperties) {
 		this.dataOverlayProperties = dataOverlayProperties;
 		for(PairwisePopup popup : popupMap.values())
-			popup.loadOverlay(this.dataOverlayProperties);
+			popup.loadOverlay();
+	}
+
+	public DataOverlayProperties getDataOverlayProperties() {
+		return this.dataOverlayProperties;
 	}
 
 }

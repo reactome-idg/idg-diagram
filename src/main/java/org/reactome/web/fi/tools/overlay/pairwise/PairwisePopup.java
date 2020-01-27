@@ -1,6 +1,7 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -8,6 +9,8 @@ import java.util.Set;
 import org.reactome.web.diagram.common.PwpButton;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
+import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
+import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
@@ -17,6 +20,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.overlay.profiles.OverlayColours;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
@@ -31,7 +35,6 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -48,6 +51,8 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private Map<String,String> uniprotToGeneMap;
 	private List<String> displayedNodes;
 	
+	private DataOverlay dataOverlay;
+	
 	private CytoscapeEntity cy;
 	private Boolean cytoscapeInitialized = false;
 	
@@ -55,22 +60,20 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	
 	private FlowPanel infoPanel;
 	
-	public PairwisePopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayObjects, DataOverlayProperties dataOverlayProperties) {
+	public PairwisePopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.popupId = graphObject.getStId();
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		this.displayedNodes = new ArrayList<>();
 		initPanel();
 		loadNetwork(graphObject);
-		loadOverlay(dataOverlayProperties);
 	}
 
-	public PairwisePopup(String uniprot, String geneName, List<PairwiseOverlayObject> pairwiseOverlayObjects, DataOverlayProperties dataOverlayProperties) {
+	public PairwisePopup(String uniprot, String geneName, List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.popupId = uniprot;
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		this.displayedNodes = new ArrayList<>();
 		initPanel();
 		loadNetwork(uniprot, geneName);
-		loadOverlay(dataOverlayProperties);
 	}
 
 	private void initPanel() {
@@ -244,7 +247,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		});
 		cy.setCytoscapeLayout("cose");
 		
-		//TODO: load current overlay data here using displayedNodes
+		loadOverlay();
 	}
 	
 	/**
@@ -356,9 +359,12 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		return result;
 	}
 	
-	public void loadOverlay(DataOverlayProperties dataOverlayProperties) {
+	public void loadOverlay() {
+		DataOverlayProperties properties = PairwisePopupFactory.get().getDataOverlayProperties();
 		OverlayLoader loader = new OverlayLoader();
-		loader.load(dataOverlayProperties, new OverlayLoader.Handler() {
+		properties.setUniprots(getAllUniprots());
+		
+		loader.load(properties, new OverlayLoader.Handler() {
 			@Override
 			public void onOverlayLoadedError(Throwable exception) {
 				Console.log(exception);
@@ -370,10 +376,45 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		});
 	}
 	
+	/**
+	 * Gather uniprots for dataOverlay service call
+	 * @return
+	 */
+	private String getAllUniprots() {
+		Set<String> uniprots = new HashSet<>();
+		uniprots.addAll(this.displayedNodes);
+		uniprots.remove(null);
+		return String.join(",", uniprots);
+	}
+
 	private void overlayData(DataOverlay dataOverlay) {
-		
+		cy.resetStyle();
+		cy.resetSelection();
+		this.dataOverlay = dataOverlay;
+		this.dataOverlay.updateIdentifierValueMap();
+		if(dataOverlay.isDiscrete())
+			overlayDiscreteData();
+		else
+			overlayContinuousData();
 	}
 	
+	private void overlayContinuousData() {
+		ThreeColorGradient gradient = AnalysisColours.get().expressionGradient;
+		for(String uniprot: displayedNodes) {
+			if(dataOverlay.getIdentifierValueMap().get(uniprot) == null) continue;
+			String color = gradient.getColor(dataOverlay.getIdentifierValueMap().get(uniprot), dataOverlay.getMinValue(), dataOverlay.getMaxValue());
+			cy.highlightNode(uniprot, 
+							 color,
+							 ".8");
+		}
+	}
+
+	private void overlayDiscreteData() {
+		Map<Double, String> colourMap = OverlayColours.get().getColours();
+		for(String uniprot : displayedNodes)
+			cy.highlightNode(uniprot, colourMap.get(dataOverlay.getIdentifierValueMap().get(uniprot)), ".8");
+	}
+
 	@Override
 	public void hide() {
 		PairwisePopupFactory.get().removePopup(this.popupId);
