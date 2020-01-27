@@ -111,15 +111,14 @@ public class DataOverlay {
 	 */
 	public void updateIdentifierValueMap() {
 		if(this.tissueTypes == null || this.tissueTypes.size()<=1) return;
-		if(this.tissueTypes != null && this.tissueTypes.size()>1) {
-        	Map<String, Double> identifierValueMap = new HashMap<>();
-        	this.uniprotToEntitiesMap.forEach((k,v) ->{
-    			v.forEach((l) -> {
-    				if(tissueTypes.get(this.column) == l.getTissue())
-    					identifierValueMap.put(k, l.getValue());
-    			});
-    		});
-            this.setIdentifierValueMap(identifierValueMap);
-        }
+    	
+		Map<String, Double> identifierValueMap = new HashMap<>();
+    	this.uniprotToEntitiesMap.forEach((k,v) ->{
+			v.forEach((l) -> {
+				if(tissueTypes.get(this.column) == l.getTissue())
+					identifierValueMap.put(k, l.getValue());
+			});
+		});
+        this.setIdentifierValueMap(identifierValueMap);
 	}
 }
