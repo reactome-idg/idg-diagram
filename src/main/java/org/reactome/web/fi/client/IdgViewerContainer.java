@@ -69,7 +69,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	
 	private DataOverlay dataOverlay;
 	private DataOverlay targetLevelOverlay;
-	private boolean renderOverlays = false;
 	
 	private DataOverlayProperties lastOverlayProperties = null;
 	
@@ -291,7 +290,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	 */
 	@Override
 	public void onRenderOtherData(RenderOtherDataEvent event) {
-		if(this.renderOverlays == false)
+		if(this.dataOverlay == null)
 			return;
 		
 		OverlayDataHandler.getHandler()
@@ -309,7 +308,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			this.targetLevelOverlay = event.getDataOverlay();
 		}
 		this.overlayLauncher.hide();
-		this.renderOverlays = true;
 		this.dataOverlay = event.getDataOverlay();
 		this.overlayColourLegend.setUnit(dataOverlay.getOverlayProperties().getUnit());
 		context.setDialogMap(new HashMap<>());
@@ -369,7 +367,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
-		renderOverlays = false;
 		this.dataOverlay = null;
 		clearAnalysisOverlay();
 		context.setDialogMap(new HashMap<>());
@@ -379,10 +376,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			((FIViewVisualizer)activeVisualiser).overlayNodes(null);
 		
 		if(this.targetLevelOverlay != null && event.getSource() instanceof OverlayControlLegend)
-			if(this.context.getContent().getStableId() == targetLevelOverlay.getOverlayProperties().getPathwayStableId())
-				this.eventBus.fireEventFromSource(new OverlayDataLoadedEvent(this.targetLevelOverlay), this);
-			else
-				this.eventBus.fireEventFromSource(new MakeOverlayRequestEvent(getTargetLevelProperties()), this);
+			this.eventBus.fireEventFromSource(new MakeOverlayRequestEvent(getTargetLevelProperties()), this);
 	}
 	
 	/**
