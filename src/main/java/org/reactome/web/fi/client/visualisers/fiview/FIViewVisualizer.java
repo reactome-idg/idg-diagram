@@ -677,29 +677,12 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 			nodeContextPanelMap.clear();
 			return;
 		}
-		updateIdentifierValueMap(dataOverlay);
+        this.dataOverlay.updateIdentifierValueMap();
 		
 		if(dataOverlay.isDiscrete())
 			overlayDiscreteData(dataOverlay);
 		else if(!dataOverlay.isDiscrete())
 			overlayContinuousData(dataOverlay);
-	}
-
-	/**
-	 * Sets IdentifierValueMap on DataOverlay based on current column
-	 * @param dataOverlay
-	 */
-	private void updateIdentifierValueMap(DataOverlay dataOverlay) {
-		if(dataOverlay.getTissueTypes() != null && dataOverlay.getTissueTypes().size()>1) {
-        	Map<String, Double> identifierValueMap = new HashMap<>();
-        	dataOverlay.getUniprotToEntitiesMap().forEach((k,v) ->{
-    			v.forEach((l) -> {
-    				if(dataOverlay.getTissueTypes().get(dataOverlay.getColumn()) == l.getTissue())
-    					identifierValueMap.put(k, l.getValue());
-    			});
-    		});
-            dataOverlay.setIdentifierValueMap(identifierValueMap);
-        }
 	}
 
 	/**

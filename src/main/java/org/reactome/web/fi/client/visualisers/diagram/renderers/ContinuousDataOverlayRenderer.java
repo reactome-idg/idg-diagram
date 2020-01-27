@@ -67,16 +67,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         this.gradient = AnalysisColours.get().expressionGradient;
         this.originalOverlay = overlay;
         this.dataOverlay = dataOverlay;
-        if(dataOverlay.getTissueTypes() != null && dataOverlay.getTissueTypes().size()>1) {
-        	Map<String, Double> identifierValueMap = new HashMap<>();
-        	dataOverlay.getUniprotToEntitiesMap().forEach((k,v) ->{
-    			v.forEach((l) -> {
-    				if(dataOverlay.getTissueTypes().get(dataOverlay.getColumn()) == l.getTissue())
-    					identifierValueMap.put(k, l.getValue());
-    			});
-    		});
-            this.dataOverlay.setIdentifierValueMap(identifierValueMap);
-        }
+        this.dataOverlay.updateIdentifierValueMap(); //reset map to just entities in a specific tissue if tissueTypes isnt null
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
         renderContinuousProteinData(itemsDistribution.getItems("Protein"));
         renderContinuousComplexData(itemsDistribution.getItems("Complex"));

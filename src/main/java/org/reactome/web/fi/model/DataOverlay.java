@@ -1,5 +1,6 @@
 package org.reactome.web.fi.model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -102,5 +103,23 @@ public class DataOverlay {
 
 	public void setUniprotToEntitiesMap(Map<String, List<DataOverlayEntity>> uniprotToEntitiesMap) {
 		this.uniprotToEntitiesMap = uniprotToEntitiesMap;
+	}
+	
+	/**
+	 * Helper method to resets IdentifierValueMap to just represent 
+	 * currently displayed tissue based on current column.
+	 */
+	public void updateIdentifierValueMap() {
+		if(this.tissueTypes == null || this.tissueTypes.size()<=1) return;
+		if(this.tissueTypes != null && this.tissueTypes.size()>1) {
+        	Map<String, Double> identifierValueMap = new HashMap<>();
+        	this.uniprotToEntitiesMap.forEach((k,v) ->{
+    			v.forEach((l) -> {
+    				if(tissueTypes.get(this.column) == l.getTissue())
+    					identifierValueMap.put(k, l.getValue());
+    			});
+    		});
+            this.setIdentifierValueMap(identifierValueMap);
+        }
 	}
 }
