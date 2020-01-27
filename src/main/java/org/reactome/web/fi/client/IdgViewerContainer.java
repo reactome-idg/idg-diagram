@@ -43,6 +43,7 @@ import org.reactome.web.fi.messages.CytoscapeViewLoadingMessage;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.tools.overlay.OverlayLauncherDisplay;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -185,6 +186,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 			eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
 				
 		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
+		PairwisePopupFactory.get().setDataOverlayProperties(event.getDataOverlayProperties());
 		event.getDataOverlayProperties().setUniprots(collectAllDiagramUniprots());
 		event.getDataOverlayProperties().setPathwayStableId(context.getContent().getStableId());
 	    eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getDataOverlayProperties()), this);
