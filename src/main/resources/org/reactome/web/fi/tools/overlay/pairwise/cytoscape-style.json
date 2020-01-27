@@ -165,7 +165,7 @@
     "selector": "node[interactor=\"true\"]",
     "style": {
         "shape": "triangle",
-        "background-color": "#66aacc"
+        "background-color": "#00CC00"
     }
 },
 {
