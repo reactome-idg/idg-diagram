@@ -40,8 +40,7 @@ public class OverlayLoader implements RequestCallback{
 	private Request request;
 	private DataOverlayProperties dataOverlayProperties;
 	
-	public OverlayLoader(Handler handler){
-		this.handler = handler;
+	public OverlayLoader(){
 	}
 	
 	public void cancel() {
@@ -50,7 +49,7 @@ public class OverlayLoader implements RequestCallback{
 			this.request.cancel();
 	}
 
-	public void load(DataOverlayProperties properties) {
+	public void load(DataOverlayProperties properties, Handler handler) {
 		//make sure uniprots exist before doing anything
 		if(properties.getUniprots() == null) {
 			Exception exception = new Exception("Cannot request overlay data for 0 ids.");
@@ -58,6 +57,7 @@ public class OverlayLoader implements RequestCallback{
 			return;
 		}
 		
+		this.handler = handler;
 		cancel();
 		this.dataOverlayProperties = properties;
 		String postData = getPostData(dataOverlayProperties);

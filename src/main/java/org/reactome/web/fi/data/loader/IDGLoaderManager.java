@@ -37,7 +37,7 @@ OverlayLoader.Handler{
 		this.eventBus = eventBus;
 		
 		fIViewLoader = new FIViewLoader(this);
-		overlayLoader = new OverlayLoader(this);
+		overlayLoader = new OverlayLoader();
 	}
 	
 	@Override
@@ -66,7 +66,7 @@ OverlayLoader.Handler{
 	 * @param postData
 	 */
 	public void loadTCRDData(DataOverlayProperties properties) { 
-		overlayLoader.load(properties);
+		overlayLoader.load(properties, this);
 	}
 	
 	private boolean isFIViewNeeded(String identifier) {
