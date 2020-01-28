@@ -25,6 +25,7 @@ import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -154,7 +155,10 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			entities.addAll(complex.getParticipants());
 			for(int i=0; i<entities.size(); i++) {
 				nodeArr.set(nodeArr.size(), getProtein(entities.get(i)));
-				displayedNodes.add(entities.get(i).getIdentifier());
+				String identifier = entities.get(i).getIdentifier();
+				if(identifier.contains("-")) //make sure to remove all isoform identifiers
+					identifier = identifier.substring(0, identifier.indexOf("-"));
+				displayedNodes.add(identifier);
 				for(int j=i+1; j<entities.size(); j++) {
 					edgeArr.set(edgeCount++, 
 								makeFI(edgeArr.size(), 
@@ -189,8 +193,12 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		List<String> uniprots = new ArrayList<>();
 		if(graphObject instanceof GraphPhysicalEntity) {
 			Set<GraphPhysicalEntity> entities = ((GraphPhysicalEntity)graphObject).getParticipants();
-			for(GraphPhysicalEntity entity: entities)
-				uniprots.add(entity.getIdentifier());
+			for(GraphPhysicalEntity entity: entities) {
+				String uniprot = entity.getIdentifier();
+				if(uniprot.contains("-"))
+					uniprot = uniprot.substring(0, uniprot.indexOf("-"));
+				uniprots.add(uniprot);
+			}
 		}
 		load(new PairwiseOverlayProperties(pairwiseOverlayObjects, String.join(",", uniprots)));
 	}
@@ -261,8 +269,11 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private void addInteractorSet(String source, List<String> uniprots, String interaction, String id) {
 		for(int i=0; i<5; i++) {
 			if(uniprots.get(i) == null) break;
-			addNode(uniprots.get(i));
-			addEdge(source, uniprots.get(i), interaction, id);
+			String uniprot = uniprots.get(i);
+			if(uniprot.contains("-"))
+				uniprot = uniprot.substring(0, uniprot.indexOf("-"));
+			addNode(uniprot);
+			addEdge(source, uniprot, interaction, id);
 		}
 	}
 	
@@ -271,6 +282,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 * @param uniprot
 	 */
 	private void addNode(String uniprot) {
+		
 		if(displayedNodes.contains(uniprot)) return;
 		JSONValue val = getProtein(uniprot, uniprotToGeneMap.get(uniprot), true);
 		displayedNodes.add(uniprot);
@@ -297,6 +309,12 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		}
 	}
 	
+	@Override
+	protected void endDragging(MouseUpEvent event) {
+		cy.resize(); //alerts cytoscape js core to location change of canvase to listen on
+		super.endDragging(event);
+	}
+
 	/**
 	 * Makes a node for a passed in GraphPhysicalEntity
 	 * @param entity
@@ -308,7 +326,11 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		
 		JSONObject node = new JSONObject();
 		
-		node.put("id", new JSONString(entity.getIdentifier()));
+		String identifier = entity.getIdentifier();
+		if(identifier.contains("-"))
+			identifier = identifier.substring(0, identifier.indexOf("-"));
+		
+		node.put("id", new JSONString(identifier));
 		node.put("name", new JSONString(entity.getDisplayName()));
 		
 		result.put("data", node);
@@ -360,6 +382,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	}
 	
 	public void loadOverlay() {
+		
 		DataOverlayProperties properties = PairwisePopupFactory.get().getDataOverlayProperties();
 		OverlayLoader loader = new OverlayLoader();
 		properties.setUniprots(getAllUniprots());
@@ -392,6 +415,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		cy.resetStyle();
 		cy.resetSelection();
 		this.dataOverlay.updateIdentifierValueMap();
+		
 		if(dataOverlay.isDiscrete())
 			overlayDiscreteData();
 		else
