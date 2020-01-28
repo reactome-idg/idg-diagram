@@ -22,6 +22,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
+import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
@@ -108,7 +109,8 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		infoButton.addClickHandler(e -> onInfoButtonClicked());
 		result.add(infoButton);
 		
-		infoPanel = new FlowPanel(); //TODO: Setup info panel
+		infoPanel = new FlowPanel(); //TODO: add Results Table after pairwiseOverlayMap is loaded
+		result.add(infoPanel);
 		
 		return result;
 	}
@@ -125,6 +127,21 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		SafeHtml safe = SafeHtmlUtils.fromTrustedString(fp.toString());
 		getCaption().setHTML(safe);
 		getCaption().asWidget().setStyleName(RESOURCES.getCSS().header());
+	}
+	
+	/**
+	 * Use pairwiseOverlayMap to make PairwiseResultsTable and set on infoPanel
+	 */
+	private void setPairwiseResultsTable() {
+		List<PairwiseEntity> entities = new ArrayList<>();
+		for(List<PairwiseEntity> value : pairwiseOverlayMap.values())
+			entities.addAll(value);
+		
+		PairwisePopupResultsTable table = new PairwisePopupResultsTable(entities);
+		table.setRowCount(entities.size(), true);
+		infoPanel.add(table);
+		infoPanel.setVisible(true);
+
 	}
 
 	/**
@@ -235,6 +252,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			@Override
 			public void onSuccess(Map<String, String> uniprotToGeneNameMap) {
 				uniprotToGeneMap = uniprotToGeneNameMap;
+				setPairwiseResultsTable();
 				addInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
 			}
 		});
