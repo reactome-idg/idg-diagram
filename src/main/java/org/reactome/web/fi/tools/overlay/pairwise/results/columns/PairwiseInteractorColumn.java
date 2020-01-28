@@ -1,25 +1,20 @@
 package org.reactome.web.fi.tools.overlay.pairwise.results.columns;
 
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwiseTableEntity;
 
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
 
-public class DiagramGeneNameColumn extends Column<PairwiseTableEntity, String> {
+public class PairwiseInteractorColumn extends Column<PairwiseTableEntity, String> {
 
-	private static final String EXPLAINATION = "The reactome diagram source for the interaction";
-	
-	public DiagramGeneNameColumn() {
+	public PairwiseInteractorColumn() {
 		super(new TextCell());
-		
 	}
 
 	@Override
 	public String getValue(PairwiseTableEntity object) {
-		return object.getDiagramSource();
+		return object.getPairwiseInteractor();
 	}
-	
-	
 
 }

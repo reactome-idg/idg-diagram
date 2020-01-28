@@ -134,11 +134,20 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 */
 	private void setPairwiseResultsTable() {
 		List<PairwiseEntity> entities = new ArrayList<>();
-		for(List<PairwiseEntity> value : pairwiseOverlayMap.values())
-			entities.addAll(value);
-		
-		PairwisePopupResultsTable table = new PairwisePopupResultsTable(entities);
-		table.setRowCount(entities.size(), true);
+		List<PairwiseTableEntity> testEntities = new ArrayList<>();
+		for(List<PairwiseEntity> values : pairwiseOverlayMap.values())
+			for(PairwiseEntity entity : values) {
+				for(String uniprot : entity.getNegGenes()) {
+					testEntities.add(new PairwiseTableEntity(entity.getGene(), uniprot, entity.getDataDesc().getId(), "negative", null));
+				}
+				for(String uniprot : entity.getPosGenes()){
+					testEntities.add(new PairwiseTableEntity(entity.getGene(), uniprot, entity.getDataDesc().getId(), "positive", null));
+
+				}
+			}
+				
+		PairwisePopupResultsTable table = new PairwisePopupResultsTable(testEntities);
+		table.setRowCount(testEntities.size(), true);
 		infoPanel.add(table);
 		infoPanel.setVisible(true);
 
