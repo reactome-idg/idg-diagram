@@ -43,9 +43,11 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -60,6 +62,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private Map<String, List<PairwiseEntity>> pairwiseOverlayMap;
 	private Map<String,String> uniprotToGeneMap;
 	private List<String> displayedNodes;
+	private List<PairwiseTableEntity> tableEntities;
 	
 	private DataOverlay dataOverlay;
 	
@@ -70,23 +73,28 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private FlowPanel infoPanel;
 	private FlowPanel customPopup;
 	
-	public PairwisePopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayObjects) {
+	public PairwisePopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayObjects, int zIndex) {
 		this.popupId = graphObject.getStId();
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		this.displayedNodes = new ArrayList<>();
+		this.zIndex = zIndex;
+		this.getElement().getStyle().setZIndex(zIndex);
 		initPanel();
 		loadNetwork(graphObject);
 	}
 
-	public PairwisePopup(String uniprot, String geneName, List<PairwiseOverlayObject> pairwiseOverlayObjects) {
+	public PairwisePopup(String uniprot, String geneName, List<PairwiseOverlayObject> pairwiseOverlayObjects, int zIndex) {
 		this.popupId = uniprot;
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		this.displayedNodes = new ArrayList<>();
+		this.zIndex = zIndex;
+		this.getElement().getStyle().setZIndex(zIndex);
 		initPanel();
 		loadNetwork(uniprot, geneName);
 	}
 
 	private void initPanel() {
+		FocusPanel focus = new FocusPanel();
 		setStyleName(RESOURCES.getCSS().popupPanel());
 		setAutoHideEnabled(false);
 		setModal(false);
@@ -97,12 +105,14 @@ public class PairwisePopup extends AbstractPairwisePopup{
 
 		main.add(getMainPanel());
 		
+		focus.add(main);
+		focus.addClickHandler(e -> panelClicked());
 		setTitlePanel();
-		setWidget(main);
+		setWidget(focus);
 				
 		show();
 	}
-	
+
 	private FlowPanel getMainPanel() {
 		FlowPanel result = new FlowPanel();
 		result.setStyleName(RESOURCES.getCSS().container());
@@ -117,7 +127,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		infoButton.addClickHandler(e -> onInfoButtonClicked());
 		result.add(infoButton);
 		
-		infoPanel = new FlowPanel(); //TODO: add Results Table after pairwiseOverlayMap is loaded
+		infoPanel = new FlowPanel();
 		result.add(infoPanel);
 		
 		result.add(customPopup = new FlowPanel());
@@ -144,28 +154,28 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 * !!! MUST BE CALLED AFTER uniprotToGeneMap is loaded
 	 */
 	private void setPairwiseResultsTable() {
-		List<PairwiseTableEntity> entities = new ArrayList<>();
+		tableEntities = new ArrayList<>();
 		for(List<PairwiseEntity> values : pairwiseOverlayMap.values())
 			for(PairwiseEntity entity : values) {
 				for(String uniprot : entity.getNegGenes()) {
-					entities.add(new PairwiseTableEntity(uniprotToGeneMap.get(entity.getGene()) + "("+entity.getGene()+")", 
+					tableEntities.add(new PairwiseTableEntity(uniprotToGeneMap.get(entity.getGene()) + "("+entity.getGene()+")", 
 															 uniprotToGeneMap.get(uniprot) + "("+uniprot+")", 
 															 entity.getDataDesc().getId(), "negative", null));
 				}
 				for(String uniprot : entity.getPosGenes()){
-					entities.add(new PairwiseTableEntity(uniprotToGeneMap.get(entity.getGene()) + "("+entity.getGene()+")", 
+					tableEntities.add(new PairwiseTableEntity(uniprotToGeneMap.get(entity.getGene()) + "("+entity.getGene()+")", 
 															 uniprotToGeneMap.get(uniprot) + "("+uniprot+")", 
 															 entity.getDataDesc().getId(), "positive", null));
 				}
 			}
 				
-		PairwisePopupResultsTable table = new PairwisePopupResultsTable(entities);
-		table.setRowCount(entities.size(), true);
+		PairwisePopupResultsTable table = new PairwisePopupResultsTable(tableEntities);
+		table.setRowCount(tableEntities.size(), true);
 		
 		//Needed for pager to work
 		ListDataProvider<PairwiseTableEntity> provider = new ListDataProvider<PairwiseTableEntity>();
 		provider.addDataDisplay(table);
-		provider.setList(entities);
+		provider.setList(tableEntities);
 		
 		//Pager setup for data
 		SimplePager pager = new SimplePager();
@@ -224,7 +234,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 
 	/**
 	 * Loads base node when opened from FIViz or single protein GraphObject.
-	 * Directs loading of pairwise entities.
+	 * Directs loading of pairwise tableEntities.
 	 * @param uniprot
 	 * @param geneName
 	 */
@@ -236,7 +246,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	}
 
 	/**
-	 * collects uniprots of a graphObject and directs loading of pairwise entities;
+	 * collects uniprots of a graphObject and directs loading of pairwise tableEntities;
 	 * @param graphObject
 	 */
 	private void loadPairwiseRelationships(GraphObject graphObject) {
@@ -254,7 +264,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	}
 	
 	/**
-	 * performs loading of pairwise entities based on passed in pairwiseOverlayProperties.
+	 * performs loading of pairwise tableEntities based on passed in pairwiseOverlayProperties.
 	 * PairwiseOverlayProperties must contain a list of PairwiseOverlaObjects and a list of uniprots as a string.
 	 * @param pairwiseOverlayProperties
 	 */
@@ -292,7 +302,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	}
 
 	/**
-	 * Iterates over pairwiseOverlayMap of entities.
+	 * Iterates over pairwiseOverlayMap of tableEntities.
 	 * Directs the overlay of positive and negative interactions.
 	 */
 	private void addInitialInteractors() {
@@ -463,7 +473,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	}
 
 	private void overlayData() {
-		cy.resetNodeColor("#00CC00");
+		cy.resetNodeColor("#00CC00"); //TODO: find a way to access this programatically
 		cy.resetSelection();
 		this.dataOverlay.updateIdentifierValueMap();
 		
@@ -492,19 +502,31 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			cy.highlightNode(uniprot, color, ".8");
 		}
 	}
-
+	
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
-//		RemoveButtonPopup panel = new RemoveButtonPopup();
-//		String test = this.getElement().getStyle().getZIndex().toString();
-//		panel.setZIndex(Integer.parseInt(this.getElement().getStyle().getZIndex().toString()));
-//		panel.show();
+		int index = zIndex+1;
+		RemoveButtonPopup panel = new RemoveButtonPopup(index, new RemoveButtonPopup.Handler() {
+			@Override
+			public void onRemoveButtonClicked() {
+				cy.removeCytoscapeNode(id);
+			}
+		});
+		panel.setPopupPosition(x+5, y+5);
+		panel.show();
 	}
 
 	public void changeOverlayColumn(int column) {
 		if(dataOverlay != null)
 			dataOverlay.setColumn(column);
 		overlayData();
+	}
+	
+	/**
+	 * Used to focus panel in front of other open popups on panel click
+	 */
+	private void panelClicked() {
+		this.getElement().getStyle().setZIndex(PairwisePopupFactory.get().getMaxZIndex());
 	}
 	
 	@Override

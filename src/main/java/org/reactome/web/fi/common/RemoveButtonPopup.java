@@ -10,10 +10,16 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 public class RemoveButtonPopup extends PopupPanel{
 
-	public RemoveButtonPopup() {
+	public interface Handler{
+		void onRemoveButtonClicked();
+	}
+	
+	
+	public RemoveButtonPopup(int i, Handler handler) {
+		this.getElement().getStyle().setZIndex(i);
 		FlowPanel panel = new FlowPanel();
 		Button removeButton = new Button("Remove");
-		removeButton.addClickHandler(e -> removeButtonClicked());
+		removeButton.addClickHandler(e -> handler.onRemoveButtonClicked());
 		panel.add(removeButton);
 		
 		setWidget(panel);
@@ -21,10 +27,6 @@ public class RemoveButtonPopup extends PopupPanel{
 	
 	public void setZIndex(int zIndex) {
 		this.getElement().getStyle().setZIndex(zIndex);
-	}
-
-	private void removeButtonClicked() {
-		Window.alert("Remove NODE!!");
 	}
 
 	public static Resources RESOURCES;

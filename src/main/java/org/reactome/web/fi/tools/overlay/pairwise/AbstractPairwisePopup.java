@@ -6,6 +6,13 @@ import com.google.gwt.user.client.ui.DialogBox;
 
 public class AbstractPairwisePopup extends DialogBox implements CytoscapeEntity.Handler{
 
+	protected int zIndex;
+	
+	
+	public void resetZIndex() {
+		this.getElement().getStyle().setZIndex(zIndex);
+	}
+	
 	@Override
 	public void onNodeClicked(String id, String name) {
 		// TODO Auto-generated method stub
