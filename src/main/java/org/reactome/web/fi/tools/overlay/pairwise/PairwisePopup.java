@@ -12,6 +12,7 @@ import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
+import org.reactome.web.fi.common.RemoveButtonPopup;
 import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
@@ -26,6 +27,8 @@ import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTa
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.json.client.JSONArray;
@@ -64,8 +67,8 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private Boolean cytoscapeInitialized = false;
 	
 	private FlowPanel main;
-	
 	private FlowPanel infoPanel;
+	private FlowPanel customPopup;
 	
 	public PairwisePopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.popupId = graphObject.getStId();
@@ -117,6 +120,8 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		infoPanel = new FlowPanel(); //TODO: add Results Table after pairwiseOverlayMap is loaded
 		result.add(infoPanel);
 		
+		result.add(customPopup = new FlowPanel());
+		customPopup.getElement().getStyle().setPosition(Position.RELATIVE);
 		return result;
 	}
 
@@ -458,7 +463,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	}
 
 	private void overlayData() {
-		cy.resetStyle();
+		cy.resetNodeColor("#00CC00");
 		cy.resetSelection();
 		this.dataOverlay.updateIdentifierValueMap();
 		
@@ -486,6 +491,14 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			if(color == null || color == "") continue;
 			cy.highlightNode(uniprot, color, ".8");
 		}
+	}
+
+	@Override
+	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
+//		RemoveButtonPopup panel = new RemoveButtonPopup();
+//		String test = this.getElement().getStyle().getZIndex().toString();
+//		panel.setZIndex(Integer.parseInt(this.getElement().getStyle().getZIndex().toString()));
+//		panel.show();
 	}
 
 	public void changeOverlayColumn(int column) {

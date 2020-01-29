@@ -6,6 +6,11 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class PairwiseInteractorColumn extends Column<PairwiseTableEntity, String> {
 
 	public PairwiseInteractorColumn() {

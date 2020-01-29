@@ -4,14 +4,14 @@ public class PairwiseTableEntity {
 
 	private String diagramSource;
 	private String pairwiseInteractor;
-	private String identifier;
+	private String interactionSource;
 	private String posOrNeg;
 	private String data;
 	
-	public PairwiseTableEntity(String diagramSource, String pairwiseInteractor, String identifier, String posOrNeg, String data) {
+	public PairwiseTableEntity(String diagramSource, String pairwiseInteractor, String interactionSource, String posOrNeg, String data) {
 		this.diagramSource = diagramSource;
 		this.pairwiseInteractor = pairwiseInteractor;
-		this.identifier = identifier;
+		this.interactionSource = interactionSource;
 		this.posOrNeg = posOrNeg;
 		this.data = data;
 	}
@@ -32,12 +32,12 @@ public class PairwiseTableEntity {
 		this.pairwiseInteractor = pairwiseInteractor;
 	}
 
-	public String getIdentifier() {
-		return identifier;
+	public String getInteractionSource() {
+		return interactionSource;
 	}
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+	public void setInteractionSource(String identifier) {
+		this.interactionSource = identifier;
 	}
 
 	public String getPosOrNeg() {

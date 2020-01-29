@@ -10,15 +10,15 @@ import com.google.gwt.user.cellview.client.Column;
  * @author brunsont
  *
  */
-public class PairwiseRelationshipColumn extends Column<PairwiseTableEntity, String> {
+public class OverlayValueColumn extends Column<PairwiseTableEntity, String> {
 
-	public PairwiseRelationshipColumn() {
+	public OverlayValueColumn() {
 		super(new TextCell());
 	}
 
 	@Override
 	public String getValue(PairwiseTableEntity object) {
-		return object.getPosOrNeg();
+		return object.getData();
 	}
 
 	
