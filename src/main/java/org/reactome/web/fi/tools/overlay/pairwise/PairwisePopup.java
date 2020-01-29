@@ -37,11 +37,13 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.view.client.ListDataProvider;
 
 public class PairwisePopup extends AbstractPairwisePopup{
 
@@ -131,26 +133,40 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	
 	/**
 	 * Use pairwiseOverlayMap to make PairwiseResultsTable and set on infoPanel
+	 * !!! MUST BE CALLED AFTER uniprotToGeneMap is loaded
 	 */
 	private void setPairwiseResultsTable() {
-		List<PairwiseEntity> entities = new ArrayList<>();
-		List<PairwiseTableEntity> testEntities = new ArrayList<>();
+		List<PairwiseTableEntity> entities = new ArrayList<>();
 		for(List<PairwiseEntity> values : pairwiseOverlayMap.values())
 			for(PairwiseEntity entity : values) {
 				for(String uniprot : entity.getNegGenes()) {
-					testEntities.add(new PairwiseTableEntity(entity.getGene(), uniprot, entity.getDataDesc().getId(), "negative", null));
+					entities.add(new PairwiseTableEntity(uniprotToGeneMap.get(entity.getGene()) + "("+entity.getGene()+")", 
+															 uniprotToGeneMap.get(uniprot) + "("+uniprot+")", 
+															 entity.getDataDesc().getId(), "negative", null));
 				}
 				for(String uniprot : entity.getPosGenes()){
-					testEntities.add(new PairwiseTableEntity(entity.getGene(), uniprot, entity.getDataDesc().getId(), "positive", null));
-
+					entities.add(new PairwiseTableEntity(uniprotToGeneMap.get(entity.getGene()) + "("+entity.getGene()+")", 
+															 uniprotToGeneMap.get(uniprot) + "("+uniprot+")", 
+															 entity.getDataDesc().getId(), "positive", null));
 				}
 			}
 				
-		PairwisePopupResultsTable table = new PairwisePopupResultsTable(testEntities);
-		table.setRowCount(testEntities.size(), true);
+		PairwisePopupResultsTable table = new PairwisePopupResultsTable(entities);
+		table.setRowCount(entities.size(), true);
+		
+		//Needed for pager to work
+		ListDataProvider<PairwiseTableEntity> provider = new ListDataProvider<PairwiseTableEntity>();
+		provider.addDataDisplay(table);
+		provider.setList(entities);
+		
+		//Pager setup for data
+		SimplePager pager = new SimplePager();
+		pager.setDisplay(table);
+		pager.setPageSize(PairwisePopupResultsTable.PAGE_SIZE);
+		
 		infoPanel.add(table);
+		infoPanel.add(pager);
 		infoPanel.setVisible(true);
-
 	}
 
 	/**
@@ -261,8 +277,8 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			@Override
 			public void onSuccess(Map<String, String> uniprotToGeneNameMap) {
 				uniprotToGeneMap = uniprotToGeneNameMap;
-				setPairwiseResultsTable();
 				addInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
+				setPairwiseResultsTable();
 			}
 		});
 	}
@@ -338,7 +354,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	
 	@Override
 	protected void endDragging(MouseUpEvent event) {
-		cy.resize(); //alerts cytoscape js core to location change of canvase to listen on
+		cy.resize(); //alerts cytoscape js core to location change of canvas to listen on
 		super.endDragging(event);
 	}
 

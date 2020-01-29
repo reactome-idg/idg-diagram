@@ -6,6 +6,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwiseTableEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.results.columns.DiagramGeneNameColumn;
 import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseInteractorColumn;
+import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseRelationshipColumn;
 
 import com.google.gwt.user.cellview.client.DataGrid;
 
@@ -15,21 +16,16 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 	
 	public PairwisePopupResultsTable(List<PairwiseTableEntity> entities) {
 		super(PAGE_SIZE);
-		this.setRowData(entities);
+		this.setRowData(0, entities);
 		this.setAutoHeaderRefreshDisabled(true);
 		this.setWidth("100%");
 		this.setVisible(true);
 		this.setHeight("200px");
 		
-//		//Add diagram source as first column
-//		TextColumn<PairwiseEntity> diagramSourceUniprot = new TextColumn<PairwiseEntity>() {
-//			@Override
-//			public String getValue(PairwiseEntity object) {
-//				return object.getGene();
-//			}
-//		};
+
 		this.addColumn(new DiagramGeneNameColumn(), "Diagram Source");
 		this.addColumn(new PairwiseInteractorColumn(), "Pairwise Interactor");
+		this.addColumn(new PairwiseRelationshipColumn(), "Pos/Neg");
 		
 		this.redraw();
 	}
