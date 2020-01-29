@@ -218,6 +218,9 @@ public class PairwisePopup extends AbstractPairwisePopup{
 				String identifier = entities.get(i).getIdentifier();
 				if(identifier.contains("-")) //make sure to remove all isoform identifiers
 					identifier = identifier.substring(0, identifier.indexOf("-"));
+				else if(identifier.contains("ENSG")) {
+					
+				}
 				displayedNodes.add(identifier);
 				for(int j=i+1; j<entities.size(); j++) {
 					edgeArr.set(edgeCount++, 
@@ -229,7 +232,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			}
 		}
 		initializeCytoscape(nodeArr, edgeArr); //initializes and adds diagram nodes and edges
-		loadPairwiseRelationships(graphObject);
+		loadPairwiseInteractors();
 	}
 
 	/**
@@ -242,35 +245,17 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		JSONArray nodeArr = new JSONArray();
 		nodeArr.set(nodeArr.size(), getProtein(uniprot, geneName, false));
 		initializeCytoscape(nodeArr, new JSONArray());
-		load(new PairwiseOverlayProperties(pairwiseOverlayObjects, uniprot));
-	}
-
-	/**
-	 * collects uniprots of a graphObject and directs loading of pairwise tableEntities;
-	 * @param graphObject
-	 */
-	private void loadPairwiseRelationships(GraphObject graphObject) {
-		List<String> uniprots = new ArrayList<>();
-		if(graphObject instanceof GraphPhysicalEntity) {
-			Set<GraphPhysicalEntity> entities = ((GraphPhysicalEntity)graphObject).getParticipants();
-			for(GraphPhysicalEntity entity: entities) {
-				String uniprot = entity.getIdentifier();
-				if(uniprot.contains("-"))
-					uniprot = uniprot.substring(0, uniprot.indexOf("-"));
-				uniprots.add(uniprot);
-			}
-		}
-		load(new PairwiseOverlayProperties(pairwiseOverlayObjects, String.join(",", uniprots)));
+		loadPairwiseInteractors();
 	}
 	
 	/**
-	 * performs loading of pairwise tableEntities based on passed in pairwiseOverlayProperties.
-	 * PairwiseOverlayProperties must contain a list of PairwiseOverlaObjects and a list of uniprots as a string.
+	 * performs loading of pairwise tableEntities based on pairwiseOverlayProperties.
 	 * @param pairwiseOverlayProperties
 	 */
-	private void load(PairwiseOverlayProperties pairwiseOverlayProperties) {
+	private void loadPairwiseInteractors() {
 		PairwiseDataLoader loader = new PairwiseDataLoader();
-		loader.loadPairwiseData(pairwiseOverlayProperties, new PairwiseDataLoader.Handler() {
+		PairwiseOverlayProperties props = new PairwiseOverlayProperties(pairwiseOverlayObjects, String.join(",", displayedNodes));
+		loader.loadPairwiseData(props, new PairwiseDataLoader.Handler() {
 			@Override
 			public void onPairwiseDataLoadedError(Exception e) {
 				GWT.log(e.toString());
