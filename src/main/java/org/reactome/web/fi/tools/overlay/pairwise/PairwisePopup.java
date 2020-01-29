@@ -26,6 +26,7 @@ import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTa
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -38,11 +39,13 @@ import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.SimplePager;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
 public class PairwisePopup extends AbstractPairwisePopup{
@@ -478,8 +481,11 @@ public class PairwisePopup extends AbstractPairwisePopup{
 
 	private void overlayDiscreteData() {
 		Map<Double, String> colourMap = OverlayColours.get().getColours();
-		for(String uniprot : displayedNodes)
-			cy.highlightNode(uniprot, colourMap.get(dataOverlay.getIdentifierValueMap().get(uniprot)), ".8");
+		for(String uniprot : displayedNodes) {
+			String color = colourMap.get(dataOverlay.getIdentifierValueMap().get(uniprot));
+			if(color == null || color == "") continue;
+			cy.highlightNode(uniprot, color, ".8");
+		}
 	}
 
 	public void changeOverlayColumn(int column) {
