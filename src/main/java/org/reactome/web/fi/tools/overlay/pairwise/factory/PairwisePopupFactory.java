@@ -23,7 +23,7 @@ public class PairwisePopupFactory{
 	private List<PairwiseOverlayObject> currentPairwiseObjects;
 	
 	private int zIndexCounter = 1;
-	private final int MAXIMUM_Z_INDEX = 1999;
+	private final int MAXIMUM_Z_INDEX = 1998;
 	
 	private DataOverlayProperties dataOverlayProperties;
 	
@@ -109,8 +109,11 @@ public class PairwisePopupFactory{
 	 * @return
 	 */
 	public int getMaxZIndex() {
+		return MAXIMUM_Z_INDEX;
+	}
+
+	public void resetZIndexes() {
 		for(PairwisePopup popup : popupMap.values())
 			popup.resetZIndex();
-		return MAXIMUM_Z_INDEX;
 	}
 }

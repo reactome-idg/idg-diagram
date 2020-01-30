@@ -78,7 +78,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		this.displayedNodes = new ArrayList<>();
 		this.zIndex = zIndex;
-		this.getElement().getStyle().setZIndex(zIndex);
+		panelClicked();
 		initPanel();
 		loadNetwork(graphObject);
 	}
@@ -88,7 +88,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		this.displayedNodes = new ArrayList<>();
 		this.zIndex = zIndex;
-		this.getElement().getStyle().setZIndex(zIndex);
+		panelClicked();
 		initPanel();
 		loadNetwork(uniprot, geneName);
 	}
@@ -490,14 +490,19 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
-		int index = zIndex+1;
-		RemoveButtonPopup panel = new RemoveButtonPopup(index, new RemoveButtonPopup.Handler() {
+		int index;
+		if(focused == true)
+			index = PairwisePopupFactory.get().getMaxZIndex() + 1;
+		else
+			index = zIndex + 1;
+		RemoveButtonPopup panel = new RemoveButtonPopup(index,id, new RemoveButtonPopup.Handler() {
 			@Override
-			public void onRemoveButtonClicked() {
-				cy.removeCytoscapeNode(id);
+			public void onRemoveButtonClicked(String identifier) {
+				cy.removeCytoscapeNode(identifier);
 			}
 		});
 		panel.setPopupPosition(x+5, y+5);
+		panel.getElement().setId(this.containerId);
 		panel.show();
 	}
 
@@ -511,7 +516,9 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 * Used to focus panel in front of other open popups on panel click
 	 */
 	private void panelClicked() {
+		PairwisePopupFactory.get().resetZIndexes();
 		this.getElement().getStyle().setZIndex(PairwisePopupFactory.get().getMaxZIndex());
+		focused = true; //set so context menu's have correct z index
 	}
 	
 	@Override

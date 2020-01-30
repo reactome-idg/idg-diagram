@@ -7,10 +7,11 @@ import com.google.gwt.user.client.ui.DialogBox;
 public class AbstractPairwisePopup extends DialogBox implements CytoscapeEntity.Handler{
 
 	protected int zIndex;
-	
+	protected boolean focused = false;
 	
 	public void resetZIndex() {
 		this.getElement().getStyle().setZIndex(zIndex);
+		focused = false;
 	}
 	
 	@Override
