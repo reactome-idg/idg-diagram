@@ -19,7 +19,7 @@ public class PairwiseSourceColumn extends Column<PairwiseTableEntity, String> {
 
 	@Override
 	public String getValue(PairwiseTableEntity object) {
-		return object.getInteractionSource();
+		return object.getDataDesc();
 	}
 
 }

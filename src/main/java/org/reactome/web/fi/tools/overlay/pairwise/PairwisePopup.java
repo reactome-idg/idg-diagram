@@ -26,6 +26,8 @@ import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
+import com.google.gwt.cell.client.ActionCell;
+import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -41,6 +43,8 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.IdentityColumn;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
@@ -62,6 +66,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private Map<String, List<PairwiseEntity>> pairwiseOverlayMap;
 	private Map<String,String> uniprotToGeneMap;
 	private List<String> displayedNodes;
+	private List<String> diagramNodes;
 	private List<PairwiseTableEntity> tableEntities;
 	
 	private DataOverlay dataOverlay;
@@ -158,18 +163,31 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		for(List<PairwiseEntity> values : pairwiseOverlayMap.values())
 			for(PairwiseEntity entity : values) {
 				for(String uniprot : entity.getNegGenes()) {
-					tableEntities.add(new PairwiseTableEntity(uniprotToGeneMap.get(entity.getGene()) + "("+entity.getGene()+")", 
-															 uniprotToGeneMap.get(uniprot) + "("+uniprot+")", 
+					tableEntities.add(new PairwiseTableEntity(entity.getGene(), uniprotToGeneMap.get(entity.getGene()),
+															  uniprot, uniprotToGeneMap.get(uniprot),
 															 entity.getDataDesc().getId(), "negative", null));
 				}
 				for(String uniprot : entity.getPosGenes()){
-					tableEntities.add(new PairwiseTableEntity(uniprotToGeneMap.get(entity.getGene()) + "("+entity.getGene()+")", 
-															 uniprotToGeneMap.get(uniprot) + "("+uniprot+")", 
-															 entity.getDataDesc().getId(), "positive", null));
+					tableEntities.add(new PairwiseTableEntity(entity.getGene(), uniprotToGeneMap.get(entity.getGene()),
+							  								  uniprot, uniprotToGeneMap.get(uniprot),
+							  								  entity.getDataDesc().getId(), "positive", null));
 				}
 			}
 				
 		PairwisePopupResultsTable table = new PairwisePopupResultsTable(tableEntities);
+		
+		//Add view button column
+		ActionCell<PairwiseTableEntity> actionCell = new ActionCell<>("View", new ActionCell.Delegate<PairwiseTableEntity>() {
+
+			@Override
+			public void execute(PairwiseTableEntity object) {
+				addInteraction(object);
+			}
+		});
+		
+		IdentityColumn<PairwiseTableEntity> viewColumn = new IdentityColumn<>(actionCell);
+		table.addColumn(viewColumn,"View Relationship");
+		
 		table.setRowCount(tableEntities.size(), true);
 		
 		//Needed for pager to work
@@ -231,6 +249,8 @@ public class PairwisePopup extends AbstractPairwisePopup{
 				}
 			}
 		}
+		diagramNodes = new ArrayList<>();
+		diagramNodes.addAll(displayedNodes);
 		initializeCytoscape(nodeArr, edgeArr); //initializes and adds diagram nodes and edges
 		loadPairwiseInteractors();
 	}
@@ -244,6 +264,8 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private void loadNetwork(String uniprot, String geneName) {
 		JSONArray nodeArr = new JSONArray();
 		nodeArr.set(nodeArr.size(), getProtein(uniprot, geneName, false));
+		diagramNodes = new ArrayList<>();
+		diagramNodes.addAll(displayedNodes);
 		initializeCytoscape(nodeArr, new JSONArray());
 		loadPairwiseInteractors();
 	}
@@ -321,6 +343,11 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			addNode(uniprot);
 			addEdge(source, uniprot, interaction, id);
 		}
+	}
+	
+	private void addInteraction(PairwiseTableEntity entity) {
+		addNode(entity.getInteractorId());
+		addEdge(entity.getSourceId(),entity.getInteractorId(),entity.getPosOrNeg(),entity.getDataDesc());
 	}
 	
 	/**
@@ -490,6 +517,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
+		if(diagramNodes.contains(id)) return;
 		int index;
 		if(focused == true)
 			index = PairwisePopupFactory.get().getMaxZIndex() + 1;
@@ -498,7 +526,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		RemoveButtonPopup panel = new RemoveButtonPopup(index,id, new RemoveButtonPopup.Handler() {
 			@Override
 			public void onRemoveButtonClicked(String identifier) {
-				cy.removeCytoscapeNode(identifier);
+				PairwisePopup.this.cy.removeCytoscapeNode(identifier);
 			}
 		});
 		panel.setPopupPosition(x+5, y+5);
