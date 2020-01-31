@@ -84,16 +84,6 @@ public class PairwisePopupFactory{
 			popup.show();
 		}
 	}
-	
-	/**
-	 * Provide the right z index for popups.
-	 * @return
-	 */
-	private int getZIndex() {
-		int result = 100 + zIndexCounter;
-		zIndexCounter += 2;
-		return result;
-	}
 
 	/**
 	 * Open a popup from the FIView
@@ -108,12 +98,24 @@ public class PairwisePopupFactory{
 		}
 	}
 	
+	/**
+	 * Provide the right z index for popups.
+	 * @return
+	 */
+	private int getZIndex() {
+		int result = 100 + zIndexCounter;
+		zIndexCounter += 2;
+		return result;
+	}
+	
 	public void removePopup(String id) {
 		popupMap.remove(id);
 	}
 	
 	public void setCurrentPairwiseProperties(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.currentPairwiseObjects = pairwiseOverlayObjects;
+		for(PairwisePopup popup : popupMap.values())
+			popup.updatePairwiseObjects(this.currentPairwiseObjects);
 	}
 	
 	public List<PairwiseOverlayObject> getCurrentPairwiseProperties(){

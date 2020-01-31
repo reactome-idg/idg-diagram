@@ -27,6 +27,7 @@ public class DataOverlayEntityMediator {
 
 	private JensenExperimentDataSplitter splitter = new JensenExperimentDataSplitter();
 	private DataOverlayProperties properties;
+	
 	/**
 	 * Can be used to direct data mediation based on data type from server
 	 * @param responseText

@@ -66,6 +66,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private Map<String, List<PairwiseEntity>> pairwiseOverlayMap;
 	private Map<String,String> uniprotToGeneMap;
 	private List<String> displayedNodes;
+	private Set<String> displayedEdges;
 	private List<String> diagramNodes;
 	private List<PairwiseTableEntity> tableEntities;
 	
@@ -98,9 +99,13 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		this.zIndex = zIndex;
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		this.displayedNodes = new ArrayList<>();
+		this.displayedEdges = new HashSet<>();
 		initPanel();
 		panelClicked();
 		this.uniprotToGeneMap = PairwisePopupFactory.get().getUniprotToGeneMap();
+		
+		//Initialize Cytoscape js with no nodes or edges
+		initializeCytoscape(new JSONArray(), new JSONArray());
 	}
 
 	private void initPanel() {
@@ -190,19 +195,22 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 * !!! MUST BE CALLED AFTER uniprotToGeneMap is loaded
 	 */
 	private void setPairwiseResultsTable() {
+		infoPanel.clear();
 		tableEntities = new ArrayList<>();
 		for(List<PairwiseEntity> values : pairwiseOverlayMap.values())
 			for(PairwiseEntity entity : values) {
-				for(String uniprot : entity.getNegGenes()) {
-					tableEntities.add(new PairwiseTableEntity(entity.getGene(), uniprotToGeneMap.get(entity.getGene()),
-															  uniprot, uniprotToGeneMap.get(uniprot),
-															 entity.getDataDesc().getId(), "negative", null));
+				if(entity.getNegGenes() != null && entity.getNegGenes().size() > 0)
+					for(String uniprot : entity.getNegGenes()) {
+						tableEntities.add(new PairwiseTableEntity(entity.getGene(), uniprotToGeneMap.get(entity.getGene()),
+																  uniprot, uniprotToGeneMap.get(uniprot),
+																 entity.getDataDesc().getId(), "negative", null));
 				}
-				for(String uniprot : entity.getPosGenes()){
-					tableEntities.add(new PairwiseTableEntity(entity.getGene(), uniprotToGeneMap.get(entity.getGene()),
-							  								  uniprot, uniprotToGeneMap.get(uniprot),
-							  								  entity.getDataDesc().getId(), "positive", null));
-				}
+				if(entity.getPosGenes() != null && entity.getPosGenes().size() > 0)
+					for(String uniprot : entity.getPosGenes()){
+						tableEntities.add(new PairwiseTableEntity(entity.getGene(), uniprotToGeneMap.get(entity.getGene()),
+								  								  uniprot, uniprotToGeneMap.get(uniprot),
+								  								  entity.getDataDesc().getId(), "positive", null));
+					}
 			}
 				
 		PairwisePopupResultsTable table = new PairwisePopupResultsTable(tableEntities);
@@ -251,25 +259,22 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	}
 
 	private void initBaseCytoscape() {
-		displayedNodes.addAll(diagramNodes);
+//		displayedNodes.addAll(diagramNodes);
 		
-		JSONArray nodeArr = new JSONArray();
 		//triggers when popup loads from FIView
 		if(diagramNodes.size() == 1) {
-			nodeArr.set(nodeArr.size(), getProtein(diagramNodes.get(0), uniprotToGeneMap.get(diagramNodes.get(0)), false));
-			initializeCytoscape(nodeArr, null);
+			addNode(diagramNodes.get(0), false);
 			return;
 		}
 		
-		JSONArray edgeArr = new JSONArray();
+		for(String node : diagramNodes) {
+			addNode(node,false);
+		}
 		for(int i=0; i<diagramNodes.size(); i++) {
-			String gene = uniprotToGeneMap.get(diagramNodes.get(i));
-			nodeArr.set(nodeArr.size(), getProtein(diagramNodes.get(i), uniprotToGeneMap.get(diagramNodes.get(i)), false));
 			for(int j=i+1; j<diagramNodes.size(); j++) {
-				edgeArr.set(edgeCount++, makeFI(edgeArr.size(), diagramNodes.get(i),diagramNodes.get(j), "solid"));
+				addEdge(diagramNodes.get(i), diagramNodes.get(j), "solid", "");
 			}
 		}
-		initializeCytoscape(nodeArr, edgeArr);
 	}
 	
 	/**
@@ -320,29 +325,32 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 * @param id
 	 */
 	private void addInteractorSet(String source, List<String> uniprots, String interaction, String id) {
-		for(int i=0; i<5; i++) {
-			if(uniprots.get(i) == null) break;
-			String uniprot = uniprots.get(i);
-			if(uniprot.contains("-"))
-				uniprot = uniprot.substring(0, uniprot.indexOf("-"));
-			addNode(uniprot);
-			addEdge(source, uniprot, interaction, id);
+		Set<String> darkProteins = PairwisePopupFactory.get().getTDarkSet();
+		int counter = 0;
+		for(String uniprot : uniprots) {
+			if(counter == 5) break;
+			if(darkProteins.contains(uniprot)) {
+				addNode(uniprot, true);
+				addEdge(source, uniprot, interaction, id);
+				counter++;
+			}
 		}
 	}
 	
 	private void addInteraction(PairwiseTableEntity entity) {
-		addNode(entity.getInteractorId());
+		addNode(entity.getInteractorId(), true);
 		addEdge(entity.getSourceId(),entity.getInteractorId(),entity.getPosOrNeg(),entity.getDataDesc());
+		loadOverlay();
 	}
 	
 	/**
 	 * Add a node based on just a gene name
 	 * @param uniprot
 	 */
-	private void addNode(String uniprot) {
+	private void addNode(String uniprot, boolean interactor) {
 		
 		if(displayedNodes.contains(uniprot)) return;
-		JSONValue val = getProtein(uniprot, uniprotToGeneMap.get(uniprot), true);
+		JSONValue val = getProtein(uniprot, uniprotToGeneMap.get(uniprot), interactor);
 		displayedNodes.add(uniprot);
 		cy.addCytoscapeNodes(val.toString());
 	}
@@ -357,13 +365,16 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 */
 	private void addEdge(String source, String target, String relationship, String dataDesc) {
 		int edgeId = edgeCount++;
-		JSONValue val = makeFI(edgeId, source, target, relationship);
+		String edge = source+target+relationship+dataDesc;
+		if(displayedEdges.contains(edge)) return;
+		displayedEdges.add(edge);
+		JSONValue val = makeFI(edge, source, target, relationship);
 		cy.addCytoscapeEdge(val.toString());
 		for(PairwiseOverlayObject prop:  pairwiseOverlayObjects) {
 			if(prop.getId() == dataDesc && relationship == "positive")
-				cy.recolorEdge(edgeId+"", prop.getPositiveLineColorHex());
+				cy.recolorEdge(edge, prop.getPositiveLineColorHex());
 			else if(prop.getId() == dataDesc & relationship == "negative")
-				cy.recolorEdge(edgeId+"", prop.getNegativeLineColorHex());
+				cy.recolorEdge(edge, prop.getNegativeLineColorHex());
 		}
 	}
 	
@@ -371,29 +382,6 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	protected void endDragging(MouseUpEvent event) {
 		cy.resize(); //alerts cytoscape js core to location change of canvas to listen on
 		super.endDragging(event);
-	}
-
-	/**
-	 * Makes a node for a passed in GraphPhysicalEntity
-	 * @param entity
-	 * @return
-	 */
-	private JSONValue getProtein(GraphPhysicalEntity entity) {
-		JSONObject result = new JSONObject();
-		result.put("group", new JSONString("nodes"));
-		
-		JSONObject node = new JSONObject();
-		
-		String identifier = entity.getIdentifier();
-		if(identifier.contains("-"))
-			identifier = identifier.substring(0, identifier.indexOf("-"));
-		
-		node.put("id", new JSONString(identifier));
-		node.put("name", new JSONString(entity.getDisplayName()));
-		
-		result.put("data", node);
-		
-		return result;
 	}
 	
 	/**
@@ -424,12 +412,12 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 * @param target
 	 * @return
 	 */
-	private JSONValue makeFI(int id, String source, String target, String relationship) {
+	private JSONValue makeFI(String id, String source, String target, String relationship) {
 		JSONObject result = new JSONObject();
 		result.put("group", new JSONString("edges"));
 		
 		JSONObject edge = new JSONObject();
-		edge.put("id", new JSONString(id+""));
+		edge.put("id", new JSONString(id));
 		edge.put("source", new JSONString(source));
 		edge.put("target", new JSONString(target));
 		edge.put("direction", new JSONString("-"));
@@ -512,13 +500,23 @@ public class PairwisePopup extends AbstractPairwisePopup{
 			@Override
 			public void onRemoveButtonClicked(String identifier) {
 				PairwisePopup.this.cy.removeCytoscapeNode(identifier);
+				displayedEdges.remove(id);
 			}
 		});
+		
 		panel.setPopupPosition(x+5, y+5);
 		panel.getElement().setId(this.containerId);
 		panel.show();
 	}
 
+	public void updatePairwiseObjects(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
+		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
+		cy.clearCytoscapeGraph();
+		displayedNodes.clear();
+		initBaseCytoscape();
+		loadPairwiseInteractors();
+	}
+	
 	public void changeOverlayColumn(int column) {
 		if(dataOverlay != null)
 			dataOverlay.setColumn(column);
