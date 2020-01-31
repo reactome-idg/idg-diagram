@@ -4,10 +4,21 @@ import com.google.gwt.user.cellview.client.SimplePager;
 
 public class IDGPager extends SimplePager{
 
+	public interface Handler{
+		void onPageChanged();
+	}
+	
+	private Handler handler;
+	
+	public IDGPager(Handler handler) {
+		this.handler = handler;
+	}
+	
 	@Override
 	public void previousPage() {
 		// TODO Auto-generated method stub
 		super.previousPage();
+		
 	}
 
 	@Override
