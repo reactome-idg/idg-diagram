@@ -79,23 +79,28 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private FlowPanel customPopup;
 	
 	public PairwisePopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayObjects, int zIndex) {
-		this.popupId = graphObject.getStId();
-		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
-		this.displayedNodes = new ArrayList<>();
+		this(graphObject.getStId(), zIndex, pairwiseOverlayObjects);
 		this.zIndex = zIndex;
-		panelClicked();
-		initPanel();
-		loadNetwork(graphObject);
+		setDiagramNodes(graphObject);
+		initBaseCytoscape();
+		loadPairwiseInteractors();
 	}
 
 	public PairwisePopup(String uniprot, String geneName, List<PairwiseOverlayObject> pairwiseOverlayObjects, int zIndex) {
-		this.popupId = uniprot;
+		this(uniprot, zIndex, pairwiseOverlayObjects);
+		setDiagramNodes(uniprot, geneName);
+		initBaseCytoscape();
+		loadPairwiseInteractors();
+	}
+	
+	private PairwisePopup(String popupId, int zIndex, List<PairwiseOverlayObject> pairwiseOverlayObjects) {
+		this.popupId = popupId;
+		this.zIndex = zIndex;
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		this.displayedNodes = new ArrayList<>();
-		this.zIndex = zIndex;
-		panelClicked();
 		initPanel();
-		loadNetwork(uniprot, geneName);
+		panelClicked();
+		this.uniprotToGeneMap = PairwisePopupFactory.get().getUniprotToGeneMap();
 	}
 
 	private void initPanel() {
@@ -140,6 +145,32 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		return result;
 	}
 
+	private void setDiagramNodes(GraphObject graphObject) {
+		this.diagramNodes = new ArrayList<>();
+		if(graphObject instanceof GraphPhysicalEntity) {
+			Set<GraphPhysicalEntity> entities = ((GraphPhysicalEntity)graphObject).getParticipants();
+			entities.forEach(e -> {
+				String identifier = e.getIdentifier();
+				if(identifier.contains("-"))															//removes any isoform identifiers
+					identifier = identifier.substring(0, identifier.indexOf("-"));
+				else if(identifier.contains("ENSG")) { 													//should convert ENSG to uniprot
+					for(Map.Entry<String,String> entry: uniprotToGeneMap.entrySet()) {
+						if(e.getDisplayName().contains(entry.getValue())) {
+							identifier = entry.getKey();
+							break;
+						}
+					}
+				}
+				diagramNodes.add(identifier);
+			});
+		}
+	}
+	
+	private void setDiagramNodes(String uniprot, String geneName) {
+		this.diagramNodes = new ArrayList<>();
+		diagramNodes.add(uniprot);
+	}
+	
 	private void onInfoButtonClicked() {
 		infoPanel.setVisible(!infoPanel.isVisible());
 	}
@@ -219,55 +250,26 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		cy.setCytoscapeLayout("cose");
 	}
 
-	/**
-	 * Loads base nodes and edges from Graph object that is of type GraphComplex or GraphPhysicalEntity.
-	 * Directs loading of pairwise relationhips for displayed nodes.
-	 * @param graphObject
-	 */
-	private void loadNetwork(GraphObject graphObject) {
+	private void initBaseCytoscape() {
+		displayedNodes.addAll(diagramNodes);
+		
 		JSONArray nodeArr = new JSONArray();
+		//triggers when popup loads from FIView
+		if(diagramNodes.size() == 1) {
+			nodeArr.set(nodeArr.size(), getProtein(diagramNodes.get(0), uniprotToGeneMap.get(diagramNodes.get(0)), false));
+			initializeCytoscape(nodeArr, null);
+			return;
+		}
+		
 		JSONArray edgeArr = new JSONArray();
-		if(graphObject instanceof GraphPhysicalEntity) {
-			GraphPhysicalEntity complex = (GraphPhysicalEntity) graphObject;
-			List<GraphPhysicalEntity> entities = new ArrayList<>();
-			entities.addAll(complex.getParticipants());
-			for(int i=0; i<entities.size(); i++) {
-				nodeArr.set(nodeArr.size(), getProtein(entities.get(i)));
-				String identifier = entities.get(i).getIdentifier();
-				if(identifier.contains("-")) //make sure to remove all isoform identifiers
-					identifier = identifier.substring(0, identifier.indexOf("-"));
-				else if(identifier.contains("ENSG")) {
-					
-				}
-				displayedNodes.add(identifier);
-				for(int j=i+1; j<entities.size(); j++) {
-					edgeArr.set(edgeCount++, 
-								makeFI(edgeArr.size(), 
-								entities.get(i).getIdentifier(), 
-								entities.get(j).getIdentifier(), 
-								"solid"));
-				}
+		for(int i=0; i<diagramNodes.size(); i++) {
+			String gene = uniprotToGeneMap.get(diagramNodes.get(i));
+			nodeArr.set(nodeArr.size(), getProtein(diagramNodes.get(i), uniprotToGeneMap.get(diagramNodes.get(i)), false));
+			for(int j=i+1; j<diagramNodes.size(); j++) {
+				edgeArr.set(edgeCount++, makeFI(edgeArr.size(), diagramNodes.get(i),diagramNodes.get(j), "solid"));
 			}
 		}
-		diagramNodes = new ArrayList<>();
-		diagramNodes.addAll(displayedNodes);
-		initializeCytoscape(nodeArr, edgeArr); //initializes and adds diagram nodes and edges
-		loadPairwiseInteractors();
-	}
-
-	/**
-	 * Loads base node when opened from FIViz or single protein GraphObject.
-	 * Directs loading of pairwise tableEntities.
-	 * @param uniprot
-	 * @param geneName
-	 */
-	private void loadNetwork(String uniprot, String geneName) {
-		JSONArray nodeArr = new JSONArray();
-		nodeArr.set(nodeArr.size(), getProtein(uniprot, geneName, false));
-		diagramNodes = new ArrayList<>();
-		diagramNodes.addAll(displayedNodes);
-		initializeCytoscape(nodeArr, new JSONArray());
-		loadPairwiseInteractors();
+		initializeCytoscape(nodeArr, edgeArr);
 	}
 	
 	/**
@@ -276,34 +278,17 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 */
 	private void loadPairwiseInteractors() {
 		PairwiseDataLoader loader = new PairwiseDataLoader();
-		PairwiseOverlayProperties props = new PairwiseOverlayProperties(pairwiseOverlayObjects, String.join(",", displayedNodes));
-		loader.loadPairwiseData(props, new PairwiseDataLoader.Handler() {
+		PairwiseOverlayProperties props = new PairwiseOverlayProperties(pairwiseOverlayObjects, String.join(",", diagramNodes));
+		loader.loadPairwiseData(props, new AsyncCallback<Map<String, List<PairwiseEntity>>>() {
 			@Override
-			public void onPairwiseDataLoadedError(Exception e) {
-				GWT.log(e.toString());
-			}
-			@Override
-			public void onPairwiseDataLoaded(Map<String, List<PairwiseEntity>> uniprotToPairwiseEntityMap) {
+			public void onSuccess(Map<String, List<PairwiseEntity>> uniprotToPairwiseEntityMap) {
 				pairwiseOverlayMap = uniprotToPairwiseEntityMap;
-				loadUniprotToGeneMap(); //need to load this after loading the overlay items for connecting genes to uniprots for display
-			}
-		});
-	}
-	
-	/**
-	 * Loads Uniprot to gene name map and directs addition of initial interactors after successful loading.
-	 */
-	private void loadUniprotToGeneMap() {
-		PairwiseInfoService.loadUniprotToGeneMap(new AsyncCallback<Map<String,String>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				GWT.log(caught.getMessage());
-			}
-			@Override
-			public void onSuccess(Map<String, String> uniprotToGeneNameMap) {
-				uniprotToGeneMap = uniprotToGeneNameMap;
 				addInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
 				setPairwiseResultsTable();
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
 			}
 		});
 	}

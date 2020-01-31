@@ -4,11 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.reactome.web.diagram.data.graph.model.GraphObject;
+import org.reactome.web.fi.data.loader.PairwiseInfoService;
+import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwisePopup;
+import org.reactome.web.gwtCytoscapeJs.util.Console;
+
+import com.google.gwt.core.client.Callback;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 
@@ -20,6 +27,8 @@ public class PairwisePopupFactory{
 	private static PairwisePopupFactory factory;
 	
 	private Map<String, PairwisePopup> popupMap;
+	private Map<String, String> uniprotToGeneMap;
+	private Set<String> tDarkSet;
 	private List<PairwiseOverlayObject> currentPairwiseObjects;
 	
 	private int zIndexCounter = 1;
@@ -30,14 +39,40 @@ public class PairwisePopupFactory{
 	private PairwisePopupFactory() {
 		popupMap = new HashMap<>();
 		currentPairwiseObjects = new ArrayList<>();
+		
+		//Load uniprotToGeneMap
+		PairwiseInfoService.loadUniprotToGeneMap(new AsyncCallback<Map<String, String>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Console.error("Uniprot to gene map failed to load.");
+			}
+			@Override
+			public void onSuccess(Map<String, String> result) {
+				PairwisePopupFactory.this.setUniprotToGeneMap(result);
+				
+			}
+		});
+		
+		//load Dark Protein list
+		TCRDInfoLoader.loadTDarkSet(new AsyncCallback<Set<String>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+			@Override
+			public void onSuccess(Set<String> result) {
+				tDarkSet = result;
+			}
+		});
 	}
 	
 	public static PairwisePopupFactory get() {
-		if(factory == null)
+		if(factory == null) {
 			factory = new PairwisePopupFactory();
+		}
 		return factory;
 	}
-	
+
 	/**
 	 * Open a popup from the diagram view
 	 * @param graphObject
@@ -115,5 +150,17 @@ public class PairwisePopupFactory{
 	public void resetZIndexes() {
 		for(PairwisePopup popup : popupMap.values())
 			popup.resetZIndex();
+	}
+	
+	private void setUniprotToGeneMap(Map<String, String> result) {
+		this.uniprotToGeneMap = result;
+	}
+
+	public Map<String, String> getUniprotToGeneMap() {
+		return this.uniprotToGeneMap;
+	}
+	
+	public Set<String> getTDarkSet(){
+		return this.tDarkSet;
 	}
 }
