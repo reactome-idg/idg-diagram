@@ -11,28 +11,23 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
 public class PairwiseDataLoader {
-
-	public interface Handler{
-		void onPairwiseDataLoaded(Map<String, List<PairwiseEntity>> uniprotToPairwiseEntityMap);
-		void onPairwiseDataLoadedError(Exception e);
-	}
 	
 	private static final String BASE_URL = "/idgpairwise/";
 	
 	public PairwiseDataLoader() {/*Nothing Here*/}
 	
-	public void loadPairwiseData(PairwiseOverlayProperties properties, Handler handler) {
+	public void loadPairwiseData(PairwiseOverlayProperties properties, AsyncCallback<Map<String, List<PairwiseEntity>>> callback) {
 		
 		String url = BASE_URL + "pairwise/uniprots";
 		
@@ -49,18 +44,18 @@ public class PairwiseDataLoader {
 						JSONObject obj = new JSONObject();
 						obj.put("pairwiseEntities", val.isArray());
 						entities = PairwiseEntitiesFactory.getPairwiseEntities(PairwiseEntities.class, obj.toString());
-						handler.onPairwiseDataLoaded(getEntitiesMap(entities));
+						callback.onSuccess(getEntitiesMap(entities));
 					}catch(Exception e) {
-						handler.onPairwiseDataLoadedError(e);
+						callback.onFailure(e);
 					}
 				}
 				@Override
 				public void onError(Request request, Throwable exception) {
-					handler.onPairwiseDataLoadedError(new Exception(exception));
+					callback.onFailure(new Exception(exception));
 				}
 			});
 		} catch (RequestException e) {
-			handler.onPairwiseDataLoadedError(e);
+			callback.onFailure(e);
 		}
 	}
 	
