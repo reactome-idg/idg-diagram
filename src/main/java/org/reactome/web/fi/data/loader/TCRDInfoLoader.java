@@ -2,10 +2,11 @@ package org.reactome.web.fi.data.loader;
 
 import java.util.*;
 
+import org.reactome.web.fi.data.model.TDarkProteinSet;
+import org.reactome.web.fi.data.model.TDarkProteinSetFactory;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeFactory;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -15,6 +16,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class TCRDInfoLoader{
 
@@ -61,6 +63,38 @@ public class TCRDInfoLoader{
 			});
 		} catch(RequestException ex) {
 			handler.onExpressionTypesLoadedError(ex);
+		}
+	}
+	
+	public static void loadTDarkSet(AsyncCallback<Set<String>> callback) {
+		String url = BASE_URL + "tdark/uniprots";
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
+		requestBuilder.setHeader("Accept", "application/json");
+		try {
+			request = requestBuilder.sendRequest(null, new RequestCallback() {
+
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					if(response.getStatusCode() == Response.SC_OK) {
+						try {
+							JSONObject obj = new JSONObject();
+							obj.put("proteins", JSONParser.parseStrict(response.getText()));
+							TDarkProteinSet tDarkProteins = TDarkProteinSetFactory.getSetEntity(TDarkProteinSet.class, obj.toString());
+							Set<String> proteins = new HashSet<>();
+							proteins.addAll(tDarkProteins.getProteins());
+							callback.onSuccess(proteins);
+						} catch (Exception e) {
+							callback.onFailure(e);
+						}
+					}
+				}
+				@Override
+				public void onError(Request request, Throwable exception) {
+					callback.onFailure(exception);
+				}
+			});
+		}catch(RequestException ex) {
+			callback.onFailure(ex);
 		}
 	}
 
