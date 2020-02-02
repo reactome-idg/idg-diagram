@@ -12,6 +12,8 @@ import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
+import org.reactome.web.fi.common.IDGPager;
+import org.reactome.web.fi.common.IDGPager.Handler;
 import org.reactome.web.fi.common.RemoveButtonPopup;
 import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
@@ -57,7 +59,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
-public class PairwisePopup extends AbstractPairwisePopup{
+public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 
 	private String popupId;
 	private String containerId;
@@ -68,9 +70,12 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	private List<String> displayedNodes;
 	private Set<String> displayedEdges;
 	private List<String> diagramNodes;
-	private List<PairwiseTableEntity> tableEntities;
 	
 	private DataOverlay dataOverlay;
+	
+	private List<PairwiseTableEntity> tableEntities;
+	private PairwisePopupResultsTable table;
+	private IDGPager pager;
 	
 	private CytoscapeEntity cy;
 	private Boolean cytoscapeInitialized = false;
@@ -213,7 +218,7 @@ public class PairwisePopup extends AbstractPairwisePopup{
 					}
 			}
 				
-		PairwisePopupResultsTable table = new PairwisePopupResultsTable(tableEntities);
+		table = new PairwisePopupResultsTable(tableEntities);
 		
 		//Add view button column
 		ActionCell<PairwiseTableEntity> actionCell = new ActionCell<>("View", new ActionCell.Delegate<PairwiseTableEntity>() {
@@ -235,13 +240,26 @@ public class PairwisePopup extends AbstractPairwisePopup{
 		provider.setList(tableEntities);
 		
 		//Pager setup for data
-		SimplePager pager = new SimplePager();
+		pager = new IDGPager(this);
 		pager.setDisplay(table);
 		pager.setPageSize(PairwisePopupResultsTable.PAGE_SIZE);
 		
 		infoPanel.add(table);
 		infoPanel.add(pager);
 		infoPanel.setVisible(true);
+	}
+	
+	/**
+	 * Catches event when pager change pages
+	 */ //TODO: doesnt get right range for overlay
+	@Override
+	public void onPageChanged() {
+		int pageStart = pager.getPageStart();
+		int pageEnd = pageStart + PairwisePopupResultsTable.PAGE_SIZE;
+		List<String> entities = new ArrayList<>();
+		for(int i = pageStart; i<pageEnd; i++)
+			entities.add(tableEntities.get(i).getInteractorId());
+		Window.alert(entities.toString());
 	}
 
 	/**
@@ -364,7 +382,6 @@ public class PairwisePopup extends AbstractPairwisePopup{
 	 * @param dataDesc
 	 */
 	private void addEdge(String source, String target, String relationship, String dataDesc) {
-		int edgeId = edgeCount++;
 		String edge = source+target+relationship+dataDesc;
 		if(displayedEdges.contains(edge)) return;
 		displayedEdges.add(edge);

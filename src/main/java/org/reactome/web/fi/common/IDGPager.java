@@ -16,27 +16,32 @@ public class IDGPager extends SimplePager{
 	
 	@Override
 	public void previousPage() {
-		// TODO Auto-generated method stub
 		super.previousPage();
-		
+		handler.onPageChanged();
 	}
 
 	@Override
 	public void nextPage() {
-		// TODO Auto-generated method stub
 		super.nextPage();
+		handler.onPageChanged();
 	}
 
 	@Override
 	public void lastPage() {
-		// TODO Auto-generated method stub
 		super.lastPage();
+		handler.onPageChanged();
 	}
 
 	@Override
 	public void firstPage() {
-		// TODO Auto-generated method stub
 		super.firstPage();
+		handler.onPageChanged();
+	}
+
+	@Override
+	public void setPage(int index) {
+		super.setPage(index);
+		handler.onPageChanged();
 	}
 	
 }
