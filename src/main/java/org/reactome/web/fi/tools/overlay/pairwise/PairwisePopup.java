@@ -1,13 +1,13 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.diagram.common.PwpButton;
-import org.reactome.web.diagram.data.graph.model.GraphComplex;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
@@ -18,7 +18,6 @@ import org.reactome.web.fi.common.IDGPager.Handler;
 import org.reactome.web.fi.common.RemoveButtonPopup;
 import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
-import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
@@ -30,11 +29,8 @@ import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTa
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.cell.client.ActionCell;
-import com.google.gwt.cell.client.ActionCell.Delegate;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -46,18 +42,13 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.IdentityColumn;
-import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
 public class PairwisePopup extends AbstractPairwisePopup implements Handler{
@@ -70,6 +61,9 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private List<String> displayedNodes;
 	private Set<String> displayedEdges;
 	private List<String> diagramNodes;
+	
+	private Map<String,String> edgeMap; //map pairwise interactor node to edge
+	private int edgeCount = 0;
 	
 	private DataOverlay dataOverlay;
 	private DataOverlay tableDataOverlay;
@@ -107,6 +101,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		this.displayedNodes = new ArrayList<>();
 		this.displayedEdges = new HashSet<>();
+		this.edgeMap = new HashMap<>();
 		initPanel();
 		panelClicked();
 		this.uniprotToGeneMap = PairwisePopupFactory.get().getUniprotToGeneMap();
@@ -379,23 +374,28 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	/**
 	 * Directs creation of an edge based on passed in source and target
 	 * Uses relationship and dataDesc to change style and color of the line.
-	 * @param source
-	 * @param target
+	 * @param source is the uniprot of the base diagram protein
+	 * @param target is the uniprot of the pariwise interactor
 	 * @param relationship
 	 * @param dataDesc
 	 */
 	private void addEdge(String source, String target, String relationship, String dataDesc) {
 		String edge = source+target+relationship+dataDesc;
-		if(displayedEdges.contains(edge)) return;
-		displayedEdges.add(edge);
-		JSONValue val = makeFI(edge, source, target, relationship);
+		
+		if(edgeMap.values().contains(edge)) return;
+		
+		JSONValue val = makeFI(edgeCount, source, target, relationship);
+		
+		edgeMap.put(target, edge);
+		
 		cy.addCytoscapeEdge(val.toString());
 		for(PairwiseOverlayObject prop:  pairwiseOverlayObjects) {
 			if(prop.getId() == dataDesc && relationship == "positive")
-				cy.recolorEdge(edge, prop.getPositiveLineColorHex());
+				cy.recolorEdge(edgeCount+"", prop.getPositiveLineColorHex());
 			else if(prop.getId() == dataDesc & relationship == "negative")
-				cy.recolorEdge(edge, prop.getNegativeLineColorHex());
+				cy.recolorEdge(edgeCount+"", prop.getNegativeLineColorHex());
 		}
+		edgeCount++;
 	}
 	
 	@Override
@@ -432,12 +432,12 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * @param target
 	 * @return
 	 */
-	private JSONValue makeFI(String id, String source, String target, String relationship) {
+	private JSONValue makeFI(int id, String source, String target, String relationship) {
 		JSONObject result = new JSONObject();
 		result.put("group", new JSONString("edges"));
 		
 		JSONObject edge = new JSONObject();
-		edge.put("id", new JSONString(id));
+		edge.put("id", new JSONString(id+""));
 		edge.put("source", new JSONString(source));
 		edge.put("target", new JSONString(target));
 		edge.put("direction", new JSONString("-"));
@@ -561,7 +561,8 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			@Override
 			public void onRemoveButtonClicked(String identifier) {
 				PairwisePopup.this.cy.removeCytoscapeNode(identifier);
-				displayedEdges.remove(id);
+				displayedNodes.remove(identifier);
+				edgeMap.remove(identifier);
 			}
 		});
 		
