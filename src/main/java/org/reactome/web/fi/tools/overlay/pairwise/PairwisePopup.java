@@ -64,7 +64,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 
 	private String popupId;
 	private String containerId;
-	private int edgeCount = 0;
 	private List<PairwiseOverlayObject> pairwiseOverlayObjects;
 	private Map<String, List<PairwiseEntity>> pairwiseOverlayMap;
 	private Map<String,String> uniprotToGeneMap;
@@ -73,9 +72,11 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private List<String> diagramNodes;
 	
 	private DataOverlay dataOverlay;
+	private DataOverlay tableDataOverlay;
 	
 	private List<PairwiseTableEntity> tableEntities;
 	private PairwisePopupResultsTable table;
+	private ListDataProvider<PairwiseTableEntity> provider;
 	private IDGPager pager;
 	
 	private CytoscapeEntity cy;
@@ -237,10 +238,10 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		table.setRowCount(tableEntities.size(), true);
 		
 		//Needed for pager to work
-		ListDataProvider<PairwiseTableEntity> provider = new ListDataProvider<PairwiseTableEntity>();
+		provider = new ListDataProvider<PairwiseTableEntity>();
 		provider.addDataDisplay(table);
 		provider.setList(tableEntities);
-		
+
 		//Pager setup for data
 		pager = new IDGPager(this);
 		pager.setDisplay(table);
@@ -261,7 +262,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		List<String> entities = new ArrayList<>();
 		for(int i = pageStart; i<pageEnd; i++)
 			entities.add(tableEntities.get(i).getInteractorId());
-		Window.alert(entities.toString());
+		loadTableOverlayData(entities);
 	}
 
 	/**
@@ -461,6 +462,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			public void onDataOverlayLoaded(DataOverlay data) {
 				dataOverlay = data;
 				overlayData();
+				onPageChanged(); //causes load for table
 			}
 		});
 	}
@@ -474,6 +476,46 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		uniprots.addAll(this.displayedNodes);
 		uniprots.remove(null);
 		return String.join(",", uniprots);
+	}
+	
+	/**
+	 * Handles overlay loading for pairwise table
+	 * @param entities
+	 */
+	private void loadTableOverlayData(List<String> entities) {
+		DataOverlayProperties properties = PairwisePopupFactory.get().getDataOverlayProperties();
+		OverlayLoader loader = new OverlayLoader();
+		properties.setUniprots(String.join(",", entities));
+		loader.load(properties, new OverlayLoader.Handler() {	
+			@Override
+			public void onOverlayLoadedError(Throwable exception) {
+				exception.printStackTrace();
+			}
+			@Override
+			public void onDataOverlayLoaded(DataOverlay data) {
+				tableDataOverlay = data;
+				updateTableData();
+			}
+		});
+	}
+
+	private void updateTableData() {
+		this.tableDataOverlay.updateIdentifierValueMap();
+		if(dataOverlay.isDiscrete()) {
+			for(PairwiseTableEntity entity : tableEntities) {
+				entity.setData("");
+				if(tableDataOverlay.getIdentifierValueMap().keySet().contains(entity.getInteractorId()))
+					entity.setData(tableDataOverlay.getLegendTypes().get(tableDataOverlay.getIdentifierValueMap().get(entity.getInteractorId()).intValue()));
+			}
+		}
+		else {
+			for(PairwiseTableEntity entity : tableEntities) {
+				entity.setData("");
+				if(tableDataOverlay.getIdentifierValueMap().keySet().contains(entity.getInteractorId()))
+					entity.setData(""+tableDataOverlay.getIdentifierValueMap().get(entity.getInteractorId()));
+			}
+		}
+		provider.refresh();
 	}
 
 	private void overlayData() {
@@ -537,9 +579,15 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	}
 	
 	public void changeOverlayColumn(int column) {
+		//updates column represented in cytoscape
 		if(dataOverlay != null)
 			dataOverlay.setColumn(column);
 		overlayData();
+		
+		//updates column represented in table 'Overlay value' column
+		if(tableDataOverlay != null)
+			tableDataOverlay.setColumn(column);
+		updateTableData();
 	}
 	
 	/**
