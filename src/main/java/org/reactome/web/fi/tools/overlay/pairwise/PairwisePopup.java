@@ -158,7 +158,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 
 	private void setDiagramNodes(GraphObject graphObject) {
 		this.diagramNodes = new ArrayList<>();
-		if(graphObject instanceof GraphComplex) {
+		if(graphObject instanceof GraphPhysicalEntity) {
 			Set<GraphPhysicalEntity> entities = ((GraphPhysicalEntity)graphObject).getParticipants();
 			for(GraphPhysicalEntity entity : entities) {
 				if(entity.getIdentifier() == null) continue;
