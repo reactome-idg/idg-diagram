@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.diagram.common.PwpButton;
+import org.reactome.web.diagram.data.graph.model.GraphComplex;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
@@ -157,22 +158,23 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 
 	private void setDiagramNodes(GraphObject graphObject) {
 		this.diagramNodes = new ArrayList<>();
-		if(graphObject instanceof GraphPhysicalEntity) {
+		if(graphObject instanceof GraphComplex) {
 			Set<GraphPhysicalEntity> entities = ((GraphPhysicalEntity)graphObject).getParticipants();
-			entities.forEach(e -> {
-				String identifier = e.getIdentifier();
+			for(GraphPhysicalEntity entity : entities) {
+				if(entity.getIdentifier() == null) continue;
+				String identifier = entity.getIdentifier();
 				if(identifier.contains("-"))															//removes any isoform identifiers
 					identifier = identifier.substring(0, identifier.indexOf("-"));
 				else if(identifier.contains("ENSG")) { 													//should convert ENSG to uniprot
 					for(Map.Entry<String,String> entry: uniprotToGeneMap.entrySet()) {
-						if(e.getDisplayName().contains(entry.getValue())) {
+						if(entity.getDisplayName().contains(entry.getValue())) {
 							identifier = entry.getKey();
 							break;
 						}
 					}
 				}
 				diagramNodes.add(identifier);
-			});
+			}
 		}
 	}
 	
