@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.diagram.common.PwpButton;
+import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSequence;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
+import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
@@ -58,9 +60,8 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private List<PairwiseOverlayObject> pairwiseOverlayObjects;
 	private Map<String, List<PairwiseEntity>> pairwiseOverlayMap;
 	private Map<String,String> uniprotToGeneMap;
-	private List<String> displayedNodes;
-	private Set<String> displayedEdges;
-	private List<String> diagramNodes;
+	private Set<String> displayedNodes;
+	private Set<String> diagramNodes;
 	
 	private Map<String,String> edgeMap; //map pairwise interactor node to edge
 	private int edgeCount = 0;
@@ -99,8 +100,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		this.popupId = popupId;
 		this.zIndex = zIndex;
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
-		this.displayedNodes = new ArrayList<>();
-		this.displayedEdges = new HashSet<>();
+		this.displayedNodes = new HashSet<>();
 		this.edgeMap = new HashMap<>();
 		initPanel();
 		panelClicked();
@@ -153,29 +153,30 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	}
 
 	private void setDiagramNodes(GraphObject graphObject) {
-		this.diagramNodes = new ArrayList<>();
+		this.diagramNodes = new HashSet<>();
 		if(graphObject instanceof GraphPhysicalEntity) {
 			Set<GraphPhysicalEntity> entities = ((GraphPhysicalEntity)graphObject).getParticipants();
 			for(GraphPhysicalEntity entity : entities) {
-				if(entity.getIdentifier() == null) continue;
-				String identifier = entity.getIdentifier();
-				if(identifier.contains("-"))															//removes any isoform identifiers
-					identifier = identifier.substring(0, identifier.indexOf("-"));
-				else if(identifier.contains("ENSG")) { 													//should convert ENSG to uniprot
-					for(Map.Entry<String,String> entry: uniprotToGeneMap.entrySet()) {
-						if(entity.getDisplayName().contains(entry.getValue())) {
-							identifier = entry.getKey();
-							break;
+				if(entity instanceof GraphEntityWithAccessionedSequence || entity instanceof GraphProteinDrug) {
+					String identifier = entity.getIdentifier();
+					if(identifier.contains("-"))															//removes any isoform identifiers
+						identifier = identifier.substring(0, identifier.indexOf("-"));
+					else if(identifier.contains("ENSG")) { 													//should convert ENSG to uniprot
+						for(Map.Entry<String,String> entry: uniprotToGeneMap.entrySet()) {
+							if(entity.getDisplayName().contains(entry.getValue())) {
+								identifier = entry.getKey();
+								break;
+							}
 						}
 					}
+					diagramNodes.add(identifier);
 				}
-				diagramNodes.add(identifier);
 			}
 		}
 	}
 	
 	private void setDiagramNodes(String uniprot, String geneName) {
-		this.diagramNodes = new ArrayList<>();
+		this.diagramNodes = new HashSet<>();
 		diagramNodes.add(uniprot);
 	}
 	
@@ -275,20 +276,20 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	}
 
 	private void initBaseCytoscape() {
-//		displayedNodes.addAll(diagramNodes);
-		
+		List<String> diagramNodesList = new ArrayList<>(diagramNodes);
+
 		//triggers when popup loads from FIView
 		if(diagramNodes.size() == 1) {
-			addNode(diagramNodes.get(0), false);
+			addNode(diagramNodesList.get(0), false);
 			return;
 		}
 		
 		for(String node : diagramNodes) {
 			addNode(node,false);
 		}
-		for(int i=0; i<diagramNodes.size(); i++) {
+		for(int i=0; i<diagramNodesList.size(); i++) {
 			for(int j=i+1; j<diagramNodes.size(); j++) {
-				addEdge(diagramNodes.get(i), diagramNodes.get(j), "solid", "");
+				addEdge(diagramNodesList.get(i), diagramNodesList.get(j), "solid", "");
 			}
 		}
 	}
