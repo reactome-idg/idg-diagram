@@ -223,13 +223,13 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		provider = new ListDataProvider<PairwiseTableEntity>();
 		pager = new IDGPager(this);
 		
-//		Collections.sort(tableEntities, new Comparator<PairwiseTableEntity>() {
-//			@Override
-//			public int compare(PairwiseTableEntity o1, PairwiseTableEntity o2) {
-//				if(o1 == null || o2 == null) return 0;
-//				return o1.getInteractorName().compareTo(o2.getInteractorName());
-//			}
-//		});
+		Collections.sort(tableEntities, new Comparator<PairwiseTableEntity>() {
+			@Override
+			public int compare(PairwiseTableEntity o1, PairwiseTableEntity o2) {
+				if(o1.getInteractorName() == null || o2.getInteractorName() == null) return 0;
+				return o1.getInteractorName().compareTo(o2.getInteractorName());
+			}
+		});
 
 		table = new PairwisePopupResultsTable(tableEntities, provider,pager);
 		

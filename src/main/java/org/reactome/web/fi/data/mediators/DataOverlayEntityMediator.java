@@ -1,6 +1,8 @@
 package org.reactome.web.fi.data.mediators;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -112,7 +114,7 @@ public class DataOverlayEntityMediator {
 		}
 		result.setIdentifierValueMap(identifierValueMap);
 		result.setUniprotToEntitiesMap(uniprotToEntitiesMap);
-		result.setEType(entities.getExpressionEntity().get(0).getEtype());
+		result.setEType(result.getOverlayProperties().geteType());
 		result.setTissueTypes(tissues.stream().sorted().collect(Collectors.toList()));
 		if(minValue != Double.MAX_VALUE)
 			result.setMinValue(minValue);
@@ -131,19 +133,27 @@ public class DataOverlayEntityMediator {
 	private DataOverlay getQualValueResult(DataOverlay result, OverlayEntities entities) {
 		result.setDiscrete(true);
 		
-		List<String>legendTypes = new ArrayList<>();
-		Set<String>tissues = new HashSet<>();
+		List<String> legendTypesList = null;
+		if(result.getOverlayProperties().geteType() == "Target Development Level") {
+			legendTypesList = getTargetLevelLegend();
+		}else {
+			Set<String> legendTypes = new HashSet<>();
+			for(ExpressionEntity entity : entities.getExpressionEntity()) {
+				legendTypes.add(entity.getQualValue());
+			}
+			legendTypesList = legendTypes.stream().sorted().collect(Collectors.toList());
+		}
+		
+		Set<String> tissues = new HashSet<>();
 		Map<String, Double> identifierValueMap = new HashMap<>();
 		Map<String, List<DataOverlayEntity>> uniprotToEntitiesMap = new HashMap<>();
-		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {
-			if(!legendTypes.contains(rawEntity.getQualValue()))
-				legendTypes.add(rawEntity.getQualValue());
-			
+		
+		for(ExpressionEntity rawEntity : entities.getExpressionEntity()) {			
 			if(rawEntity.getTissue() != null)
 				tissues.add(rawEntity.getTissue());
 			if(rawEntity.getQualValue() != null) {
 				DataOverlayEntity entity = new DataOverlayEntity(rawEntity.getUniprot(), 
-						new Double(legendTypes.indexOf(rawEntity.getQualValue())), rawEntity.getEtype(), rawEntity.getTissue());
+						new Double(legendTypesList.indexOf(rawEntity.getQualValue())), rawEntity.getEtype(), rawEntity.getTissue());
 				identifierValueMap.put(entity.getIdentifier(), entity.getValue());
 				if(!uniprotToEntitiesMap.containsKey(rawEntity.getUniprot()))
 					uniprotToEntitiesMap.put(rawEntity.getUniprot(), new ArrayList<>());	
@@ -153,17 +163,11 @@ public class DataOverlayEntityMediator {
 		}
 		result.setIdentifierValueMap(identifierValueMap);
 		result.setUniprotToEntitiesMap(uniprotToEntitiesMap);
-		result.setEType(entities.getExpressionEntity().get(0).getEtype());
+		result.setEType(result.getOverlayProperties().geteType());
 		result.setTissueTypes(tissues.stream().sorted().collect(Collectors.toList()));
-		result.setLegendTypes(legendTypes);
-		result.setMaxValue(new Double(legendTypes.size()));
-		result.setMinValue(new Double(0));
-		
-		//set etype for target dev level, which has no associated eType
-		if(result.getEType() == null) {
-			result.setEType("Target Development Level");
-		}
-		
+		result.setLegendTypes(legendTypesList);
+		result.setMaxValue(new Double(legendTypesList.size()));
+		result.setMinValue(new Double(0));		
 		return result;
 	}
 
@@ -201,7 +205,7 @@ public class DataOverlayEntityMediator {
 		result.setIdentifierValueMap(identifierValueMap);
 		result.setUniprotToEntitiesMap(uniprotToEntitiesMap);
 		result.setTissueTypes(tissues.stream().sorted().collect(Collectors.toList()));
-		result.setEType(entities.getExpressionEntity().get(0).getEtype());
+		result.setEType(result.getOverlayProperties().geteType());
 		result.setMinValue(new Double(0));
 		result.setMaxValue(new Double(0));
 		
@@ -243,7 +247,7 @@ public class DataOverlayEntityMediator {
 			}
 		}
 		
-		result.setEType(entities.getExpressionEntity().get(0).getEtype());
+		result.setEType(result.getOverlayProperties().geteType());
 		result.setTissueTypes(types.stream().sorted().collect(Collectors.toList()));
 		result.setIdentifierValueMap(identifierValueMap);
 		result.setUniprotToEntitiesMap(uniprotToEntitiesMap);
@@ -253,5 +257,10 @@ public class DataOverlayEntityMediator {
 			result.setMaxValue(maxValue);
 		
 		return result;
+	}
+	
+	private List<String> getTargetLevelLegend(){
+		return Arrays.asList("Tclin+","Tclin","Tchem+","Tchem","Tbio","Tgray","Tdark");
+				
 	}
 }

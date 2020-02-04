@@ -27,6 +27,7 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 	
 	
 	public PairwisePopupResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, IDGPager pager) {
+		
 		super(PAGE_SIZE);
 		this.setRowData(0, entities);
 		this.setAutoHeaderRefreshDisabled(true);
@@ -52,18 +53,18 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 		
 		this.setRowCount(entities.size(), true);
 		
-		//ListHandler for sorting
-		ListHandler<PairwiseTableEntity> columnSortHandler = new ListHandler<>(provider.getList());
-		columnSortHandler.setComparator(pairwiseColumn, new Comparator<PairwiseTableEntity>() {
-			@Override
-			public int compare(PairwiseTableEntity o1, PairwiseTableEntity o2) {
-	          return o1.getInteractorName().compareTo(o2.getInteractorName());
-	        }
-			
-		});
-		
-		this.addColumnSortHandler(columnSortHandler);
-		this.getColumnSortList().push(pairwiseColumn);
+//		//ListHandler for sorting
+//		ListHandler<PairwiseTableEntity> columnSortHandler = new ListHandler<>(provider.getList());
+//		columnSortHandler.setComparator(pairwiseColumn, new Comparator<PairwiseTableEntity>() {
+//			@Override
+//			public int compare(PairwiseTableEntity o1, PairwiseTableEntity o2) {
+//	          return o1.getInteractorName().compareTo(o2.getInteractorName());
+//	        }
+//			
+//		});
+//		
+//		this.addColumnSortHandler(columnSortHandler);
+//		this.getColumnSortList().push(pairwiseColumn);
 		
 		this.redraw();
 	}
