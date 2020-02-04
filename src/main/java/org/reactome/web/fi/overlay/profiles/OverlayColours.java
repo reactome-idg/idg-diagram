@@ -36,7 +36,7 @@ public class OverlayColours{
 		OverlayColourProperties colours = null;
 		try {
 			colours = OverlayColourFactory.getOverlayObject(OverlayColourProperties.class,
-												  ColourSource.SOURCE.targetLevel().getText());
+												  ColourSource.SOURCE.genericColors().getText());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -51,8 +51,8 @@ public class OverlayColours{
 		
 		ColourSource SOURCE = GWT.create(ColourSource.class);
 			
-		@Source("target_development_level.json")
-		TextResource targetLevel();
+		@Source("generic_colors.json")
+		TextResource genericColors();
 	}
 	
 }
