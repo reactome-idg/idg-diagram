@@ -19,7 +19,7 @@ public class PairwiseInteractorColumn extends Column<PairwiseTableEntity, String
 
 	@Override
 	public String getValue(PairwiseTableEntity object) {
-		return object.getInteractorName() + "(" + object.getInteractorId() + ")";
+		return object.getInteractorName();
 	}
 
 }

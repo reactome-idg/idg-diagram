@@ -1,6 +1,8 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +46,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.IdentityColumn;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -216,8 +219,19 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 								  								  entity.getDataDesc().getId(), "positive", null));
 					}
 			}
-				
-		table = new PairwisePopupResultsTable(tableEntities);
+		
+		provider = new ListDataProvider<PairwiseTableEntity>();
+		pager = new IDGPager(this);
+		
+//		Collections.sort(tableEntities, new Comparator<PairwiseTableEntity>() {
+//			@Override
+//			public int compare(PairwiseTableEntity o1, PairwiseTableEntity o2) {
+//				if(o1 == null || o2 == null) return 0;
+//				return o1.getInteractorName().compareTo(o2.getInteractorName());
+//			}
+//		});
+
+		table = new PairwisePopupResultsTable(tableEntities, provider,pager);
 		
 		//Add view button column
 		ActionCell<PairwiseTableEntity> actionCell = new ActionCell<>("View", new ActionCell.Delegate<PairwiseTableEntity>() {
@@ -230,19 +244,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		
 		IdentityColumn<PairwiseTableEntity> viewColumn = new IdentityColumn<>(actionCell);
 		table.addColumn(viewColumn,"View Relationship");
-		
-		table.setRowCount(tableEntities.size(), true);
-		
-		//Needed for pager to work
-		provider = new ListDataProvider<PairwiseTableEntity>();
-		provider.addDataDisplay(table);
-		provider.setList(tableEntities);
-
-		//Pager setup for data
-		pager = new IDGPager(this);
-		pager.setDisplay(table);
-		pager.setPageSize(PairwisePopupResultsTable.PAGE_SIZE);
-		
+				
 		infoPanel.add(table);
 		infoPanel.add(pager);
 		infoPanel.setVisible(true);
@@ -305,8 +307,8 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			@Override
 			public void onSuccess(Map<String, List<PairwiseEntity>> uniprotToPairwiseEntityMap) {
 				pairwiseOverlayMap = uniprotToPairwiseEntityMap;
-				addInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
 				setPairwiseResultsTable();
+				addInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
 			}
 			@Override
 			public void onFailure(Throwable caught) {
@@ -356,7 +358,9 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	
 	private void addInteraction(PairwiseTableEntity entity) {
 		addNode(entity.getInteractorId(), true);
-		addEdge(entity.getSourceId(),entity.getInteractorId(),entity.getPosOrNeg(),entity.getDataDesc());
+		for(PairwiseTableEntity rel : tableEntities)
+			if(entity.getInteractorId() == rel.getInteractorId())
+				addEdge(rel.getSourceId(),rel.getInteractorId(),rel.getPosOrNeg(),rel.getDataDesc());
 		loadOverlay();
 	}
 	

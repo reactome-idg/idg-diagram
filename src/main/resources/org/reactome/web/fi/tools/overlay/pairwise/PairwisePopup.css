@@ -4,6 +4,10 @@
     background-color: rgb(30,148,208)!important;
 }
 
+th {
+	white-space: normal !important;
+}
+
 .header{
 	margin: 5px 10px 5px 10px;
 }

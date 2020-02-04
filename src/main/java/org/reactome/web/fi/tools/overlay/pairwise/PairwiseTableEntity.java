@@ -1,6 +1,6 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
-public class PairwiseTableEntity {
+public class PairwiseTableEntity{
 
 	private String sourceId;
 	private String sourceName;

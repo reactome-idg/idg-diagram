@@ -21,7 +21,7 @@ public class DiagramGeneNameColumn extends Column<PairwiseTableEntity, String> {
 
 	@Override
 	public String getValue(PairwiseTableEntity object) {
-		return object.getSourceName() + "(" + object.getSourceId() + ")";
+		return object.getSourceName();
 	}
 	
 	
