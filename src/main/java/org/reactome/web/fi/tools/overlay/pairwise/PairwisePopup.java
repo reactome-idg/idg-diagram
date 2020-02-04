@@ -203,6 +203,31 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 */
 	private void setPairwiseResultsTable() {
 		infoPanel.clear();
+		setTableEntities();
+
+		table = new PairwisePopupResultsTable(tableEntities, provider,pager);
+		
+		//Add view button column
+		ActionCell<PairwiseTableEntity> actionCell = new ActionCell<>("View", new ActionCell.Delegate<PairwiseTableEntity>() {
+
+			@Override
+			public void execute(PairwiseTableEntity object) {
+				addInteraction(object);
+			}
+		});
+		
+		IdentityColumn<PairwiseTableEntity> viewColumn = new IdentityColumn<>(actionCell);
+		table.addColumn(viewColumn,"View Relationship");
+				
+		infoPanel.add(table);
+		infoPanel.add(pager);
+		infoPanel.setVisible(true);
+	}
+
+	/**
+	 * Convert pairwiseOverlayMap to be usable as the backing map for a DataGrid.
+	 */
+	private void setTableEntities() {
 		tableEntities = new ArrayList<>();
 		for(List<PairwiseEntity> values : pairwiseOverlayMap.values())
 			for(PairwiseEntity entity : values) {
@@ -230,24 +255,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 				return o1.getInteractorName().compareTo(o2.getInteractorName());
 			}
 		});
-
-		table = new PairwisePopupResultsTable(tableEntities, provider,pager);
-		
-		//Add view button column
-		ActionCell<PairwiseTableEntity> actionCell = new ActionCell<>("View", new ActionCell.Delegate<PairwiseTableEntity>() {
-
-			@Override
-			public void execute(PairwiseTableEntity object) {
-				addInteraction(object);
-			}
-		});
-		
-		IdentityColumn<PairwiseTableEntity> viewColumn = new IdentityColumn<>(actionCell);
-		table.addColumn(viewColumn,"View Relationship");
-				
-		infoPanel.add(table);
-		infoPanel.add(pager);
-		infoPanel.setVisible(true);
 	}
 	
 	/**
