@@ -1,10 +1,6 @@
 package org.reactome.web.fi.client.visualisers.diagram.renderers;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.analysis.client.model.AnalysisType;
@@ -16,7 +12,6 @@ import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.events.RenderOtherContextDialogInfoEvent;
 import org.reactome.web.diagram.handlers.RenderOtherContextDialogInfoHandler;
-import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.renderers.common.OverlayContext;
 import org.reactome.web.diagram.renderers.helper.ItemsDistribution;
 import org.reactome.web.diagram.renderers.helper.RenderType;
@@ -24,14 +19,11 @@ import org.reactome.web.diagram.renderers.layout.Renderer;
 import org.reactome.web.diagram.renderers.layout.RendererManager;
 import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.diagram.util.MapSet;
-import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.OverlayRenderer;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.model.DataOverlayEntity;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
 public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOtherContextDialogInfoHandler, 
@@ -42,7 +34,6 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	private RendererManager rendererManager;
 	private Double factor;
 	private Coordinate offset;
-	private ThreeColorGradient gradient;
 	private OverlayContext originalOverlay;
 	private DataOverlay dataOverlay;
 	
@@ -64,13 +55,13 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 		this.rendererManager = rendererManager;
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
-        this.gradient = AnalysisColours.get().expressionGradient;
         this.originalOverlay = overlay;
         this.dataOverlay = dataOverlay;
         this.dataOverlay.updateIdentifierValueMap(); //reset map to just entities in a specific tissue if tissueTypes isnt null
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
         renderContinuousProteinData(itemsDistribution.getItems("Protein"));
-        renderContinuousComplexData(itemsDistribution.getItems("Complex"));
+        renderContinuousComplexData(itemsDistribution.getItems("Complex"), "Complex");
+        renderContinuousComplexData(itemsDistribution.getItems("EntitySet"), "EntitySet");
 	}
 
 	/**
@@ -99,15 +90,15 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	}
 
 	/**
-	 * Re-renderes complexes on diagram based on expression values from TCRD server
+	 * Re-renders complexes on diagram based on expression values from TCRD server
 	 * @param target
 	 */
-	private void renderContinuousComplexData(MapSet<RenderType, DiagramObject> target) {
+	private void renderContinuousComplexData(MapSet<RenderType, DiagramObject> target, String renderableClass) {
 		//return if there are no Complexes in the visible DiagramObject set
 		if(target == null)
 			return;
 		
-		Renderer renderer = rendererManager.getRenderer("Complex");
+		Renderer renderer = rendererManager.getRenderer(renderableClass);
 		OverlayContext overlay = this.originalOverlay;
 		Set<DiagramObject> objectSet = target.values();
 		for(DiagramObject item : objectSet) {
@@ -120,7 +111,6 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
-		this.gradient = null;
 		this.ctx = null;
 		this.factor = null;
 		this.offset = null;

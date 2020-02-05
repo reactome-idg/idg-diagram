@@ -1,7 +1,6 @@
 package org.reactome.web.fi.client.visualisers.diagram.renderers;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -82,7 +81,8 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
         renderDiscreteProteinData(itemsDistribution.getItems("Protein"));
-        renderDiscreteComplexData(itemsDistribution.getItems("Complex"));
+        renderDiscreteComplexData(itemsDistribution.getItems("Complex"), "Complex");
+        renderDiscreteComplexData(itemsDistribution.getItems("EntitySet"), "EntitySet");
 	}
 
 	/**
@@ -117,13 +117,13 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 	 * Re-render complexes given a discrete set of data from the TCRD server
 	 * @param target
 	 */
-	private void renderDiscreteComplexData(MapSet<RenderType, DiagramObject> target) {
+	private void renderDiscreteComplexData(MapSet<RenderType, DiagramObject> target, String renderableClass) {
 		//return if there are no complexes in the visible DiagramObject set
 		if(target == null) {
 			return;
 		}
 		
-		Renderer renderer = rendererManager.getRenderer("Complex");
+		Renderer renderer = rendererManager.getRenderer(renderableClass);
 		OverlayContext overlay = this.originalOverlay;
 		//Store AnalysisColours.get().expressionGradient for restore
 		ThreeColorGradient originalExpressionGradient = AnalysisColours.get().expressionGradient;
