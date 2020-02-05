@@ -91,6 +91,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 
 	/**
 	 * Re-renders complexes on diagram based on expression values from TCRD server
+	 * Also used to render EntitySet and can be used for like entities.
 	 * @param target
 	 */
 	private void renderContinuousComplexData(MapSet<RenderType, DiagramObject> target, String renderableClass) {

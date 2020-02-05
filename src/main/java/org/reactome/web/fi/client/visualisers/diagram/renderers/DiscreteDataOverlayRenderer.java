@@ -114,7 +114,8 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 	}
 	
 	/**
-	 * Re-render complexes given a discrete set of data from the TCRD server
+	 * Re-render complexes given a discrete set of data from the TCRD server.
+	 * Also used to render EntitySet and can be used for like entities.
 	 * @param target
 	 */
 	private void renderDiscreteComplexData(MapSet<RenderType, DiagramObject> target, String renderableClass) {
