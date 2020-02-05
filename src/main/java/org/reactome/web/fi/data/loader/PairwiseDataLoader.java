@@ -1,6 +1,8 @@
 package org.reactome.web.fi.data.loader;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,8 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntitiesFactory;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
+import org.reactome.web.fi.tools.overlay.pairwise.PairwiseTableEntity;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -25,9 +29,13 @@ public class PairwiseDataLoader {
 	
 	private static final String BASE_URL = "/idgpairwise/";
 	
-	public PairwiseDataLoader() {/*Nothing Here*/}
+	private Map<String, String> uniprotToGeneMap;
 	
-	public void loadPairwiseData(PairwiseOverlayProperties properties, AsyncCallback<Map<String, List<PairwiseEntity>>> callback) {
+	public PairwiseDataLoader() {
+		this.uniprotToGeneMap = PairwisePopupFactory.get().getUniprotToGeneMap();
+	}
+	
+	public void loadPairwiseData(PairwiseOverlayProperties properties, AsyncCallback<List<PairwiseTableEntity>> callback) {
 		
 		String url = BASE_URL + "pairwise/uniprots";
 		
@@ -59,7 +67,7 @@ public class PairwiseDataLoader {
 		}
 	}
 	
-	private Map<String, List<PairwiseEntity>> getEntitiesMap(PairwiseEntities entities) {
+	private List<PairwiseTableEntity> getEntitiesMap(PairwiseEntities entities) {
 		Map<String, List<PairwiseEntity>> result = new HashMap<>();
 		
 		for(PairwiseEntity entity: entities.getPairwiseEntities()) {
@@ -72,7 +80,32 @@ public class PairwiseDataLoader {
 			}
 		}
 		
-		return result;
+		List<PairwiseTableEntity> tableEntities = new ArrayList<>();
+		for(PairwiseEntity entity : entities.getPairwiseEntities()) {
+			if(entity.getNegGenes() != null && entity.getNegGenes().size() > 0) {
+				for(String uniprot : entity.getNegGenes()) {
+					tableEntities.add(new PairwiseTableEntity(entity.getGene(), uniprotToGeneMap.get(entity.getGene()),
+															  uniprot, uniprotToGeneMap.get(uniprot),
+															  entity.getDataDesc().getId(), "negative", null));
+				}
+				if(entity.getPosGenes() != null && entity.getPosGenes().size() > 0)
+					for(String uniprot : entity.getPosGenes()){
+						tableEntities.add(new PairwiseTableEntity(entity.getGene(), uniprotToGeneMap.get(entity.getGene()),
+								  								  uniprot, uniprotToGeneMap.get(uniprot),
+								  								  entity.getDataDesc().getId(), "positive", null));
+					}
+			}
+		}
+		
+		Collections.sort(tableEntities, new Comparator<PairwiseTableEntity>() {
+			@Override
+			public int compare(PairwiseTableEntity o1, PairwiseTableEntity o2) {
+				if(o1.getInteractorName() == null || o2.getInteractorName() == null) return 0;
+				return o1.getInteractorName().compareTo(o2.getInteractorName());
+			}
+		});
+		
+		return tableEntities;
 	}
 	
 	private String getPostData(PairwiseOverlayProperties properties) {		

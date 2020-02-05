@@ -1,8 +1,6 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +21,6 @@ import org.reactome.web.fi.common.RemoveButtonPopup;
 import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
@@ -46,7 +43,6 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.IdentityColumn;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -61,7 +57,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private String popupId;
 	private String containerId;
 	private List<PairwiseOverlayObject> pairwiseOverlayObjects;
-	private Map<String, List<PairwiseEntity>> pairwiseOverlayMap;
 	private Map<String,String> uniprotToGeneMap;
 	private Set<String> displayedNodes;
 	private Set<String> diagramNodes;
@@ -203,8 +198,10 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 */
 	private void setPairwiseResultsTable() {
 		infoPanel.clear();
-		setTableEntities();
 
+		provider = new ListDataProvider<>();
+		pager = new IDGPager(this);
+		
 		table = new PairwisePopupResultsTable(tableEntities, provider,pager);
 		
 		//Add view button column
@@ -223,43 +220,10 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		infoPanel.add(pager);
 		infoPanel.setVisible(true);
 	}
-
-	/**
-	 * Convert pairwiseOverlayMap to be usable as the backing map for a DataGrid.
-	 */
-	private void setTableEntities() {
-		tableEntities = new ArrayList<>();
-		for(List<PairwiseEntity> values : pairwiseOverlayMap.values())
-			for(PairwiseEntity entity : values) {
-				if(entity.getNegGenes() != null && entity.getNegGenes().size() > 0)
-					for(String uniprot : entity.getNegGenes()) {
-						tableEntities.add(new PairwiseTableEntity(entity.getGene(), uniprotToGeneMap.get(entity.getGene()),
-																  uniprot, uniprotToGeneMap.get(uniprot),
-																 entity.getDataDesc().getId(), "negative", null));
-				}
-				if(entity.getPosGenes() != null && entity.getPosGenes().size() > 0)
-					for(String uniprot : entity.getPosGenes()){
-						tableEntities.add(new PairwiseTableEntity(entity.getGene(), uniprotToGeneMap.get(entity.getGene()),
-								  								  uniprot, uniprotToGeneMap.get(uniprot),
-								  								  entity.getDataDesc().getId(), "positive", null));
-					}
-			}
-		
-		provider = new ListDataProvider<PairwiseTableEntity>();
-		pager = new IDGPager(this);
-		
-		Collections.sort(tableEntities, new Comparator<PairwiseTableEntity>() {
-			@Override
-			public int compare(PairwiseTableEntity o1, PairwiseTableEntity o2) {
-				if(o1.getInteractorName() == null || o2.getInteractorName() == null) return 0;
-				return o1.getInteractorName().compareTo(o2.getInteractorName());
-			}
-		});
-	}
 	
 	/**
 	 * Catches event when pager change pages
-	 */ //TODO: doesnt get right range for overlay
+	 */
 	@Override
 	public void onPageChanged() {
 		int pageStart = pager.getPageStart();
@@ -310,16 +274,16 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private void loadPairwiseInteractors() {
 		PairwiseDataLoader loader = new PairwiseDataLoader();
 		PairwiseOverlayProperties props = new PairwiseOverlayProperties(pairwiseOverlayObjects, String.join(",", diagramNodes));
-		loader.loadPairwiseData(props, new AsyncCallback<Map<String, List<PairwiseEntity>>>() {
+		loader.loadPairwiseData(props, new AsyncCallback<List<PairwiseTableEntity>>() {
 			@Override
-			public void onSuccess(Map<String, List<PairwiseEntity>> uniprotToPairwiseEntityMap) {
-				pairwiseOverlayMap = uniprotToPairwiseEntityMap;
+			public void onSuccess(List<PairwiseTableEntity> uniprotToPairwiseEntityMap) {
+				tableEntities = uniprotToPairwiseEntityMap;
 				setPairwiseResultsTable();
 				addInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
+				Console.error(caught.getMessage());
 			}
 		});
 	}
@@ -329,39 +293,23 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * Directs the overlay of positive and negative interactions.
 	 */
 	private void addInitialInteractors() {
-		pairwiseOverlayMap.forEach((k,v) -> {
-			v.forEach(entity -> {
-				if(entity.getPosGenes() != null) 
-					addInteractorSet(entity.getGene(), entity.getPosGenes(), "positive", entity.getDataDesc().getId());
-				if(entity.getNegGenes() != null) 
-					addInteractorSet(entity.getGene(), entity.getNegGenes(), "negative", entity.getDataDesc().getId());
-			});
-		});
+		Set<String> darkProteins = PairwisePopupFactory.get().getTDarkSet();
+		for(String diagramNode : diagramNodes) {
+			int counter  = 0;
+			for(PairwiseTableEntity entity: tableEntities) {
+				if(counter == 10) break;
+				if(entity.getSourceId() == diagramNode && darkProteins.contains(entity.getInteractorId())) {
+					addNode(entity.getInteractorId(), true);
+					addEdge(diagramNode, entity.getInteractorId(), entity.getPosOrNeg(), entity.getDataDesc());
+					counter++;
+				}
+			}
+		}
 		cy.setCytoscapeLayout("cose");
 		
 		loadOverlay();
 	}
-	
-	/**
-	 * Given a diagram gene source, add a set of uniprotes as connected nodes with either "positive"
-	 * or "negative" for interaction. id is used to determine line color in addEdge().
-	 * @param source
-	 * @param uniprots
-	 * @param interaction
-	 * @param id
-	 */
-	private void addInteractorSet(String source, List<String> uniprots, String interaction, String id) {
-		Set<String> darkProteins = PairwisePopupFactory.get().getTDarkSet();
-		int counter = 0;
-		for(String uniprot : uniprots) {
-			if(counter == 5) break;
-			if(darkProteins.contains(uniprot)) {
-				addNode(uniprot, true);
-				addEdge(source, uniprot, interaction, id);
-				counter++;
-			}
-		}
-	}
+
 	
 	private void addInteraction(PairwiseTableEntity entity) {
 		addNode(entity.getInteractorId(), true);
@@ -531,7 +479,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	}
 
 	private void overlayData() {
-		cy.resetNodeColor("#00CC00"); //TODO: find a way to access this programatically
+		cy.resetNodeColor("#00CC00");
 		cy.resetSelection();
 		this.dataOverlay.updateIdentifierValueMap();
 		
