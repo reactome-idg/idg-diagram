@@ -273,6 +273,8 @@ public class DataOverlayPanel  extends FlowPanel{
 		String valueType = selectorMap.get(currentExpressionType).getDataType();
 		String unit = selectorMap.get(currentExpressionType).getUnit();
 		String sex = null;
+		
+		//make sure sex is selected if it is an option
 		if(selectorMap.get(currentExpressionType).getHasGender()) {
 			for(RadioButton btn : radioButtons)
 				if(btn.getValue())
@@ -282,14 +284,17 @@ public class DataOverlayPanel  extends FlowPanel{
 				return;
 			}
 		}
+		
+		//Make sure at least one tissue is selected
+		if(tissueSelector.getSelectedItemsText().size() == 0) {
+			warningLabel.setText("Select at least one tissue!");
+			return;
+		}
 		warningLabel.setText("");
 
 		DataOverlayProperties properties = new DataOverlayProperties(valueType, unit, sex, 
 															 String.join(",", tissueSelector.getSelectedItemsText()), 
 															 currentExpressionType);
-		
-		if(currentProperties != null && currentProperties.equals(properties))
-			return;
 		
 		currentProperties = properties;
 		loader.setVisible(true);
