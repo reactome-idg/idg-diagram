@@ -192,6 +192,7 @@ public class FIViewContent extends GenericContent{
 		JSONObject protein = new JSONObject();
 		protein.put("id", new JSONString(accession));
 		protein.put("name", new JSONString(shortName));
+		protein.put("color", new JSONString("#00CC00"));
 
 		//add protein to proteinArray of nodes
 		JSONObject proteinData = new JSONObject();

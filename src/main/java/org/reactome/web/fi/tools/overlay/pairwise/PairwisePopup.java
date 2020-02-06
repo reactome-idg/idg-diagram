@@ -352,7 +352,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		for(PairwiseOverlayObject prop:  pairwiseOverlayObjects) {
 			if(prop.getId() == dataDesc && relationship == "positive")
 				cy.recolorEdge(edgeCount+"", prop.getPositiveLineColorHex());
-			else if(prop.getId() == dataDesc & relationship == "negative")
+			else if(prop.getId() == dataDesc && relationship == "negative")
 				cy.recolorEdge(edgeCount+"", prop.getNegativeLineColorHex());
 		}
 		edgeCount++;
@@ -380,7 +380,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			node.put("interactor", new JSONString("true"));
 		else
 			node.put("interactor", new JSONString("false"));
-		
+		node.put("color", new JSONString("#FF0000"));
 		result.put("data", node);
 		return result;
 	}
@@ -479,7 +479,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	}
 
 	private void overlayData() {
-		cy.resetNodeColor("#00CC00");
+		cy.resetNodeColor();
 		cy.resetSelection();
 		this.dataOverlay.updateIdentifierValueMap();
 		
@@ -494,9 +494,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		for(String uniprot: displayedNodes) {
 			if(dataOverlay.getIdentifierValueMap().get(uniprot) == null) continue;
 			String color = gradient.getColor(dataOverlay.getIdentifierValueMap().get(uniprot), dataOverlay.getMinValue(), dataOverlay.getMaxValue());
-			cy.highlightNode(uniprot, 
-							 color,
-							 ".8");
+			cy.highlightNode(uniprot, color);
 		}
 	}
 
@@ -505,7 +503,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		for(String uniprot : displayedNodes) {
 			String color = colourMap.get(dataOverlay.getIdentifierValueMap().get(uniprot));
 			if(color == null || color == "") continue;
-			cy.highlightNode(uniprot, color, ".8");
+			cy.highlightNode(uniprot, color);
 		}
 	}
 	
@@ -576,7 +574,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		@Source(ResourceCSS.CSS)
 		ResourceCSS getCSS();
 		
-		@Source("org/reactome/web/fi/tools/overlay/pairwise/cytoscape-style.json")
+		@Source("org/reactome/web/fi/client/visualisers/fiview/cytoscape-style.json")
 		public TextResource fiviewStyle();
 		
 		@Source("images/close_clicked.png")

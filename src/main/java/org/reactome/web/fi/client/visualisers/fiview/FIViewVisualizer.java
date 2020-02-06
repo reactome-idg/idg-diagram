@@ -528,9 +528,9 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
         AnalysisType analysisType = AnalysisType.NONE;
         if(cy!=null && analysisStatus != null) {
         	analysisType = AnalysisType.getType(analysisStatus.getAnalysisSummary().getType());
-        	cy.resetStyle();
+        	cy.resetNodeColor();
             //setup lighter node color
-            cy.setNodeFill(InteractorColours.get().PROFILE.getProtein().getLighterFill());
+            cy.setNodeFill(InteractorColours.get().PROFILE.getProtein().getLighterFill()); //TODO: change this so it updates in the faster way
         	if(analysisStatus.getExpressionSummary()!=null) {
         		minExp = analysisStatus.getExpressionSummary().getMin();
         		maxExp = analysisStatus.getExpressionSummary().getMax();
@@ -571,26 +571,26 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		analysisStatus = null;
         selectedExpCol = 0;
         if(cy != null) {
-        	cy.resetStyle();
+        	cy.resetNodeColor();
         }
 	}
 
 	//highlight enrichment node
 	private void drawAnalysisEnrichmentNode(GraphObject entity) {
 		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(),
-				AnalysisColours.get().PROFILE.getEnrichment().getGradient().getMax(), "1");
+				AnalysisColours.get().PROFILE.getEnrichment().getGradient().getMax());
 	}
 	
 	//highlight expression of a node
 	private void drawAnalysisExpressionNode(GraphObject entity, Double minExp, Double maxExp) {
 		String color = getExpressionColor(((GraphPhysicalEntity)entity).getExpression(), minExp, maxExp);
-		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color, "1");
+		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color);
 	}
 	
 	//highlight regulated node
 	private void drawAnalysisRegulationNode(GraphObject entity, Double minExp) {
 		String color = getRegulationColor(((GraphPhysicalEntity)entity).getExpression(), minExp);
-		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color, "1");
+		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color);
 	}
 	
 	//get node color for a given expression
@@ -678,7 +678,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	 * @param dataOverlay
 	 */
 	public void overlayNodes(DataOverlay dataOverlay) {
-		cy.resetStyle();
+		cy.resetNodeColor();
 		cy.resetSelection();
 		this.dataOverlay = dataOverlay;
 		if(dataOverlay == null) {
@@ -701,7 +701,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		ThreeColorGradient gradient = AnalysisColours.get().expressionGradient;
 		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
 			String color = gradient.getColor(k,dataOverlay.getMinValue(),dataOverlay.getMaxValue());
-			cy.highlightNode(v, color, ".8");
+			cy.highlightNode(v, color);
 		});
 	}
 
@@ -713,7 +713,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		Map<Double, String> colourMap = OverlayColours.get().getColours();
 		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
 			String color = colourMap.get(new Double(k));
-			cy.highlightNode(v, color, ".8");
+			cy.highlightNode(v, color);
 
 		});
 	}
