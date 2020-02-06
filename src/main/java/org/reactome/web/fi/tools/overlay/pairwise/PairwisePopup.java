@@ -61,7 +61,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private Set<String> displayedNodes;
 	private Set<String> diagramNodes;
 	
-	private Map<String,String> edgeMap; //map pairwise interactor node to edge
+	private Map<String,Set<String>> edgeMap; //map pairwise interactor node to edge
 	private int edgeCount = 0;
 	
 	private DataOverlay dataOverlay;
@@ -209,7 +209,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 
 			@Override
 			public void execute(PairwiseTableEntity object) {
-				addInteraction(object);
+				addInteractions(object);
 			}
 		});
 		
@@ -311,7 +311,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	}
 
 	
-	private void addInteraction(PairwiseTableEntity entity) {
+	private void addInteractions(PairwiseTableEntity entity) {
 		addNode(entity.getInteractorId(), true);
 		for(PairwiseTableEntity rel : tableEntities)
 			if(entity.getInteractorId() == rel.getInteractorId())
@@ -342,11 +342,13 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private void addEdge(String source, String target, String relationship, String dataDesc) {
 		String edge = source+target+relationship+dataDesc;
 		
-		if(edgeMap.values().contains(edge)) return;
+		if(edgeMap.keySet().contains(target) && edgeMap.get(target).contains(edge)) return;
 		
 		JSONValue val = makeFI(edgeCount, source, target, relationship);
 		
-		edgeMap.put(target, edge);
+		if(!edgeMap.keySet().contains(target))
+			edgeMap.put(target, new HashSet<>());
+		edgeMap.get(target).add(edge);
 		
 		cy.addCytoscapeEdge(val.toString());
 		for(PairwiseOverlayObject prop:  pairwiseOverlayObjects) {
