@@ -207,20 +207,28 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	public void setContext(Context context) {
 		this.context = context;
 		Content content = context.getContent();
+//		if(!cytoscapeInitialised) {
+//			cy.cytoscapeInit(((FIViewContent)content).getProteinArray(), 
+//							 ((FIViewContent)content).getFIArray(),  
+//							 "cose", 
+//							 "cy"); // sets the container to use
+//			cytoscapeInitialised = true;
+//		}
+//		else if(cytoscapeInitialised) {
+//			cy.clearCytoscapeGraph();
+//			cy.addCytoscapeNodes(((FIViewContent)content).getProteinArray());
+//			cy.addCytoscapeEdge(((FIViewContent)content).getFIArray());
+//		}
+		
 		if(!cytoscapeInitialised) {
-			cy.cytoscapeInit(((FIViewContent)content).getProteinArray(), 
-							 ((FIViewContent)content).getFIArray(),  
-							 "cose", 
-							 "cy"); // sets the container to use
-			cy.setCytoscapeLayout("cose");
+			cy.cytoscapeInit(new JSONArray().toString(), new JSONArray().toString(), "cose", "cy");
 			cytoscapeInitialised = true;
 		}
-		else if(cytoscapeInitialised) {
-			cy.clearCytoscapeGraph();
-			cy.addCytoscapeNodes(((FIViewContent)content).getProteinArray());
-			cy.addCytoscapeEdge(((FIViewContent)content).getFIArray());
-			cy.setCytoscapeLayout("cose");
-		}
+		cy.clearCytoscapeGraph();
+		cy.addCytoscapeNodes(((FIViewContent)content).getProteinArray());
+		cy.addCytoscapeEdge(((FIViewContent)content).getFIArray());
+		
+		cy.setCytoscapeLayout("cose");
 		eventBus.fireEventFromSource(new FIViewMessageEvent(false), this);
 	}
 

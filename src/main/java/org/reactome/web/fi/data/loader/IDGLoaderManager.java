@@ -50,10 +50,12 @@ OverlayLoader.Handler{
 	public void load(String identifier) {
 		if (isFIViewNeeded(identifier)) {
 			context = contextMap.get(identifier + ".fi");
-			if(context != null) 
+			eventBus.fireEventFromSource(new FIViewMessageEvent(true), this);
+			if(context != null) {
+				GraphObjectFactory.content = context.getContent();
 				eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
+			}
 			else {
-				eventBus.fireEventFromSource(new FIViewMessageEvent(true), this);
 				fIViewLoader.load(identifier, identifier.substring(identifier.lastIndexOf("-")+1));
 			}
 		}
