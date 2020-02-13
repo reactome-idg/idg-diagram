@@ -13,7 +13,6 @@ import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.content.GenericContent;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPathway;
-import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphSubpathway;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
@@ -24,9 +23,7 @@ import org.reactome.web.fi.data.model.FIEntityNode;
 import org.reactome.web.fi.data.model.FIEventNode;
 import org.reactome.web.fi.data.model.ProteinEntityNode;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
-import org.reactome.web.gwtCytoscapeJs.util.Console;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -123,6 +120,9 @@ public class FIViewContent extends GenericContent{
     	
 	}
 	
+	/**
+	 * Makes Identifier map for use later
+	 */
 	private void makeIdentifiersMap() {
 		int counter = 0;
 		for(Map.Entry<String, String> protein : existingProteins.entrySet()) {
@@ -181,6 +181,14 @@ public class FIViewContent extends GenericContent{
 		convertSourcesToGraphObjects(reactomeSources);
 	}
 	
+	/**
+	 * Check accession of proteins and remove any isoform identifiers 
+	 * and change any ENSG identifiers to Uniprot.
+	 * !!!MUST BE CALLED AFTER UniprotToGeneMap LOADED IN PAIRWISEPOPUPFACTORY
+	 * @param geneName
+	 * @param accession
+	 * @return
+	 */
 	private String correctAccession(String geneName, String accession) {
 		if(accession.contains("-"))
 			return accession.substring(0, accession.indexOf("-"));
@@ -349,13 +357,11 @@ public class FIViewContent extends GenericContent{
 	@Override
 	public void cache(GraphObject dbObject) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void cache(List<? extends DiagramObject> diagramObjects) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -377,7 +383,6 @@ public class FIViewContent extends GenericContent{
 
 	@Override
 	public Set<GraphPathway> getEncapsulatedPathways() {
-//        return encapsulatedPathways;
 		return null;
 	}
 

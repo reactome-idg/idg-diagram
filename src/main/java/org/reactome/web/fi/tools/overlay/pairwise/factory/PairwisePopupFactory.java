@@ -36,6 +36,9 @@ public class PairwisePopupFactory{
 	
 	private DataOverlayProperties dataOverlayProperties;
 	
+	/**
+	 * On initialization, need to load TDark set and UniprotToGeneMap
+	 */
 	private PairwisePopupFactory() {
 		popupMap = new HashMap<>();
 		currentPairwiseObjects = new ArrayList<>();
@@ -108,10 +111,18 @@ public class PairwisePopupFactory{
 		return result;
 	}
 	
+	/**
+	 * Removes node from map on close
+	 * @param id
+	 */
 	public void removePopup(String id) {
 		popupMap.remove(id);
 	}
 	
+	/**
+	 * sets properties of current Pairwise overlay options
+	 * @param pairwiseOverlayObjects
+	 */
 	public void setCurrentPairwiseProperties(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.currentPairwiseObjects = pairwiseOverlayObjects;
 		for(PairwisePopup popup : popupMap.values())
@@ -136,6 +147,10 @@ public class PairwisePopupFactory{
 		return this.dataOverlayProperties;
 	}
 
+	/**
+	 * Directs open popups to change overlay column on column changed
+	 * @param column
+	 */
 	public void setOverlayColumn(int column) {
 		for(PairwisePopup popup: popupMap.values())
 			popup.changeOverlayColumn(column);

@@ -150,6 +150,11 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		return result;
 	}
 
+	/**
+	 * Sets diagram nodes when popup initiated from diagram view.
+	 * Converts any isoforms or ENSG to standard Uniprot identifier.
+	 * @param graphObject
+	 */
 	private void setDiagramNodes(GraphObject graphObject) {
 		this.diagramNodes = new HashSet<>();
 		if(graphObject instanceof GraphPhysicalEntity) {
@@ -157,11 +162,11 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			for(GraphPhysicalEntity entity : entities) {
 				if(entity instanceof GraphEntityWithAccessionedSequence || entity instanceof GraphProteinDrug) {
 					String identifier = entity.getIdentifier();
-					if(identifier.contains("-"))															//removes any isoform identifiers
+					if(identifier.contains("-"))													//removes any isoform identifiers
 						identifier = identifier.substring(0, identifier.indexOf("-"));
-					else if(identifier.contains("ENSG")) { 													//should convert ENSG to uniprot
-						for(Map.Entry<String,String> entry: uniprotToGeneMap.entrySet()) {
-							if(entity.getDisplayName().contains(entry.getValue())) {
+					else if(identifier.contains("ENSG")) { 											//convert ENSG to uniprot
+						for(Map.Entry<String,String> entry: uniprotToGeneMap.entrySet()) {			//Iterate over map. Check value vs. display name
+							if(entity.getDisplayName().contains(entry.getValue())) {				//If equal, replace with key (uniprot)
 								identifier = entry.getKey();
 								break;
 							}
@@ -173,6 +178,11 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		}
 	}
 	
+	/**
+	 * Sets diagram nodes when popup initiated from FI view
+	 * @param uniprot
+	 * @param geneName
+	 */
 	private void setDiagramNodes(String uniprot, String geneName) {
 		this.diagramNodes = new HashSet<>();
 		diagramNodes.add(uniprot);
@@ -248,6 +258,10 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		cy.setCytoscapeLayout("cose");
 	}
 
+	/**
+	 * Adds nodes from diagram or fiview to the cytoscape display. 
+	 * Connects all nodes by an edge.
+	 */
 	private void initBaseCytoscape() {
 		List<String> diagramNodesList = new ArrayList<>(diagramNodes);
 
@@ -310,7 +324,10 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		loadOverlay();
 	}
 
-	
+	/**
+	 * Directs addition of interactor node and all edges present in tableEntities
+	 * @param entity
+	 */
 	private void addInteractions(PairwiseTableEntity entity) {
 		addNode(entity.getInteractorId(), true);
 		for(PairwiseTableEntity rel : tableEntities)
@@ -409,8 +426,11 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		return result;
 	}
 	
+	/**
+	 * Loads DataOverlay from TCRD and directs recoloration of nodes
+	 * Causes reload of table page
+	 */
 	public void loadOverlay() {
-		
 		DataOverlayProperties properties = PairwisePopupFactory.get().getDataOverlayProperties();
 		OverlayLoader loader = new OverlayLoader();
 		properties.setUniprots(getAllUniprots());
@@ -460,7 +480,10 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			}
 		});
 	}
-
+	
+	/**
+	 * Updates overlay values on results table
+	 */
 	private void updateTableData() {
 		this.tableDataOverlay.updateIdentifierValueMap();
 		if(dataOverlay.isDiscrete()) {
@@ -480,6 +503,9 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		provider.refresh();
 	}
 
+	/**
+	 * directs coloration nodes based on current overlay
+	 */
 	private void overlayData() {
 		cy.resetNodeColor();
 		cy.resetSelection();
@@ -509,6 +535,9 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		}
 	}
 	
+	/**
+	 * Opens remove context button on context click
+	 */
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
 		if(diagramNodes.contains(id)) return;
@@ -530,7 +559,11 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		panel.getElement().setId(this.containerId);
 		panel.show();
 	}
-
+	
+	/**
+	 * Updates popup when pairwise overlay options change
+	 * @param pairwiseOverlayObjects
+	 */
 	public void updatePairwiseObjects(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		cy.clearCytoscapeGraph();
@@ -539,6 +572,10 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		loadPairwiseInteractors();
 	}
 	
+	/**
+	 * Directs recoloration of nodes and table values when overlay column changes
+	 * @param column
+	 */
 	public void changeOverlayColumn(int column) {
 		//updates column represented in cytoscape
 		if(dataOverlay != null)
