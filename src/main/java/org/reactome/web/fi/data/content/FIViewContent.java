@@ -23,6 +23,7 @@ import org.reactome.web.fi.data.model.FIEntityFactory;
 import org.reactome.web.fi.data.model.FIEntityNode;
 import org.reactome.web.fi.data.model.FIEventNode;
 import org.reactome.web.fi.data.model.ProteinEntityNode;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
@@ -158,6 +159,9 @@ public class FIViewContent extends GenericContent{
 			String proteinTwoAccession,
 			String annotationDirection,
 			JSONValue reactomeSources) {
+		
+		proteinOneAccession = correctAccession(proteinOneShortName, proteinOneAccession);
+		proteinTwoAccession = correctAccession(proteinTwoShortName, proteinTwoAccession);
 
 		//set proteins for an interaction if they don't exist as nodes already
 		ensureProteinInJSON(proteinOneShortName, proteinOneAccession);
@@ -177,6 +181,21 @@ public class FIViewContent extends GenericContent{
 		convertSourcesToGraphObjects(reactomeSources);
 	}
 	
+	private String correctAccession(String geneName, String accession) {
+		if(accession.contains("-"))
+			return accession.substring(0, accession.indexOf("-"));
+		else if(accession.contains("ENSG")) {
+			Map<String, String> uniprotToGeneMap = PairwisePopupFactory.get().getUniprotToGeneMap();
+			for(Map.Entry<String,String> entry: uniprotToGeneMap.entrySet()) {
+				if(geneName == entry.getValue()) {
+					accession = entry.getKey();
+					return accession;
+				}
+			}
+		}
+		return accession;
+	}
+
 	/**
 	 * Creates element in proteinArray if it doesn't already exist in the proteinMap
 	 * @param shortName
