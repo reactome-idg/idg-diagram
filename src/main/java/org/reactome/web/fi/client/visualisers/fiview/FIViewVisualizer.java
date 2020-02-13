@@ -29,26 +29,6 @@ import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.profiles.interactors.InteractorColours;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.data.content.FIViewContent;
-import org.reactome.web.gwtCytoscapeJs.events.EdgeClickedEvent;
-import org.reactome.web.gwtCytoscapeJs.events.EdgeContextSelectEvent;
-import org.reactome.web.gwtCytoscapeJs.events.EdgeHoveredEvent;
-import org.reactome.web.gwtCytoscapeJs.events.EdgeMouseOutEvent;
-import org.reactome.web.gwtCytoscapeJs.events.NodeClickedEvent;
-import org.reactome.web.gwtCytoscapeJs.events.NodeContextSelectEvent;
-import org.reactome.web.gwtCytoscapeJs.events.NodeHoveredEvent;
-import org.reactome.web.gwtCytoscapeJs.events.NodeMouseOutEvent;
-import org.reactome.web.gwtCytoscapeJs.events.CytoscapeCoreContextEvent;
-import org.reactome.web.gwtCytoscapeJs.events.CytoscapeCoreSelectedEvent;
-import org.reactome.web.gwtCytoscapeJs.handlers.EdgeClickedHandler;
-import org.reactome.web.gwtCytoscapeJs.handlers.EdgeContextSelectHandler;
-import org.reactome.web.gwtCytoscapeJs.handlers.EdgeHoveredHandler;
-import org.reactome.web.gwtCytoscapeJs.handlers.EdgeMouseOutHandler;
-import org.reactome.web.gwtCytoscapeJs.handlers.NodeClickedHandler;
-import org.reactome.web.gwtCytoscapeJs.handlers.NodeContextSelectHandler;
-import org.reactome.web.gwtCytoscapeJs.handlers.NodeHoveredHandler;
-import org.reactome.web.gwtCytoscapeJs.handlers.NodeMouseOutHandler;
-import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreContextHandler;
-import org.reactome.web.gwtCytoscapeJs.handlers.CytoscapeCoreSelectedHandler;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
 import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
 import org.reactome.web.fi.events.FIViewMessageEvent;
@@ -73,10 +53,8 @@ import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.DialogBox;
-
 
 /**
  * 
@@ -207,18 +185,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	public void setContext(Context context) {
 		this.context = context;
 		Content content = context.getContent();
-//		if(!cytoscapeInitialised) {
-//			cy.cytoscapeInit(((FIViewContent)content).getProteinArray(), 
-//							 ((FIViewContent)content).getFIArray(),  
-//							 "cose", 
-//							 "cy"); // sets the container to use
-//			cytoscapeInitialised = true;
-//		}
-//		else if(cytoscapeInitialised) {
-//			cy.clearCytoscapeGraph();
-//			cy.addCytoscapeNodes(((FIViewContent)content).getProteinArray());
-//			cy.addCytoscapeEdge(((FIViewContent)content).getFIArray());
-//		}
 		
 		if(!cytoscapeInitialised) {
 			cy.cytoscapeInit(new JSONArray().toString(), new JSONArray().toString(), "cose", "cy");
@@ -347,6 +313,13 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		nodeContextPanelMap.put(id, nodeContextPanel);
 	}
 	
+	public void clearNodeContextMap() {
+		for(NodeContextPanel popup : nodeContextPanelMap.values()) {
+			popup.hide();
+		}
+		nodeContextPanelMap.clear();
+	}
+	
 	/**
 	 * Sets location of context popups
 	 * @param eventX
@@ -398,7 +371,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	@Override
 	public void resetContext() {
 		this.context = null;
-		nodeContextPanelMap.clear();
+		clearNodeContextMap();
 		cytoscapeInitialised = false;
 	}
 	
@@ -682,7 +655,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		cy.resetSelection();
 		this.dataOverlay = dataOverlay;
 		if(dataOverlay == null) {
-			nodeContextPanelMap.clear();
+			clearNodeContextMap();
 			return;
 		}
         this.dataOverlay.updateIdentifierValueMap();

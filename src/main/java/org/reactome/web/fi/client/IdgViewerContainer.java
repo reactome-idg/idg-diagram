@@ -124,6 +124,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 
 	@Override
 	protected void setActiveVisualiser(Context context) {
+		hideContextMenus();
 		hideButtons();
 		if(context.getContent().getType() == Content.Type.DIAGRAM && CytoscapeViewFlag.isCytoscapeViewFlag()) {
 			for (Visualiser vis : visualisers.values()) {
@@ -141,6 +142,11 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		super.setActiveVisualiser(context);
 	}
 	
+	private void hideContextMenus() {
+		fIViewVisualizer.clearNodeContextMap();
+		context.setDialogMap(new HashMap<>());
+	}
+
 	@Override
 	public void contentLoaded(Context context) {
 		super.contentLoaded(context);
