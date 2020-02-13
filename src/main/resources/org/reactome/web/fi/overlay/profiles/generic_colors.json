@@ -1,15 +1,15 @@
 {
     "nodes": [{
-        "fill" : "#be1cc9"
+        "fill" : "#337ab7"
     },
     {
-        "fill" : "#ff2121" 
+        "fill" : "#5bc0de" 
     },
     {
-        "fill" : "#63ffd8"
+        "fill" : "#ffb259"
     },
     {
-        "fill" : "#ff8f26"
+        "fill" : "#f44336"
     },
     {
         "fill" : "#87a3ff"
