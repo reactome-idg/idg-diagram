@@ -260,7 +260,7 @@ public class DataOverlayEntityMediator {
 	}
 	
 	private List<String> getTargetLevelLegend(){
-		return Arrays.asList("Tclin+","Tclin","Tchem+","Tchem","Tbio","Tgray","Tdark");
+		return Arrays.asList("Tclin","Tchem","Tbio","Tdark");
 				
 	}
 }
