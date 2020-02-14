@@ -175,6 +175,9 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 		else if(this.dataOverlay.getTissueTypes().size() > 1)
 			showMultipleTissuePanel();
 		this.setVisible(true);
+		if(this.dataOverlay.getEType().equals("Target Development Level")){
+			this.setVisible(false);
+		}
 	}
 	
 	@Override
