@@ -236,6 +236,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 */
 	@Override
 	public void onPageChanged() {
+		if(tableEntities.size() == 0) return;
 		int pageStart = pager.getPageStart();
 		int pageEnd = pageStart + PairwisePopupResultsTable.PAGE_SIZE;
 		List<String> entities = new ArrayList<>();
