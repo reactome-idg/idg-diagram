@@ -9,6 +9,7 @@ import java.util.Set;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.client.visualisers.diagram.DiagramVisualiser;
+import org.reactome.web.diagram.controls.settings.HideableContainerPanel;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSequence;
@@ -74,7 +75,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
-		
+				
 		initHandlers();
 	}
 
@@ -108,7 +109,14 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		super.leftTopLauncher.getMainControlPanel().add(overlayButton);
 		overlayControlLegend = new OverlayControlLegend(eventBus);
 		super.bottomContainerPanel.add(overlayControlLegend);
+		super.bottomContainerPanel.remove(super.interactorsControl);
 		this.add(overlayLauncher);		
+		
+		//this block used to disable settings panels not used in the idg portal for reactome.
+		super.hideableContainerPanel.getButtons().get(0).setEnabled(false);
+		super.hideableContainerPanel.getButtons().get(0).removeStyleName(HideableContainerPanel.RESOURCES.getCSS().buttonSelected());
+		super.hideableContainerPanel.getButtons().get(1).setEnabled(false);
+		super.hideableContainerPanel.getContainer().showWidget(super.hideableContainerPanel.getButtons().size()-1);
 		
 		bind();
 		
@@ -150,7 +158,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	@Override
 	public void contentLoaded(Context context) {
 		super.contentLoaded(context);
-		
+				
 		//check if overlay should be loaded and if so, load new Overlay data
 		if(dataOverlay != null) {
 			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
