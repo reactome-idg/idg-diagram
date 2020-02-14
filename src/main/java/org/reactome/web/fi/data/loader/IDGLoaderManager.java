@@ -3,6 +3,7 @@ package org.reactome.web.fi.data.loader;
 
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
+import org.reactome.web.diagram.data.interactors.raw.RawInteractors;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.data.loader.SVGLoader;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
@@ -24,6 +25,11 @@ import com.google.gwt.event.shared.EventBus;
  */
 public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Handler,
 OverlayLoader.Handler{
+
+	@Override
+	public void interactorsLoaded(RawInteractors interactors, long time) {
+		return;
+	}
 
 	private EventBus eventBus;
 	private FIViewLoader fIViewLoader;
