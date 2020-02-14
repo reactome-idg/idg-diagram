@@ -113,10 +113,10 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		this.add(overlayLauncher);		
 		
 		//this block used to disable settings panels not used in the idg portal for reactome.
-		super.hideableContainerPanel.getButtons().get(0).setEnabled(false);
-		super.hideableContainerPanel.getButtons().get(0).removeStyleName(HideableContainerPanel.RESOURCES.getCSS().buttonSelected());
-		super.hideableContainerPanel.getButtons().get(1).setEnabled(false);
-		super.hideableContainerPanel.getContainer().showWidget(super.hideableContainerPanel.getButtons().size()-1);
+		super.hideableContainerPanel.getButtons().get(0).setEnabled(false);																//diable color settings
+		super.hideableContainerPanel.getButtons().get(0).removeStyleName(HideableContainerPanel.RESOURCES.getCSS().buttonSelected());	//remove selected styling
+		super.hideableContainerPanel.getButtons().get(1).setEnabled(false);																//disable interactor panel
+		super.hideableContainerPanel.getContainer().showWidget(super.hideableContainerPanel.getButtons().size()-1);						//set container to show about Reactome panel
 		
 		bind();
 		
