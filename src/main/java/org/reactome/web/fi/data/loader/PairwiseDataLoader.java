@@ -88,12 +88,13 @@ public class PairwiseDataLoader {
 															  uniprot, uniprotToGeneMap.get(uniprot),
 															  entity.getDataDesc().getId(), "negative", null));
 				}
-				if(entity.getPosGenes() != null && entity.getPosGenes().size() > 0)
-					for(String uniprot : entity.getPosGenes()){
-						tableEntities.add(new PairwiseTableEntity(entity.getGene(), uniprotToGeneMap.get(entity.getGene()),
-								  								  uniprot, uniprotToGeneMap.get(uniprot),
-								  								  entity.getDataDesc().getId(), "positive", null));
-					}
+			}
+			if(entity.getPosGenes() != null && entity.getPosGenes().size() > 0) {
+				for(String uniprot : entity.getPosGenes()){
+					tableEntities.add(new PairwiseTableEntity(entity.getGene(), uniprotToGeneMap.get(entity.getGene()),
+							  								  uniprot, uniprotToGeneMap.get(uniprot),
+							  								  entity.getDataDesc().getId(), "positive", null));
+				}
 			}
 		}
 		
