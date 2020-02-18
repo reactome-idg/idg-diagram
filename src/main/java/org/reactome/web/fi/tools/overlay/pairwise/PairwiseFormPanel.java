@@ -54,12 +54,10 @@ public class PairwiseFormPanel extends FlowPanel{
 	private ColorPicker negColorPicker;
 	private ColorPicker posColorPicker;
 	private InlineLabel warningLabel;
-	private List<Button> lineStyleButtons;
 	
 	public PairwiseFormPanel(Handler handler) {
 		this.handler = handler;
 		dataTypesList = new ArrayList<>();
-		lineStyleButtons = new ArrayList<>();
 		
 		loadDataDesc();
 		initPanel();
@@ -288,12 +286,6 @@ public class PairwiseFormPanel extends FlowPanel{
 	private void resetForm() {
 		negColorPicker.setColor("#FFF");
 		posColorPicker.setColor("#FFF");
-		resetButtonSelection();
-	}
-
-	private void resetButtonSelection() {
-		for(Button btn : lineStyleButtons)
-			btn.removeStyleName(RESOURCES.getCSS().lineStyleButtonSelected());
 	}
 	
 	/**
