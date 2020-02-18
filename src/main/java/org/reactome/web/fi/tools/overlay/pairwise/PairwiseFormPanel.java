@@ -8,6 +8,7 @@ import java.util.Set;
 //import java.util.regex.Matcher;
 //import java.util.regex.Pattern;
 
+import org.reactome.web.fi.common.colorPicker.ColorPicker;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntity;
@@ -50,8 +51,8 @@ public class PairwiseFormPanel extends FlowPanel{
 	private ListBox provenanceListBox;
 	private ListBox bioSourcesListBox;
 	private ListBox originListBox;
-	private TextBox negativeLineColorTextBox;
-	private TextBox positiveLineColorTextBox;
+	private ColorPicker negColorPicker;
+	private ColorPicker posColorPicker;
 	private InlineLabel warningLabel;
 	private List<Button> lineStyleButtons;
 	
@@ -213,15 +214,14 @@ public class PairwiseFormPanel extends FlowPanel{
 		FlowPanel result = new FlowPanel();
 		result.setStyleName(RESOURCES.getCSS().rightContainer());
 		
-		result.add(new Label("Choose Line Color:"));
-		negativeLineColorTextBox = new TextBox();
-		negativeLineColorTextBox.setStyleName(RESOURCES.getCSS().colorTextBox());
-		negativeLineColorTextBox.getElement().setPropertyString("placeholder", "Negative color: #123abc");
-		result.add(negativeLineColorTextBox);
-		positiveLineColorTextBox = new TextBox();
-		positiveLineColorTextBox.setStyleName(RESOURCES.getCSS().colorTextBox());
-		positiveLineColorTextBox.getElement().setPropertyString("placeholder", "Positive color: #abc123");
-		result.add(positiveLineColorTextBox);
+		result.add(new Label("Choose Positive Line Color:"));
+		posColorPicker = new ColorPicker();
+		result.add(posColorPicker);
+		
+		result.add(new Label("Choose Negative Line Color:"));
+		negColorPicker = new ColorPicker();
+		result.add(negColorPicker);
+
 		
 		return result;
 	}
@@ -265,8 +265,8 @@ public class PairwiseFormPanel extends FlowPanel{
 		if(includeOrigin) relationship += "|" + originListBox.getSelectedItemText();
 		
 		//check to make sure a line style and color are selected
-		String negColor = negativeLineColorTextBox.getText();
-		String posColor = positiveLineColorTextBox.getText();
+		String negColor = negColorPicker.getColor();
+		String posColor = posColorPicker.getColor();
 
 		if(negColor.length() != 4 && negColor.length() !=7|| negColor.charAt(0) != '#') {
 			warningLabel.setText("Please Select a negative line hexidecimal color");
@@ -286,8 +286,8 @@ public class PairwiseFormPanel extends FlowPanel{
 	}
 	
 	private void resetForm() {
-		negativeLineColorTextBox.setText("");
-		positiveLineColorTextBox.setText("");
+		negColorPicker.setColor("#FFF");
+		posColorPicker.setColor("#FFF");
 		resetButtonSelection();
 	}
 
@@ -326,8 +326,8 @@ public class PairwiseFormPanel extends FlowPanel{
 				}
 				
 		//set text of lineColorTextBox
-		negativeLineColorTextBox.setText(obj.getNegativeLineColorHex());
-		positiveLineColorTextBox.setText(obj.getPositiveLineColorHex());
+		negColorPicker.setColor(obj.getNegativeLineColorHex());
+		posColorPicker.setColor(obj.getPositiveLineColorHex());
 	}
 	
 	private void cascadeFormUpdate() {
