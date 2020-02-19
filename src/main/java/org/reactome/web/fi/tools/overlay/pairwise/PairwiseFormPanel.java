@@ -266,11 +266,11 @@ public class PairwiseFormPanel extends FlowPanel{
 		String negColor = negColorPicker.getColor();
 		String posColor = posColorPicker.getColor();
 
-		if(negColor.length() != 4 && negColor.length() !=7|| negColor.charAt(0) != '#') {
+		if(negColor.length() != 4 && negColor.length() !=7|| negColor.charAt(0) != '#' || negColor == "#FFF") {
 			warningLabel.setText("Please Select a negative line hexidecimal color");
 			return;
 		}
-		else if(posColor.length() !=4 && posColor.length() !=7 || posColor.charAt(0) != '#') {
+		else if(posColor.length() !=4 && posColor.length() !=7 || posColor.charAt(0) != '#' || posColor == "#FFF") {
 			warningLabel.setText("Please Select a positive line hexidecimal color");
 			return;
 		}
