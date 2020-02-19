@@ -1,6 +1,7 @@
 package org.reactome.web.fi.client.visualisers.diagram.renderers;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.analysis.client.model.AnalysisType;
@@ -20,6 +21,7 @@ import org.reactome.web.diagram.renderers.layout.RendererManager;
 import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.fi.client.visualisers.OverlayRenderer;
+import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
@@ -78,11 +80,18 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         for(DiagramObject item : objectSet) {
         	GraphPhysicalEntity graphObject = (GraphPhysicalEntity) item.getGraphObject();
         	if(graphObject instanceof GraphEntityWithAccessionedSequence || graphObject instanceof GraphProteinDrug) {
-        		int index = graphObject.getIdentifier().length();
-        		if(graphObject.getIdentifier().contains("-"))
-        			index = graphObject.getIdentifier().indexOf("-");
-
-        		Double renderValue = dataOverlay.getIdentifierValueMap().get(graphObject.getIdentifier().substring(0, index));
+        		String identifier = graphObject.getIdentifier();
+        		if(identifier.contains("-"))
+        			identifier = identifier.substring(0, identifier.indexOf("-"));
+        		else if(identifier.contains("ENSG")) {
+        			for(Map.Entry<String,String> entry: PairwiseInfoService.getUniprotToGeneMap().entrySet()) {	//Iterate over map. Check value vs. display name
+						if(graphObject.getDisplayName().contains(entry.getValue())) {									//If equal, replace with key (uniprot)
+							identifier = entry.getKey();
+							break;
+						}
+					}
+        		}
+        		Double renderValue = dataOverlay.getIdentifierValueMap().get(identifier);
         		if(renderValue == null) continue;
 	        	renderer.drawExpression(ctx, this.originalOverlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
         	}
