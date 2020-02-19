@@ -74,7 +74,7 @@ public class PairwiseDataLoader {
 	
 	public void loadDiagramPairwiseNumbers(PairwiseOverlayProperties properties, AsyncCallback<RawInteractors> callback) {
 		
-		String url = BASE_URL + ""; //TODO: add route here
+		String url = BASE_URL + ""; //TODO: add route here when ready
 		
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
 		requestBuilder.setHeader("Accept", "application/json");
@@ -82,7 +82,7 @@ public class PairwiseDataLoader {
 //			requestBuilder.sendRequest(getPostData(properties), new RequestCallback() {
 //				@Override
 //				public void onResponseReceived(Request request, Response response) {
-//					// TODO: 
+//					// TODO: convert response to raw interactors for counts
 //				}
 //				@Override
 //				public void onError(Request request, Throwable exception) {
@@ -100,7 +100,7 @@ public class PairwiseDataLoader {
 		
 		List<RawInteractorEntity> entityList = new ArrayList<>();
 		
-		int counter = 1;
+		int counter = 10000;
 		for(String source: new HashSet<String>(Arrays.asList(properties.getGeneNames().split(",")))) {
 			entityList.add(new RawInteractorEntityImpl(source, counter, new ArrayList<>()));
 			counter++;
