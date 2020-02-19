@@ -14,7 +14,6 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 
@@ -31,7 +30,7 @@ public class PairwiseInfoService {
 	private static final String BASE_URL = "/idgpairwise/";
 	private static Request request;
 	
-	public static Map<String, String> geneToUniprotMap;
+	private static Map<String, String> uniprotToGeneMap;
 	
 	public static void loadDataDesc(dataDescHandler handler) {
 		if(request != null && request.isPending())
@@ -66,9 +65,8 @@ public class PairwiseInfoService {
 		}
 	}
 	
-	public static void loadUniprotToGeneMap(AsyncCallback<Map<String, String>> callback) {
-		if(geneToUniprotMap != null) {
-			callback.onSuccess(geneToUniprotMap);
+	public static void loadUniprotToGeneMap() {
+		if(uniprotToGeneMap != null) {
 			return; //calling the callback does not return the method.
 		}
 		
@@ -81,7 +79,7 @@ public class PairwiseInfoService {
 				public void onResponseReceived(Request request, Response response) {
 					if(response.getStatusCode() == Response.SC_OK) {
 						createMap(response.getText());
-						callback.onSuccess(geneToUniprotMap);
+
 					}
 				}
 				@Override
@@ -94,16 +92,20 @@ public class PairwiseInfoService {
 		}
 	}
 	
+	public static Map<String, String> getUniprotToGeneMap(){
+		return uniprotToGeneMap;
+	}
+	
 	/**
 	 * Creates a map from gene name to uniprot and stores in a global variable
 	 * @param text
 	 */
 	private static void createMap(String text) {
-		geneToUniprotMap = new HashMap<>();
+		uniprotToGeneMap = new HashMap<>();
 		String[] lines = text.split("\n");
 		for(String line : lines) {
 			String[] mapTo = line.split("\t");
-			geneToUniprotMap.put(mapTo[0], mapTo[1]);
+			uniprotToGeneMap.put(mapTo[0], mapTo[1]);
 		}
 	}
 }

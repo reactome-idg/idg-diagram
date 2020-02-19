@@ -43,19 +43,6 @@ public class PairwisePopupFactory{
 		popupMap = new HashMap<>();
 		currentPairwiseObjects = new ArrayList<>();
 		
-		//Load uniprotToGeneMap
-		PairwiseInfoService.loadUniprotToGeneMap(new AsyncCallback<Map<String, String>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Console.error("Uniprot to gene map failed to load.");
-			}
-			@Override
-			public void onSuccess(Map<String, String> result) {
-				PairwisePopupFactory.this.setUniprotToGeneMap(result);
-				
-			}
-		});
-		
 		//load Dark Protein list
 		TCRDInfoLoader.loadTDarkSet(new AsyncCallback<Set<String>>() {
 			@Override
@@ -67,6 +54,7 @@ public class PairwisePopupFactory{
 				tDarkSet = result;
 			}
 		});
+		this.uniprotToGeneMap = PairwiseInfoService.getUniprotToGeneMap();
 	}
 	
 	public static PairwisePopupFactory get() {
@@ -167,10 +155,6 @@ public class PairwisePopupFactory{
 	public void resetZIndexes() {
 		for(PairwisePopup popup : popupMap.values())
 			popup.resetZIndex();
-	}
-	
-	private void setUniprotToGeneMap(Map<String, String> result) {
-		this.uniprotToGeneMap = result;
 	}
 
 	public Map<String, String> getUniprotToGeneMap() {
