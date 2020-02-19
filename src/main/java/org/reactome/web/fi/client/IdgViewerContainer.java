@@ -58,6 +58,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * 
@@ -123,10 +124,7 @@ RequestPairwiseCountsHandler{
 		this.add(overlayLauncher);		
 		
 		//this block used to disable settings panels not used in the idg portal for reactome.
-		super.hideableContainerPanel.getButtons().get(0).setEnabled(false);																//diable color settings
-		super.hideableContainerPanel.getButtons().get(0).removeStyleName(HideableContainerPanel.RESOURCES.getCSS().buttonSelected());	//remove selected styling
-		super.hideableContainerPanel.getButtons().get(1).setEnabled(false);																//disable interactor panel
-		super.hideableContainerPanel.getContainer().showWidget(super.hideableContainerPanel.getButtons().size()-1);						//set container to show about Reactome panel
+		super.hideableContainerPanel.getButtons().get(1).setVisible(false);																//disable interactor panel
 		
 		bind();
 		
