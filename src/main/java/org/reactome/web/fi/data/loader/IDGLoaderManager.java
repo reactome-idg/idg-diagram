@@ -1,6 +1,7 @@
 package org.reactome.web.fi.data.loader;
 
 
+import org.reactome.web.diagram.data.ContentFactory;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
 import org.reactome.web.diagram.data.interactors.raw.RawInteractors;
@@ -138,6 +139,7 @@ OverlayLoader.Handler{
 			}
 			@Override
 			public void onSuccess(RawInteractors result) {
+				ContentFactory.fillInteractorsContent(context, result);
 				eventBus.fireEventFromSource(new InteractorsLoadedEvent(result, new Long(1)), this);
 			}
 		});
