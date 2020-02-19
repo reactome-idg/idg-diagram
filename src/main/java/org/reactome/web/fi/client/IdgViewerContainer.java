@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.diagram.client.ViewerContainer;
@@ -27,15 +28,20 @@ import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOver
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualizer;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
+import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
+import org.reactome.web.fi.events.PairwiseCountsRequestedEvent;
+import org.reactome.web.fi.events.RequestPairwiseCountsEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
+import org.reactome.web.fi.handlers.RequestPairwiseCountsHandler;
 import org.reactome.web.fi.handlers.DataOverlayColumnChangedHandler;
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
 import org.reactome.web.fi.legends.OverlayColourLegend;
@@ -45,6 +51,7 @@ import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.tools.overlay.OverlayLauncherDisplay;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
+import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -58,7 +65,8 @@ import com.google.gwt.resources.client.ImageResource;
  *
  */
 public class IdgViewerContainer extends ViewerContainer implements RenderOtherDataHandler,
-OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, DataOverlayColumnChangedHandler{
+OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, DataOverlayColumnChangedHandler,
+RequestPairwiseCountsHandler{
 
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
@@ -72,11 +80,12 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	private DataOverlay targetLevelOverlay;
 	
 	private DataOverlayProperties lastOverlayProperties = null;
-	
+		
 	public IdgViewerContainer(EventBus eventBus) {
 		super(eventBus);
 				
 		initHandlers();
+		PairwiseInfoService.loadUniprotToGeneMap();
 	}
 
 	private void initHandlers() {
@@ -85,6 +94,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
 		eventBus.addHandler(MakeOverlayRequestEvent.TYPE, this);
 		eventBus.addHandler(DataOverlayColumnChangedEvent.TYPE, this);
+		eventBus.addHandler(RequestPairwiseCountsEvent.TYPE, this);
 	}
 
 	@Override
@@ -204,6 +214,14 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 	    eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getDataOverlayProperties()), this);
 	}
 
+	@Override
+	public void onRequestPairwiseCountsHandeler(RequestPairwiseCountsEvent event) {
+		eventBus.fireEventFromSource(
+				new PairwiseCountsRequestedEvent(
+						new PairwiseOverlayProperties(event.getPairwiseOverlayObjects(), collectAllDiagramUniprots())),
+						this);
+	}
+	
 	/**
 	 * Collects uniprots for all participants in a diagram or FIView
 	 * @return
@@ -214,7 +232,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 		//get identifiers from identifierMap if active visualizer is FIViewVisualizer
 		if(activeVisualiser instanceof FIViewVisualizer) {
 			identifiers = context.getContent().getIdentifierMap().keySet();
-			return getPostData(identifiers);
+			return String.join(",", identifiers);
 		}
 
 		//if activeVisualiser is DiagramVisualiser
@@ -229,31 +247,23 @@ OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, Da
 				GraphPhysicalEntity pe = (GraphPhysicalEntity) graphObject;
 				for(GraphPhysicalEntity participant: pe.getParticipants()) {
 					if(participant instanceof GraphEntityWithAccessionedSequence || participant instanceof GraphProteinDrug) {
-						int i= participant.getIdentifier().length();
-						if(participant.getIdentifier().contains("-"))
-							i = participant.getIdentifier().indexOf("-");
-						identifiers.add(participant.getIdentifier().substring(0, i)); 
+						String identifier = participant.getIdentifier();
+						if(identifier.contains("-"))
+							identifier = identifier.substring(0, identifier.indexOf("-"));
+						else if(identifier.contains("ENSG")){
+							for(Map.Entry<String,String> entry: PairwiseInfoService.getUniprotToGeneMap().entrySet()) {	//Iterate over map. Check value vs. display name
+								if(participant.getDisplayName().contains(entry.getValue())) {									//If equal, replace with key (uniprot)
+									identifier = entry.getKey();
+									break;
+								}
+							}
+						}
+						identifiers.add(identifier); 
 					}
 				}
 			}
 		}
-		return getPostData(identifiers);
-	}
-	
-	/**
-	 * iterates over a set of uniprot identifiers and adds them to a string delineated by ','.
-	 * @param ids
-	 * @return
-	 */
-	private String getPostData(Set<String> ids) {
-		StringBuilder post = new StringBuilder();
-		ids.stream().forEach(S -> post.append(S).append(","));
-		if(post.length()>0) {
-			post.delete(post.length()-1, post.length());
-			return post.toString();
-		}
-		
-		return null;
+		return String.join(",", identifiers);
 	}
 	
 	private void cytoscapeButtonPressed() {

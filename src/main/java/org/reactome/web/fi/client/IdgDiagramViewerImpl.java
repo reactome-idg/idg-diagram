@@ -9,9 +9,11 @@ import org.reactome.web.diagram.handlers.PairwiseOverlayButtonClickedHandler;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
+import org.reactome.web.fi.events.PairwiseCountsRequestedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
+import org.reactome.web.fi.handlers.PairwiseCountsRequestedHandler;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 
 /**
@@ -20,13 +22,14 @@ import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
  *
  */
 public class IdgDiagramViewerImpl extends DiagramViewerImpl implements CytoscapeToggledHandler,
-OverlayDataRequestedHandler, PairwiseOverlayButtonClickedHandler{
+OverlayDataRequestedHandler, PairwiseOverlayButtonClickedHandler, PairwiseCountsRequestedHandler{
 	
 	public IdgDiagramViewerImpl() {
 		super();
 		eventBus.addHandler(CytoscapeToggledEvent.TYPE, this);
 		eventBus.addHandler(OverlayRequestedEvent.TYPE, this);
 		eventBus.addHandler(PairwiseOverlayButtonClickedEvent.TYPE, this);
+		eventBus.addHandler(PairwiseCountsRequestedEvent.TYPE, this);
 		
 	}
 	
@@ -62,5 +65,10 @@ OverlayDataRequestedHandler, PairwiseOverlayButtonClickedHandler{
 			PairwisePopupFactory.get().openPopup(event.getGraphObject());
 		else
 			PairwisePopupFactory.get().openPopup(event.getUniprot(), event.getGeneName());
+	}
+
+	@Override
+	public void onPairwiseCountsRequested(PairwiseCountsRequestedEvent event) {
+		((IDGLoaderManager)loaderManager).loadPairwiseOverlayCounts(event.getPairwiseOverlayProperties());
 	}
 }

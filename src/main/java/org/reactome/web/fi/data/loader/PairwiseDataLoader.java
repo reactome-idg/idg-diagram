@@ -1,19 +1,24 @@
 package org.reactome.web.fi.data.loader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.reactome.web.diagram.data.interactors.raw.RawInteractorEntity;
+import org.reactome.web.diagram.data.interactors.raw.RawInteractors;
+import org.reactome.web.fi.data.model.interactors.RawInteractorEntityImpl;
+import org.reactome.web.fi.data.model.interactors.RawInteractorsImpl;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntitiesFactory;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwiseTableEntity;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -32,7 +37,7 @@ public class PairwiseDataLoader {
 	private Map<String, String> uniprotToGeneMap;
 	
 	public PairwiseDataLoader() {
-		this.uniprotToGeneMap = PairwisePopupFactory.get().getUniprotToGeneMap();
+		this.uniprotToGeneMap = PairwiseInfoService.getUniprotToGeneMap();
 	}
 	
 	public void loadPairwiseData(PairwiseOverlayProperties properties, AsyncCallback<List<PairwiseTableEntity>> callback) {
@@ -67,6 +72,45 @@ public class PairwiseDataLoader {
 		}
 	}
 	
+	public void loadDiagramPairwiseNumbers(PairwiseOverlayProperties properties, AsyncCallback<RawInteractors> callback) {
+		
+		String url = BASE_URL + ""; //TODO: add route here
+		
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
+		requestBuilder.setHeader("Accept", "application/json");
+//		try {
+//			requestBuilder.sendRequest(getPostData(properties), new RequestCallback() {
+//				@Override
+//				public void onResponseReceived(Request request, Response response) {
+//					// TODO: 
+//				}
+//				@Override
+//				public void onError(Request request, Throwable exception) {
+//					callback.onFailure(exception);
+//				}
+//			});
+			callback.onSuccess(makeRawInteractors(properties));
+//		} catch(RequestException e) {
+//			callback.onFailure(e);
+//		}
+	}
+	
+	private RawInteractorsImpl makeRawInteractors(PairwiseOverlayProperties properties) {
+		RawInteractorsImpl result = null;
+		
+		List<RawInteractorEntity> entityList = new ArrayList<>();
+		
+		int counter = 1;
+		for(String source: new HashSet<String>(Arrays.asList(properties.getGeneNames().split(",")))) {
+			entityList.add(new RawInteractorEntityImpl(source, counter, new ArrayList<>()));
+			counter++;
+		}
+		
+		result = new RawInteractorsImpl("Test Pairwise Counts Resource.", entityList);
+		
+		return result;
+	}
+
 	private List<PairwiseTableEntity> getEntitiesMap(PairwiseEntities entities) {
 		Map<String, List<PairwiseEntity>> result = new HashMap<>();
 		

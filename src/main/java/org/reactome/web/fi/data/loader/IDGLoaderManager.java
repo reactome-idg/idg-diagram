@@ -8,15 +8,19 @@ import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.data.loader.SVGLoader;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.diagram.events.DiagramInternalErrorEvent;
+import org.reactome.web.diagram.events.InteractorsLoadedEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 
@@ -123,5 +127,19 @@ OverlayLoader.Handler{
 	@Override
 	public void onOverlayLoadedError(Throwable exception) {
 		GWT.log("onTargetLevelLoadedError: " + exception.getMessage());
+	}
+
+	public void loadPairwiseOverlayCounts(PairwiseOverlayProperties pairwiseOverlayProperties) {
+		PairwiseDataLoader loader = new PairwiseDataLoader();
+		loader.loadDiagramPairwiseNumbers(pairwiseOverlayProperties, new AsyncCallback<RawInteractors>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Console.error(caught.getMessage());
+			}
+			@Override
+			public void onSuccess(RawInteractors result) {
+				eventBus.fireEventFromSource(new InteractorsLoadedEvent(result, new Long(1)), this);
+			}
+		});
 	}
 }
