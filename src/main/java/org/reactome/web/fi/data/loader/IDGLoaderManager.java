@@ -21,6 +21,7 @@ import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -83,11 +84,9 @@ OverlayLoader.Handler{
 	}
 	
 	private boolean isFIViewNeeded(String identifier) {
-		if (SVGLoader.isSVGAvailable(identifier))
-			return false;
-		if (!CytoscapeViewFlag.isCytoscapeViewFlag())
-			return false;
-		return true;
+		if(History.getToken().contains("VIZ=FI"))
+			return true;
+		return false;
 	}
 
 	@Override
@@ -107,7 +106,7 @@ OverlayLoader.Handler{
 		context.getContent().setSpeciesName(SPECIES); //TODO: make species flexible
         contextMap.put(context.getContent().getStableId() + ".fi", context);
 		super.context = context;
-		GraphObjectFactory.content = context.getContent();
+//		GraphObjectFactory.content = context.getContent();
 		eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
 	}
 

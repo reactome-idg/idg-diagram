@@ -59,6 +59,8 @@ public class FIViewContent extends GenericContent{
 		this.fIArray = new JSONArray();
 		this.fiJson = fiJson;
 		
+		GraphObjectFactory.content = this;
+		
 		parseFIPathway(this.fiJson);
 	}
 	
@@ -317,10 +319,12 @@ public class FIViewContent extends GenericContent{
 		GraphObject graphObj = null;
 		try {
 			if(sourceObj.get("sourceType").isString().stringValue().contentEquals("Complex")) {
+				sourceObj.put("reactomeId", reactomeSources.get("reactomeId"));
 				FIEntityNode source = FIEntityFactory.getSourceEntity(FIEntityNode.class, sourceObj.toString());
 				graphObj = GraphObjectFactory.getOrCreateDatabaseObject(source);
 			}
 			else if(sourceObj.get("sourceType").isString().stringValue().contentEquals("Reaction")){
+				sourceObj.put("dbId", reactomeSources.get("reactomeId"));
 				FIEventNode source = FIEntityFactory.getSourceEntity(FIEventNode.class, sourceObj.toString());
 				graphObj = GraphObjectFactory.getOrCreateDatabaseObject(source);
 			}
