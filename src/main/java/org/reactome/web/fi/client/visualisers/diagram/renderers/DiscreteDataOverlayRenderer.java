@@ -10,8 +10,10 @@ import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSequence;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
+import org.reactome.web.diagram.data.interactors.common.InteractorsSummary;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.diagram.data.layout.Node;
 import org.reactome.web.diagram.events.RenderOtherContextDialogInfoEvent;
 import org.reactome.web.diagram.handlers.RenderOtherContextDialogInfoHandler;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
@@ -147,10 +149,34 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 			if(entity != null && entity.getParticipantsExpression(dataOverlay.getColumn()).size() > 0) {
 					//renderer.drawExpression for each diagram object here
 					renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
+//					Node node = (Node) item;
+//					((NodeAbstractRenderer)renderer).drawSummaryItems(ctx, node, factor, offset); //TODO: set drawSummaryItems to public so I can access it when time comes
 			}
 		}
 		//Last thing: restore AnalysisColours.get().expressionGradient
 		AnalysisColours.get().expressionGradient = originalExpressionGradient;
+	}
+	
+	/**
+	 * Not used but keeping for future logic repurpose
+	 * @param item
+	 * @return
+	 */
+	private InteractorsSummary getInteractorSummary(DiagramObject item) {		
+		int total = 0;
+		
+		GraphPhysicalEntity obj = item.getGraphObject();
+		Set<GraphPhysicalEntity> objSet = obj.getParticipants();
+		for(GraphPhysicalEntity entity : objSet) {
+			for(DiagramObject diagramObject : entity.getDiagramObjects()) {
+				Node node = (Node)diagramObject;
+				if(node.getDiagramEntityInteractorsSummary()!= null) {
+					total += node.getDiagramEntityInteractorsSummary().getNumber();
+				}
+			}
+		}
+		InteractorsSummary result = new InteractorsSummary(obj.getIdentifier(), item.getId(), total);
+		return result;
 	}
 
 	@Override
