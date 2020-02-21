@@ -4,10 +4,12 @@ import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.events.AnalysisResultLoadedEvent;
+import org.reactome.web.diagram.events.DiagramProfileChangedEvent;
 import org.reactome.web.diagram.events.EntityDecoratorSelectedEvent;
 import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
 import org.reactome.web.diagram.handlers.EntityDecoratorSelectedHandler;
 import org.reactome.web.diagram.handlers.PairwiseOverlayButtonClickedHandler;
+import org.reactome.web.diagram.profiles.diagram.DiagramColours;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
@@ -29,6 +31,7 @@ EntityDecoratorSelectedHandler{
 	
 	public IdgDiagramViewerImpl() {
 		super();
+		eventBus.fireEventFromSource(new DiagramProfileChangedEvent(DiagramColours.ProfileType.PROFILE_01.getDiagramProfile()), this);
 		eventBus.addHandler(CytoscapeToggledEvent.TYPE, this);
 		eventBus.addHandler(OverlayRequestedEvent.TYPE, this);
 		eventBus.addHandler(PairwiseOverlayButtonClickedEvent.TYPE, this);

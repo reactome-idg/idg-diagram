@@ -32,6 +32,7 @@ import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.IDGExpressionGradient;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -50,9 +51,11 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 	private Map<Double, String> colourMap;
 	private OverlayContext originalOverlay;
 	private DataOverlay dataOverlay;
+	private IDGDecoratorRenderer decoratorRenderer;
 	
 	public DiscreteDataOverlayRenderer(EventBus eventBus){
 		this.eventBus = eventBus;
+		this.decoratorRenderer = new IDGDecoratorRenderer();
 		eventBus.addHandler(RenderOtherContextDialogInfoEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
 	}
@@ -147,10 +150,11 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 		for(DiagramObject item : objectSet) {
 			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();
 			if(entity != null && entity.getParticipantsExpression(dataOverlay.getColumn()).size() > 0) {
-					//renderer.drawExpression for each diagram object here
-					renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
-//					Node node = (Node) item;
-//					((NodeAbstractRenderer)renderer).drawSummaryItems(ctx, node, factor, offset); //TODO: set drawSummaryItems to public so I can access it when time comes
+				//renderer.drawExpression for each diagram object here
+				renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
+				//render decorators for pairwisePopups if exists
+//				if(PairwisePopupFactory.get().getCurrentPairwiseProperties().size()!=0)
+//					decoratorRenderer.doRender(ctx, item, factor, offset);
 			}
 		}
 		//Last thing: restore AnalysisColours.get().expressionGradient

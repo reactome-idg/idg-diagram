@@ -84,9 +84,11 @@ OverlayLoader.Handler{
 	}
 	
 	private boolean isFIViewNeeded(String identifier) {
-		if(History.getToken().contains("VIZ=FI"))
-			return true;
-		return false;
+		if(SVGLoader.isSVGAvailable(identifier))
+			return false;
+		if(!CytoscapeViewFlag.isCytoscapeViewFlag())
+			return false;
+		return true;
 	}
 
 	@Override
