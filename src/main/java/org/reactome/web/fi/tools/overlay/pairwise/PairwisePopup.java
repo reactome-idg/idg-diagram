@@ -17,6 +17,7 @@ import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.common.IDGPager;
 import org.reactome.web.fi.common.IDGPager.Handler;
+import org.reactome.web.fi.common.IDGTextBox;
 import org.reactome.web.fi.common.RemoveButtonPopup;
 import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
@@ -31,8 +32,12 @@ import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -68,9 +73,11 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private DataOverlay tableDataOverlay;
 	
 	private List<PairwiseTableEntity> tableEntities;
+	private List<PairwiseTableEntity> filteredTableEntities;
 	private PairwisePopupResultsTable table;
 	private ListDataProvider<PairwiseTableEntity> provider;
 	private IDGPager pager;
+	private IDGTextBox filterBox;
 	
 	private CytoscapeEntity cy;
 	private Boolean cytoscapeInitialized = false;
@@ -212,7 +219,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		provider = new ListDataProvider<>();
 		pager = new IDGPager(this);
 		
-		table = new PairwisePopupResultsTable(tableEntities, provider,pager);
+		table = new PairwisePopupResultsTable(filteredTableEntities, provider, pager);
 		
 		//Add view button column
 		ActionCell<PairwiseTableEntity> actionCell = new ActionCell<>("View", new ActionCell.Delegate<PairwiseTableEntity>() {
@@ -226,11 +233,33 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		IdentityColumn<PairwiseTableEntity> viewColumn = new IdentityColumn<>(actionCell);
 		table.addColumn(viewColumn,"View Relationship");
 				
+		FlowPanel filterPanel = new FlowPanel();
+		pager.getElement().getStyle().setDisplay(Display.INLINE);
+		pager.getElement().getStyle().setFloat(Style.Float.RIGHT);
+		filterBox = new IDGTextBox();
+		filterBox.addKeyUpHandler(e -> onFilterKeyUp(e));
+		filterBox.setStyleName(RESOURCES.getCSS().filterTextBox());
+		filterBox.getElement().setPropertyString("placeholder", "Filter by Interactor...");
+		
+		filterPanel.add(filterBox);
+		filterPanel.add(pager);
+		
 		infoPanel.add(table);
-		infoPanel.add(pager);
+		infoPanel.add(filterPanel);
 		infoPanel.setVisible(true);
 	}
 	
+	private void onFilterKeyUp(KeyUpEvent e) {
+		List<PairwiseTableEntity> newList = new ArrayList<>();
+		for(PairwiseTableEntity entity : tableEntities) {
+			if(entity.getInteractorName().contains(filterBox.getText()))
+				newList.add(entity);
+		}
+		provider.getList().clear();
+		provider.getList().addAll(newList);
+		provider.refresh();
+	}
+
 	/**
 	 * Catches event when pager change pages
 	 */
@@ -293,6 +322,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			@Override
 			public void onSuccess(List<PairwiseTableEntity> uniprotToPairwiseEntityMap) {
 				tableEntities = uniprotToPairwiseEntityMap;
+				filteredTableEntities = new ArrayList<>(uniprotToPairwiseEntityMap);
 				setPairwiseResultsTable();
 				addInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
 			}
@@ -656,5 +686,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		String infoButton();
 		
 		String container();
+		
+		String filterTextBox();
 	}
 }

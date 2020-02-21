@@ -126,3 +126,14 @@ th {
 	background-color: white;
 	margin: 10px;
 }
+
+.filterTextBox{
+	border: 1px solid #0e7cd3;
+	display: inline;
+	margin: 5px 0 0 10px;
+	height: 20px;
+}
+
+.filterTextBox input{
+	text-size: medium;
+}
