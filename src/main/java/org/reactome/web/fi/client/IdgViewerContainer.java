@@ -54,6 +54,7 @@ import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
@@ -102,9 +103,16 @@ RequestPairwiseCountsHandler{
 	@Override
 	protected void initialise() {
 		overlayColourLegend = new OverlayColourLegend(eventBus);
-		super.rightContainerPanel.add(overlayColourLegend);
+
 		
 		super.initialise();
+		
+		//this block used to disable settings panel not used in the idg portal for reactome.
+		super.rightContainerPanel.remove(hideableContainerPanel);
+		super.rightContainerPanel.getElement().getStyle().setRight(0, Unit.PX);
+
+		//Add overlayColourLegend to right container panel
+		super.rightContainerPanel.add(overlayColourLegend);
 		
 		this.add(new CytoscapeViewLoadingMessage(eventBus));
 		fiviewButton = new IDGIconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View");
@@ -123,10 +131,7 @@ RequestPairwiseCountsHandler{
 		super.bottomContainerPanel.add(overlayControlLegend);
 		super.bottomContainerPanel.remove(super.interactorsControl);
 		this.add(overlayLauncher);		
-		
-		//this block used to disable settings panels not used in the idg portal for reactome.
-		super.hideableContainerPanel.getButtons().get(1).setVisible(false);																//disable interactor panel
-		
+				
 		bind();
 		
 		OverlayDataHandler.getHandler().registerHelper(new DiscreteDataOverlayRenderer(eventBus));
