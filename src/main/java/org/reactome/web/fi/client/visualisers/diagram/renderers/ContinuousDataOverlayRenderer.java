@@ -25,6 +25,7 @@ import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -38,9 +39,11 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	private Coordinate offset;
 	private OverlayContext originalOverlay;
 	private DataOverlay dataOverlay;
+	private IDGDecoratorRenderer decoratorRenderer;
 	
 	public ContinuousDataOverlayRenderer(EventBus eventBus) {
 		this.eventBus = eventBus;
+		this.decoratorRenderer = new IDGDecoratorRenderer();
 		eventBus.addHandler(RenderOtherContextDialogInfoEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
 	}
@@ -114,7 +117,9 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 		for(DiagramObject item : objectSet) {
 			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();
 			if(entity != null && entity.getParticipantsExpression(dataOverlay.getColumn()).size() > 0) {
-					renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(),factor, offset);
+				renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(),factor, offset);
+				if(PairwisePopupFactory.get().getCurrentPairwiseProperties().size() == 0) continue;
+				decoratorRenderer.doRender(ctx, item, factor, offset);
 			}
 		}
 	}
