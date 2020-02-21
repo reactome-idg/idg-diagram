@@ -234,8 +234,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		table.addColumn(viewColumn,"View Relationship");
 				
 		FlowPanel filterPanel = new FlowPanel();
-		pager.getElement().getStyle().setDisplay(Display.INLINE);
-		pager.getElement().getStyle().setFloat(Style.Float.RIGHT);
+		pager.setStyleName(RESOURCES.getCSS().pager());
 		filterBox = new IDGTextBox();
 		filterBox.addKeyUpHandler(e -> onFilterKeyUp(e));
 		filterBox.setStyleName(RESOURCES.getCSS().filterTextBox());
@@ -257,7 +256,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		}
 		provider.getList().clear();
 		provider.getList().addAll(newList);
-		provider.refresh();
+		onPageChanged();
 	}
 
 	/**
@@ -267,10 +266,15 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	public void onPageChanged() {
 		if(tableEntities.size() == 0) return;
 		int pageStart = pager.getPageStart();
-		int pageEnd = pageStart + PairwisePopupResultsTable.PAGE_SIZE;
+		
+		//Set equal to page end or number of filteredTableEntities if less than PairwisePopupResultsTable.PAGE_SIZE
+		//ensures loop does break
+		int pageEnd = filteredTableEntities.size() > PairwisePopupResultsTable.PAGE_SIZE ? 
+				pageStart + PairwisePopupResultsTable.PAGE_SIZE : filteredTableEntities.size(); 
+		
 		List<String> entities = new ArrayList<>();
 		for(int i = pageStart; i<pageEnd; i++)
-			entities.add(tableEntities.get(i).getInteractorId());
+			entities.add(filteredTableEntities.get(i).getInteractorId());
 		loadTableOverlayData(entities);
 	}
 
@@ -518,14 +522,14 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private void updateTableData() {
 		this.tableDataOverlay.updateIdentifierValueMap();
 		if(dataOverlay.isDiscrete()) {
-			for(PairwiseTableEntity entity : tableEntities) {
+			for(PairwiseTableEntity entity : filteredTableEntities) {
 				entity.setData("");
 				if(tableDataOverlay.getIdentifierValueMap().keySet().contains(entity.getInteractorId()))
 					entity.setData(tableDataOverlay.getLegendTypes().get(tableDataOverlay.getIdentifierValueMap().get(entity.getInteractorId()).intValue()));
 			}
 		}
 		else {
-			for(PairwiseTableEntity entity : tableEntities) {
+			for(PairwiseTableEntity entity : filteredTableEntities) {
 				entity.setData("");
 				if(tableDataOverlay.getIdentifierValueMap().keySet().contains(entity.getInteractorId()))
 					entity.setData(""+tableDataOverlay.getIdentifierValueMap().get(entity.getInteractorId()));
@@ -688,5 +692,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		String container();
 		
 		String filterTextBox();
+		
+		String pager();
 	}
 }

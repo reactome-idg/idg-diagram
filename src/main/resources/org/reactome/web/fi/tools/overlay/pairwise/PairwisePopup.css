@@ -137,3 +137,8 @@ th {
 .filterTextBox input{
 	text-size: medium;
 }
+
+.pager{
+	display:inline;
+	float:right;
+}
