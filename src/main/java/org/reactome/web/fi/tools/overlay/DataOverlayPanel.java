@@ -5,7 +5,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
@@ -32,7 +31,6 @@ import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntity;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
-import org.reactome.web.fi.model.OverlayDataType;
 import org.reactome.web.fi.common.IDGTextBox;
 import org.reactome.web.fi.common.IDGListBox;
 
@@ -97,9 +95,8 @@ public class DataOverlayPanel  extends FlowPanel{
 		
 		//add filter text box
 		leftContainer.add(tissueFilter = new IDGTextBox());
-		tissueFilter.addValueChangeHandler(e -> onTissueFilterChange(e));
 		tissueFilter.addKeyUpHandler(e -> tissueFilterKeyUp(e));
-		tissueFilter.getElement().setPropertyString("placeholder", "Type a filter and press Enter");
+		tissueFilter.getElement().setPropertyString("placeholder", "Type a filter...");
 		tissueFilter.setStyleName(RESOURCES.getCSS().tissueFilter());
 
 		//add tissue selector
@@ -257,12 +254,6 @@ public class DataOverlayPanel  extends FlowPanel{
 	private void tissueFilterKeyUp(KeyUpEvent e) {
 		tissueSelector.filter(tissueFilter.getText() != null ? tissueFilter.getText():"");
 	}
-
-	/**
-	 * needed to cause tissueFilterKeyUp to fire. Has no innner function
-	 * @param e
-	 */
-	private void onTissueFilterChange(ValueChangeEvent<String> e) {}
 
 	/**
 	 * Makes overlay request based on selected eType, the value type of 

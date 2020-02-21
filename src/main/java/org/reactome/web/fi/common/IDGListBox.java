@@ -66,7 +66,7 @@ public class IDGListBox extends ListBox{
 	public void filter(String filter) {
 		if(totalItems == null) return;
 		
-		this.clear();
+		super.clear();
 		for(String item : totalItems)
 			if(item.toLowerCase().contains(filter.toLowerCase()))
 				this.addItem(item);
@@ -90,7 +90,7 @@ public class IDGListBox extends ListBox{
 	 * @param items
 	 */
 	public void setListItems(List<String> items) {
-		this.totalItems = items;
+		this.totalItems = new ArrayList<>(items);
 		selectedItems.clear();
 		
 		for(String item : items)
