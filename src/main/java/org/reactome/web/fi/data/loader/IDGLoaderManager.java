@@ -17,6 +17,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
@@ -142,6 +143,7 @@ OverlayLoader.Handler{
 			public void onSuccess(RawInteractors result) {
 				ContentFactory.fillInteractorsContent(context, result);
 				eventBus.fireEventFromSource(new InteractorsLoadedEvent(result, new Long(1)), this);
+				PairwiseOverlayFactory.get().setInteractorEntities(result.getEntities());
 			}
 		});
 	}
