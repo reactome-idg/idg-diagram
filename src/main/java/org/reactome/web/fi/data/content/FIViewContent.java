@@ -22,7 +22,7 @@ import org.reactome.web.fi.data.model.FIEntityFactory;
 import org.reactome.web.fi.data.model.FIEntityNode;
 import org.reactome.web.fi.data.model.FIEventNode;
 import org.reactome.web.fi.data.model.ProteinEntityNode;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -195,7 +195,7 @@ public class FIViewContent extends GenericContent{
 		if(accession.contains("-"))
 			return accession.substring(0, accession.indexOf("-"));
 		else if(accession.contains("ENSG")) {
-			Map<String, String> uniprotToGeneMap = PairwisePopupFactory.get().getUniprotToGeneMap();
+			Map<String, String> uniprotToGeneMap = PairwiseOverlayFactory.get().getUniprotToGeneMap();
 			for(Map.Entry<String,String> entry: uniprotToGeneMap.entrySet()) {
 				if(geneName == entry.getValue()) {
 					accession = entry.getKey();
