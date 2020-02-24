@@ -26,7 +26,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
@@ -109,7 +109,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		this.edgeMap = new HashMap<>();
 		initPanel();
 		panelClicked();
-		this.uniprotToGeneMap = PairwisePopupFactory.get().getUniprotToGeneMap();
+		this.uniprotToGeneMap = PairwiseOverlayFactory.get().getUniprotToGeneMap();
 		
 		//Initialize Cytoscape js with no nodes or edges
 		initializeCytoscape(new JSONArray(), new JSONArray());
@@ -342,7 +342,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * Directs the overlay of positive and negative interactions.
 	 */
 	private void addInitialInteractors() {
-		Set<String> darkProteins = PairwisePopupFactory.get().getTDarkSet();
+		Set<String> darkProteins = PairwiseOverlayFactory.get().getTDarkSet();
 		for(String diagramNode : diagramNodes) {
 			int counter  = 0;
 			for(PairwiseTableEntity entity: tableEntities) {
@@ -466,7 +466,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * Causes reload of table page
 	 */
 	public void loadOverlay() {
-		DataOverlayProperties properties = PairwisePopupFactory.get().getDataOverlayProperties();
+		DataOverlayProperties properties = PairwiseOverlayFactory.get().getDataOverlayProperties();
 		OverlayLoader loader = new OverlayLoader();
 		properties.setUniprots(getAllUniprots());
 		
@@ -500,7 +500,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * @param entities
 	 */
 	private void loadTableOverlayData(List<String> entities) {
-		DataOverlayProperties properties = PairwisePopupFactory.get().getDataOverlayProperties();
+		DataOverlayProperties properties = PairwiseOverlayFactory.get().getDataOverlayProperties();
 		OverlayLoader loader = new OverlayLoader();
 		properties.setUniprots(String.join(",", entities));
 		loader.load(properties, new OverlayLoader.Handler() {	
@@ -578,7 +578,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		if(diagramNodes.contains(id)) return;
 		int index;
 		if(focused == true)
-			index = PairwisePopupFactory.get().getMaxZIndex() + 1;
+			index = PairwiseOverlayFactory.get().getMaxZIndex() + 1;
 		else
 			index = zIndex + 1;
 		RemoveButtonPopup panel = new RemoveButtonPopup(index,id, new RemoveButtonPopup.Handler() {
@@ -627,14 +627,14 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * Used to focus panel in front of other open popups on panel click
 	 */
 	private void panelClicked() {
-		PairwisePopupFactory.get().resetZIndexes();
-		this.getElement().getStyle().setZIndex(PairwisePopupFactory.get().getMaxZIndex());
+		PairwiseOverlayFactory.get().resetZIndexes();
+		this.getElement().getStyle().setZIndex(PairwiseOverlayFactory.get().getMaxZIndex());
 		focused = true; //set so context menu's have correct z index
 	}
 	
 	@Override
 	public void hide() {
-		PairwisePopupFactory.get().removePopup(this.popupId);
+		PairwiseOverlayFactory.get().removePopup(this.popupId);
 		super.hide();
 	}
 	
