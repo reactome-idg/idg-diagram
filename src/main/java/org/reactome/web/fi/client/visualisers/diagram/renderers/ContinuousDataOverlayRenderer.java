@@ -25,7 +25,7 @@ import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -118,7 +118,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();
 			if(entity != null && entity.getParticipantsExpression(dataOverlay.getColumn()).size() > 0) {
 				renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(),factor, offset);
-				if(PairwisePopupFactory.get().getCurrentPairwiseProperties().size() == 0) continue;
+				if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size() == 0) continue;
 				decoratorRenderer.doRender(ctx, item, factor, offset);
 			}
 		}
