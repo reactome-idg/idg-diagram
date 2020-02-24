@@ -131,3 +131,20 @@
 @sprite .pairwise:active:hover {
 	gwt-image: 'pairwiseClicked';
 }
+
+.showHideButton{
+	width: 100%;
+	margin-top: 10px;
+	background-color: #1e95cf;
+	text-size: small;
+	color: white;
+}
+
+.linkStyledButton{
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  color: white;
+  text-decoration: underline;
+  cursor: pointer;
+}

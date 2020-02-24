@@ -9,6 +9,7 @@ import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.handlers.DataOverlayColumnChangedHandler;
 import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -19,11 +20,13 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -31,16 +34,13 @@ import com.google.gwt.user.client.ui.Label;
  *
  */
 public class NodeContextPanel extends DialogBox implements DataOverlayColumnChangedHandler{
-	
-//	@Override
-//	public void onBrowserEvent(Event event) {
-//		if(event.getButton() == NativeEvent.BUTTON_RIGHT)
-//	}
 
 	private EventBus eventBus;
 	
 	private FlowPanel main;
 	private FlowPanel overlayValue;
+	private FlowPanel pairwisePanel;
+	private FlowPanel pairwiseInfoPanel;
 	private Label overlayValueLabel;
 	
 	private boolean pinned = false;
@@ -76,10 +76,8 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 	 * @param id
 	 * @param overlay
 	 */
-	public NodeContextPanel(EventBus eventBus, String name, String id, DataOverlay overlay) {
-		this.eventBus = eventBus;
-		this.name = name;
-		this.id = id;
+	public NodeContextPanel(EventBus eventBus, String name, String id, DataOverlay overlay, boolean showPairwiseInfo) {
+		this(eventBus, name, id);
 		this.column = 0;
 		this.legendTypes = overlay.getLegendTypes();
 		this.discrete = overlay.isDiscrete();
@@ -97,8 +95,11 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		initPanel();
 		eventBus.addHandler(DataOverlayColumnChangedEvent.TYPE, this);
 		updateOverlayValue();
+		
+		if(showPairwiseInfo)
+			addPairwiseInfoPanel();
 	}
-	
+
 	private void initPanel() {
 		setStyleName(NODECONTEXTRESOURCES.getCSS().nodePopup());
 		setAutoHideEnabled(true);
@@ -116,9 +117,32 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		overlayValue.add(overlayValueLabel = new Label());
 		overlayValueLabel.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
 		
+		main.add(getPairwisePanel());
+		
 		setTitlePanel();
 		setWidget(main);
 		show();
+	}
+
+	private FlowPanel getPairwisePanel() {
+		pairwisePanel = new FlowPanel();
+		
+		Button showHideButton = new Button("Show/Hide pairwise info panel");
+		showHideButton.setStyleName(NODECONTEXTRESOURCES.getCSS().showHideButton());
+		
+		pairwiseInfoPanel = new FlowPanel();
+		pairwiseInfoPanel.setVisible(false);
+		
+		showHideButton.addClickHandler(e -> onShowHideButtonClicked(pairwiseInfoPanel));
+		
+		pairwisePanel.add(showHideButton);
+		pairwisePanel.add(pairwiseInfoPanel);
+		
+		return pairwisePanel;
+	}
+
+	private void onShowHideButtonClicked(FlowPanel pairwiseInfoPanel) {
+		pairwiseInfoPanel.setVisible(!pairwiseInfoPanel.isVisible());
 	}
 
 	private void pairwiseHandler() {
@@ -206,6 +230,23 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		updateOverlayValue();
 	}
 	
+	private void addPairwiseInfoPanel() {
+		//clear panel in case being reset due to overlay change rather than making a new panel
+		pairwiseInfoPanel.clear();
+		
+		//adds total interactor count to overlay
+		int count = PairwiseOverlayFactory.get().getInteractorCountForUniprot(id);
+		Label interactorCount = new Label("Interactor Count: " + count);
+		pairwiseInfoPanel.add(interactorCount);
+		
+		//Add button and style as link to open pairwise popup for a node
+		Button openPairwisePopup = new Button("Open Pairwise View");
+		openPairwisePopup.addClickHandler(e -> pairwiseHandler());
+		openPairwisePopup.setStyleName(NODECONTEXTRESOURCES.getCSS().linkStyledButton());
+		
+		pairwiseInfoPanel.add(openPairwisePopup);
+	}
+	
 	public static NodeContextResources NODECONTEXTRESOURCES;
 	static {
 		NODECONTEXTRESOURCES = GWT.create(NodeContextResources.class);
@@ -268,5 +309,9 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		String pinActive();
 		
 		String pairwise();
+		
+		String showHideButton();
+		
+		String linkStyledButton();
 	}
 }

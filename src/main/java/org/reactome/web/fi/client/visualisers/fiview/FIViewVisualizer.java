@@ -304,7 +304,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		
 		//Send overlay value to context panel if dataOverlay exists
 		if(dataOverlay != null && dataOverlay.getUniprotToEntitiesMap().containsKey(id))
-			nodeContextPanel = new NodeContextPanel(eventBus, name, id, dataOverlay);
+			nodeContextPanel = new NodeContextPanel(eventBus, name, id, dataOverlay, true);
 		else 
 			nodeContextPanel = new NodeContextPanel(eventBus, name, id);
 		setPopupLocation(x, y, nodeContextPanel);
