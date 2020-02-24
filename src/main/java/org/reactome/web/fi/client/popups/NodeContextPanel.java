@@ -71,7 +71,7 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 	}
 	
 	/**
-	 * Constructor to use if dataOverlay is present
+	 * Constructor to use if dataOverlay is present. Also causes pairwise info panel to be added.
 	 * @param name
 	 * @param id
 	 * @param overlay
@@ -187,7 +187,7 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		getCaption().asWidget().setStyleName(NODECONTEXTRESOURCES.getCSS().header());
 	}
 
-	public FlowPanel getInfoPanel(String name, String id) {
+	private FlowPanel getInfoPanel(String name, String id) {
 
 		FlowPanel panel = new FlowPanel();
 		

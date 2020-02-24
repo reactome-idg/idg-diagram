@@ -578,21 +578,26 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * Opens remove context button on context click
 	 */
 	@Override
-	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
-		if(diagramNodes.contains(id)) return;
-		int index = getCorrectZIndex();
-		RemoveButtonPopup panel = new RemoveButtonPopup(index,id, new RemoveButtonPopup.Handler() {
+	public void onNodeContextSelectEvent(String id, String name, int x, int y) {		
+		String dataOverlayValue;
+		if(dataOverlay.isDiscrete())
+			dataOverlayValue = dataOverlay.getLegendTypes().get((int)Math.round(dataOverlay.getIdentifierValueMap().get(id)));
+		else
+			dataOverlayValue = dataOverlay.getIdentifierValueMap().get(id) +"";
+		
+		PairwiseNodeContextPopup popup = new PairwiseNodeContextPopup(id,name, dataOverlayValue, new PairwiseNodeContextPopup.Handler() {
 			@Override
-			public void onRemoveButtonClicked(String identifier) {
-				PairwisePopup.this.cy.removeCytoscapeNode(identifier);
-				displayedNodes.remove(identifier);
-				edgeMap.remove(identifier);
+			public void onRemoveButtonClicked(String id) {
+				if(diagramNodes.contains(id)) return;
+				PairwisePopup.this.cy.removeCytoscapeNode(id);
+				displayedNodes.remove(id);
+				edgeMap.remove(id);
 			}
 		});
-		
-		panel.setPopupPosition(x+5, y+5);
-		panel.getElement().setId(this.containerId);
-		panel.show();
+		popup.getElement().getStyle().setZIndex(getCorrectZIndex());
+		popup.setPopupPosition(x+5, y+5);
+		popup.getElement().setId(this.containerId);
+		popup.show();
 	}
 	
 	@Override
