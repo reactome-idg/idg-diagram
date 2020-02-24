@@ -55,9 +55,10 @@ public class FILayoutChangerPanel extends DialogBox implements ChangeHandler {
 	private void setSelections() {
 		for(FILayoutType type : FILayoutType.values()) {
 			layoutSelector.addItem(type.getName());
-			if(type.getName() == currentLayout) {
-				layoutSelector.setSelectedIndex(layoutSelector.getItemCount());
-			}
+		}
+		for(int i=0; i<layoutSelector.getItemCount(); i++) {
+			if(FILayoutType.getType(layoutSelector.getItemText(i)).toString().toLowerCase() == currentLayout)
+				layoutSelector.setSelectedIndex(i);
 		}
 	}
 
