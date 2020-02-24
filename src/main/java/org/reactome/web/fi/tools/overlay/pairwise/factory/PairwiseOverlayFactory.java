@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.diagram.data.graph.model.GraphObject;
+import org.reactome.web.diagram.data.interactors.raw.RawInteractorEntity;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
@@ -22,14 +23,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author brunsont
  *
  */
-public class PairwisePopupFactory{
+public class PairwiseOverlayFactory{
 
-	private static PairwisePopupFactory factory;
+	private static PairwiseOverlayFactory factory;
 	
 	private Map<String, PairwisePopup> popupMap;
 	private Map<String, String> uniprotToGeneMap;
 	private Set<String> tDarkSet;
 	private List<PairwiseOverlayObject> currentPairwiseObjects;
+	private List<RawInteractorEntity> interactorEntities;
 	
 	private int zIndexCounter = 1;
 	private final int MAXIMUM_Z_INDEX = 1998;
@@ -39,7 +41,7 @@ public class PairwisePopupFactory{
 	/**
 	 * On initialization, need to load TDark set and UniprotToGeneMap
 	 */
-	private PairwisePopupFactory() {
+	private PairwiseOverlayFactory() {
 		popupMap = new HashMap<>();
 		currentPairwiseObjects = new ArrayList<>();
 		
@@ -57,9 +59,9 @@ public class PairwisePopupFactory{
 		this.uniprotToGeneMap = PairwiseInfoService.getUniprotToGeneMap();
 	}
 	
-	public static PairwisePopupFactory get() {
+	public static PairwiseOverlayFactory get() {
 		if(factory == null) {
-			factory = new PairwisePopupFactory();
+			factory = new PairwiseOverlayFactory();
 		}
 		return factory;
 	}
@@ -163,5 +165,18 @@ public class PairwisePopupFactory{
 	
 	public Set<String> getTDarkSet(){
 		return this.tDarkSet;
+	}
+	
+	public void setInteractorEntities(List<RawInteractorEntity> interactorEntities) {
+		this.interactorEntities = interactorEntities;
+	}
+	
+	public int getInteractorCountForUniprot(String uniprot) {
+		if(interactorEntities == null || interactorEntities.size() == 0) return 0;
+		for(RawInteractorEntity entity : interactorEntities) {
+			if(entity.getAcc() == uniprot)
+				return entity.getCount();
+		}
+		return 0;
 	}
 }
