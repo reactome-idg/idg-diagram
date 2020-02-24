@@ -1,5 +1,6 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
+import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 
 import com.google.gwt.user.client.ui.DialogBox;
@@ -8,6 +9,7 @@ public class AbstractPairwisePopup extends DialogBox implements CytoscapeEntity.
 
 	protected int zIndex;
 	protected boolean focused = false;
+	protected FIViewInfoPopup infoPopup;
 	
 	public void resetZIndex() {
 		this.getElement().getStyle().setZIndex(zIndex);
@@ -40,14 +42,12 @@ public class AbstractPairwisePopup extends DialogBox implements CytoscapeEntity.
 
 	@Override
 	public void onNodeMouseOut() {
-		// TODO Auto-generated method stub
-		
+		infoPopup.hide();
 	}
 
 	@Override
 	public void onEdgeMouseOut() {
-		// TODO Auto-generated method stub
-		
+		infoPopup.hide();
 	}
 
 	@Override

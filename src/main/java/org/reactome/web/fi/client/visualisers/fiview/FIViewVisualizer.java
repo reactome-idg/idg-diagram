@@ -29,7 +29,10 @@ import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.profiles.interactors.InteractorColours;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.data.content.FIViewContent;
-import org.reactome.web.fi.client.visualisers.fiview.FIViewInfoPopup;
+import org.reactome.web.fi.client.popups.EdgeContextPanel;
+import org.reactome.web.fi.client.popups.FILayoutChangerPanel;
+import org.reactome.web.fi.client.popups.FIViewInfoPopup;
+import org.reactome.web.fi.client.popups.NodeContextPanel;
 import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.FIViewOverlayEdgeHoveredEvent;
@@ -127,7 +130,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 			
 			//set up popup for info and set location
 			infoPopup = new FIViewInfoPopup();
-			infoPopup.setStyleName(FIVIEWPORTRESOURCES.getCSS().popup());
 			infoPopup.hide();
 		}
 	}
@@ -205,14 +207,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onNodeHovered(String id, String name, int x, int y) {
-		infoPopup.hide();
-		HTML html = new HTML(new SafeHtmlBuilder()
-				.appendEscapedLines(name + " (" + id + ")")
-				.toSafeHtml());
-		html.setStyleName(FIVIEWPORTRESOURCES.getCSS().label());
-		infoPopup.setHtmlLabel(html);
-		infoPopup.setPopupPosition(x+10, y+10);
-		infoPopup.show();
+		infoPopup.setNodeLabel(id, name, x, y);
 	}
 
 	@Override
@@ -228,15 +223,10 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	public void onEdgeHovered(String id, int x, int y) {
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(id).get("data").isObject();
 		
-		HTML html = new HTML(new SafeHtmlBuilder()
-				.appendEscapedLines( 
-									 fi.get("source") + " - " +
-									 fi.get("target"))
-				.toSafeHtml());
-		html.setStyleName(FIVIEWPORTRESOURCES.getCSS().label());
-		infoPopup.setHtmlLabel(html);
-		infoPopup.setPopupPosition(x+10, y+10);
-		infoPopup.show();
+		infoPopup.setEdgeLabel(
+				fi.get("source").isString().stringValue(), 
+				fi.get("target").isString().stringValue(), 
+				x, y);
 		
 		//set edgeHoveredFlag to true
 		edgeHoveredFlag = true;
@@ -697,7 +687,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
     public static FIViewportResources FIVIEWPORTRESOURCES;
     static {
         FIVIEWPORTRESOURCES = GWT.create(FIViewportResources.class);
-        FIVIEWPORTRESOURCES.getCSS().ensureInjected();
     }
 
     /**
@@ -712,17 +701,5 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
         
         @Source("org/reactome/web/fi/client/visualisers/fiview/cytoscape.umd.js")
         public TextResource cytoscapeLibrary();
-       
-        @Source(ResourceCSS.CSS)
-        ResourceCSS getCSS();
-    }
-    
-    @CssResource.ImportedWithPrefix("fIViewVisualiser")
-    public interface ResourceCSS extends CssResource{
-    	String CSS = "org/reactome/web/fi/client/visualisers/fiview/FIVisualiser.css";
-    	
-    	String popup();
-    	
-    	String label();
     }
 }

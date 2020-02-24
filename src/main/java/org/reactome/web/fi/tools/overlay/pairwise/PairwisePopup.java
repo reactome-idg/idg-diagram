@@ -14,6 +14,7 @@ import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
+import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.common.IDGPager;
 import org.reactome.web.fi.common.IDGPager.Handler;
@@ -32,12 +33,9 @@ import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -57,6 +55,11 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.view.client.ListDataProvider;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 
 	private String popupId;
@@ -126,6 +129,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		main.add(new PwpButton("Close", RESOURCES.getCSS().close(), e -> hide()));
 
 		main.add(getMainPanel());
+		main.add(infoPopup = new FIViewInfoPopup());
 		
 		focus.add(main);
 		focus.addClickHandler(e -> panelClicked());
@@ -576,11 +580,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
 		if(diagramNodes.contains(id)) return;
-		int index;
-		if(focused == true)
-			index = PairwiseOverlayFactory.get().getMaxZIndex() + 1;
-		else
-			index = zIndex + 1;
+		int index = getCorrectZIndex();
 		RemoveButtonPopup panel = new RemoveButtonPopup(index,id, new RemoveButtonPopup.Handler() {
 			@Override
 			public void onRemoveButtonClicked(String identifier) {
@@ -593,6 +593,18 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		panel.setPopupPosition(x+5, y+5);
 		panel.getElement().setId(this.containerId);
 		panel.show();
+	}
+	
+	@Override
+	public void onNodeHovered(String id, String name, int x, int y) {
+		infoPopup.getElement().getStyle().setZIndex(getCorrectZIndex());
+		infoPopup.setNodeLabel(id, name, x, y);
+	}
+	
+	private int getCorrectZIndex() {
+		if(focused == true)
+			return PairwiseOverlayFactory.get().getMaxZIndex() + 1;
+		return zIndex+1;
 	}
 	
 	/**

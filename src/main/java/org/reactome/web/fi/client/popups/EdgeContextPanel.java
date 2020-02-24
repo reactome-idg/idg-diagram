@@ -1,4 +1,4 @@
-package org.reactome.web.fi.client.visualisers.fiview;
+package org.reactome.web.fi.client.popups;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,7 +147,7 @@ public class EdgeContextPanel extends DialogBox implements ChangeHandler, Reacto
 	
 	@CssResource.ImportedWithPrefix("idgDiagram-EdgeContextPanel")
 	public interface ResourceCSS extends CssResource {
-		String CSS = "org/reactome/web/fi/client/visualisers/fiview/EdgeContextPanel.css";
+		String CSS = "org/reactome/web/fi/client/popups/EdgeContextPanel.css";
 		
 		String edgePopup();
 		

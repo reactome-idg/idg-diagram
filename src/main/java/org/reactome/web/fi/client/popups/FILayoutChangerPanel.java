@@ -1,4 +1,4 @@
-package org.reactome.web.fi.client.visualisers.fiview;
+package org.reactome.web.fi.client.popups;
 
 import java.util.List;
 

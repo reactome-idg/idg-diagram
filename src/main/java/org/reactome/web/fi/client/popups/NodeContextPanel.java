@@ -1,4 +1,4 @@
-package org.reactome.web.fi.client.visualisers.fiview;
+package org.reactome.web.fi.client.popups;
 
 import java.util.HashMap;
 import java.util.List;
@@ -290,7 +290,7 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 	
 	@CssResource.ImportedWithPrefix("idgDiagram-NodeContextPanel")
 	public interface ResourceCSS extends CssResource{
-		String CSS = "org/reactome/web/fi/client/visualisers/fiview/NodeContextPanel.css";
+		String CSS = "org/reactome/web/fi/client/popups/NodeContextPanel.css";
 		
 		String nodePopup();
 		
