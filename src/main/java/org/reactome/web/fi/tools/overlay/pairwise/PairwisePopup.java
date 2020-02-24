@@ -14,6 +14,7 @@ import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
+import org.reactome.web.fi.client.popups.FILayoutChangerPanel;
 import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.common.IDGPager;
@@ -26,6 +27,7 @@ import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.model.FILayoutType;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
@@ -606,6 +608,21 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		infoPopup.setNodeLabel(id, name, x, y);
 	}
 	
+	
+	@Override
+	public void onCytoscapeCoreContextEvent(int x, int y) {
+		FILayoutChangerPanel layoutChanger = new FILayoutChangerPanel(cy.getLayout(), new FILayoutChangerPanel.LayoutChangeHandler() {
+			
+			@Override
+			public void onLayoutChange(FILayoutType type) {
+				cy.setCytoscapeLayout(type.toString().toLowerCase());
+			}
+		});
+		layoutChanger.getElement().getStyle().setZIndex(getCorrectZIndex());
+		layoutChanger.show();
+		layoutChanger.setPopupPosition(x+5, y+5);
+	}
+
 	private int getCorrectZIndex() {
 		if(focused == true)
 			return PairwiseOverlayFactory.get().getMaxZIndex() + 1;
