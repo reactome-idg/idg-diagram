@@ -25,9 +25,10 @@ public class FIViewInfoPopup extends PopupPanel{
 		return htmlLabel;
 	}
 
-	public void setHtmlLabel(HTML htmlLabel) {
+	public void setHtmlLabel(HTML htmlLabel, int x, int y) {
 		this.htmlLabel = htmlLabel;
 		this.setWidget(htmlLabel);
+		this.setPopupPosition(x + 10, y + 10);
 	}
 	
 	/**
