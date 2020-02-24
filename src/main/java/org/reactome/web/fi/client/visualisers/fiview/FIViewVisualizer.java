@@ -50,10 +50,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.TextResource;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -71,7 +68,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	private Context context;
 	
-	private FILayoutChangerPanel fILayoutChangerPanel;
 	private EdgeContextPanel edgeContextPanel;
 	private Map<String, NodeContextPanel> nodeContextPanelMap;
 	
@@ -187,7 +183,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		
 		if(!cytoscapeInitialised) {
 			cy.cytoscapeInit(new JSONArray().toString(), new JSONArray().toString(), "cose", "cy");
-			fILayoutChangerPanel = new FILayoutChangerPanel(cy.getLayout(), e -> onCytoscapeLayoutChange(e));
 			cytoscapeInitialised = true;
 		}
 		cy.clearCytoscapeGraph();
@@ -267,8 +262,9 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onCytoscapeCoreContextEvent(int x, int y) {
-		fILayoutChangerPanel.show();
-		setPopupLocation(x, y, fILayoutChangerPanel);
+		FILayoutChangerPanel popup = new FILayoutChangerPanel(cy.getLayout(), e -> onCytoscapeLayoutChange(e));
+		popup.show();
+		setPopupLocation(x, y, popup);
 	}
 
 	@Override
