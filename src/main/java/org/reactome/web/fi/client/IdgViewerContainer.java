@@ -50,7 +50,7 @@ import org.reactome.web.fi.messages.CytoscapeViewLoadingMessage;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.tools.overlay.OverlayLauncherDisplay;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
@@ -339,7 +339,7 @@ RequestPairwiseCountsHandler{
 		this.overlayColourLegend.setUnit(dataOverlay.getOverlayProperties().getUnit());
 		context.setDialogMap(new HashMap<>());
 		
-		PairwisePopupFactory.get().setDataOverlayProperties(event.getDataOverlay().getOverlayProperties());
+		PairwiseOverlayFactory.get().setDataOverlayProperties(event.getDataOverlay().getOverlayProperties());
 
 		
 		//testing new way to set is hit for all data so it works in FIViz without overlaying on diagram first
@@ -430,7 +430,7 @@ RequestPairwiseCountsHandler{
 	@Override
 	public void onDataOverlayColumnChanged(DataOverlayColumnChangedEvent event) {
 		this.dataOverlay.setColumn(event.getColumn());
-		PairwisePopupFactory.get().setOverlayColumn(event.getColumn());
+		PairwiseOverlayFactory.get().setOverlayColumn(event.getColumn());
 		context.setDialogMap(new HashMap<>());
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();

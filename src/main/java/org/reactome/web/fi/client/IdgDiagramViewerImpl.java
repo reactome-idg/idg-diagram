@@ -18,7 +18,7 @@ import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
 import org.reactome.web.fi.handlers.PairwiseCountsRequestedHandler;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwisePopupFactory;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 
 /**
  * 
@@ -69,9 +69,9 @@ EntityDecoratorSelectedHandler{
 	@Override
 	public void onPairwiseOverlayButtonClicked(PairwiseOverlayButtonClickedEvent event) {
 		if(event.getGraphObject() != null)
-			PairwisePopupFactory.get().openPopup(event.getGraphObject());
+			PairwiseOverlayFactory.get().openPopup(event.getGraphObject());
 		else
-			PairwisePopupFactory.get().openPopup(event.getUniprot(), event.getGeneName());
+			PairwiseOverlayFactory.get().openPopup(event.getUniprot(), event.getGeneName());
 	}
 
 	@Override
@@ -82,6 +82,6 @@ EntityDecoratorSelectedHandler{
 	@Override
 	public void onEntityDecoratorSelected(EntityDecoratorSelectedEvent event) {
 		if(event.getSummaryItem() != null)
-			PairwisePopupFactory.get().openPopup(event.getGraphObject());
+			PairwiseOverlayFactory.get().openPopup(event.getGraphObject());
 	}
 }
