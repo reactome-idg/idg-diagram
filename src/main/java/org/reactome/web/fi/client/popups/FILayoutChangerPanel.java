@@ -1,21 +1,17 @@
 package org.reactome.web.fi.client.popups;
 
-import java.util.List;
 
-import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
 import org.reactome.web.fi.model.FILayoutType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -23,13 +19,19 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */
 public class FILayoutChangerPanel extends DialogBox implements ChangeHandler {
+	
+	public interface LayoutChangeHandler{
+		void onLayoutChange(FILayoutType type);
+	}
 
-	private EventBus eventBus;
+	private LayoutChangeHandler handler;
 	
 	private ListBox layoutSelector;
+	private String currentLayout;
 	
-	public FILayoutChangerPanel(EventBus eventBus) {
-		this.eventBus = eventBus;
+	public FILayoutChangerPanel(String currentLayout, LayoutChangeHandler handler) {
+		this.currentLayout = currentLayout;
+		this.handler = handler;
 		setAutoHideEnabled(true);
 		setModal(false);
 		this.setStyleName(FICONTEXTRESOURCES.getCSS().fipopup());
@@ -44,8 +46,6 @@ public class FILayoutChangerPanel extends DialogBox implements ChangeHandler {
 		layoutSelector.setMultipleSelect(false);
 		setSelections();
 		
-		
-//		setSelection(layoutSelector, "force directed");
 		initHandlers();
 		
 		this.add(main);
@@ -53,8 +53,12 @@ public class FILayoutChangerPanel extends DialogBox implements ChangeHandler {
 	}
 
 	private void setSelections() {
-		for(FILayoutType type : FILayoutType.values())
+		for(FILayoutType type : FILayoutType.values()) {
 			layoutSelector.addItem(type.getName());
+			if(type.getName() == currentLayout) {
+				layoutSelector.setSelectedIndex(layoutSelector.getItemCount());
+			}
+		}
 	}
 
 	@Override
@@ -62,7 +66,7 @@ public class FILayoutChangerPanel extends DialogBox implements ChangeHandler {
 		if(event.getSource()!=layoutSelector) return;
 		ListBox lb = (ListBox) event.getSource();
         String aux = lb.getSelectedValue();
-    	eventBus.fireEventFromSource(new CytoscapeLayoutChangedEvent(FILayoutType.getType(aux)), this);
+    	handler.onLayoutChange(FILayoutType.getType(aux));
 	}
 	
 	private void initHandlers() {

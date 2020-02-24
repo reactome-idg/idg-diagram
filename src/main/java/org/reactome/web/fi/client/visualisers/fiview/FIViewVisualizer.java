@@ -33,14 +33,13 @@ import org.reactome.web.fi.client.popups.EdgeContextPanel;
 import org.reactome.web.fi.client.popups.FILayoutChangerPanel;
 import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.popups.NodeContextPanel;
-import org.reactome.web.fi.events.CytoscapeLayoutChangedEvent;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.FIViewOverlayEdgeHoveredEvent;
 import org.reactome.web.fi.events.FIViewOverlayEdgeSelectedEvent;
 import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
-import org.reactome.web.fi.handlers.CytoscapeLayoutChangedHandler;
 import org.reactome.web.fi.handlers.FireGraphObjectSelectedHandler;
 import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.model.FILayoutType;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
 import com.google.gwt.core.client.GWT;
@@ -65,7 +64,7 @@ import com.google.gwt.user.client.ui.DialogBox;
  *
  */
 public class FIViewVisualizer extends AbsolutePanel implements Visualiser, AnalysisProfileChangedHandler,
-	ExpressionColumnChangedHandler, CytoscapeLayoutChangedHandler, FireGraphObjectSelectedHandler, CytoscapeEntity.Handler{
+	ExpressionColumnChangedHandler, FireGraphObjectSelectedHandler, CytoscapeEntity.Handler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -97,7 +96,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		this.getElement().addClassName("pwp-FIViz"); //IMPORTANT!
 		this.eventBus = eventBus;
 		
-		fILayoutChangerPanel = new FILayoutChangerPanel(eventBus);
 		edgeContextPanel = new EdgeContextPanel(eventBus);
 		nodeContextPanelMap = new HashMap<>();
 		cyView =  new SimplePanel();
@@ -137,7 +135,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	private void initHandlers() {        
 		eventBus.addHandler(AnalysisProfileChangedEvent.TYPE, this);
 		eventBus.addHandler(ExpressionColumnChangedEvent.TYPE, this);
-		eventBus.addHandler(CytoscapeLayoutChangedEvent.TYPE, this);
 		eventBus.addHandler(FireGraphObjectSelectedEvent.TYPE, this);
 	}
 
@@ -190,6 +187,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		
 		if(!cytoscapeInitialised) {
 			cy.cytoscapeInit(new JSONArray().toString(), new JSONArray().toString(), "cose", "cy");
+			fILayoutChangerPanel = new FILayoutChangerPanel(cy.getLayout(), e -> onCytoscapeLayoutChange(e));
 			cytoscapeInitialised = true;
 		}
 		cy.clearCytoscapeGraph();
@@ -626,9 +624,8 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		loadAnalysis();
 	}
 	
-	@Override
-	public void onCytoscapeLayoutChanged(CytoscapeLayoutChangedEvent event) {
-		cy.setCytoscapeLayout(event.getType().toString().toLowerCase());
+	private void onCytoscapeLayoutChange(FILayoutType type) {
+		cy.setCytoscapeLayout(type.toString().toLowerCase());
 	}
 
 	@Override
