@@ -33,11 +33,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Handler,
 OverlayLoader.Handler{
 
-	@Override
-	public void interactorsLoaded(RawInteractors interactors, long time) {
-		return;
-	}
-
 	private EventBus eventBus;
 	private FIViewLoader fIViewLoader;
 	private OverlayLoader overlayLoader;
@@ -109,7 +104,6 @@ OverlayLoader.Handler{
 		context.getContent().setSpeciesName(SPECIES); //TODO: make species flexible
         contextMap.put(context.getContent().getStableId() + ".fi", context);
 		super.context = context;
-//		GraphObjectFactory.content = context.getContent();
 		eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
 	}
 
@@ -143,8 +137,18 @@ OverlayLoader.Handler{
 			public void onSuccess(RawInteractors result) {
 				ContentFactory.fillInteractorsContent(context, result);
 				eventBus.fireEventFromSource(new InteractorsLoadedEvent(result, new Long(1)), this);
-				PairwiseOverlayFactory.get().setInteractorEntities(result.getEntities());
+				PairwiseOverlayFactory.get().setInteractorEntities(result);
 			}
 		});
+	}
+	
+	@Override
+	public void interactorsLoaded(RawInteractors interactors, long time) {
+		if(PairwiseOverlayFactory.get().getRawInteractors() !=null && 
+		   PairwiseOverlayFactory.get().getRawInteractors().getEntities().size() > 0) {
+			ContentFactory.fillInteractorsContent(context, PairwiseOverlayFactory.get().getRawInteractors());
+			eventBus.fireEventFromSource(new InteractorsLoadedEvent(PairwiseOverlayFactory.get().getRawInteractors(), new Long(1)), this);
+		}
+		return;
 	}
 }

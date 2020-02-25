@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.interactors.raw.RawInteractorEntity;
+import org.reactome.web.diagram.data.interactors.raw.RawInteractors;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
@@ -31,7 +32,7 @@ public class PairwiseOverlayFactory{
 	private Map<String, String> uniprotToGeneMap;
 	private Set<String> tDarkSet;
 	private List<PairwiseOverlayObject> currentPairwiseObjects;
-	private List<RawInteractorEntity> interactorEntities;
+	private RawInteractors rawInteractors;
 	
 	private int zIndexCounter = 1;
 	private final int MAXIMUM_Z_INDEX = 1998;
@@ -167,16 +168,21 @@ public class PairwiseOverlayFactory{
 		return this.tDarkSet;
 	}
 	
-	public void setInteractorEntities(List<RawInteractorEntity> interactorEntities) {
-		this.interactorEntities = interactorEntities;
+	public void setInteractorEntities(RawInteractors result) {
+		this.rawInteractors = result;
 	}
 	
 	public int getInteractorCountForUniprot(String uniprot) {
+		List<RawInteractorEntity> interactorEntities = rawInteractors.getEntities();
 		if(interactorEntities == null || interactorEntities.size() == 0) return 0;
 		for(RawInteractorEntity entity : interactorEntities) {
 			if(entity.getAcc() == uniprot)
 				return entity.getCount();
 		}
 		return 0;
+	}
+	
+	public RawInteractors getRawInteractors() {
+		return this.rawInteractors;
 	}
 }
