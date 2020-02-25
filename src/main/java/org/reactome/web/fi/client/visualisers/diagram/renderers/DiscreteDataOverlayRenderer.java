@@ -160,28 +160,6 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 		//Last thing: restore AnalysisColours.get().expressionGradient
 		AnalysisColours.get().expressionGradient = originalExpressionGradient;
 	}
-	
-	/**
-	 * Not used but keeping for future logic repurpose
-	 * @param item
-	 * @return
-	 */
-	private InteractorsSummary getInteractorSummary(DiagramObject item) {		
-		int total = 0;
-		
-		GraphPhysicalEntity obj = item.getGraphObject();
-		Set<GraphPhysicalEntity> objSet = obj.getParticipants();
-		for(GraphPhysicalEntity entity : objSet) {
-			for(DiagramObject diagramObject : entity.getDiagramObjects()) {
-				Node node = (Node)diagramObject;
-				if(node.getDiagramEntityInteractorsSummary()!= null) {
-					total += node.getDiagramEntityInteractorsSummary().getNumber();
-				}
-			}
-		}
-		InteractorsSummary result = new InteractorsSummary(obj.getIdentifier(), item.getId(), total);
-		return result;
-	}
 
 	@Override
 	public void onRenderOtherContextDialogInfo(RenderOtherContextDialogInfoEvent event) {
