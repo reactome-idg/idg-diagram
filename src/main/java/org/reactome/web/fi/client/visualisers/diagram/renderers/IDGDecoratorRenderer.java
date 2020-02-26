@@ -19,8 +19,10 @@ import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.fi.data.layout.ShapeImpl;
 import org.reactome.web.fi.data.layout.SummaryItemImpl;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
+import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 
 /**
  * 
@@ -28,8 +30,6 @@ import com.google.gwt.core.client.GWT;
  *
  */
 public class IDGDecoratorRenderer {
-
-	private int diagramObjectProcessedCounter = 0;
 	
 	public IDGDecoratorRenderer() {/* Nothing Here */}
 	
@@ -41,19 +41,19 @@ public class IDGDecoratorRenderer {
 	 * @param offset
 	 */
 	public void doRender(AdvancedContext2d ctx, DiagramObject obj, Double factor, Coordinate offset) {
-		SummaryItem summaryItem = makeSummaryItem(obj);
+		SummaryItem summaryItem = makeSummaryItem(obj, offset);
 		//dont render if no interactions exist
 		if(summaryItem.getNumber() == 0 || summaryItem.getNumber() == null) return;
+		
 		Node node = (Node) obj;
 		node.setInteractorsSummary(summaryItem);
 		InteractorsSummary summary = new InteractorsSummary("test", obj.getId(), summaryItem.getNumber());
-		if(node.getInteractorsSummary() != null) {
-			node.getInteractorsSummary().setNumber(summaryItem.getNumber());
-			node.getInteractorsSummary().setPressed(summaryItem.getPressed());
-			node.setDiagramEntityInteractorsSummary(summary);
-		}
-		SummaryItemAbstractRenderer.draw(ctx, summaryItem, factor, offset);
-		GWT.log("Processed objects counter: " + diagramObjectProcessedCounter);
+		node.setDiagramEntityInteractorsSummary(summary);
+
+		SummaryItemAbstractRenderer.draw(ctx, node.getInteractorsSummary(), factor, offset);
+
+		if(summaryItem.getShape().getC().getY() == 0) Console.log("POST RENDER Y IS 0: " + obj.getDisplayName());
+		
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class IDGDecoratorRenderer {
 	 * @param obj
 	 * @return
 	 */
-	private SummaryItem makeSummaryItem(DiagramObject obj) {
+	private SummaryItem makeSummaryItem(DiagramObject obj, Coordinate offset) {
 		SummaryItem result = new SummaryItemImpl(getShape(obj), getNumber(obj));
 		
 		return result;
@@ -87,6 +87,7 @@ public class IDGDecoratorRenderer {
 		double x = node.getProp().getX() + node.getProp().getWidth();
 		double y = node.getProp().getY();
 		Coordinate result = CoordinateFactory.get(x, y);
+		if(result.getY()==0)Console.log("Y IS ZERO" + obj.getGraphObject().getDisplayName()); 
 		return result;
 	}
 	
@@ -106,7 +107,6 @@ public class IDGDecoratorRenderer {
 				}
 			}
 		}
-		if(result == 0) diagramObjectProcessedCounter ++;
 		return result;
 	}
 	

@@ -155,8 +155,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 				//render decorators for pairwisePopups if exists
 				if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size()!=0) {
 					decoratorRenderer.doRender(ctx, item, factor, offset);
-				}
-				ctx.restore();
+				}				
 			}
 		}
 		//Last thing: restore AnalysisColours.get().expressionGradient
