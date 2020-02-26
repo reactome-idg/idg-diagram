@@ -86,7 +86,9 @@ public class PairwiseNodeContextPopup extends DialogBox{
 	private FlowPanel getOptionsPanel() {
 		FlowPanel result = new FlowPanel();
 		
-		result.add(new CommonButton("Remove", e->onRemoveButtonClicked()));
+		CommonButton removeButton;
+		result.add(removeButton = new CommonButton("Remove", e->onRemoveButtonClicked()));
+		removeButton.setStyleName(contextCSS.removeButton());
 		
 		return result;
 	}

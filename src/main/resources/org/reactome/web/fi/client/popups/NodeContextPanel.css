@@ -148,3 +148,10 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+.removeButton{
+	background-color: #1e95cf;
+    border: 1px solid #037cb3;
+    outline: none;
+    color: white;
+}

@@ -313,5 +313,7 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		String showHideButton();
 		
 		String linkStyledButton();
+		
+		String removeButton();
 	}
 }
