@@ -20,7 +20,6 @@ import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.common.IDGPager;
 import org.reactome.web.fi.common.IDGPager.Handler;
 import org.reactome.web.fi.common.IDGTextBox;
-import org.reactome.web.fi.common.RemoveButtonPopup;
 import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
@@ -35,7 +34,6 @@ import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.json.client.JSONArray;
@@ -49,7 +47,6 @@ import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.IdentityColumn;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -89,7 +86,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	
 	private FlowPanel main;
 	private FlowPanel infoPanel;
-	private FlowPanel customPopup;
 	
 	public PairwisePopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayObjects, int zIndex) {
 		this(graphObject.getStId(), zIndex, pairwiseOverlayObjects);
@@ -158,8 +154,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		infoPanel = new FlowPanel();
 		result.add(infoPanel);
 		
-		result.add(customPopup = new FlowPanel());
-		customPopup.getElement().getStyle().setPosition(Position.RELATIVE);
+
 		return result;
 	}
 
@@ -328,17 +323,17 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private void loadPairwiseInteractors() {
 		PairwiseDataLoader loader = new PairwiseDataLoader();
 		PairwiseOverlayProperties props = new PairwiseOverlayProperties(pairwiseOverlayObjects, String.join(",", diagramNodes));
-		loader.loadPairwiseData(props, new AsyncCallback<List<PairwiseTableEntity>>() {
+		loader.loadPairwiseData(props, false, new PairwiseDataLoader.Handler() {
 			@Override
-			public void onSuccess(List<PairwiseTableEntity> uniprotToPairwiseEntityMap) {
-				tableEntities = uniprotToPairwiseEntityMap;
-				filteredTableEntities = new ArrayList<>(uniprotToPairwiseEntityMap);
-				setPairwiseResultsTable();
-				addInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
+			public void onPairwiseLoaderError(Throwable exception) {
+				Console.error(exception.getMessage());
 			}
 			@Override
-			public void onFailure(Throwable caught) {
-				Console.error(caught.getMessage());
+			public void onPairwiseDataLoaded(List<PairwiseTableEntity> tableEntities) {
+				PairwisePopup.this.tableEntities = tableEntities;
+				filteredTableEntities = new ArrayList<>(tableEntities);
+				setPairwiseResultsTable();
+				addInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
 			}
 		});
 	}

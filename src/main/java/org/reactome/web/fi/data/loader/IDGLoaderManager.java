@@ -1,6 +1,8 @@
 package org.reactome.web.fi.data.loader;
 
 
+import java.util.List;
+
 import org.reactome.web.diagram.data.ContentFactory;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
@@ -17,6 +19,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.tools.overlay.pairwise.PairwiseTableEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
@@ -128,16 +131,17 @@ OverlayLoader.Handler{
 
 	public void loadPairwiseOverlayCounts(PairwiseOverlayProperties pairwiseOverlayProperties) {
 		PairwiseDataLoader loader = new PairwiseDataLoader();
-		loader.loadDiagramPairwiseNumbers(pairwiseOverlayProperties, new AsyncCallback<RawInteractors>() {
+		loader.loadPairwiseData(pairwiseOverlayProperties, true, new PairwiseDataLoader.Handler() {
 			@Override
-			public void onFailure(Throwable caught) {
-				Console.error(caught.getMessage());
-			}
-			@Override
-			public void onSuccess(RawInteractors result) {
+			public void onPairwiseNumbersLoaded(RawInteractors result) {
 				ContentFactory.fillInteractorsContent(context, result);
 				eventBus.fireEventFromSource(new InteractorsLoadedEvent(result, new Long(1)), this);
 				PairwiseOverlayFactory.get().setInteractorEntities(result);
+			}
+			@Override
+			public void onPairwiseLoaderError(Throwable exception) {
+				Console.error(exception.getMessage());
+
 			}
 		});
 	}

@@ -1,11 +1,9 @@
 package org.reactome.web.fi.data.loader;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +14,9 @@ import org.reactome.web.fi.data.model.interactors.RawInteractorsImpl;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntitiesFactory;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntities;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntitiesFactory;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwiseTableEntity;
@@ -25,12 +26,17 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
 public class PairwiseDataLoader {
+	
+	public abstract interface Handler{
+		default void onPairwiseDataLoaded(List<PairwiseTableEntity> tableEntities) {};
+		default void onPairwiseNumbersLoaded(RawInteractors rawInteractors) {};
+		void onPairwiseLoaderError(Throwable exception);
+	}
 	
 	private static final String BASE_URL = "/idgpairwise/";
 	
@@ -40,9 +46,16 @@ public class PairwiseDataLoader {
 		this.uniprotToGeneMap = PairwiseInfoService.getUniprotToGeneMap();
 	}
 	
-	public void loadPairwiseData(PairwiseOverlayProperties properties, AsyncCallback<List<PairwiseTableEntity>> callback) {
+	/**
+	 * Calls idg-pairwise server to get pairwise relationship data. When onlyNumbers is false, returns full data.
+	 * When onlyNumbers is true, it returns the number of interactions without the actual interactor data.
+	 * @param properties
+	 * @param onlyNumbers
+	 * @param callback
+	 */
+	public void loadPairwiseData(PairwiseOverlayProperties properties, boolean onlyNumbers, Handler handler) {
 		
-		String url = BASE_URL + "pairwise/uniprots";
+		String url = BASE_URL + "pairwise/uniprots/" + String.valueOf(onlyNumbers);
 		
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
 		requestBuilder.setHeader("Accept", "application/json");
@@ -51,62 +64,48 @@ public class PairwiseDataLoader {
 				@Override
 				public void onResponseReceived(Request request, Response response) {
 					if(response.getStatusCode() != Response.SC_OK) return;
-					PairwiseEntities entities;
 					try {
-						JSONValue val = JSONParser.parseStrict(response.getText());
-						JSONObject obj = new JSONObject();
-						obj.put("pairwiseEntities", val.isArray());
-						entities = PairwiseEntitiesFactory.getPairwiseEntities(PairwiseEntities.class, obj.toString());
-						callback.onSuccess(getEntitiesMap(entities));
+						if(onlyNumbers) {
+							JSONValue val = JSONParser.parseStrict(response.getText());
+							JSONObject obj = new JSONObject();
+							obj.put("pairwiseNumberEntities", val.isArray());
+							PairwiseNumberEntities numberEntities = PairwiseNumberEntitiesFactory.getPairwiseNumberEntities(PairwiseNumberEntities.class, obj.toString());
+							handler.onPairwiseNumbersLoaded(processPairwiseNumbers(numberEntities));
+						}else {
+							JSONValue val = JSONParser.parseStrict(response.getText());
+							JSONObject obj = new JSONObject();
+							obj.put("pairwiseEntities", val.isArray());
+							PairwiseEntities entities = PairwiseEntitiesFactory.getPairwiseEntities(PairwiseEntities.class, obj.toString());
+							handler.onPairwiseDataLoaded(getEntitiesMap(entities));
+						}
 					}catch(Exception e) {
-						callback.onFailure(e);
+						handler.onPairwiseLoaderError(e);
 					}
 				}
 				@Override
 				public void onError(Request request, Throwable exception) {
-					callback.onFailure(new Exception(exception));
+					handler.onPairwiseLoaderError(new Exception(exception));
 				}
 			});
 		} catch (RequestException e) {
-			callback.onFailure(e);
+			handler.onPairwiseLoaderError(e);
 		}
 	}
 	
-	public void loadDiagramPairwiseNumbers(PairwiseOverlayProperties properties, AsyncCallback<RawInteractors> callback) {
-		
-		String url = BASE_URL + ""; //TODO: add route here when ready
-		
-		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
-		requestBuilder.setHeader("Accept", "application/json");
-//		try {
-//			requestBuilder.sendRequest(getPostData(properties), new RequestCallback() {
-//				@Override
-//				public void onResponseReceived(Request request, Response response) {
-//					// TODO: convert response to raw interactors for counts
-//				}
-//				@Override
-//				public void onError(Request request, Throwable exception) {
-//					callback.onFailure(exception);
-//				}
-//			});
-			callback.onSuccess(makeRawInteractors(properties));
-//		} catch(RequestException e) {
-//			callback.onFailure(e);
-//		}
-	}
-	
-	private RawInteractorsImpl makeRawInteractors(PairwiseOverlayProperties properties) {
+	/**
+	 * Converts pairwise number entities into rawInteractors and caches PairwiseNumberEntities in PairwisePopupFactory
+	 * @param numberEntities
+	 */
+	private RawInteractors processPairwiseNumbers(PairwiseNumberEntities numberEntities) {
 		RawInteractorsImpl result = null;
 		
 		List<RawInteractorEntity> entityList = new ArrayList<>();
 		
-		int counter = 10000;
-		for(String source: new HashSet<String>(Arrays.asList(properties.getGeneNames().split(",")))) {
-			entityList.add(new RawInteractorEntityImpl(source, counter, new ArrayList<>()));
-			counter++;
+		for(PairwiseNumberEntity entity : numberEntities.getPairwiseNumberEntities()) {
+			entityList.add(new RawInteractorEntityImpl(entity.getGene(), entity.getPosNum()+entity.getNegNum(), new ArrayList<>()));
 		}
 		
-		result = new RawInteractorsImpl("Test Pairwise Counts Resource.", entityList);
+		result = new RawInteractorsImpl("Test Pairwise Counts Resource",entityList);
 		
 		return result;
 	}
