@@ -59,8 +59,6 @@
 	padding: 5px 10px 0 0;
 }
 
-.colorTextBox{
-	width: 45%;
-	display:inline;
-    margin-right: 5px;
+.colorPicker{
+    border: 1px solid #037cb3;
 }
