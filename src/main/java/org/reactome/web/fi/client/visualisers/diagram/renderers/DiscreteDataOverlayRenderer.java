@@ -153,8 +153,10 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 				//renderer.drawExpression for each diagram object here
 				renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
 				//render decorators for pairwisePopups if exists
-				if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size()!=0)
+				if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size()!=0) {
 					decoratorRenderer.doRender(ctx, item, factor, offset);
+				}
+				ctx.restore();
 			}
 		}
 		//Last thing: restore AnalysisColours.get().expressionGradient

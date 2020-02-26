@@ -2,7 +2,9 @@ package org.reactome.web.fi.client.visualisers.diagram.renderers;
 
 import java.util.Set;
 
+import org.reactome.web.diagram.data.graph.model.GraphComplex;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
+import org.reactome.web.diagram.data.interactors.common.InteractorsSummary;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.data.layout.Node;
@@ -13,6 +15,8 @@ import org.reactome.web.diagram.renderers.layout.abs.SummaryItemAbstractRenderer
 import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.fi.data.layout.ShapeImpl;
 import org.reactome.web.fi.data.layout.SummaryItemImpl;
+
+import com.google.gwt.core.client.GWT;
 
 /**
  * 
@@ -34,6 +38,14 @@ public class IDGDecoratorRenderer {
 		SummaryItem summaryItem = makeSummaryItem(obj);
 		//dont render if no interactions exist
 		if(summaryItem.getNumber() == 0 || summaryItem.getNumber() == null) return;
+		Node node = (Node) obj;
+		node.setInteractorsSummary(summaryItem);
+		InteractorsSummary summary = new InteractorsSummary("test", obj.getId(), summaryItem.getNumber());
+		if(node.getInteractorsSummary() != null) {
+			node.getInteractorsSummary().setNumber(summaryItem.getNumber());
+			node.getInteractorsSummary().setPressed(summaryItem.getPressed());
+			node.setDiagramEntityInteractorsSummary(summary);
+		}
 		SummaryItemAbstractRenderer.draw(ctx, summaryItem, factor, offset);
 	}
 
