@@ -1,10 +1,13 @@
 package org.reactome.web.fi.client.visualisers.diagram.renderers;
 
+import java.util.List;
 import java.util.Set;
 
 import org.reactome.web.diagram.data.graph.model.GraphComplex;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.interactors.common.InteractorsSummary;
+import org.reactome.web.diagram.data.interactors.raw.RawInteractor;
+import org.reactome.web.diagram.data.interactors.raw.RawInteractorEntity;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.data.layout.Node;
@@ -15,6 +18,7 @@ import org.reactome.web.diagram.renderers.layout.abs.SummaryItemAbstractRenderer
 import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.fi.data.layout.ShapeImpl;
 import org.reactome.web.fi.data.layout.SummaryItemImpl;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 
 import com.google.gwt.core.client.GWT;
 
@@ -25,6 +29,8 @@ import com.google.gwt.core.client.GWT;
  */
 public class IDGDecoratorRenderer {
 
+	private int diagramObjectProcessedCounter = 0;
+	
 	public IDGDecoratorRenderer() {/* Nothing Here */}
 	
 	/**
@@ -47,6 +53,7 @@ public class IDGDecoratorRenderer {
 			node.setDiagramEntityInteractorsSummary(summary);
 		}
 		SummaryItemAbstractRenderer.draw(ctx, summaryItem, factor, offset);
+		GWT.log("Processed objects counter: " + diagramObjectProcessedCounter);
 	}
 
 	/**
@@ -92,14 +99,14 @@ public class IDGDecoratorRenderer {
 		GraphPhysicalEntity entity = obj.getGraphObject(); //should always be GraphPhysicalEntity
 		Set<GraphPhysicalEntity> peSet = entity.getParticipants();
 		for(GraphPhysicalEntity pe : peSet) {
-			for(DiagramObject diagramObject : pe.getDiagramObjects()) {
-				Node node = (Node)diagramObject;
-				if(node.getDiagramEntityInteractorsSummary() != null) {
-					result += node.getDiagramEntityInteractorsSummary().getNumber();
+			List<DiagramObject> objs = pe.getDiagramObjects();
+			for(RawInteractorEntity rawInteractor : PairwiseOverlayFactory.get().getRawInteractors().getEntities()) {
+				if(pe.getIdentifier() == rawInteractor.getAcc()) {
+					result += rawInteractor.getCount();
 				}
 			}
 		}
-		
+		if(result == 0) diagramObjectProcessedCounter ++;
 		return result;
 	}
 	
