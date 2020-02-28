@@ -67,8 +67,8 @@ public class FIViewInfoPopup extends PopupPanel{
 	 * @param x
 	 * @param y
 	 */
-	public void setEdgeLabel(Set<String> set, int x, int y) {
-		HTML html = new HTML(new SafeHtmlBuilder().appendEscapedLines(String.join("\n", set)).toSafeHtml());
+	public void setEdgeLabel(String edge, int x, int y) {
+		HTML html = new HTML(new SafeHtmlBuilder().appendEscapedLines(edge).toSafeHtml());
 		htmlLabel = html;
 		this.setWidget(htmlLabel);
 		this.setPopupPosition(x+10, y+10);

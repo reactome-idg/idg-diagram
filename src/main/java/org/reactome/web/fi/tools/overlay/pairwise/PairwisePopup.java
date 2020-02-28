@@ -615,18 +615,16 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		if(infoPopup == null) main.add(infoPopup = new FIViewInfoPopup());;
 		infoPopup.getElement().getStyle().setZIndex(getCorrectZIndex());
 		
-		Set<String> descriptions = new HashSet<>();
+		String description = "";
 		
-		String edgeInteractorId = tableEntities.get(Integer.parseInt(id)).getInteractorId();
-		String edgeSourceId = tableEntities.get(Integer.parseInt(id)).getSourceId();
-		for(PairwiseTableEntity entity : tableEntities) {
-			//fix for edges that come from diagram source interactions
-			if(entity.getInteractorId().equals(edgeInteractorId) && entity.getPosOrNeg()== "solid")
-				descriptions.add("diagram source interaction");
-			else if(entity.getInteractorId().equals(edgeInteractorId) && entity.getSourceId().equals(edgeSourceId))
-				descriptions.add(entity.getDataDesc() + "|" + entity.getPosOrNeg());
-		}
-		infoPopup.setEdgeLabel(descriptions, x, y);
+		PairwiseTableEntity edge = tableEntities.get(Integer.parseInt(id));
+		
+		if(edge.getPosOrNeg() == "solid")
+			description = "Diagram source edge";
+		else
+			description = edge.getDataDesc() + "|" + edge.getPosOrNeg();
+		
+		infoPopup.setEdgeLabel(description, x, y);
 	}
 
 	@Override
