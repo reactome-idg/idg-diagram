@@ -126,7 +126,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		main.add(new PwpButton("Close", RESOURCES.getCSS().close(), e -> hide()));
 
 		main.add(getMainPanel());
-		main.add(infoPopup = new FIViewInfoPopup());
 		
 		focus.add(main);
 		focus.addClickHandler(e -> panelClicked());
@@ -607,12 +606,14 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 
 	@Override
 	public void onNodeHovered(String id, String name, int x, int y) {
+		if(infoPopup == null) main.add(infoPopup = new FIViewInfoPopup());;
 		infoPopup.getElement().getStyle().setZIndex(getCorrectZIndex());
 		infoPopup.setNodeLabel(id, name, x, y);
 	}
-	
+
 	@Override
 	public void onEdgeHovered(String id, int x, int y) {
+		if(infoPopup == null) main.add(infoPopup = new FIViewInfoPopup());;
 		infoPopup.getElement().getStyle().setZIndex(getCorrectZIndex());
 		
 		Set<String> descriptions = new HashSet<>();
