@@ -14,6 +14,7 @@ import org.reactome.web.diagram.data.layout.Node;
 import org.reactome.web.diagram.data.layout.Shape;
 import org.reactome.web.diagram.data.layout.SummaryItem;
 import org.reactome.web.diagram.data.layout.impl.CoordinateFactory;
+import org.reactome.web.diagram.profiles.diagram.DiagramColours;
 import org.reactome.web.diagram.renderers.layout.abs.SummaryItemAbstractRenderer;
 import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.fi.data.layout.ShapeImpl;
@@ -22,7 +23,11 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
+import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.Context2d.Composite;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -31,8 +36,8 @@ import com.google.gwt.user.client.Window;
  *
  */
 public class IDGDecoratorRenderer {
-	
-	public IDGDecoratorRenderer() {/* Nothing Here */}
+		
+	public IDGDecoratorRenderer() {}
 	
 	/**
 	 * performs render of decorator on a passed in diagramObject in the diagram view.
@@ -50,9 +55,12 @@ public class IDGDecoratorRenderer {
 		node.setInteractorsSummary(summaryItem);
 		InteractorsSummary summary = new InteractorsSummary("test", obj.getId(), summaryItem.getNumber());
 		node.setDiagramEntityInteractorsSummary(summary);
-
-		SummaryItemAbstractRenderer.draw(ctx, node.getInteractorsSummary(), factor, offset);
 		
+//		ctx.save();
+//		ctx.setGlobalAlpha(1);
+//		ctx.setGlobalCompositeOperation(Composite.SOURCE_IN);
+		SummaryItemAbstractRenderer.draw(ctx, node.getInteractorsSummary(), factor, offset);
+//		ctx.restore();
 	}
 
 	/**
