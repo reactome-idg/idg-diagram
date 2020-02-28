@@ -38,15 +38,16 @@ public class OverlayDataHandler {
 	}
 	
 	public void overlayData(Collection<DiagramObject> items, 
-							AdvancedContext2d ctx, 
+							AdvancedContext2d overlay, 
+							AdvancedContext2d entitiesDecorators,
 							Context context, 
 							RendererManager rendererManager, 
 							DataOverlay dataOverlay,
-							OverlayContext overlay) {
+							OverlayContext overlayContext) {
 		
 		if(renderers == null)
 			return;
-		renderers.forEach(renderer -> renderer.doRender(items, ctx, context, rendererManager, dataOverlay, overlay));
+		renderers.forEach(renderer -> renderer.doRender(items, overlay, entitiesDecorators, context, rendererManager, dataOverlay, overlayContext));
 	}
 	
 	public int overlayRenderersCount() {

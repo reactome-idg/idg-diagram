@@ -51,8 +51,6 @@ public class IDGDecoratorRenderer {
 		node.setDiagramEntityInteractorsSummary(summary);
 
 		SummaryItemAbstractRenderer.draw(ctx, node.getInteractorsSummary(), factor, offset);
-
-		if(summaryItem.getShape().getC().getY() == 0) Console.log("POST RENDER Y IS 0: " + obj.getDisplayName());
 		
 	}
 

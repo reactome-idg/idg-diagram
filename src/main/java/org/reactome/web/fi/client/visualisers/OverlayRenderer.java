@@ -17,9 +17,10 @@ import org.reactome.web.fi.model.DataOverlay;
  */
 public interface OverlayRenderer {
 	public void doRender(Collection<DiagramObject> items, 
-						 AdvancedContext2d ctx, 
+						 AdvancedContext2d overlay, 
+						 AdvancedContext2d entitiesDecorators,
 						 Context context, 
 						 RendererManager rendererManager,
 						 DataOverlay dataOverlay,
-						 OverlayContext overlay);
+						 OverlayContext overlayContext);
 }

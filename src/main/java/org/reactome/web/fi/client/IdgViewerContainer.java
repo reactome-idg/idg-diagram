@@ -322,11 +322,12 @@ RequestPairwiseCountsHandler{
 		
 		OverlayDataHandler.getHandler()
 						  .overlayData(event.getItems(), 
-									   event.getCtx(), 
+									   event.getOverlay(),
+									   event.getEntitiesDecorators(),
 									   context, 
 									   event.getRendererManager(), 
 									   this.dataOverlay,
-									   event.getOverlay());
+									   event.getOverlayContext());
 	}
 	
 	@Override

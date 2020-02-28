@@ -33,11 +33,12 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	OverlayDataResetHandler{
 
 	private EventBus eventBus;
-	private AdvancedContext2d ctx;
+	private AdvancedContext2d overlay;
+	private AdvancedContext2d entitiesDecorators;
 	private RendererManager rendererManager;
 	private Double factor;
 	private Coordinate offset;
-	private OverlayContext originalOverlay;
+	private OverlayContext originalOverlayContext;
 	private DataOverlay dataOverlay;
 	private IDGDecoratorRenderer decoratorRenderer;
 	
@@ -49,18 +50,19 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	}
 	
 	@Override
-	public void doRender(Collection<DiagramObject> items, AdvancedContext2d ctx, Context context,
-			RendererManager rendererManager, DataOverlay dataOverlay, OverlayContext overlay) {
+	public void doRender(Collection<DiagramObject> items, AdvancedContext2d overlay, AdvancedContext2d entitiesDecorators, Context context,
+			RendererManager rendererManager, DataOverlay dataOverlay, OverlayContext overlayContext) {
 		
 		//this render is for continuous data only
 		if(dataOverlay.isDiscrete() || dataOverlay.getUniprotToEntitiesMap() == null)
 			return;
 		
-		this.ctx = ctx;
+		this.overlay = overlay;
+		this.entitiesDecorators = entitiesDecorators;
 		this.rendererManager = rendererManager;
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
-        this.originalOverlay = overlay;
+        this.originalOverlayContext = overlayContext;
         this.dataOverlay = dataOverlay;
         this.dataOverlay.updateIdentifierValueMap(); //reset map to just entities in a specific tissue if tissueTypes isnt null
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
@@ -96,7 +98,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         		}
         		Double renderValue = dataOverlay.getIdentifierValueMap().get(identifier);
         		if(renderValue == null) continue;
-	        	renderer.drawExpression(ctx, this.originalOverlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
+	        	renderer.drawExpression(overlay, this.originalOverlayContext, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
         	}
         }
 	}
@@ -112,25 +114,28 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 			return;
 		
 		Renderer renderer = rendererManager.getRenderer(renderableClass);
-		OverlayContext overlay = this.originalOverlay;
+		OverlayContext overlayContext = this.originalOverlayContext;
 		Set<DiagramObject> objectSet = target.values();
 		for(DiagramObject item : objectSet) {
 			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();
 			if(entity != null && entity.getParticipantsExpression(dataOverlay.getColumn()).size() > 0) {
-				renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(),factor, offset);
-				if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size() == 0) continue;
-				decoratorRenderer.doRender(ctx, item, factor, offset);
+				renderer.drawExpression(overlay, overlayContext, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(),factor, offset);
 			}
+		}
+		//render decorators for pairwisePopups if exists
+		if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size()!=0) {
+			for(DiagramObject item : objectSet)
+				decoratorRenderer.doRender(entitiesDecorators, item, factor, offset);
 		}
 	}
 	
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
-		this.ctx = null;
+		this.overlay = null;
 		this.factor = null;
 		this.offset = null;
 		this.rendererManager = null;
-		this.originalOverlay = null;
+		this.originalOverlayContext = null;
 		this.dataOverlay = null;
 	}
 

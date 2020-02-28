@@ -1,5 +1,8 @@
 package org.reactome.web.fi.client.popups;
 
+import java.util.Arrays;
+import java.util.Set;
+
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
@@ -53,6 +56,20 @@ public class FIViewInfoPopup extends PopupPanel{
 				.appendEscapedLines(source + " - " + target)
 				.toSafeHtml());
 		htmlLabel =html;
+		this.setWidget(htmlLabel);
+		this.setPopupPosition(x+10, y+10);
+		this.show();
+	}
+	
+	/**
+	 * Add set of strings to label.
+	 * @param set
+	 * @param x
+	 * @param y
+	 */
+	public void setEdgeLabel(Set<String> set, int x, int y) {
+		HTML html = new HTML(new SafeHtmlBuilder().appendEscapedLines(String.join("\n", set)).toSafeHtml());
+		htmlLabel = html;
 		this.setWidget(htmlLabel);
 		this.setPopupPosition(x+10, y+10);
 		this.show();

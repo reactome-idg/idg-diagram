@@ -44,7 +44,8 @@ import com.google.gwt.event.shared.EventBus;
 public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOtherContextDialogInfoHandler, OverlayDataResetHandler {
 
 	private EventBus eventBus;
-	private AdvancedContext2d ctx;
+	private AdvancedContext2d overlay;
+	private AdvancedContext2d entitiesDecorators;
 	private RendererManager rendererManager;
 	private Double factor;
 	private Coordinate offset;
@@ -62,29 +63,31 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 	
 	@Override
 	public void doRender(Collection<DiagramObject> items, 
-						 AdvancedContext2d ctx, 
+						 AdvancedContext2d overlay, 
+						 AdvancedContext2d entitiesDecorators,
 						 Context context,
 						 RendererManager rendererManager, 
 						 DataOverlay dataOverlay,
-						 OverlayContext overlay) {
+						 OverlayContext overlayContext) {
 		
 		//this renderer is for discrete data
 		if(!dataOverlay.isDiscrete() || dataOverlay.getUniprotToEntitiesMap() == null)
 			return;
 		
-		this.ctx = ctx;
+		this.overlay = overlay;
+		this.entitiesDecorators = entitiesDecorators;
 		this.rendererManager = rendererManager;
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
 
         this.colourMap = OverlayColours.get().getColours();
-        this.originalOverlay = overlay;
+        this.originalOverlay = overlayContext;
         
         this.dataOverlay = dataOverlay;
         
         //reset map to just entities in a specific tissue if tissueTypes isn't null
         this.dataOverlay.updateIdentifierValueMap();
-
+        
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
         renderDiscreteProteinData(itemsDistribution.getItems("Protein"));
         renderDiscreteComplexData(itemsDistribution.getItems("Complex"), "Complex");
@@ -121,8 +124,8 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
         		if(identifierDouble == null) continue;
         		String colour = "";
     			colour = colourMap.get(identifierDouble);
-	        	ctx.setFillStyle(colour);
-	        	renderer.draw(ctx, item, factor, offset);
+	        	overlay.setFillStyle(colour);
+	        	renderer.draw(overlay, item, factor, offset);
         	}
         }
 	}
@@ -139,7 +142,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 		}
 		
 		Renderer renderer = rendererManager.getRenderer(renderableClass);
-		OverlayContext overlay = this.originalOverlay;
+		OverlayContext overlayContext = this.originalOverlay;
 		//Store AnalysisColours.get().expressionGradient for restore
 		ThreeColorGradient originalExpressionGradient = AnalysisColours.get().expressionGradient;
 		//set Analysiscolours.get().expressionGradient to my own
@@ -151,12 +154,13 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 			GraphPhysicalEntity entity = (GraphPhysicalEntity) item.getGraphObject();
 			if(entity != null && entity.getParticipantsExpression(dataOverlay.getColumn()).size() > 0) {
 				//renderer.drawExpression for each diagram object here
-				renderer.drawExpression(ctx, overlay, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);
-				//render decorators for pairwisePopups if exists
-				if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size()!=0) {
-					decoratorRenderer.doRender(ctx, item, factor, offset);
-				}				
+				renderer.drawExpression(overlay, overlayContext, item, dataOverlay.getColumn(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), factor, offset);								
 			}
+		}
+		//render decorators for pairwisePopups if exists
+		if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size()!=0) {
+			for(DiagramObject item : objectSet)
+				decoratorRenderer.doRender(overlay, item, factor, offset);
 		}
 		//Last thing: restore AnalysisColours.get().expressionGradient
 		AnalysisColours.get().expressionGradient = originalExpressionGradient;
@@ -181,7 +185,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		this.colourMap = null;
-		this.ctx = null;
+		this.overlay = null;
 		this.factor = null;
 		this.offset = null;
 		this.rendererManager = null;
