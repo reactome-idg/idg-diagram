@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.reactome.web.diagram.common.PwpButton;
+import org.reactome.web.diagram.events.InteractorsLoadedEvent;
 import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
+import org.reactome.web.diagram.handlers.InteractorsLoadedHandler;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.handlers.DataOverlayColumnChangedHandler;
 import org.reactome.web.fi.model.DataOverlay;
@@ -33,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author brunsont
  *
  */
-public class NodeContextPanel extends DialogBox implements DataOverlayColumnChangedHandler{
+public class NodeContextPanel extends DialogBox implements DataOverlayColumnChangedHandler, InteractorsLoadedHandler{
 
 	private EventBus eventBus;
 	
@@ -93,7 +95,10 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		}
 		
 		initPanel();
+		
 		eventBus.addHandler(DataOverlayColumnChangedEvent.TYPE, this);
+		eventBus.addHandler(InteractorsLoadedEvent.TYPE, this);
+		
 		updateOverlayValue();
 		
 		if(showPairwiseInfo)
@@ -235,9 +240,11 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		pairwiseInfoPanel.clear();
 		
 		//adds total interactor count to overlay
-		int count = PairwiseOverlayFactory.get().getInteractorCountForUniprot(id);
-		Label interactorCount = new Label("Interactor Count: " + count);
-		pairwiseInfoPanel.add(interactorCount);
+		Map<String, Integer> counts = PairwiseOverlayFactory.get().getPairwiseCountForUniprot(id);
+		counts.forEach((k,v) ->{
+			Label lbl = new Label(k + ": " + v);
+			pairwiseInfoPanel.add(lbl);
+		});
 		
 		//Add button and style as link to open pairwise popup for a node
 		Button openPairwisePopup = new Button("Open Pairwise View");
@@ -245,6 +252,11 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		openPairwisePopup.setStyleName(NODECONTEXTRESOURCES.getCSS().linkStyledButton());
 		
 		pairwiseInfoPanel.add(openPairwisePopup);
+	}
+	
+	@Override
+	public void onInteractorsLoaded(InteractorsLoadedEvent event) {
+		addPairwiseInfoPanel();
 	}
 	
 	public static NodeContextResources NODECONTEXTRESOURCES;

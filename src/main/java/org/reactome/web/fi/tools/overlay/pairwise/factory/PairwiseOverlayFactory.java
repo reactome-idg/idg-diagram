@@ -12,6 +12,7 @@ import org.reactome.web.diagram.data.interactors.raw.RawInteractors;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwisePopup;
@@ -33,6 +34,7 @@ public class PairwiseOverlayFactory{
 	private Map<String, String> uniprotToGeneMap;
 	private Set<String> tDarkSet;
 	private List<PairwiseOverlayObject> currentPairwiseObjects;
+	private List<PairwiseNumberEntity> pairwiseNumberEntities;
 	private RawInteractors rawInteractors;
 	
 	private int zIndexCounter = 1;
@@ -173,17 +175,27 @@ public class PairwiseOverlayFactory{
 		this.rawInteractors = result;
 	}
 	
-	public int getInteractorCountForUniprot(String uniprot) {
-		List<RawInteractorEntity> interactorEntities = rawInteractors.getEntities();
-		if(interactorEntities == null || interactorEntities.size() == 0) return 0;
-		for(RawInteractorEntity entity : interactorEntities) {
-			if(entity.getAcc() == uniprot)
-				return entity.getCount();
-		}
-		return 0;
-	}
-	
 	public RawInteractors getRawInteractors() {
 		return this.rawInteractors;
+	}
+
+	public void setPairwiseNumberEntities(PairwiseNumberEntities entities) {
+		this.pairwiseNumberEntities = entities.getPairwiseNumberEntities();
+	}
+	
+	public Map<String, Integer> getPairwiseCountForUniprot(String uniprot){
+		Map<String, Integer> result = new HashMap<>();
+		
+		for(PairwiseNumberEntity entity : pairwiseNumberEntities) {
+			if(entity.getGene() == uniprot) {
+				result.put(entity.getDataDesc().getId(), entity.getPosNum()+entity.getNegNum());
+			}
+		}
+		
+		return result;
+	}
+	
+	public List<PairwiseNumberEntity> getPairwiseNumberEntities(){
+		return this.pairwiseNumberEntities;
 	}
 }

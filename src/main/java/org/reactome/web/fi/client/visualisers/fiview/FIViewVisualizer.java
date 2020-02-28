@@ -3,7 +3,7 @@ package org.reactome.web.fi.client.visualisers.fiview;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +69,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	private Context context;
 	
 	private EdgeContextPanel edgeContextPanel;
-	private Map<String, NodeContextPanel> nodeContextPanelMap;
+	private Set<NodeContextPanel> nodeContextPanelMap;
 	
 	private GraphObject selected;
 	
@@ -93,7 +93,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		this.eventBus = eventBus;
 		
 		edgeContextPanel = new EdgeContextPanel(eventBus);
-		nodeContextPanelMap = new HashMap<>();
+		nodeContextPanelMap = new HashSet<>();
 		cyView =  new SimplePanel();
 				
 		initHandlers();
@@ -277,12 +277,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
-		if(nodeContextPanelMap.containsKey(id)) {
-			//show popup before setting location so sizing is correct. UI doesn't update fast enough to cause an artifact
-			nodeContextPanelMap.get(id).show();
-			setPopupLocation(x, y, nodeContextPanelMap.get(id)); 
-			return;
-		}
 		
 		NodeContextPanel nodeContextPanel;
 		
@@ -294,13 +288,14 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		setPopupLocation(x, y, nodeContextPanel);
 		
 		//cache so it doesn't have to be recreated every time
-		nodeContextPanelMap.put(id, nodeContextPanel);
+		nodeContextPanelMap.add(nodeContextPanel);
 	}
 	
 	public void clearNodeContextMap() {
-		for(NodeContextPanel popup : nodeContextPanelMap.values()) {
-			popup.hide();
-		}
+		nodeContextPanelMap.forEach(panel -> {
+			panel.hide();
+		});
+		
 		nodeContextPanelMap.clear();
 	}
 	

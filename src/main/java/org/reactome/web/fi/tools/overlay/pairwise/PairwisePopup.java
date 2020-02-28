@@ -64,9 +64,9 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private String containerId;
 	private List<PairwiseOverlayObject> pairwiseOverlayObjects;
 	private Map<String,String> uniprotToGeneMap;
+	
 	private Set<String> displayedNodes;
 	private Set<String> diagramNodes;
-	
 	private Set<Integer> existingEdges;
 	
 	private DataOverlay dataOverlay;
@@ -314,7 +314,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 				PairwiseTableEntity entity;
 				tableEntities.add(entity = new PairwiseTableEntity(diagramNodesList.get(i),diagramNodesList.get(j),"solid"));
 				addEdge(entity);
-//				addEdge(diagramNodesList.get(i), diagramNodesList.get(j), "solid", "");
 			}
 		}
 	}
@@ -616,17 +615,12 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	public void onEdgeHovered(String id, int x, int y) {
 		infoPopup.getElement().getStyle().setZIndex(getCorrectZIndex());
 		
-		//fix for if edge came from original diagram sources
 		Set<String> descriptions = new HashSet<>();
-//		if(tableEntities.get(Integer.parseInt(id)).getDataDesc() == null) {
-//			descriptions.add("diagram source interaction");
-//			infoPopup.setEdgeLabel(descriptions, x, y);
-//			return;
-//		}
 		
 		String edgeInteractorId = tableEntities.get(Integer.parseInt(id)).getInteractorId();
 		String edgeSourceId = tableEntities.get(Integer.parseInt(id)).getSourceId();
 		for(PairwiseTableEntity entity : tableEntities) {
+			//fix for edges that come from diagram source interactions
 			if(entity.getInteractorId().equals(edgeInteractorId) && entity.getPosOrNeg()== "solid")
 				descriptions.add("diagram source interaction");
 			else if(entity.getInteractorId().equals(edgeInteractorId) && entity.getSourceId().equals(edgeSourceId))

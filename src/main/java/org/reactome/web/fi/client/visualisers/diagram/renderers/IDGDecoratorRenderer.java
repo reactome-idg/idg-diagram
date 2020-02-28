@@ -18,6 +18,7 @@ import org.reactome.web.diagram.renderers.layout.abs.SummaryItemAbstractRenderer
 import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.fi.data.layout.ShapeImpl;
 import org.reactome.web.fi.data.layout.SummaryItemImpl;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
@@ -99,9 +100,9 @@ public class IDGDecoratorRenderer {
 		Set<GraphPhysicalEntity> peSet = entity.getParticipants();
 		for(GraphPhysicalEntity pe : peSet) {
 			List<DiagramObject> objs = pe.getDiagramObjects();
-			for(RawInteractorEntity rawInteractor : PairwiseOverlayFactory.get().getRawInteractors().getEntities()) {
-				if(pe.getIdentifier() == rawInteractor.getAcc()) {
-					result += rawInteractor.getCount();
+			for(PairwiseNumberEntity numberEntity : PairwiseOverlayFactory.get().getPairwiseNumberEntities()) {
+				if(pe.getIdentifier() == numberEntity.getGene()) {
+					result += (numberEntity.getPosNum() + numberEntity.getNegNum());
 				}
 			}
 		}

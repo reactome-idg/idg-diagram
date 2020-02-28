@@ -34,7 +34,7 @@ public class PairwiseDataLoader {
 	
 	public abstract interface Handler{
 		default void onPairwiseDataLoaded(List<PairwiseTableEntity> tableEntities) {};
-		default void onPairwiseNumbersLoaded(RawInteractors rawInteractors) {};
+		default void onPairwiseNumbersLoaded(RawInteractors rawInteractors, PairwiseNumberEntities entities) {};
 		void onPairwiseLoaderError(Throwable exception);
 	}
 	
@@ -70,7 +70,7 @@ public class PairwiseDataLoader {
 							JSONObject obj = new JSONObject();
 							obj.put("pairwiseNumberEntities", val.isArray());
 							PairwiseNumberEntities numberEntities = PairwiseNumberEntitiesFactory.getPairwiseNumberEntities(PairwiseNumberEntities.class, obj.toString());
-							handler.onPairwiseNumbersLoaded(processPairwiseNumbers(numberEntities));
+							handler.onPairwiseNumbersLoaded(processPairwiseNumbers(numberEntities), numberEntities);
 						}else {
 							JSONValue val = JSONParser.parseStrict(response.getText());
 							JSONObject obj = new JSONObject();
