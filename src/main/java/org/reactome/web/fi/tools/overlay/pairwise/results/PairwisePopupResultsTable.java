@@ -33,7 +33,6 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 		this.setVisible(true);
 		this.setHeight("200px");
 		
-
 		this.addColumn(new DiagramGeneNameColumn(), "Diagram Source");
 		this.addColumn(new PairwiseInteractorColumn(), "Pairwise Interactor");
 		this.addColumn(new OverlayValueColumn(), "Overlay Value");
@@ -41,14 +40,12 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 		this.addColumn(new PairwiseSourceColumn(), "Interaction Source");
 		
 		this.addCellPreviewHandler(new CellPreviewEvent.Handler<PairwiseTableEntity>() {
-
             @Override
             public void onCellPreview(final CellPreviewEvent<PairwiseTableEntity> event) {
                 if (!event.getNativeEvent().getType().equals("mouseover")) return;
                 Element cellElement = event.getNativeEvent().getEventTarget().cast();
                 PairwiseTableEntity model = (PairwiseTableEntity) PairwisePopupResultsTable.this.getVisibleItem(event.getIndex());
                 cellElement.setTitle(PairwisePopupResultsTable.this.getColumn(event.getColumn()).getValue(model)+"");
-                
             }
         });
 				

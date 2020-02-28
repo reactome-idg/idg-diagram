@@ -152,7 +152,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		infoPanel = new FlowPanel();
 		result.add(infoPanel);
 		
-
 		return result;
 	}
 
