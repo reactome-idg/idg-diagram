@@ -1,7 +1,6 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -68,8 +67,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private Set<String> displayedNodes;
 	private Set<String> diagramNodes;
 	
-	private Map<String,Set<String>> edgeMap; //map pairwise interactor node to edge
-	private int edgeCount = 0;
+	private Set<Integer> existingEdges;
 	
 	private DataOverlay dataOverlay;
 	private DataOverlay tableDataOverlay;
@@ -107,7 +105,8 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		this.zIndex = zIndex;
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		this.displayedNodes = new HashSet<>();
-		this.edgeMap = new HashMap<>();
+		this.tableEntities = new ArrayList<>();
+		this.existingEdges = new HashSet<>();
 		initPanel();
 		panelClicked();
 		this.uniprotToGeneMap = PairwiseOverlayFactory.get().getUniprotToGeneMap();
@@ -252,6 +251,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private void onFilterKeyUp(KeyUpEvent e) {
 		List<PairwiseTableEntity> newList = new ArrayList<>();
 		for(PairwiseTableEntity entity : tableEntities) {
+			if(entity.getInteractorName() == null)continue;
 			if(entity.getInteractorName().contains(filterBox.getText()))
 				newList.add(entity);
 		}
@@ -311,7 +311,10 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		}
 		for(int i=0; i<diagramNodesList.size(); i++) {
 			for(int j=i+1; j<diagramNodes.size(); j++) {
-				addEdge(diagramNodesList.get(i), diagramNodesList.get(j), "solid", "");
+				PairwiseTableEntity entity;
+				tableEntities.add(entity = new PairwiseTableEntity(diagramNodesList.get(i),diagramNodesList.get(j),"solid"));
+				addEdge(entity);
+//				addEdge(diagramNodesList.get(i), diagramNodesList.get(j), "solid", "");
 			}
 		}
 	}
@@ -330,7 +333,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			}
 			@Override
 			public void onPairwiseDataLoaded(List<PairwiseTableEntity> tableEntities) {
-				PairwisePopup.this.tableEntities = tableEntities;
+				PairwisePopup.this.tableEntities.addAll(tableEntities);
 				filteredTableEntities = new ArrayList<>(tableEntities);
 				setPairwiseResultsTable();
 				addInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
@@ -350,7 +353,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 				if(counter == 10) break;
 				if(entity.getSourceId() == diagramNode && darkProteins.contains(entity.getInteractorId())) {
 					addNode(entity.getInteractorId(), true);
-					addEdge(diagramNode, entity.getInteractorId(), entity.getPosOrNeg(), entity.getDataDesc());
+					addEdge(entity);
 					counter++;
 				}
 			}
@@ -368,7 +371,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		addNode(entity.getInteractorId(), true);
 		for(PairwiseTableEntity rel : tableEntities)
 			if(entity.getInteractorId() == rel.getInteractorId())
-				addEdge(rel.getSourceId(),rel.getInteractorId(),rel.getPosOrNeg(),rel.getDataDesc());
+				addEdge(entity);
 		loadOverlay();
 	}
 	
@@ -383,34 +386,31 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		displayedNodes.add(uniprot);
 		cy.addCytoscapeNodes(val.toString());
 	}
-
+	
 	/**
-	 * Directs creation of an edge based on passed in source and target
+	 * Directs creation of an edge based on passed in tableEntity
 	 * Uses relationship and dataDesc to change style and color of the line.
 	 * @param source is the uniprot of the base diagram protein
 	 * @param target is the uniprot of the pariwise interactor
 	 * @param relationship
 	 * @param dataDesc
 	 */
-	private void addEdge(String source, String target, String relationship, String dataDesc) {
-		String edge = source+target+relationship+dataDesc;
+	private void addEdge(PairwiseTableEntity tableEntity) {
 		
-		if(edgeMap.keySet().contains(target) && edgeMap.get(target).contains(edge)) return;
+		if(existingEdges.contains(tableEntities.indexOf(tableEntity))) return;
 		
-		JSONValue val = makeFI(edgeCount, source, target, relationship);
-		
-		if(!edgeMap.keySet().contains(target))
-			edgeMap.put(target, new HashSet<>());
-		edgeMap.get(target).add(edge);
+		JSONValue val = makeFI(tableEntities.indexOf(tableEntity), 
+				tableEntity.getSourceId(), tableEntity.getInteractorId(), tableEntity.getPosOrNeg());
 		
 		cy.addCytoscapeEdge(val.toString());
 		for(PairwiseOverlayObject prop:  pairwiseOverlayObjects) {
-			if(prop.getId() == dataDesc && relationship == "positive")
-				cy.recolorEdge(edgeCount+"", prop.getPositiveLineColorHex());
-			else if(prop.getId() == dataDesc && relationship == "negative")
-				cy.recolorEdge(edgeCount+"", prop.getNegativeLineColorHex());
+			if(prop.getId() == tableEntity.getDataDesc() && tableEntity.getPosOrNeg() == "positive")
+				cy.recolorEdge(tableEntities.indexOf(tableEntity)+"", prop.getPositiveLineColorHex());
+			else if(prop.getId() == tableEntity.getDataDesc() && tableEntity.getPosOrNeg() == "negative")
+				cy.recolorEdge(tableEntities.indexOf(tableEntity)+"", prop.getNegativeLineColorHex());
 		}
-		edgeCount++;
+		
+		existingEdges.add(tableEntities.indexOf(tableEntity));
 	}
 	
 	@Override
@@ -585,10 +585,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		PairwiseNodeContextPopup popup = new PairwiseNodeContextPopup(id,name, dataOverlayValue, new PairwiseNodeContextPopup.Handler() {
 			@Override
 			public void onRemoveButtonClicked(String id) {
-				if(diagramNodes.contains(id)) return;
-				PairwisePopup.this.cy.removeCytoscapeNode(id);
-				displayedNodes.remove(id);
-				edgeMap.remove(id);
+				PairwisePopup.this.removeEdge(id);
 			}
 		});
 		popup.getElement().getStyle().setZIndex(getCorrectZIndex());
@@ -597,13 +594,47 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		popup.show();
 	}
 	
+	protected void removeEdge(String id) {
+		if(diagramNodes.contains(id)) return;
+		cy.removeCytoscapeNode(id);
+		displayedNodes.remove(id);
+		
+		for(int i=0; i<tableEntities.size(); i++) {
+			if(tableEntities.get(i).getInteractorId() == id) {
+				existingEdges.remove(i);
+			}
+		}
+	}
+
 	@Override
 	public void onNodeHovered(String id, String name, int x, int y) {
 		infoPopup.getElement().getStyle().setZIndex(getCorrectZIndex());
 		infoPopup.setNodeLabel(id, name, x, y);
 	}
 	
-	
+	@Override
+	public void onEdgeHovered(String id, int x, int y) {
+		infoPopup.getElement().getStyle().setZIndex(getCorrectZIndex());
+		
+		//fix for if edge came from original diagram sources
+		Set<String> descriptions = new HashSet<>();
+//		if(tableEntities.get(Integer.parseInt(id)).getDataDesc() == null) {
+//			descriptions.add("diagram source interaction");
+//			infoPopup.setEdgeLabel(descriptions, x, y);
+//			return;
+//		}
+		
+		String edgeInteractorId = tableEntities.get(Integer.parseInt(id)).getInteractorId();
+		String edgeSourceId = tableEntities.get(Integer.parseInt(id)).getSourceId();
+		for(PairwiseTableEntity entity : tableEntities) {
+			if(entity.getInteractorId().equals(edgeInteractorId) && entity.getPosOrNeg()== "solid")
+				descriptions.add("diagram source interaction");
+			else if(entity.getInteractorId().equals(edgeInteractorId) && entity.getSourceId().equals(edgeSourceId))
+				descriptions.add(entity.getDataDesc() + "|" + entity.getPosOrNeg());
+		}
+		infoPopup.setEdgeLabel(descriptions, x, y);
+	}
+
 	@Override
 	public void onCytoscapeCoreContextEvent(int x, int y) {
 		FILayoutChangerPanel layoutChanger = new FILayoutChangerPanel(cy.getLayout(), new FILayoutChangerPanel.LayoutChangeHandler() {

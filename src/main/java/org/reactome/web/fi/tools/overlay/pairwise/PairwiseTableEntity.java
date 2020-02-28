@@ -19,6 +19,12 @@ public class PairwiseTableEntity{
 		this.posOrNeg = posOrNeg;
 		this.data = data;
 	}
+	
+	public PairwiseTableEntity(String sourceId, String interactorId, String posOrNeg) {
+		this.sourceId = sourceId;
+		this.interactorId = interactorId;
+		this.posOrNeg = posOrNeg;
+	}
 
 	public String getSourceId() {
 		return sourceId;
