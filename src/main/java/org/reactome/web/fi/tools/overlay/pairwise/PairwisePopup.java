@@ -519,7 +519,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 */
 	private void updateTableData() {
 		this.tableDataOverlay.updateIdentifierValueMap();
-		if(dataOverlay.isDiscrete()) {
+		if(tableDataOverlay.isDiscrete()) {
 			for(PairwiseTableEntity entity : filteredTableEntities) {
 				entity.setData("");
 				if(tableDataOverlay.getIdentifierValueMap().keySet().contains(entity.getInteractorId()))
