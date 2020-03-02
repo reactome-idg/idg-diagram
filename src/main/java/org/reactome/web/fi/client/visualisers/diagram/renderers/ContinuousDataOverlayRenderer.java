@@ -34,7 +34,6 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 
 	private EventBus eventBus;
 	private AdvancedContext2d overlay;
-	private AdvancedContext2d entitiesDecorators;
 	private RendererManager rendererManager;
 	private Double factor;
 	private Coordinate offset;
@@ -50,7 +49,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	}
 	
 	@Override
-	public void doRender(Collection<DiagramObject> items, AdvancedContext2d overlay, AdvancedContext2d entitiesDecorators, Context context,
+	public void doRender(Collection<DiagramObject> items, AdvancedContext2d overlay, Context context,
 			RendererManager rendererManager, DataOverlay dataOverlay, OverlayContext overlayContext) {
 		
 		//this render is for continuous data only
@@ -58,7 +57,6 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 			return;
 		
 		this.overlay = overlay;
-		this.entitiesDecorators = entitiesDecorators;
 		this.rendererManager = rendererManager;
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
@@ -125,7 +123,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 		//render decorators for pairwisePopups if exists
 		if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size()!=0) {
 			for(DiagramObject item : objectSet)
-				decoratorRenderer.doRender(entitiesDecorators, item, factor, offset);
+				decoratorRenderer.doRender(overlayContext.getOverlay(), item, factor, offset);
 		}
 	}
 	

@@ -10,10 +10,8 @@ import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSequence;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
-import org.reactome.web.diagram.data.interactors.common.InteractorsSummary;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
-import org.reactome.web.diagram.data.layout.Node;
 import org.reactome.web.diagram.events.RenderOtherContextDialogInfoEvent;
 import org.reactome.web.diagram.handlers.RenderOtherContextDialogInfoHandler;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
@@ -45,7 +43,6 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 
 	private EventBus eventBus;
 	private AdvancedContext2d overlay;
-	private AdvancedContext2d entitiesDecorators;
 	private RendererManager rendererManager;
 	private Double factor;
 	private Coordinate offset;
@@ -64,7 +61,6 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 	@Override
 	public void doRender(Collection<DiagramObject> items, 
 						 AdvancedContext2d overlay, 
-						 AdvancedContext2d entitiesDecorators,
 						 Context context,
 						 RendererManager rendererManager, 
 						 DataOverlay dataOverlay,
@@ -75,7 +71,6 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 			return;
 		
 		this.overlay = overlay;
-		this.entitiesDecorators = entitiesDecorators;
 		this.rendererManager = rendererManager;
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
@@ -160,7 +155,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 		//render decorators for pairwisePopups if exists
 		if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size()!=0) {
 			for(DiagramObject item : objectSet)
-				decoratorRenderer.doRender(overlay, item, factor, offset);
+				decoratorRenderer.doRender(overlayContext.getOverlay(), item, factor, offset);
 		}
 		//Last thing: restore AnalysisColours.get().expressionGradient
 		AnalysisColours.get().expressionGradient = originalExpressionGradient;

@@ -56,11 +56,11 @@ public class IDGDecoratorRenderer {
 		InteractorsSummary summary = new InteractorsSummary("test", obj.getId(), summaryItem.getNumber());
 		node.setDiagramEntityInteractorsSummary(summary);
 		
-//		ctx.save();
-//		ctx.setGlobalAlpha(1);
-//		ctx.setGlobalCompositeOperation(Composite.SOURCE_IN);
+		ctx.save();
+		ctx.setGlobalAlpha((factor - 0.5) * 2);		
+		ctx.setFillStyle(DiagramColours.get().PROFILE.getProperties().getSelection());
 		SummaryItemAbstractRenderer.draw(ctx, node.getInteractorsSummary(), factor, offset);
-//		ctx.restore();
+		ctx.restore();
 	}
 
 	/**
