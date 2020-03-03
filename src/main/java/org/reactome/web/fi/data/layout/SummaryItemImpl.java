@@ -25,6 +25,10 @@ public class SummaryItemImpl implements SummaryItem{
 	public Shape getShape() {
 		return shape;
 	}
+	
+	public void setShape(Shape shape) {
+		this.shape = shape;
+	}
 
 	@Override
 	public Boolean getPressed() {

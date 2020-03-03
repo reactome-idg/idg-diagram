@@ -14,6 +14,7 @@ import org.reactome.web.diagram.data.layout.Node;
 import org.reactome.web.diagram.data.layout.Shape;
 import org.reactome.web.diagram.data.layout.SummaryItem;
 import org.reactome.web.diagram.data.layout.impl.CoordinateFactory;
+import org.reactome.web.diagram.data.layout.impl.ShapeFactory;
 import org.reactome.web.diagram.profiles.diagram.DiagramColours;
 import org.reactome.web.diagram.renderers.layout.abs.SummaryItemAbstractRenderer;
 import org.reactome.web.diagram.util.AdvancedContext2d;
@@ -37,6 +38,7 @@ import com.google.gwt.user.client.Window;
  */
 public class IDGDecoratorRenderer {
 		
+	
 	public IDGDecoratorRenderer() {}
 	
 	/**
@@ -47,11 +49,12 @@ public class IDGDecoratorRenderer {
 	 * @param offset
 	 */
 	public void doRender(AdvancedContext2d ctx, DiagramObject obj, Double factor, Coordinate offset) {
-		SummaryItem summaryItem = makeSummaryItem(obj, offset);
+		SummaryItem summaryItem = makeSummaryItem(obj, factor, offset);
 		//dont render if no interactions exist
 		if(summaryItem.getNumber() == 0 || summaryItem.getNumber() == null) return;
 		
 		Node node = (Node) obj;
+		
 		node.setInteractorsSummary(summaryItem);
 		InteractorsSummary summary = new InteractorsSummary("test", obj.getId(), summaryItem.getNumber());
 		node.setDiagramEntityInteractorsSummary(summary);
@@ -68,8 +71,8 @@ public class IDGDecoratorRenderer {
 	 * @param obj
 	 * @return
 	 */
-	private SummaryItem makeSummaryItem(DiagramObject obj, Coordinate offset) {
-		SummaryItem result = new SummaryItemImpl(getShape(obj), getNumber(obj));
+	private SummaryItem makeSummaryItem(DiagramObject obj, Double factor, Coordinate offset) {
+		SummaryItem result = new SummaryItemImpl(getShape(obj, factor, offset), getNumber(obj));
 		
 		return result;
 	}
@@ -79,8 +82,8 @@ public class IDGDecoratorRenderer {
 	 * @param obj
 	 * @return
 	 */
-	private Shape getShape(DiagramObject obj) {
-		Shape result = new ShapeImpl(getCoordinate(obj), new Double(6), "CIRCLE", true);
+	private Shape getShape(DiagramObject obj, Double factor, Coordinate offset) {
+		Shape result = new ShapeImpl(getCoordinate(obj, factor, offset), new Double(6), "CIRCLE", true);
 		return result;
 	}
 	
@@ -89,12 +92,11 @@ public class IDGDecoratorRenderer {
 	 * @param obj
 	 * @return
 	 */
-	private Coordinate getCoordinate(DiagramObject obj) {
+	private Coordinate getCoordinate(DiagramObject obj, Double factor, Coordinate offset) {
 		Node node = (Node) obj;
 		double x = node.getProp().getX() + node.getProp().getWidth();
 		double y = node.getProp().getY();
 		Coordinate result = CoordinateFactory.get(x, y);
-		if(result.getY()==0)Console.log("Y IS ZERO" + obj.getGraphObject().getDisplayName()); 
 		return result;
 	}
 	
@@ -107,7 +109,6 @@ public class IDGDecoratorRenderer {
 		GraphPhysicalEntity entity = obj.getGraphObject(); //should always be GraphPhysicalEntity
 		Set<GraphPhysicalEntity> peSet = entity.getParticipants();
 		for(GraphPhysicalEntity pe : peSet) {
-			List<DiagramObject> objs = pe.getDiagramObjects();
 			for(PairwiseNumberEntity numberEntity : PairwiseOverlayFactory.get().getPairwiseNumberEntities()) {
 				if(pe.getIdentifier() == numberEntity.getGene()) {
 					result += (numberEntity.getPosNum() + numberEntity.getNegNum());

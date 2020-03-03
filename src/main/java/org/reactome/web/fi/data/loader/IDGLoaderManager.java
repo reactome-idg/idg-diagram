@@ -1,7 +1,6 @@
 package org.reactome.web.fi.data.loader;
 
 
-import java.util.List;
 
 import org.reactome.web.diagram.data.ContentFactory;
 import org.reactome.web.diagram.data.Context;
@@ -20,14 +19,11 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.tools.overlay.pairwise.PairwiseTableEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 
@@ -49,6 +45,7 @@ OverlayLoader.Handler{
 		this.eventBus = eventBus;
 		
 		fIViewLoader = new FIViewLoader(this);
+		layoutLoader = new IDGLayoutLoader(this);
 		overlayLoader = new OverlayLoader();
 	}
 	
