@@ -186,6 +186,9 @@ public class PairwiseOverlayFactory{
 	public Map<String, Integer> getPairwiseCountForUniprot(String uniprot){
 		Map<String, Integer> result = new HashMap<>();
 		
+		if(pairwiseNumberEntities == null || pairwiseNumberEntities.size() == 0)
+			return result;
+		
 		for(PairwiseNumberEntity entity : pairwiseNumberEntities) {
 			if(entity.getGene() == uniprot) {
 				result.put(entity.getDataDesc().getId(), entity.getPosNum()+entity.getNegNum());
@@ -197,5 +200,10 @@ public class PairwiseOverlayFactory{
 	
 	public List<PairwiseNumberEntity> getPairwiseNumberEntities(){
 		return this.pairwiseNumberEntities;
+	}
+
+	public boolean hasOverlay() {
+		if(this.currentPairwiseObjects != null && this.currentPairwiseObjects.size() > 0) return true;
+		return false;
 	}
 }

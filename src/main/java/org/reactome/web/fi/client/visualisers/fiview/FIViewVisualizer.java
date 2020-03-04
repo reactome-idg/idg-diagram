@@ -186,8 +186,8 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 			cytoscapeInitialised = true;
 		}
 		cy.clearCytoscapeGraph();
-		cy.addCytoscapeNodes(((FIViewContent)content).getProteinArray());
-		cy.addCytoscapeEdge(((FIViewContent)content).getFIArray());
+		cy.addCytoscapeNodes("cy", ((FIViewContent)content).getProteinArray());
+		cy.addCytoscapeEdge("cy", ((FIViewContent)content).getFIArray());
 		
 		cy.setCytoscapeLayout("cose");
 		eventBus.fireEventFromSource(new FIViewMessageEvent(false), this);

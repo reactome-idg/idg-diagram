@@ -101,8 +101,10 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		
 		updateOverlayValue();
 		
-		if(showPairwiseInfo)
+		if(showPairwiseInfo && PairwiseOverlayFactory.get().hasOverlay()) {
+			main.add(getPairwisePanel());
 			addPairwiseInfoPanel();
+		}
 	}
 
 	private void initPanel() {
@@ -121,8 +123,6 @@ public class NodeContextPanel extends DialogBox implements DataOverlayColumnChan
 		main.add(overlayValue = new FlowPanel());
 		overlayValue.add(overlayValueLabel = new Label());
 		overlayValueLabel.setStyleName(NODECONTEXTRESOURCES.getCSS().label());
-		
-		main.add(getPairwisePanel());
 		
 		setTitlePanel();
 		setWidget(main);

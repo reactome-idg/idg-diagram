@@ -381,7 +381,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		if(displayedNodes.contains(uniprot)) return;
 		JSONValue val = getProtein(uniprot, uniprotToGeneMap.get(uniprot), interactor);
 		displayedNodes.add(uniprot);
-		cy.addCytoscapeNodes(val.toString());
+		cy.addCytoscapeNodes(containerId, val.toString());
 	}
 	
 	/**
@@ -399,7 +399,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		JSONValue val = makeFI(tableEntities.indexOf(tableEntity), 
 				tableEntity.getSourceId(), tableEntity.getInteractorId(), tableEntity.getPosOrNeg());
 		
-		cy.addCytoscapeEdge(val.toString());
+		cy.addCytoscapeEdge(containerId, val.toString());
 		for(PairwiseOverlayObject prop:  pairwiseOverlayObjects) {
 			if(prop.getId() == tableEntity.getDataDesc() && tableEntity.getPosOrNeg() == "positive")
 				cy.recolorEdge(tableEntities.indexOf(tableEntity)+"", prop.getPositiveLineColorHex());
