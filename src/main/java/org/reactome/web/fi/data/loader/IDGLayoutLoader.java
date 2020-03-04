@@ -41,7 +41,6 @@ public class IDGLayoutLoader extends LayoutLoader{
 	}
 
 	private String correctResponse(String text) {
-		GWT.log(text);
 		JSONValue value = JSONParser.parseStrict(text);
 		JSONObject valueObj = value.isObject();
 		
@@ -59,9 +58,7 @@ public class IDGLayoutLoader extends LayoutLoader{
 		}
 		
 		valueObj.put("nodes", nodeArray);
-		
-		GWT.log(valueObj.toString());
-		
+				
 		return valueObj.toString();
 	}
 
