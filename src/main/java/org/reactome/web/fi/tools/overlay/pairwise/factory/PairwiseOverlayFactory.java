@@ -95,6 +95,10 @@ public class PairwiseOverlayFactory{
 		}
 	}
 	
+	public int getNumberOfPopups() {
+		return popupMap.keySet().size();
+	}
+	
 	/**
 	 * Provide the right z index for popups.
 	 * @return

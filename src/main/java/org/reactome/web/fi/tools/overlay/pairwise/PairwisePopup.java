@@ -132,6 +132,9 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		setTitlePanel();
 		setWidget(focus);
 				
+		int popupNumber = PairwiseOverlayFactory.get().getNumberOfPopups();
+		this.setPopupPosition(popupNumber*20, popupNumber*20);
+		
 		show();
 	}
 
