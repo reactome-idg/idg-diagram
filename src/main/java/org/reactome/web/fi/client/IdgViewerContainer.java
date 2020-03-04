@@ -11,14 +11,23 @@ import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.client.visualisers.diagram.DiagramVisualiser;
 import org.reactome.web.diagram.controls.settings.HideableContainerPanel;
+import org.reactome.web.diagram.data.ContentFactory;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSequence;
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
+import org.reactome.web.diagram.data.interactors.common.OverlayResource;
+import org.reactome.web.diagram.data.interactors.common.OverlayResource.ResourceType;
+import org.reactome.web.diagram.data.interactors.raw.RawInteractors;
 import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.diagram.data.layout.Node;
 import org.reactome.web.diagram.events.AnalysisResetEvent;
+import org.reactome.web.diagram.events.ContentRequestedEvent;
+import org.reactome.web.diagram.events.InteractorsLoadedEvent;
+import org.reactome.web.diagram.events.InteractorsRequestCanceledEvent;
+import org.reactome.web.diagram.events.InteractorsResourceChangedEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
 import org.reactome.web.diagram.util.MapSet;
@@ -29,6 +38,7 @@ import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualizer;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
+import org.reactome.web.fi.data.model.interactors.RawInteractorsImpl;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
@@ -220,6 +230,16 @@ RequestPairwiseCountsHandler{
 
 	@Override
 	public void onRequestPairwiseCountsHandeler(RequestPairwiseCountsEvent event) {
+		
+		//change resource to something custom if no pairwiseOverlayObjects exists.
+		//this causes all decorators to go away
+		if(event.getPairwiseOverlayObjects().size() == 0) {
+			eventBus.fireEventFromSource(
+					new InteractorsResourceChangedEvent(
+							new OverlayResource(context.getContent().getStableId(),"reset", ResourceType.CUSTOM)),  this);
+			return;
+		}
+		
 		eventBus.fireEventFromSource(
 				new PairwiseCountsRequestedEvent(
 						new PairwiseOverlayProperties(event.getPairwiseOverlayObjects(), collectAllDiagramUniprots())),

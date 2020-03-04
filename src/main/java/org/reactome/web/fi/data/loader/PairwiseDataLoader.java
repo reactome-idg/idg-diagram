@@ -70,7 +70,7 @@ public class PairwiseDataLoader {
 							JSONObject obj = new JSONObject();
 							obj.put("pairwiseNumberEntities", val.isArray());
 							PairwiseNumberEntities numberEntities = PairwiseNumberEntitiesFactory.getPairwiseNumberEntities(PairwiseNumberEntities.class, obj.toString());
-							handler.onPairwiseNumbersLoaded(processPairwiseNumbers(numberEntities), numberEntities);
+							handler.onPairwiseNumbersLoaded(processPairwiseNumbers(properties, numberEntities), numberEntities);
 						}else {
 							JSONValue val = JSONParser.parseStrict(response.getText());
 							JSONObject obj = new JSONObject();
@@ -96,7 +96,7 @@ public class PairwiseDataLoader {
 	 * Converts pairwise number entities into rawInteractors and caches PairwiseNumberEntities in PairwisePopupFactory
 	 * @param numberEntities
 	 */
-	private RawInteractors processPairwiseNumbers(PairwiseNumberEntities numberEntities) {
+	private RawInteractors processPairwiseNumbers(PairwiseOverlayProperties properties, PairwiseNumberEntities numberEntities) {
 		RawInteractorsImpl result = null;
 		
 		List<RawInteractorEntity> entityList = new ArrayList<>();
@@ -105,7 +105,13 @@ public class PairwiseDataLoader {
 			entityList.add(new RawInteractorEntityImpl(entity.getGene(), entity.getPosNum()+entity.getNegNum(), new ArrayList<>()));
 		}
 		
-		result = new RawInteractorsImpl("Test Pairwise Counts Resource",entityList);
+		List<String> resources = new ArrayList<>();
+		for(PairwiseOverlayObject id : properties.getPairwiseOverlayObjects()) {
+			resources.add(id.getId());
+		}
+			
+		
+		result = new RawInteractorsImpl(String.join(",", resources), entityList);
 		
 		return result;
 	}
