@@ -89,7 +89,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
     
 	public FIViewVisualizer(EventBus eventBus) {
 		super();
-		this.getElement().addClassName("pwp-FIViz"); //IMPORTANT!
+		this.getElement().addClassName("pwp-FIViz");
 		this.eventBus = eventBus;
 		
 		edgeContextPanel = new EdgeContextPanel(eventBus);
