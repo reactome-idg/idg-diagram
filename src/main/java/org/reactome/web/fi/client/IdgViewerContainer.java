@@ -194,6 +194,10 @@ RequestPairwiseCountsHandler{
 		else {
 			eventBus.fireEventFromSource(new MakeOverlayRequestEvent(getTargetLevelProperties()), this);
 		}
+		
+		if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties() != null && PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size() > 0) {
+			eventBus.fireEventFromSource(new RequestPairwiseCountsEvent(PairwiseOverlayFactory.get().getCurrentPairwiseProperties()), this);
+		}
 	}
 
 	private DataOverlayProperties getTargetLevelProperties() {

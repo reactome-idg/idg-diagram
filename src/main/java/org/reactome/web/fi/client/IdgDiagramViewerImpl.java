@@ -4,6 +4,8 @@ import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.events.AnalysisResultLoadedEvent;
+import org.reactome.web.diagram.events.ContentLoadedEvent;
+import org.reactome.web.diagram.events.ContentRequestedEvent;
 import org.reactome.web.diagram.events.DiagramProfileChangedEvent;
 import org.reactome.web.diagram.events.EntityDecoratorSelectedEvent;
 import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
@@ -48,6 +50,21 @@ EntityDecoratorSelectedHandler{
 	@Override
 	protected LoaderManager createLoaderManager() {
 		return new IDGLoaderManager(eventBus);
+	}
+	
+	
+
+	@Override
+	public void onContentLoaded(ContentLoadedEvent event) {
+		// TODO Auto-generated method stub
+		super.onContentLoaded(event);
+	}
+
+	@Override
+	public void onContentRequested(ContentRequestedEvent event) {
+		//resets pairwise number entities to 0 for new diagrams because the correct ones need to be loaded
+		PairwiseOverlayFactory.get().setPairwiseNumberEntities(null);
+		super.onContentRequested(event);
 	}
 
 	@Override

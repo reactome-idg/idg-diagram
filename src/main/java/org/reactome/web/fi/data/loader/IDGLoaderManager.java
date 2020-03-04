@@ -57,7 +57,6 @@ OverlayLoader.Handler{
 	
 	@Override
 	public void load(String identifier) {
-		PairwiseOverlayFactory.get().setPairwiseNumberEntities(null);
 		if (isFIViewNeeded(identifier)) {
 			context = contextMap.get(identifier + ".fi");
 			eventBus.fireEventFromSource(new FIViewMessageEvent(true), this);
