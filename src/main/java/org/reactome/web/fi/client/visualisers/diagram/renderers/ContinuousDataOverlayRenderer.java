@@ -121,7 +121,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 			}
 		}
 		//render decorators for pairwisePopups if exists
-		if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size()!=0) {
+		if(PairwiseOverlayFactory.get().getPairwiseNumberEntities() != null) {
 			for(DiagramObject item : objectSet)
 				decoratorRenderer.doRender(overlayContext.getOverlay(), item, factor, offset);
 		}
