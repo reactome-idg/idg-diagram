@@ -183,8 +183,8 @@ public class PairwiseOverlayFactory{
 		return this.rawInteractors;
 	}
 
-	public void setPairwiseNumberEntities(PairwiseNumberEntities entities) {
-		this.pairwiseNumberEntities = entities.getPairwiseNumberEntities();
+	public void setPairwiseNumberEntities(List<PairwiseNumberEntity> entities) {
+		this.pairwiseNumberEntities = entities;
 	}
 	
 	public Map<String, Integer> getPairwiseCountForUniprot(String uniprot){
