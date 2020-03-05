@@ -29,6 +29,7 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Window;
 
 public class PairwiseDataLoader {
 	
@@ -98,7 +99,7 @@ public class PairwiseDataLoader {
 	 */
 	private RawInteractors processPairwiseNumbers(PairwiseOverlayProperties properties, PairwiseNumberEntities numberEntities) {
 		RawInteractorsImpl result = null;
-		
+				
 		List<RawInteractorEntity> entityList = new ArrayList<>();
 		
 		for(PairwiseNumberEntity entity : numberEntities.getPairwiseNumberEntities()) {
@@ -143,7 +144,7 @@ public class PairwiseDataLoader {
 				return o1.getInteractorName().compareTo(o2.getInteractorName());
 			}
 		});
-		
+				
 		return tableEntities;
 	}
 	
