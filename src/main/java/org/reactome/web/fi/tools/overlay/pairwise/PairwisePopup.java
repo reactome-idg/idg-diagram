@@ -173,7 +173,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 					String identifier = entity.getIdentifier();
 					if(identifier.contains("-"))													//removes any isoform identifiers
 						identifier = identifier.substring(0, identifier.indexOf("-"));
-					else if(identifier.contains("ENSG")) { 											//convert ENSG to uniprot
+					else if(identifier.contains("ENSG") || identifier.contains("ENST")) { 											//convert ENSG to uniprot
 						for(Map.Entry<String,String> entry: uniprotToGeneMap.entrySet()) {			//Iterate over map. Check value vs. display name
 							if(entity.getDisplayName().contains(entry.getValue())) {				//If equal, replace with key (uniprot)
 								identifier = entry.getKey();

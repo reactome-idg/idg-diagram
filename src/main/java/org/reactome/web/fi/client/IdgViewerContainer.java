@@ -279,7 +279,7 @@ RequestPairwiseCountsHandler{
 						String identifier = participant.getIdentifier();
 						if(identifier.contains("-"))
 							identifier = identifier.substring(0, identifier.indexOf("-"));
-						else if(identifier.contains("ENSG")){
+						else if(identifier.contains("ENSG") || identifier.contains("ENST")){
 							for(Map.Entry<String,String> entry: PairwiseInfoService.getUniprotToGeneMap().entrySet()) {	//Iterate over map. Check value vs. display name
 								if(participant.getDisplayName().contains(entry.getValue())) {									//If equal, replace with key (uniprot)
 									identifier = entry.getKey();
