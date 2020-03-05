@@ -19,6 +19,7 @@ import org.reactome.web.fi.tools.overlay.pairwise.PairwisePopup;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.Callback;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -50,14 +51,15 @@ public class PairwiseOverlayFactory{
 		currentPairwiseObjects = new ArrayList<>();
 		
 		//load Dark Protein list
-		TCRDInfoLoader.loadTDarkSet(new AsyncCallback<Set<String>>() {
+		TCRDInfoLoader.loadTDarkSet(new TCRDInfoLoader.TDarkHandler() {
 			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
+			public void onTDarkLoadedError(Throwable exception) {
+				Console.error(exception);
 			}
+			
 			@Override
-			public void onSuccess(Set<String> result) {
-				tDarkSet = result;
+			public void onTDarkLoaded(Set<String> tDarkSet) {
+				PairwiseOverlayFactory.this.tDarkSet = tDarkSet;
 			}
 		});
 		this.uniprotToGeneMap = PairwiseInfoService.getUniprotToGeneMap();
@@ -168,6 +170,8 @@ public class PairwiseOverlayFactory{
 	}
 
 	public Map<String, String> getUniprotToGeneMap() {
+		if(this.uniprotToGeneMap == null)
+			uniprotToGeneMap = PairwiseInfoService.getUniprotToGeneMap();
 		return this.uniprotToGeneMap;
 	}
 	

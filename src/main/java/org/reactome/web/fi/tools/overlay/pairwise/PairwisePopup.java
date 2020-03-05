@@ -67,6 +67,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	
 	private Set<String> displayedNodes;
 	private Set<String> diagramNodes;
+	private int diagramEdgesCount;
 	private Set<Integer> existingEdges;
 	
 	private DataOverlay dataOverlay;
@@ -314,7 +315,9 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			for(int j=i+1; j<diagramNodes.size(); j++) {
 				PairwiseTableEntity entity;
 				tableEntities.add(entity = new PairwiseTableEntity(diagramNodesList.get(i),diagramNodesList.get(j),"solid"));
-				addEdge(entity);
+				boolean added = addEdge(entity);
+				if(added)
+					diagramEdgesCount++;
 			}
 		}
 	}
@@ -357,6 +360,15 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 					counter++;
 				}
 			}
+			for(int i=counter; i< 10; i++) {
+				int indexToGet = i+diagramEdgesCount;
+				if(indexToGet >= tableEntities.size())break;
+				PairwiseTableEntity entity = tableEntities.get(indexToGet); //offset by the number of diagram edges present in the array of table entities
+				if(entity.getSourceId() == diagramNode && !existingEdges.contains(indexToGet)) {
+					addNode(entity.getInteractorId(), true);
+					addEdge(entity);
+				}
+			}
 		}
 		cy.setCytoscapeLayout("cose");
 		
@@ -380,6 +392,9 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * @param uniprot
 	 */
 	private void addNode(String uniprot, boolean interactor) {
+		if(this.uniprotToGeneMap == null)
+			uniprotToGeneMap = PairwiseOverlayFactory.get().getUniprotToGeneMap();
+		
 		
 		if(displayedNodes.contains(uniprot)) return;
 		JSONValue val = getProtein(uniprot, uniprotToGeneMap.get(uniprot), interactor);
@@ -395,9 +410,9 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * @param relationship
 	 * @param dataDesc
 	 */
-	private void addEdge(PairwiseTableEntity tableEntity) {
+	private boolean addEdge(PairwiseTableEntity tableEntity) {
 		
-		if(existingEdges.contains(tableEntities.indexOf(tableEntity))) return;
+		if(existingEdges.contains(tableEntities.indexOf(tableEntity))) return false;
 		
 		JSONValue val = makeFI(tableEntities.indexOf(tableEntity), 
 				tableEntity.getSourceId(), tableEntity.getInteractorId(), tableEntity.getPosOrNeg());
@@ -411,6 +426,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		}
 		
 		existingEdges.add(tableEntities.indexOf(tableEntity));
+		return true;
 	}
 	
 	@Override

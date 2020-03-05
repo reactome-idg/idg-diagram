@@ -28,13 +28,15 @@ public class TCRDInfoLoader{
 		void onTissueTypesLoaded(List<String> tissuesList);
 		void onTissueTypesLoadedError(Throwable exception);
 	}
+	public interface TDarkHandler{
+		void onTDarkLoaded(Set<String> tDarkSet);
+		void onTDarkLoadedError(Throwable exception);
+	}
 	
 	private static final String BASE_URL = "/tcrdws/";
 	private static Request request;
 	
 	public static void loadExpressionTypes(ETypeHandler handler) {
-		if(request != null && request.isPending())
-			request.cancel();
 		
 		String url = BASE_URL + "expressionTypes";
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
@@ -66,7 +68,7 @@ public class TCRDInfoLoader{
 		}
 	}
 	
-	public static void loadTDarkSet(AsyncCallback<Set<String>> callback) {
+	public static void loadTDarkSet(TDarkHandler callback) {
 		String url = BASE_URL + "tdark/uniprots";
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
 		requestBuilder.setHeader("Accept", "application/json");
@@ -82,25 +84,23 @@ public class TCRDInfoLoader{
 							TDarkProteinSet tDarkProteins = TDarkProteinSetFactory.getSetEntity(TDarkProteinSet.class, obj.toString());
 							Set<String> proteins = new HashSet<>();
 							proteins.addAll(tDarkProteins.getProteins());
-							callback.onSuccess(proteins);
+							callback.onTDarkLoaded(proteins);
 						} catch (Exception e) {
-							callback.onFailure(e);
+							callback.onTDarkLoadedError(e);
 						}
 					}
 				}
 				@Override
 				public void onError(Request request, Throwable exception) {
-					callback.onFailure(exception);
+					callback.onTDarkLoadedError(exception);
 				}
 			});
 		}catch(RequestException ex) {
-			callback.onFailure(ex);
+			callback.onTDarkLoadedError(ex);
 		}
 	}
 
 	public static void loadTissueTypes(String eType, TissueHandler handler) {
-		if(request != null && request.isPending())
-			request.cancel();
 		
 		String fixedEType = eType.replaceAll(" ", "+");
 		String url = BASE_URL + "tissues/" + fixedEType;

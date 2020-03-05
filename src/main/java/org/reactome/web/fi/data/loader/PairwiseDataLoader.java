@@ -117,17 +117,6 @@ public class PairwiseDataLoader {
 	}
 
 	private List<PairwiseTableEntity> getEntitiesMap(PairwiseEntities entities) {
-		Map<String, List<PairwiseEntity>> result = new HashMap<>();
-		
-		for(PairwiseEntity entity: entities.getPairwiseEntities()) {
-			if(result.keySet().contains(entity.getGene()))
-				result.get(entity.getGene()).add(entity);
-			else {
-				List<PairwiseEntity> list = new ArrayList<>();
-				list.add(entity);
-				result.put(entity.getGene(), list);
-			}
-		}
 		
 		List<PairwiseTableEntity> tableEntities = new ArrayList<>();
 		for(PairwiseEntity entity : entities.getPairwiseEntities()) {
