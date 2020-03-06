@@ -29,6 +29,11 @@ import org.reactome.web.fi.model.FILayoutType;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
+import org.reactome.web.fi.tools.overlay.pairwise.results.columns.DiagramGeneNameColumn;
+import org.reactome.web.fi.tools.overlay.pairwise.results.columns.OverlayValueColumn;
+import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseInteractorColumn;
+import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseRelationshipColumn;
+import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseSourceColumn;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.cell.client.ActionCell;
@@ -81,7 +86,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private IDGTextBox filterBox;
 	
 	private CytoscapeEntity cy;
-	private Boolean cytoscapeInitialized = false;
 	
 	private FlowPanel main;
 	private FlowPanel infoPanel;
@@ -287,11 +291,8 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * @param edgeArr
 	 */
 	private void initializeCytoscape(JSONArray nodeArr, JSONArray edgeArr) {
-		if(!cytoscapeInitialized) {
-			this.cy = new CytoscapeEntity(RESOURCES.fiviewStyle().getText(), this);
-			cy.cytoscapeInit(nodeArr.toString(),edgeArr.toString(), "cose", containerId);
-			cytoscapeInitialized = true;
-		}
+		this.cy = new CytoscapeEntity(RESOURCES.fiviewStyle().getText(), this);
+		cy.cytoscapeInit(nodeArr.toString(),edgeArr.toString(), "cose", containerId);
 		cy.setCytoscapeLayout("cose");
 	}
 
