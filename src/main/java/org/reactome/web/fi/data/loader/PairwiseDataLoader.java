@@ -29,7 +29,6 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Window;
 
 public class PairwiseDataLoader {
 	
@@ -100,19 +99,23 @@ public class PairwiseDataLoader {
 	private RawInteractors processPairwiseNumbers(PairwiseOverlayProperties properties, PairwiseNumberEntities numberEntities) {
 		RawInteractorsImpl result = null;
 				
-		List<RawInteractorEntity> entityList = new ArrayList<>();
+		Map<String, RawInteractorEntityImpl> entityMap = new HashMap<>();
 		
 		for(PairwiseNumberEntity entity : numberEntities.getPairwiseNumberEntities()) {
-			entityList.add(new RawInteractorEntityImpl(entity.getGene(), entity.getPosNum()+entity.getNegNum(), new ArrayList<>()));
+			if(entityMap.containsKey(entity.getGene())) {
+				int initial = entityMap.get(entity.getGene()).getCount();
+				entityMap.get(entity.getGene()).setCount(initial + (entity.getPosNum()+entity.getNegNum()));
+			}
+			else
+				entityMap.put(entity.getGene(), new RawInteractorEntityImpl(entity.getGene(), entity.getPosNum()+entity.getNegNum(), new ArrayList<>()));
 		}
 		
 		List<String> resources = new ArrayList<>();
 		for(PairwiseOverlayObject id : properties.getPairwiseOverlayObjects()) {
 			resources.add(id.getId());
 		}
-			
 		
-		result = new RawInteractorsImpl(String.join(",", resources), entityList);
+		result = new RawInteractorsImpl(String.join(",", resources), new ArrayList<RawInteractorEntity>(entityMap.values()));
 		
 		return result;
 	}

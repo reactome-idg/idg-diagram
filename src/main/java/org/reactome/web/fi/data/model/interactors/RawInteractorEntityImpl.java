@@ -37,4 +37,8 @@ public class RawInteractorEntityImpl implements RawInteractorEntity{
 		return interactors;
 	}
 
+	public void setCount(int count) {
+		this.count = count;
+	}
+	
 }
