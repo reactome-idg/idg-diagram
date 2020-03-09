@@ -16,6 +16,7 @@ import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.popups.FILayoutChangerPanel;
 import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
+import org.reactome.web.fi.common.IDGListBox;
 import org.reactome.web.fi.common.IDGPager;
 import org.reactome.web.fi.common.IDGPager.Handler;
 import org.reactome.web.fi.common.IDGTextBox;
@@ -29,16 +30,12 @@ import org.reactome.web.fi.model.FILayoutType;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
-import org.reactome.web.fi.tools.overlay.pairwise.results.columns.DiagramGeneNameColumn;
-import org.reactome.web.fi.tools.overlay.pairwise.results.columns.OverlayValueColumn;
-import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseInteractorColumn;
-import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseRelationshipColumn;
-import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseSourceColumn;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -52,6 +49,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.IdentityColumn;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -83,7 +81,11 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private PairwisePopupResultsTable table;
 	private ListDataProvider<PairwiseTableEntity> provider;
 	private IDGPager pager;
-	private IDGTextBox filterBox;
+	
+	private IDGTextBox filterInteractorsBox;
+	private IDGListBox sourceListBox;
+	private CheckBox showPositive;
+	private CheckBox showNegative;
 	
 	private CytoscapeEntity cy;
 	
@@ -226,6 +228,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		pager = new IDGPager(this);
 		
 		table = new PairwisePopupResultsTable(filteredTableEntities, provider, pager);
+		table.setStyleName(RESOURCES.getCSS().table());
 		
 		//Add view button column
 		ActionCell<PairwiseTableEntity> actionCell = new ActionCell<>("View", new ActionCell.Delegate<PairwiseTableEntity>() {
@@ -239,28 +242,94 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		IdentityColumn<PairwiseTableEntity> viewColumn = new IdentityColumn<>(actionCell);
 		table.addColumn(viewColumn,"View Relationship");
 				
-		FlowPanel filterPanel = new FlowPanel();
+		FlowPanel pagerPanel = new FlowPanel();
 		pager.setStyleName(RESOURCES.getCSS().pager());
-		filterBox = new IDGTextBox();
-		filterBox.addKeyUpHandler(e -> onFilterKeyUp(e));
-		filterBox.setStyleName(RESOURCES.getCSS().filterTextBox());
-		filterBox.getElement().setPropertyString("placeholder", "Filter by Interactor...");
+	
+		pagerPanel.add(pager);
 		
-		filterPanel.add(filterBox);
-		filterPanel.add(pager);
-		
+		infoPanel.add(getFilterPanel());
 		infoPanel.add(table);
-		infoPanel.add(filterPanel);
+		infoPanel.add(pagerPanel);
 		infoPanel.setVisible(true);
+	
+	}
+
+	/**
+	 * This panel is for filtering table results;
+	 * @return
+	 */
+	private FlowPanel getFilterPanel() {
+		
+		FlowPanel panel = new FlowPanel();
+		panel.addStyleName(RESOURCES.getCSS().filterPanel());
+		
+		panel.add(new InlineLabel("Filter table results:"));
+		
+		filterInteractorsBox = new IDGTextBox();
+		filterInteractorsBox.addKeyUpHandler(e -> filterTableEntities());
+		filterInteractorsBox.setStyleName(RESOURCES.getCSS().filterTextBox());
+		filterInteractorsBox.getElement().setPropertyString("placeholder", "Filter by Interactor...");
+		panel.add(filterInteractorsBox);
+		
+		panel.add(getSourceListBox());
+		
+		showPositive = new CheckBox("pos");
+		showPositive.getElement().getStyle().setDisplay(Display.INLINE);
+		showPositive.addClickHandler(e -> filterTableEntities());
+		showNegative = new CheckBox("neg");
+		showNegative.getElement().getStyle().setDisplay(Display.INLINE);
+		showNegative.addClickHandler(e -> filterTableEntities());
+		panel.add(showPositive);
+		panel.add(showNegative);
+		
+		showPositive.setValue(true, false);
+		showNegative.setValue(true, false);
+				
+		return panel;
 	}
 	
-	private void onFilterKeyUp(KeyUpEvent e) {
+	/**
+	 * Filter list box for filtering by source
+	 * @return
+	 */
+	private IDGListBox getSourceListBox() {
+		sourceListBox = new IDGListBox();
+		
+		List<String> list = new ArrayList<>();
+		list.add("Show all sources");
+		for(PairwiseOverlayObject obj : pairwiseOverlayObjects) {
+			list.add(obj.getId());
+		}
+		
+		sourceListBox.setListItems(list);
+		sourceListBox.setMultipleSelect(false);
+		sourceListBox.setSelectedIndex(0);
+		sourceListBox.addChangeHandler(e -> filterTableEntities());
+		
+		sourceListBox.getElement().getStyle().setMarginLeft(5, Unit.PX);
+		sourceListBox.getElement().getStyle().setWidth(225, Unit.PX);
+		
+		return sourceListBox;
+	}
+
+	/**
+	 * Filter tableEntities based on set of filters
+	 */
+	private void filterTableEntities() {
 		List<PairwiseTableEntity> newList = new ArrayList<>();
+		
+		String filterText = filterInteractorsBox.getText().toUpperCase();
+		//sort interactors by data description and interactor name
 		for(PairwiseTableEntity entity : tableEntities) {
 			if(entity.getInteractorName() == null)continue;
-			if(entity.getInteractorName().contains(filterBox.getText()))
-				newList.add(entity);
+			if(sourceListBox.getSelectedIndex() !=0 && !entity.getDataDesc().equals(sourceListBox.getSelectedItemText())) continue;
+			if((!showPositive.getValue() && entity.getPosOrNeg().equals("positive"))||(!showNegative.getValue() && entity.getPosOrNeg().equals("negative"))) continue;
+			if(!entity.getInteractorName().toUpperCase().contains(filterText)) continue;
+			if(existingEdges.contains(tableEntities.indexOf(entity))) continue;
+			
+			newList.add(entity);
 		}
+		
 		provider.getList().clear();
 		provider.getList().addAll(newList);
 		onPageChanged();
@@ -374,6 +443,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		cy.setCytoscapeLayout("cose");
 		
 		loadOverlay();
+		filterTableEntities();
 	}
 
 	/**
@@ -386,6 +456,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			if(entity.getInteractorId() == rel.getInteractorId())
 				addEdge(entity);
 		loadOverlay();
+		filterTableEntities();
 	}
 	
 	/**
@@ -603,6 +674,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			@Override
 			public void onRemoveButtonClicked(String id) {
 				PairwisePopup.this.removeEdge(id);
+				
 			}
 		});
 		popup.getElement().getStyle().setZIndex(getCorrectZIndex());
@@ -621,18 +693,19 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 				existingEdges.remove(i);
 			}
 		}
+		filterTableEntities();
 	}
 
 	@Override
 	public void onNodeHovered(String id, String name, int x, int y) {
-		if(infoPopup == null) main.add(infoPopup = new FIViewInfoPopup());;
+		if(infoPopup == null) main.add(infoPopup = new FIViewInfoPopup());
 		infoPopup.getElement().getStyle().setZIndex(getCorrectZIndex());
 		infoPopup.setNodeLabel(id, name, x, y);
 	}
 
 	@Override
 	public void onEdgeHovered(String id, int x, int y) {
-		if(infoPopup == null) main.add(infoPopup = new FIViewInfoPopup());;
+		if(infoPopup == null) main.add(infoPopup = new FIViewInfoPopup());
 		infoPopup.getElement().getStyle().setZIndex(getCorrectZIndex());
 		
 		String description = "";
@@ -766,5 +839,9 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		String filterTextBox();
 		
 		String pager();
+		
+		String filterPanel();
+		
+		String table();
 	}
 }

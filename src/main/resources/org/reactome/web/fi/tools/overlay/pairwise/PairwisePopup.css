@@ -4,8 +4,13 @@
     background-color: rgb(30,148,208)!important;
 }
 
-th {
+.table th {
 	white-space: normal !important;
+	font-size: small;
+}
+
+.table tr {
+	font-size: smaller;
 }
 
 .header{
@@ -128,17 +133,19 @@ th {
 }
 
 .filterTextBox{
-	border: 1px solid #0e7cd3;
-	display: inline;
-	margin: 5px 0 0 10px;
-	height: 20px;
+	margin: 0 0 0 10px;
 }
 
 .filterTextBox input{
-	text-size: medium;
+	font-size: small;
 }
 
 .pager{
-	display:inline;
-	float:right;
+	margin: 0 auto;
+}
+
+.filterPanel{
+	padding: 2px 0;
+	text-align: center;
+	border-bottom: 1px solid #0e7cd3;
 }

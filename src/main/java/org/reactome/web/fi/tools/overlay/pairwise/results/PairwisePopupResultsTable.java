@@ -11,6 +11,8 @@ import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseRelati
 import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseSourceColumn;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.ListDataProvider;
@@ -22,7 +24,6 @@ import com.google.gwt.view.client.ListDataProvider;
  */
 public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 	public final static Integer PAGE_SIZE = 10;
-	
 	
 	public PairwisePopupResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, IDGPager pager) {
 		
@@ -37,7 +38,9 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 		this.addColumn(new PairwiseInteractorColumn(), "Pairwise Interactor");
 		this.addColumn(new OverlayValueColumn(), "Overlay Value");		
 		this.addColumn(new PairwiseRelationshipColumn(), "Pos/Neg");
-		this.addColumn(new PairwiseSourceColumn(), "Interaction Source");
+		
+		PairwiseSourceColumn pairwiseSourceColumn;
+		this.addColumn(pairwiseSourceColumn = new PairwiseSourceColumn(), "Interaction Source");
 		
 		this.addCellPreviewHandler(new CellPreviewEvent.Handler<PairwiseTableEntity>() {
             @Override
@@ -48,7 +51,7 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
                 cellElement.setTitle(PairwisePopupResultsTable.this.getColumn(event.getColumn()).getValue(model)+"");
             }
         });
-				
+
 		//ListDataProvider setup
 		provider.addDataDisplay(this);
 		provider.setList(entities);
