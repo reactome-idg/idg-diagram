@@ -98,7 +98,7 @@ public class PairwiseOverlayFactory{
 	}
 	
 	public int getNumberOfPopups() {
-		return popupMap.keySet().size();
+		return popupMap.keySet().size()+1;
 	}
 	
 	/**
