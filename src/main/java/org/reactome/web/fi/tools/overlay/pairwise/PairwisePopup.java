@@ -22,6 +22,7 @@ import org.reactome.web.fi.common.IDGPager.Handler;
 import org.reactome.web.fi.common.IDGTextBox;
 import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
+import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
@@ -49,6 +50,7 @@ import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.IdentityColumn;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -665,11 +667,12 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 */
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {		
-		String dataOverlayValue;
-		if(dataOverlay.isDiscrete())
+		String dataOverlayValue = null;
+		if(dataOverlay.isDiscrete() && !dataOverlay.getEType().equals("Target Development Level"))
 			dataOverlayValue = dataOverlay.getLegendTypes().get((int)Math.round(dataOverlay.getIdentifierValueMap().get(id)));
-		else
+		else if(!dataOverlay.isDiscrete())
 			dataOverlayValue = dataOverlay.getIdentifierValueMap().get(id) +"";
+		
 		
 		PairwiseNodeContextPopup popup = new PairwiseNodeContextPopup(id,name, dataOverlayValue, new PairwiseNodeContextPopup.Handler() {
 			@Override
@@ -678,6 +681,18 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 				
 			}
 		});
+		
+		TCRDInfoLoader.loadSingleTargetLevelProtein(id, new AsyncCallback<String>() {
+			@Override
+			public void onSuccess(String result) {
+				popup.setTargetDevLevel(result);
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Console.error(caught);
+			}
+		});
+		
 		popup.getElement().getStyle().setZIndex(getCorrectZIndex());
 		popup.setPopupPosition(x+5, y+5);
 		popup.getElement().setId(this.containerId);

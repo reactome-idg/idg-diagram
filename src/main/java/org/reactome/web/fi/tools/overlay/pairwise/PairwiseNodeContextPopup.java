@@ -31,6 +31,7 @@ public class PairwiseNodeContextPopup extends DialogBox{
 	private Handler handler;
 	
 	private String accession;
+	private Label targetDevLevel;
 	
 	public PairwiseNodeContextPopup(String accession, String name, String dataOverlayValue, Handler handler) {
 		this.accession = accession;
@@ -58,7 +59,11 @@ public class PairwiseNodeContextPopup extends DialogBox{
 			infoPanel.add(linkAnchor);
 		}
 		
-		infoPanel.add(new Label("Overlay value: " + dataOverlayValue));
+		infoPanel.add(targetDevLevel = new Label());
+		
+		//if not null, set label with either No Expression or the overlay value
+		if(dataOverlayValue != null)
+			infoPanel.add(new Label("Overlay value: " + (dataOverlayValue == "undefined" ? "No Expression":dataOverlayValue)));
 		
 		main.add(infoPanel);
 		main.add(getOptionsPanel());
@@ -96,5 +101,9 @@ public class PairwiseNodeContextPopup extends DialogBox{
 	private void onRemoveButtonClicked() {
 		handler.onRemoveButtonClicked(accession);
 		this.hide();
+	}
+
+	public void setTargetDevLevel(String result) {
+		targetDevLevel.setText("Target Development Level: " + result);
 	}
 }

@@ -7,6 +7,7 @@ import org.reactome.web.fi.data.model.TDarkProteinSetFactory;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeFactory;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -129,6 +130,30 @@ public class TCRDInfoLoader{
 			});
 		} catch(RequestException ex) {
 			handler.onTissueTypesLoadedError(ex);
+		}
+	}
+	
+	public static void loadSingleTargetLevelProtein(String uniprot, AsyncCallback<String> callback) {
+		String url = "/tcrdws/targetlevel/uniprot/" + uniprot;
+		
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
+		requestBuilder.setHeader("Accept", "application/json");
+		try {
+			requestBuilder.sendRequest(null, new RequestCallback() {
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					if(response.getStatusCode() == Response.SC_OK) {
+						JSONValue val = JSONParser.parseStrict(response.getText());
+						callback.onSuccess(val.isObject().get("targetDevLevel").isString().stringValue());
+					}
+				}
+				@Override
+				public void onError(Request request, Throwable exception) {
+					callback.onFailure(exception);
+				}
+			});
+		} catch (RequestException ex) {
+			callback.onFailure(ex);
 		}
 	}
 	
