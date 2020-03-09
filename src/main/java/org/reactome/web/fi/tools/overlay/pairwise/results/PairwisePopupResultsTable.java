@@ -41,6 +41,7 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 		
 		PairwiseSourceColumn pairwiseSourceColumn;
 		this.addColumn(pairwiseSourceColumn = new PairwiseSourceColumn(), "Interaction Source");
+		this.setColumnWidth(pairwiseSourceColumn, 200+"px");
 		
 		this.addCellPreviewHandler(new CellPreviewEvent.Handler<PairwiseTableEntity>() {
             @Override

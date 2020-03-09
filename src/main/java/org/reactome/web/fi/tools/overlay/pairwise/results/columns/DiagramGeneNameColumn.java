@@ -16,7 +16,6 @@ public class DiagramGeneNameColumn extends Column<PairwiseTableEntity, String> {
 	
 	public DiagramGeneNameColumn() {
 		super(new TextCell());
-		
 	}
 
 	@Override
