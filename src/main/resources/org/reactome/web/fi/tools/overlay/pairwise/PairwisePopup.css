@@ -6,10 +6,10 @@
 
 .table th {
 	white-space: normal !important;
-	font-size: small;
+	font-size: smaller;
 }
 
-.table tr {
+.table td {
 	font-size: smaller;
 }
 
