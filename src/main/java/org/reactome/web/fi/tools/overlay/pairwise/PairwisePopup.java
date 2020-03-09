@@ -84,6 +84,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private PairwisePopupResultsTable table;
 	private ListDataProvider<PairwiseTableEntity> provider;
 	private IDGPager pager;
+	private InlineLabel eTypeAndTissue;
 	
 	private IDGTextBox filterInteractorsBox;
 	private IDGListBox sourceListBox;
@@ -246,8 +247,12 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		table.addColumn(viewColumn,"View Relationship");
 				
 		FlowPanel pagerPanel = new FlowPanel();
+		pagerPanel.getElement().getStyle().setHeight(30, Unit.PX);
+		
 		pager.setStyleName(RESOURCES.getCSS().pager());
 	
+		pagerPanel.add(this.eTypeAndTissue = new InlineLabel());
+		eTypeAndTissue.addStyleName(RESOURCES.getCSS().eTypeAndTissueLabel());
 		pagerPanel.add(pager);
 		
 		infoPanel.add(getFilterPanel());
@@ -612,6 +617,11 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * Updates overlay values on results table
 	 */
 	private void updateTableData() {
+		if(tableDataOverlay.getEType().equals("Target Development Level"))
+			this.eTypeAndTissue.setText(tableDataOverlay.getEType());
+		else
+			this.eTypeAndTissue.setText(tableDataOverlay.getTissueTypes().get(tableDataOverlay.getColumn()) + " - " + tableDataOverlay.getEType());
+		
 		this.tableDataOverlay.updateIdentifierValueMap();
 		if(tableDataOverlay.isDiscrete()) {
 			for(PairwiseTableEntity entity : filteredTableEntities) {
@@ -859,5 +869,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		String filterPanel();
 		
 		String table();
+		
+		String eTypeAndTissueLabel();
 	}
 }

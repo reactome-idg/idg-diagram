@@ -141,11 +141,17 @@
 }
 
 .pager{
-	margin: 0 auto;
+	display: inline;
+	float: right;
 }
 
 .filterPanel{
 	padding: 2px 0;
 	text-align: center;
 	border-bottom: 1px solid #0e7cd3;
+}
+
+.eTypeAndTissueLabel {
+	display: inline;
+    padding: 10px 0 0 10px;
 }
