@@ -63,7 +63,7 @@ public class PairwiseNodeContextPopup extends DialogBox{
 		
 		//if not null, set label with either No Expression or the overlay value
 		if(dataOverlayValue != null)
-			infoPanel.add(new Label("Overlay value: " + (dataOverlayValue == "undefined" ? "No Expression":dataOverlayValue)));
+			infoPanel.add(new Label("Overlay value: " + (dataOverlayValue == "undefined" ? "N/A":dataOverlayValue)));
 		
 		main.add(infoPanel);
 		main.add(getOptionsPanel());
