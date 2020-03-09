@@ -29,6 +29,7 @@ import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.FILayoutType;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
+import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
@@ -612,16 +613,16 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		this.tableDataOverlay.updateIdentifierValueMap();
 		if(tableDataOverlay.isDiscrete()) {
 			for(PairwiseTableEntity entity : filteredTableEntities) {
-				entity.setData("");
+				entity.setOverlayValue("");
 				if(tableDataOverlay.getIdentifierValueMap().keySet().contains(entity.getInteractorId()))
-					entity.setData(tableDataOverlay.getLegendTypes().get(tableDataOverlay.getIdentifierValueMap().get(entity.getInteractorId()).intValue()));
+					entity.setOverlayValue(tableDataOverlay.getLegendTypes().get(tableDataOverlay.getIdentifierValueMap().get(entity.getInteractorId()).intValue()));
 			}
 		}
 		else {
 			for(PairwiseTableEntity entity : filteredTableEntities) {
-				entity.setData("");
+				entity.setOverlayValue("");
 				if(tableDataOverlay.getIdentifierValueMap().keySet().contains(entity.getInteractorId()))
-					entity.setData(""+tableDataOverlay.getIdentifierValueMap().get(entity.getInteractorId()));
+					entity.setOverlayValue(""+tableDataOverlay.getIdentifierValueMap().get(entity.getInteractorId()));
 			}
 		}
 		provider.refresh();

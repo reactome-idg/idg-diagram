@@ -1,4 +1,4 @@
-package org.reactome.web.fi.tools.overlay.pairwise;
+package org.reactome.web.fi.tools.overlay.pairwise.model;
 
 public class PairwiseTableEntity{
 
@@ -8,16 +8,17 @@ public class PairwiseTableEntity{
 	private String interactorName;
 	private String dataDesc;
 	private String posOrNeg;
-	private String data;
+	private String overlayValue;
 	
-	public PairwiseTableEntity(String sourceId, String sourceName, String interactorId, String interactorName, String dataDesc, String posOrNeg, String data) {
+	
+	public PairwiseTableEntity(String sourceId, String sourceName, String interactorId, String interactorName, String dataDesc, String posOrNeg, String overlayValue) {
 		this.sourceId = sourceId;
 		this.sourceName = sourceName;
 		this.interactorId = interactorId;
 		this.interactorName = interactorName;
 		this.dataDesc = dataDesc;
 		this.posOrNeg = posOrNeg;
-		this.data = data;
+		this.overlayValue = overlayValue;
 	}
 	
 	public PairwiseTableEntity(String sourceId, String interactorId, String posOrNeg) {
@@ -74,12 +75,12 @@ public class PairwiseTableEntity{
 		this.posOrNeg = posOrNeg;
 	}
 
-	public String getData() {
-		return data;
+	public String getOverlayValue() {
+		return overlayValue;
 	}
 
-	public void setData(String data) {
-		this.data = data;
+	public void setOverlayValue(String overlayValue) {
+		this.overlayValue = overlayValue;
 	}
 
 }

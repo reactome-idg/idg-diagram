@@ -1,6 +1,6 @@
 package org.reactome.web.fi.tools.overlay.pairwise.results.columns;
 
-import org.reactome.web.fi.tools.overlay.pairwise.PairwiseTableEntity;
+import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
@@ -18,7 +18,7 @@ public class OverlayValueColumn extends Column<PairwiseTableEntity, String> {
 
 	@Override
 	public String getValue(PairwiseTableEntity object) {
-		return object.getData();
+		return object.getOverlayValue();
 	}
 
 	

@@ -19,7 +19,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntitiesFac
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
-import org.reactome.web.fi.tools.overlay.pairwise.PairwiseTableEntity;
+import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;

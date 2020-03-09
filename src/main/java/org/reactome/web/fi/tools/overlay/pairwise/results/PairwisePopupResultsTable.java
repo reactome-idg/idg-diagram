@@ -3,7 +3,7 @@ package org.reactome.web.fi.tools.overlay.pairwise.results;
 import java.util.List;
 
 import org.reactome.web.fi.common.IDGPager;
-import org.reactome.web.fi.tools.overlay.pairwise.PairwiseTableEntity;
+import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.results.columns.DiagramGeneNameColumn;
 import org.reactome.web.fi.tools.overlay.pairwise.results.columns.OverlayValueColumn;
 import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseInteractorColumn;
