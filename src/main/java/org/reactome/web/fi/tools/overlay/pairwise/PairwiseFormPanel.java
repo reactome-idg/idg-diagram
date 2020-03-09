@@ -215,11 +215,13 @@ public class PairwiseFormPanel extends FlowPanel{
 		result.add(new Label("Choose Positive Line Color:"));
 		posColorPicker = new ColorPicker();
 		posColorPicker.addStyleName(RESOURCES.getCSS().colorPicker());
+		posColorPicker.setColor("#1e94d0");
 		result.add(posColorPicker);
 		
 		result.add(new Label("Choose Negative Line Color:"));
 		negColorPicker = new ColorPicker();
 		negColorPicker.addStyleName(RESOURCES.getCSS().colorPicker());
+		negColorPicker.setColor("#ff7e21");
 		result.add(negColorPicker);
 
 		
