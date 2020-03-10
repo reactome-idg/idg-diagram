@@ -30,6 +30,7 @@ public class NewNodeContextPanel extends Composite {
 	
 	private DeckLayoutPanel container;
 	
+	
 	public NewNodeContextPanel(EventBus eventBus, String id, String name, DataOverlay overlay) {
 		
 		FlowPanel buttonsPanel = new FlowPanel();
@@ -51,7 +52,7 @@ public class NewNodeContextPanel extends Composite {
 		this.container = new DeckLayoutPanel();
 		this.container.setStyleName(RESOURCES.getCSS().container());
 		NodeInfoPanel nodeInfoPanel = new NodeInfoPanel(eventBus, id, name);
-		NodeOverlayPanel nodeOverlayPanel = new NodeOverlayPanel(eventBus, id, name, overlay);
+		NodeOverlayPanel nodeOverlayPanel = new NodeOverlayPanel(eventBus, id, overlay);
 		NodeInteractorsPanel nodeInteractorsPanel = new NodeInteractorsPanel(eventBus, id, name);
 		this.container.add(nodeInfoPanel);
 		this.container.add(nodeOverlayPanel);
@@ -96,7 +97,7 @@ public class NewNodeContextPanel extends Composite {
 		else if(btn.equals(this.interactorsButton))
 			this.container.showWidget(2);
 	}
-
+	
 	public static Resources RESOURCES;
 	static {
 		RESOURCES = GWT.create(Resources.class);

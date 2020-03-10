@@ -10,3 +10,7 @@
 .dataTable td{
 	margin:0;
 }
+
+.scrollPanel {
+	height: 125px;
+}

@@ -1,6 +1,7 @@
 package org.reactome.web.fi.client.popups;
 
 import java.util.List;
+import java.util.Map;
 
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.fi.model.DataOverlay;
@@ -25,7 +26,7 @@ public class NodeOverlayPanel extends Composite{
 	private DataOverlay overlay;
 	private FlexTable table;
 	
-	public NodeOverlayPanel(EventBus eventBus, String id, String name, DataOverlay overlay) {
+	public NodeOverlayPanel(EventBus eventBus, String id, DataOverlay overlay) {
 		this.eventBus = eventBus;
 		this.id = id;
 		this.overlay = overlay;
@@ -34,7 +35,7 @@ public class NodeOverlayPanel extends Composite{
 		outerPanel.add(getTableHeader());
 		
 		ScrollPanel scrollPanel = new ScrollPanel();
-		scrollPanel.getElement().getStyle().setHeight(125, Unit.PX);
+		scrollPanel.setStyleName(RESOURCES.getCSS().scrollPanel());
 		scrollPanel.add(table = new FlexTable());
 		outerPanel.add(scrollPanel);
 		
@@ -42,6 +43,10 @@ public class NodeOverlayPanel extends Composite{
 		initWidget(outerPanel);
 	}
 	
+	/**
+	 * Make separate header flex box b/c FlexBox does not support adding headers
+	 * @return
+	 */
 	private FlexTable getTableHeader() {
 		FlexTable result = new FlexTable();
 		result.setStyleName(RESOURCES.getCSS().headerTable());
@@ -97,6 +102,8 @@ public class NodeOverlayPanel extends Composite{
 		String headerTable();
 		
 		String dataTable();
+		
+		String scrollPanel();
 	}
 	
 }
