@@ -33,6 +33,7 @@ import org.reactome.web.fi.client.popups.EdgeContextPanel;
 import org.reactome.web.fi.client.popups.FILayoutChangerPanel;
 import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.popups.NodeContextPanel;
+import org.reactome.web.fi.client.popups.NodeDialogPanel;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.FIViewOverlayEdgeHoveredEvent;
 import org.reactome.web.fi.events.FIViewOverlayEdgeSelectedEvent;
@@ -278,17 +279,17 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
 		
-		NodeContextPanel nodeContextPanel;
+		NodeDialogPanel nodeContextPanel;
 		
 		//Send overlay value to context panel if dataOverlay exists
-		if(dataOverlay != null && dataOverlay.getUniprotToEntitiesMap().containsKey(id))
-			nodeContextPanel = new NodeContextPanel(eventBus, name, id, dataOverlay, true);
-		else 
-			nodeContextPanel = new NodeContextPanel(eventBus, name, id);
+//		if(dataOverlay != null && dataOverlay.getUniprotToEntitiesMap().containsKey(id))
+			nodeContextPanel = new NodeDialogPanel(eventBus, name, id, dataOverlay/*, true*/);
+//		else 
+//			nodeContextPanel = new NodeDialogPanel(eventBus, name, id);
 		setPopupLocation(x, y, nodeContextPanel);
 		
 		//cache so it doesn't have to be recreated every time
-		nodeContextPanelMap.add(nodeContextPanel);
+//		nodeContextPanelMap.add(nodeContextPanel);
 	}
 	
 	public void clearNodeContextMap() {
