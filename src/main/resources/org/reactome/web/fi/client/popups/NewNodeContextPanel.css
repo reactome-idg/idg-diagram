@@ -1,0 +1,48 @@
+.outerPanel {
+    float: left;
+    min-width: 330px; /* to avoid dynamic resizing of the popup */
+}
+
+.buttonsPanel {
+    float: left;
+    /*width: 65px;*/
+    width: 19%;
+}
+
+.buttonsPanel button {
+    color: white;
+    /*border-top: solid 1px white;*/
+    /*border-left: solid 2px white;*/
+    /*border-bottom: solid 1px white;*/
+    border-radius: 10px 0 0 10px;
+    background: none rgb(88, 195, 229);
+    font-size: x-small;
+    outline: none;
+    width: 65px;
+    height: 50px;
+}
+
+.buttonsPanel button:hover {
+    background: none rgb(30, 148, 208);
+}
+
+.buttonsPanel button:disabled {
+    background: none rgb(88, 195, 229);
+}
+
+.buttonsPanel div {
+    text-align: center !important;
+}
+
+.buttonSelected {
+    background: none rgb(6, 107, 158) !important;
+}
+
+.container {
+    float: left;
+    /*width: 250px;*/
+    width: 78%;
+    height: 150px;
+    overflow: hidden;
+    margin-left: 5px;
+}
