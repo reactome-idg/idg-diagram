@@ -1,0 +1,12 @@
+.headerTable{
+	width:100%;
+	border-bottom : 3px solid grey;
+}
+
+.dataTable {
+	width: 100%;
+}
+
+.dataTable td{
+	margin:0;
+}
