@@ -29,6 +29,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class NodeContextPanel extends Composite implements OverlayDataLoadedHandler, OverlayDataResetHandler,
 PairwiseNumbersLoadedHandler, PairwiseInteractorsResetHandler{
 
