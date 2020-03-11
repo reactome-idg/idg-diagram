@@ -86,7 +86,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private IDGPager pager;
 	private InlineLabel eTypeAndTissue;
 	
-	private IDGTextBox filterInteractorsBox;
+	private IDGTextBox filterGeneNameBox;
 	private IDGListBox sourceListBox;
 	private CheckBox showPositive;
 	private CheckBox showNegative;
@@ -273,11 +273,11 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		
 		panel.add(new InlineLabel("Filter table results:"));
 		
-		filterInteractorsBox = new IDGTextBox();
-		filterInteractorsBox.addKeyUpHandler(e -> filterTableEntities());
-		filterInteractorsBox.setStyleName(RESOURCES.getCSS().filterTextBox());
-		filterInteractorsBox.getElement().setPropertyString("placeholder", "Filter by Interactor...");
-		panel.add(filterInteractorsBox);
+		filterGeneNameBox = new IDGTextBox();
+		filterGeneNameBox.addKeyUpHandler(e -> filterTableEntities());
+		filterGeneNameBox.setStyleName(RESOURCES.getCSS().filterTextBox());
+		filterGeneNameBox.getElement().setPropertyString("placeholder", "Filter by Gene...");
+		panel.add(filterGeneNameBox);
 		
 		panel.add(getSourceListBox());
 		
@@ -326,13 +326,13 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private void filterTableEntities() {
 		List<PairwiseTableEntity> newList = new ArrayList<>();
 		
-		String filterText = filterInteractorsBox.getText().toUpperCase();
+		String filterText = filterGeneNameBox.getText().toUpperCase();
 		//sort interactors by data description and interactor name
 		for(PairwiseTableEntity entity : tableEntities) {
 			if(entity.getInteractorName() == null)continue;
-			if(sourceListBox.getSelectedIndex() !=0 && !entity.getDataDesc().equals(sourceListBox.getSelectedItemText())) continue;
+			if(sourceListBox.getSelectedIndex() != 0 && !entity.getDataDesc().equals(sourceListBox.getSelectedItemText())) continue;
 			if((!showPositive.getValue() && entity.getPosOrNeg().equals("positive"))||(!showNegative.getValue() && entity.getPosOrNeg().equals("negative"))) continue;
-			if(!entity.getInteractorName().toUpperCase().contains(filterText)) continue;
+			if(!entity.getInteractorName().toUpperCase().contains(filterText) || !entity.getSourceName().toUpperCase().contains(filterText)) continue;
 			if(existingEdges.contains(tableEntities.indexOf(entity))) continue;
 			
 			newList.add(entity);
@@ -618,9 +618,9 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 */
 	private void updateTableData() {
 		if(tableDataOverlay.getEType().equals("Target Development Level"))
-			this.eTypeAndTissue.setText(tableDataOverlay.getEType());
+			this.eTypeAndTissue.setText("Overlay data source: " + tableDataOverlay.getEType());
 		else
-			this.eTypeAndTissue.setText(tableDataOverlay.getTissueTypes().get(tableDataOverlay.getColumn()) + " - " + tableDataOverlay.getEType());
+			this.eTypeAndTissue.setText("Overlay data source: " + tableDataOverlay.getTissueTypes().get(tableDataOverlay.getColumn()) + " - " + tableDataOverlay.getEType());
 		
 		this.tableDataOverlay.updateIdentifierValueMap();
 		if(tableDataOverlay.isDiscrete()) {
