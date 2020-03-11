@@ -1,14 +1,12 @@
 package org.reactome.web.fi.client.popups;
 
 import java.util.List;
-import java.util.Map;
 
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.resources.client.ClientBundle;
@@ -41,6 +39,7 @@ public class NodeOverlayPanel extends Composite{
 		
 		buildTable();
 		initWidget(outerPanel);
+		
 	}
 	
 	/**
@@ -61,6 +60,11 @@ public class NodeOverlayPanel extends Composite{
 		table.clear();
 		table.setStyleName(RESOURCES.getCSS().dataTable());
 
+		if(overlay == null) {
+			table.setText(0, 0, "No Overlay Loaded.");
+			return;
+		}
+		
 		List<DataOverlayEntity> entities = overlay.getUniprotToEntitiesMap().get(id);
 		
 		//handle case where no expression exists in any column
@@ -78,6 +82,11 @@ public class NodeOverlayPanel extends Composite{
 					AnalysisColours.get().expressionGradient
 					.getColor(entities.get(i).getValue(), overlay.getMinValue(), overlay.getMaxValue()));
 		}
+	}
+	
+	public void updateOverlay(DataOverlay overlay) {
+		this.overlay = overlay;
+		buildTable();
 	}
 
 	private String getFormatedValue(Double value) {
@@ -105,5 +114,4 @@ public class NodeOverlayPanel extends Composite{
 		
 		String scrollPanel();
 	}
-	
 }

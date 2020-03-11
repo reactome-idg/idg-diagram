@@ -3,7 +3,9 @@ package org.reactome.web.fi.client.popups;
 import java.util.List;
 
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
+import org.reactome.web.fi.events.PairwiseNumbersLoadedEvent;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
+import org.reactome.web.fi.handlers.PairwiseNumbersLoadedHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -23,7 +25,6 @@ public class NodeInteractorsPanel extends Composite{
 	public NodeInteractorsPanel(EventBus eventBus, String id, String name) {
 		this.eventBus = eventBus;
 		this.id = id;
-		
 				
 		FlowPanel outerPanel = new FlowPanel();
 		outerPanel.add(getTableHeader());
@@ -34,7 +35,7 @@ public class NodeInteractorsPanel extends Composite{
 		outerPanel.add(scrollPanel);
 		
 		buildTable();
-		initWidget(outerPanel);
+		initWidget(outerPanel);		
 	}
 
 	/**
@@ -75,9 +76,12 @@ public class NodeInteractorsPanel extends Composite{
 			if(counter % 2 == 0) {
 				table.getRowFormatter().getElement(counter).getStyle().setBackgroundColor("#066b9e");
 			}
-			
 			counter++;
 		}
+	}
+	
+	public void updateWidget() {
+		buildTable();
 	}
 	
 	public static Resources RESOURCES;
@@ -101,5 +105,4 @@ public class NodeInteractorsPanel extends Composite{
 		
 		String scrollPanel();
 	}
-	
 }

@@ -10,6 +10,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.HideOverlayLauncherEvent;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
+import org.reactome.web.fi.events.PairwiseInteractorsResetEvent;
 import org.reactome.web.fi.events.RequestPairwiseCountsEvent;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 
@@ -153,8 +154,13 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		if(selectedFilters.size() > 6) {
 			return;
 		}
-		eventBus.fireEventFromSource(new RequestPairwiseCountsEvent(new ArrayList<PairwiseOverlayObject>(selectedFilters.values())), this);
 		PairwiseOverlayFactory.get().setCurrentPairwiseProperties(new ArrayList<PairwiseOverlayObject>(selectedFilters.values()));
+		
+		if(selectedFilters.size() > 0)
+			eventBus.fireEventFromSource(new RequestPairwiseCountsEvent(new ArrayList<PairwiseOverlayObject>(selectedFilters.values())), this);
+		else
+			eventBus.fireEventFromSource(new PairwiseInteractorsResetEvent(), this);
+		
 		eventBus.fireEventFromSource(new HideOverlayLauncherEvent(), this);
 	}
 

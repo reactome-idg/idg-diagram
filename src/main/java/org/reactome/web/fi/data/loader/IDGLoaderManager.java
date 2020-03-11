@@ -2,6 +2,8 @@ package org.reactome.web.fi.data.loader;
 
 
 
+import java.util.ArrayList;
+
 import org.reactome.web.diagram.data.ContentFactory;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
@@ -13,11 +15,13 @@ import org.reactome.web.diagram.events.DiagramInternalErrorEvent;
 import org.reactome.web.diagram.events.InteractorsLoadedEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
+import org.reactome.web.fi.data.model.interactors.RawInteractorsImpl;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
+import org.reactome.web.fi.events.PairwiseNumbersLoadedEvent;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
@@ -136,6 +140,8 @@ OverlayLoader.Handler{
 				eventBus.fireEventFromSource(new InteractorsLoadedEvent(result, new Long(1)), this);
 				PairwiseOverlayFactory.get().setInteractorEntities(result);
 				PairwiseOverlayFactory.get().setPairwiseNumberEntities(entities.getPairwiseNumberEntities());
+				eventBus.fireEventFromSource(new PairwiseNumbersLoadedEvent(), this);
+				
 			}
 			@Override
 			public void onPairwiseLoaderError(Throwable exception) {
@@ -151,6 +157,7 @@ OverlayLoader.Handler{
 		   PairwiseOverlayFactory.get().getRawInteractors().getEntities().size() > 0) {
 			ContentFactory.fillInteractorsContent(context, PairwiseOverlayFactory.get().getRawInteractors());
 			eventBus.fireEventFromSource(new InteractorsLoadedEvent(PairwiseOverlayFactory.get().getRawInteractors(), new Long(1)), this);
+			PairwiseOverlayFactory.get().setInteractorEntities(new RawInteractorsImpl("Empty", null));
 		}
 		return;
 	}

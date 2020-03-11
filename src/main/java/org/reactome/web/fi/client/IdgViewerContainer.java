@@ -47,11 +47,13 @@ import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
 import org.reactome.web.fi.events.PairwiseCountsRequestedEvent;
+import org.reactome.web.fi.events.PairwiseInteractorsResetEvent;
 import org.reactome.web.fi.events.RequestPairwiseCountsEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
+import org.reactome.web.fi.handlers.PairwiseInteractorsResetHandler;
 import org.reactome.web.fi.handlers.RequestPairwiseCountsHandler;
 import org.reactome.web.fi.handlers.DataOverlayColumnChangedHandler;
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
@@ -80,7 +82,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public class IdgViewerContainer extends ViewerContainer implements RenderOtherDataHandler,
 OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, DataOverlayColumnChangedHandler,
-RequestPairwiseCountsHandler{
+RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
@@ -109,6 +111,7 @@ RequestPairwiseCountsHandler{
 		eventBus.addHandler(MakeOverlayRequestEvent.TYPE, this);
 		eventBus.addHandler(DataOverlayColumnChangedEvent.TYPE, this);
 		eventBus.addHandler(RequestPairwiseCountsEvent.TYPE, this);
+		eventBus.addHandler(PairwiseInteractorsResetEvent.TYPE, this);
 	}
 
 	@Override
@@ -235,20 +238,25 @@ RequestPairwiseCountsHandler{
 
 	@Override
 	public void onRequestPairwiseCountsHandeler(RequestPairwiseCountsEvent event) {
-		
-		//change resource to something custom if no pairwiseOverlayObjects exists.
-		//this causes all decorators to go away
-		if(event.getPairwiseOverlayObjects().size() == 0) {
-			eventBus.fireEventFromSource(
-					new InteractorsResourceChangedEvent(
-							new OverlayResource(context.getContent().getStableId(),"reset", ResourceType.CUSTOM)),  this);
-			return;
-		}
-		
 		eventBus.fireEventFromSource(
 				new PairwiseCountsRequestedEvent(
 						new PairwiseOverlayProperties(event.getPairwiseOverlayObjects(), collectAllDiagramUniprots())),
 						this);
+	}
+	
+	@Override
+	public void onPairwiseInteractorsReset(PairwiseInteractorsResetEvent event) {
+		PairwiseOverlayFactory.get().setPairwiseNumberEntities(new ArrayList<>());
+		
+		if(activeVisualiser == fIViewVisualizer) return;
+		
+		for(DiagramObject item : context.getContent().getDiagramObjects()) {
+			if(item instanceof Node) {
+				Node node = (Node)item;
+				if(node.getInteractorsSummary() != null)
+					node.getInteractorsSummary().setNumber(null);
+			}
+		}
 	}
 	
 	/**
