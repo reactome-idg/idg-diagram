@@ -145,6 +145,10 @@
 	float: right;
 }
 
+.pager td {
+	font-size: smaller;
+}
+
 .filterPanel{
 	padding: 2px 0;
 	text-align: center;
@@ -154,4 +158,8 @@
 .eTypeAndTissueLabel {
 	display: inline;
     padding: 10px 0 0 10px;
+}
+
+.smallText {
+	font-size: smaller;
 }

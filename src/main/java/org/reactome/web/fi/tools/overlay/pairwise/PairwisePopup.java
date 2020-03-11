@@ -252,6 +252,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		pager.setStyleName(RESOURCES.getCSS().pager());
 	
 		pagerPanel.add(this.eTypeAndTissue = new InlineLabel());
+		eTypeAndTissue.setStyleName(RESOURCES.getCSS().smallText());
 		eTypeAndTissue.addStyleName(RESOURCES.getCSS().eTypeAndTissueLabel());
 		pagerPanel.add(pager);
 		
@@ -871,5 +872,8 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		String table();
 		
 		String eTypeAndTissueLabel();
+		
+		String smallText();
+		
 	}
 }
