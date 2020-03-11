@@ -48,7 +48,7 @@ public class NodeDialogPanel extends DialogBox{
 		fp.add(new PwpButton("Show Pairwise Relationships", RESOURCES.getCSS().pairwiseOverlayButton(), e -> onPairwiseOverlayButtonClicked()));
 		fp.add(this.pin = new PwpButton("Keep the panel visible", RESOURCES.getCSS().pin(), e -> onPinButtonClicked()));
 		fp.add(new PwpButton("Close", RESOURCES.getCSS().close(), e -> onCloseButtonClicked()));
-		fp.add(new NewNodeContextPanel(eventBus, id, name, overlay));
+		fp.add(new NodeContextPanel(eventBus, id, name, overlay));
 	
 		setTitlePanel();
 		setWidget(fp);

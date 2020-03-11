@@ -70,7 +70,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	private Context context;
 	
 	private EdgeContextPanel edgeContextPanel;
-	private Set<NodeContextPanel> nodeContextPanelMap;
+	private Set<NodeDialogPanel> nodeContextPanelMap;
 	
 	private GraphObject selected;
 	
@@ -278,18 +278,15 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
-		
-		NodeDialogPanel nodeContextPanel;
+				
+		NodeDialogPanel nodeDialogPanel;
 		
 		//Send overlay value to context panel if dataOverlay exists
-//		if(dataOverlay != null && dataOverlay.getUniprotToEntitiesMap().containsKey(id))
-			nodeContextPanel = new NodeDialogPanel(eventBus, name, id, dataOverlay/*, true*/);
-//		else 
-//			nodeContextPanel = new NodeDialogPanel(eventBus, name, id);
-		setPopupLocation(x, y, nodeContextPanel);
+		nodeDialogPanel = new NodeDialogPanel(eventBus, name, id, dataOverlay);
+		setPopupLocation(x, y, nodeDialogPanel);
 		
 		//cache so it doesn't have to be recreated every time
-//		nodeContextPanelMap.add(nodeContextPanel);
+		nodeContextPanelMap.add(nodeDialogPanel);
 	}
 	
 	public void clearNodeContextMap() {

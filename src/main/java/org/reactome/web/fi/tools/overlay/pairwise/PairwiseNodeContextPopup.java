@@ -1,9 +1,11 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
-import org.reactome.web.fi.client.popups.NodeContextPanel;
-import org.reactome.web.fi.client.popups.NodeContextPanel.ResourceCSS;
+import org.reactome.web.fi.client.popups.NodeDialogPanel;
 import org.reactome.web.fi.common.CommonButton;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -26,7 +28,6 @@ public class PairwiseNodeContextPopup extends DialogBox{
 	}
 	
 	private final String PROTEIN_URL = "https://www.uniprot.org/uniprot/";
-	private ResourceCSS contextCSS = NodeContextPanel.NODECONTEXTRESOURCES.getCSS();
 	
 	private Handler handler;
 	
@@ -36,18 +37,18 @@ public class PairwiseNodeContextPopup extends DialogBox{
 	public PairwiseNodeContextPopup(String accession, String name, String dataOverlayValue, Handler handler) {
 		this.accession = accession;
 		this.handler = handler;
-		setStyleName(contextCSS.nodePopup());
+		setStyleName(RESOURCES.getCSS().nodePopup());
 		setAutoHideEnabled(true);
 		setModal(false);
 		
 		FlowPanel main = new FlowPanel();
-		main.setStyleName(contextCSS.mainPanel());
+		main.setStyleName(RESOURCES.getCSS().mainPanel());
 		
 		//Info panel contains the gene symbol, a link to uniprot for the uniprot, and the data overlay value
 		FlowPanel infoPanel = new FlowPanel();
 		
 		Label lbl = new Label("Gene Symbol: " +  name);
-		lbl.setStyleName(contextCSS.label());
+		lbl.setStyleName(RESOURCES.getCSS().label());
 		infoPanel.add(lbl);
 
 		if(!accession.contains("ENSG")) {
@@ -55,7 +56,7 @@ public class PairwiseNodeContextPopup extends DialogBox{
 			Anchor linkAnchor = new Anchor(new SafeHtmlBuilder()
 					.appendEscapedLines("Uniprot: " + accession).toSafeHtml(),
 					link, "_blank");
-			linkAnchor.setStyleName(contextCSS.linkAnchor());
+			linkAnchor.setStyleName(RESOURCES.getCSS().linkAnchor());
 			infoPanel.add(linkAnchor);
 		}
 		
@@ -73,7 +74,7 @@ public class PairwiseNodeContextPopup extends DialogBox{
 
 	private void setTitlePanel(String name) {
 		FlowPanel fp = new FlowPanel();
-		Image img = new Image(NodeContextPanel.NODECONTEXTRESOURCES.entity());
+		Image img = new Image(NodeDialogPanel.RESOURCES.entity());
 		fp.add(img);
 		
 		InlineLabel title = new InlineLabel(name);
@@ -81,7 +82,7 @@ public class PairwiseNodeContextPopup extends DialogBox{
 		
 		SafeHtml safe = SafeHtmlUtils.fromTrustedString(fp.toString());
 		getCaption().setHTML(safe);
-		getCaption().asWidget().setStyleName(contextCSS.header());
+		getCaption().asWidget().setStyleName(RESOURCES.getCSS().header());
 	}
 	
 	/**
@@ -93,7 +94,7 @@ public class PairwiseNodeContextPopup extends DialogBox{
 		
 		CommonButton removeButton;
 		result.add(removeButton = new CommonButton("Remove", e->onRemoveButtonClicked()));
-		removeButton.setStyleName(contextCSS.removeButton());
+		removeButton.setStyleName(RESOURCES.getCSS().removeButton());
 		
 		return result;
 	}
@@ -105,5 +106,33 @@ public class PairwiseNodeContextPopup extends DialogBox{
 
 	public void setTargetDevLevel(String result) {
 		targetDevLevel.setText("Target Development Level: " + result);
+	}
+	
+	public static Resources RESOURCES;
+	static {
+		RESOURCES = GWT.create(Resources.class);
+		RESOURCES.getCSS().ensureInjected();
+	}
+	
+	public interface Resources extends ClientBundle{
+		@Source(ResourceCSS.CSS)
+		ResourceCSS getCSS();
+	}
+	
+	@CssResource.ImportedWithPrefix("idg-PairwiseNodeContextPopup")
+	public interface ResourceCSS extends CssResource{
+		String CSS = "org/reactome/web/fi/tools/overlay/pairwise/PairwiseNodeContextPopup.css";
+	
+		String removeButton();
+		
+		String header();
+		
+		String linkAnchor();
+		
+		String label();
+		
+		String mainPanel();
+		
+		String nodePopup();
 	}
 }

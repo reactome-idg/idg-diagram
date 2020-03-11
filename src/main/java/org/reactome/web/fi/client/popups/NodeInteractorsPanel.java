@@ -78,6 +78,10 @@ public class NodeInteractorsPanel extends Composite{
 			}
 			counter++;
 		}
+		
+		if(counter == 0) {
+			table.setText(0, 0, "No relationshps for any data set");
+		}
 	}
 	
 	public void updateWidget() {

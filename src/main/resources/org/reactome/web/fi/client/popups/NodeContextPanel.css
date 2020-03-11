@@ -1,157 +1,48 @@
-.nodePopup{
-	background-color: rgb(88, 195, 229);
-    background: -webkit-linear-gradient(135deg, rgb(88, 195, 229), rgb(30, 148, 208)); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(135deg, rgb(88, 195, 229), rgb(30, 148, 208)); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(135deg, rgb(88, 195, 229), rgb(30, 148, 208)); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(135deg, rgb(88, 195, 229), rgb(30, 148, 208)); /* Standard syntax */
-    opacity: 0.95;
-    color: #EEEEEE;
-    -webkit-box-shadow: 3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
-    -moz-box-shadow:    3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Firefox 3.5 - 3.6 */
-    box-shadow:         3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
-    padding: 5px;
-    border-radius: 10px;
-    border: solid 2px rgb(7, 133, 171);
-
-    font-family: Arial Unicode MS, Arial, sans-serif !important;
-    font-size: small !important;
-
-    max-width: 380px;
-}
-
-.mainPanel{
-	border-top: 1px solid rgb(7, 133, 171);
-}
-
-.label{
-	color: white;
-}
-
-.linkAnchor {
-	color: white;
-}
-
-.header {
-    margin: 0 0 2px 4px;
-}
-.header:hover{
-    cursor: move !important;
-}
-
-.header:active:hover{
-    cursor: move !important;
-}
-
-.header button {
-    float: right;
-}
-
-.header span {
+.outerPanel {
     float: left;
-    color: rgb(0, 90, 117);
-    font-weight: bolder;
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    width: 242px;
+    min-width: 330px; /* to avoid dynamic resizing of the popup */
 }
 
-.header img {
+.buttonsPanel {
     float: left;
-    margin: 0 5px 0 2px;
+    /*width: 65px;*/
+    width: 19%;
 }
 
-@sprite .pin {
-    float: right;
-    gwt-image: 'pinNormal';
-    outline: none;
-    background-repeat: no-repeat;
-    border: none;
-    border-radius: 16px;
-    cursor: pointer;
-    position: absolute;
-    top: 5px;
-    right: 30px;
-}
-
-@sprite .pin:hover {
-    gwt-image: 'pinHovered';
-}
-
-@sprite .pinActive, .pin:active:hover {
-    gwt-image: 'pinClicked' !important;
-    outline: none;
-    background-repeat: no-repeat;
-    border: none;
-    border-radius: 16px;
-    cursor: pointer;
-    position: absolute;
-    top: 5px;
-    right: 30px;
-}
-
-@sprite .close {
-    gwt-image: 'closeNormal';
-    outline: none;
-    background-repeat: no-repeat;
-    border: none;
-    border-radius: 16px;
-    cursor: pointer;
-    margin-right: 5px;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-}
-
-@sprite .close:hover {
-    gwt-image: 'closeHovered';
-}
-
-@sprite .close:active:hover {
-    gwt-image: 'closeClicked';
-}
-
-@sprite .pairwise {
-	gwt-image: 'pairwiseNormal';
-    outline: none;
-    background-repeat: no-repeat;
-    border: none;
-    border-radius: 16px;
-    cursor: pointer;
-    margin-right: 5px;
-    position: absolute;
-    top: 5px;
-    right: 45px;
-}
-
-@sprite .pairwise:hover {
-	gwt-image: 'pairwiseHovered';
-}
-
-@sprite .pairwise:active:hover {
-	gwt-image: 'pairwiseClicked';
-}
-
-.showHideButton{
-	width: 100%;
-	margin-top: 10px;
-	background-color: #1e95cf;
-	text-size: small;
-	color: white;
-}
-
-.linkStyledButton{
-  background: none!important;
-  border: none;
-  padding: 0!important;
-  color: white;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.removeButton{
-	background-color: #1e95cf;
-    border: 1px solid #037cb3;
-    outline: none;
+.buttonsPanel button {
     color: white;
+    /*border-top: solid 1px white;*/
+    /*border-left: solid 2px white;*/
+    /*border-bottom: solid 1px white;*/
+    border-radius: 10px 0 0 10px;
+    background: none rgb(88, 195, 229);
+    font-size: x-small;
+    outline: none;
+    width: 65px;
+    height: 50px;
+}
+
+.buttonsPanel button:hover {
+    background: none rgb(30, 148, 208);
+}
+
+.buttonsPanel button:disabled {
+    background: none rgb(88, 195, 229);
+}
+
+.buttonsPanel div {
+    text-align: center !important;
+}
+
+.buttonSelected {
+    background: none rgb(6, 107, 158) !important;
+}
+
+.container {
+    float: left;
+    /*width: 250px;*/
+    width: 78%;
+    height: 150px;
+    overflow: hidden;
+    margin-left: 5px;
 }

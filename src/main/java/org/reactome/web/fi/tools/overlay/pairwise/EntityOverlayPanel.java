@@ -192,7 +192,6 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		
 		String outerPanel();
 				
-		
 		String formPanel();
 		
 		String overlayButton();
