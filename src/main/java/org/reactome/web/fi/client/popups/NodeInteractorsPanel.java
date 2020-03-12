@@ -68,7 +68,7 @@ public class NodeInteractorsPanel extends Composite{
 			if(entity.getGene() != id) continue; //continue if not an entity we want
 			
 			table.setText(counter, 0, entity.getDataDesc().getId());
-			table.setText(counter, 1, (entity.getNegNum()+entity.getNegNum())+"");
+			table.setText(counter, 1, (entity.getPosNum()+entity.getNegNum())+"");
 			table.getFlexCellFormatter().setColSpan(counter, 0, 3);
 			
 			if(counter % 2 == 0) {
