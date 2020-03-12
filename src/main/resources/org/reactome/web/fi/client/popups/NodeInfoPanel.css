@@ -7,3 +7,11 @@
     color: white;
     font-size: small;
 }
+
+.table {
+	width: 100%;
+}
+
+.scrollPanel{
+	height: 150px;
+}
