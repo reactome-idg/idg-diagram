@@ -106,6 +106,7 @@ public class NodeInfoPanel extends Composite{
 			public void onSuccess(String result) {
 				targetDevLevel = result;
 				Anchor link = new Anchor(new SafeHtmlBuilder().appendEscapedLines(targetDevLevel).toSafeHtml(),TDL_URL, "_blank");
+				link.setStyleName(RESOURCES.getCSS().linkAnchor());
 				link.getElement().appendChild(new Image(RESOURCES.linkOut()).getElement());
 				table.setWidget(2, 1, link);
 			}
