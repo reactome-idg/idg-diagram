@@ -333,7 +333,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			if(entity.getInteractorName() == null)continue;
 			if(sourceListBox.getSelectedIndex() != 0 && !entity.getDataDesc().equals(sourceListBox.getSelectedItemText())) continue;
 			if((!showPositive.getValue() && entity.getPosOrNeg().equals("positive"))||(!showNegative.getValue() && entity.getPosOrNeg().equals("negative"))) continue;
-			if(!entity.getInteractorName().toUpperCase().contains(filterText) || !entity.getSourceName().toUpperCase().contains(filterText)) continue;
+			if(!entity.getInteractorName().toUpperCase().contains(filterText) && !entity.getSourceName().toUpperCase().contains(filterText)) continue;
 			if(existingEdges.contains(tableEntities.indexOf(entity))) continue;
 			
 			newList.add(entity);
@@ -618,11 +618,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * Updates overlay values on results table
 	 */
 	private void updateTableData() {
-		if(tableDataOverlay.getEType().equals("Target Development Level"))
-			this.eTypeAndTissue.setText("Overlay data source: " + tableDataOverlay.getEType());
-		else
-			this.eTypeAndTissue.setText("Overlay data source: " + tableDataOverlay.getTissueTypes().get(tableDataOverlay.getColumn()) + " - " + tableDataOverlay.getEType());
-		
 		this.tableDataOverlay.updateIdentifierValueMap();
 		if(tableDataOverlay.isDiscrete()) {
 			for(PairwiseTableEntity entity : filteredTableEntities) {
@@ -639,6 +634,13 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			}
 		}
 		provider.refresh();
+		
+		//Use cytoscape views version of dataOverlay so it still works 
+		//if results are filtered to nothing
+		if(dataOverlay.getEType().equals("Target Development Level"))
+			this.eTypeAndTissue.setText("Overlay data source: " + dataOverlay.getEType());
+		else
+			this.eTypeAndTissue.setText("Overlay data source: " + dataOverlay.getTissueTypes().get(tableDataOverlay.getColumn()) + " - " + tableDataOverlay.getEType());
 	}
 
 	/**
