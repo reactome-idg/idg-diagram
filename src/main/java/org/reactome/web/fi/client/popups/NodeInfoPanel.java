@@ -8,12 +8,15 @@ import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ClientBundle.Source;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
@@ -22,6 +25,7 @@ public class NodeInfoPanel extends Composite{
 	private final String PROTEIN_URL = "https://www.uniprot.org/uniprot/";
 	private final String GENE_URL = "http://www.ensembl.org/Homo_sapiens/geneview?gene=";
 	private final String PHAROS_URL = "https://pharos.nih.gov/targets/";
+	private final String TDL_URL = "https://druggablegenome.net/ProteinFam";
 	
 	private String targetDevLevel;
 	
@@ -65,9 +69,10 @@ public class NodeInfoPanel extends Composite{
 	private Anchor getPharoseLink(String id) {
 		String link = PHAROS_URL + id;
 		Anchor result = new Anchor(new SafeHtmlBuilder()
-				.appendEscapedLines("Search").toSafeHtml(),
+				.appendEscapedLines("Go!").toSafeHtml(),
 				link,"_blank");
 		result.setStyleName(RESOURCES.getCSS().linkAnchor());
+		result.getElement().appendChild(new Image(RESOURCES.linkOut()).getElement());
 		return result;
 	}
 
@@ -78,6 +83,7 @@ public class NodeInfoPanel extends Composite{
 					.appendEscapedLines(id).toSafeHtml(),
 					link, "_blank");
 			linkAnchor.setStyleName(RESOURCES.getCSS().linkAnchor());
+			linkAnchor.getElement().appendChild(new Image(RESOURCES.linkOut()).getElement());
 			return linkAnchor;
 		}
 		else{
@@ -85,6 +91,7 @@ public class NodeInfoPanel extends Composite{
 			Anchor linkAnchor = new Anchor(new SafeHtmlBuilder().appendEscapedLines(id).toSafeHtml(),
 					link, "_blank");
 			linkAnchor.setStyleName(RESOURCES.getCSS().linkAnchor());
+			linkAnchor.getElement().appendChild(new Image(RESOURCES.linkOut()).getElement());
 			return linkAnchor;
 		}
 	}
@@ -98,7 +105,9 @@ public class NodeInfoPanel extends Composite{
 			@Override
 			public void onSuccess(String result) {
 				targetDevLevel = result;
-				table.setText(2, 1, targetDevLevel);
+				Anchor link = new Anchor(new SafeHtmlBuilder().appendEscapedLines(targetDevLevel).toSafeHtml(),TDL_URL, "_blank");
+				link.getElement().appendChild(new Image(RESOURCES.linkOut()).getElement());
+				table.setWidget(2, 1, link);
 			}
 			@Override
 			public void onFailure(Throwable caught) {
@@ -116,6 +125,9 @@ public class NodeInfoPanel extends Composite{
 	public interface Resources extends ClientBundle{
 		@Source(ResourceCSS.CSS)
 		ResourceCSS getCSS();
+		
+		@Source("images/external_link_icon.gif")
+		ImageResource linkOut();
 	}
 	
 	@CssResource.ImportedWithPrefix("idg-NodeInfoPanel")
