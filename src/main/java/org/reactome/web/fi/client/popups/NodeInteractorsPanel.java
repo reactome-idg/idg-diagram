@@ -74,6 +74,7 @@ public class NodeInteractorsPanel extends Composite{
 			table.setText(counter, 1, (entity.getPosNum()+entity.getNegNum())+"");
 			table.getFlexCellFormatter().setColSpan(counter, 0, 3);
 			
+			//if row is even, change background color to make it easier to read
 			if(counter % 2 == 0) {
 				table.getRowFormatter().getElement(counter).getStyle().setBackgroundColor("#066b9e");
 			}
