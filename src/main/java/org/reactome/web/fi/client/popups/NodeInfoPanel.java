@@ -1,5 +1,9 @@
 package org.reactome.web.fi.client.popups;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
@@ -7,6 +11,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -15,6 +20,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -27,6 +33,7 @@ public class NodeInfoPanel extends Composite{
 	private final String GENE_URL = "http://www.ensembl.org/Homo_sapiens/geneview?gene=";
 	private final String PHAROS_URL = "https://pharos.nih.gov/targets/";
 	private final String TDL_URL = "https://druggablegenome.net/ProteinFam";
+	private final String DARK_KINOME_URL = "https://darkkinome.org/kinase/";
 	
 	private String targetDevLevel;
 	
@@ -52,8 +59,16 @@ public class NodeInfoPanel extends Composite{
 		table.getFlexCellFormatter().setColSpan(2, 0, 3);
 		
 		table.setText(3, 0, "Pharos Target Page: ");
-		table.setWidget(3, 1, getPharoseLink(id));
+		table.setWidget(3, 1, getLinkWithAppend(PHAROS_URL, id));
 		table.getFlexCellFormatter().setColSpan(3, 0, 3);
+		
+		Set<String> darkKinases = new HashSet<>(Arrays.asList(RESOURCES.getDarkKinaseSet().getText().split("\n")));
+		if(darkKinases.contains(name)) {
+			table.setText(4, 0, "Dark Kinome Resource");
+			table.setWidget(4, 1, getLinkWithAppend(DARK_KINOME_URL, name));
+			table.getFlexCellFormatter().setColSpan(4, 0, 3);
+		}
+		
 		
 		ScrollPanel scrollPanel = new ScrollPanel();
 		scrollPanel.setStyleName(RESOURCES.getCSS().scrollPanel());
@@ -67,15 +82,16 @@ public class NodeInfoPanel extends Composite{
 		initWidget(infoPanel);
 	}
 
-	private Anchor getPharoseLink(String id) {
-		String link = PHAROS_URL + id;
+	private Anchor getLinkWithAppend(String baseUrl, String id) {
+		String link = baseUrl + id;
 		Anchor result = new Anchor(new SafeHtmlBuilder()
 				.appendEscapedLines("Go!").toSafeHtml(),
-				link,"_blank");
+				link, "_blank");
 		result.setStyleName(RESOURCES.getCSS().linkAnchor());
 		result.getElement().appendChild(new Image(RESOURCES.linkOut()).getElement());
 		return result;
 	}
+
 
 	private Anchor getUniprotAnchor(String id) {
 		if(!id.contains("ENSG")) {
@@ -130,6 +146,9 @@ public class NodeInfoPanel extends Composite{
 		
 		@Source("images/external_link_icon.gif")
 		ImageResource linkOut();
+		
+		@Source("dark_kinases_gene_names.txt")
+		TextResource getDarkKinaseSet();
 	}
 	
 	@CssResource.ImportedWithPrefix("idg-NodeInfoPanel")
