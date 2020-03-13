@@ -69,9 +69,9 @@ PairwiseNumbersLoadedHandler, PairwiseInteractorsResetHandler{
 		
 		this.container = new DeckLayoutPanel();
 		this.container.setStyleName(RESOURCES.getCSS().container());
-		NodeInfoPanel nodeInfoPanel = new NodeInfoPanel(eventBus, id, name);
-		nodeOverlayPanel = new NodeOverlayPanel(eventBus, id, overlay);
-		nodeInteractorsPanel = new NodeInteractorsPanel(eventBus, id, name);
+		NodeInfoPanel nodeInfoPanel = new NodeInfoPanel(id, name);
+		nodeOverlayPanel = new NodeOverlayPanel(id, overlay);
+		nodeInteractorsPanel = new NodeInteractorsPanel(id, name);
 		this.container.add(nodeInfoPanel);
 		this.container.add(nodeOverlayPanel);
 		this.container.add(nodeInteractorsPanel);

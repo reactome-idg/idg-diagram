@@ -4,12 +4,9 @@ import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.FontWeight;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ClientBundle.Source;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -17,9 +14,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class NodeInfoPanel extends Composite{
 
 	private final String PROTEIN_URL = "https://www.uniprot.org/uniprot/";
@@ -31,7 +32,7 @@ public class NodeInfoPanel extends Composite{
 	
 	private FlexTable table;
 	
-	public NodeInfoPanel(EventBus eventBus, String id, String name) {
+	public NodeInfoPanel(String id, String name) {
 		
 		FlowPanel infoPanel = new FlowPanel();
 		table = new FlexTable();

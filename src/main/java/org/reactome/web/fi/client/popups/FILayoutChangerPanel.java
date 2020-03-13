@@ -1,6 +1,5 @@
 package org.reactome.web.fi.client.popups;
 
-
 import org.reactome.web.fi.model.FILayoutType;
 
 import com.google.gwt.core.client.GWT;

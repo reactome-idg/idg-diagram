@@ -6,7 +6,6 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.ui.Composite;
@@ -14,14 +13,17 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class NodeInteractorsPanel extends Composite{
 
-	private EventBus eventBus;
 	private String id;
 	private	FlexTable table;
 	
-	public NodeInteractorsPanel(EventBus eventBus, String id, String name) {
-		this.eventBus = eventBus;
+	public NodeInteractorsPanel(String id, String name) {
 		this.id = id;
 				
 		FlowPanel outerPanel = new FlowPanel();

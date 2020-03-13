@@ -2,6 +2,11 @@ package org.reactome.web.fi.common;
 
 import com.google.gwt.user.cellview.client.SimplePager;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class IDGPager extends SimplePager{
 
 	public interface Handler{
@@ -31,15 +36,6 @@ public class IDGPager extends SimplePager{
 		super.lastPage();
 		handler.onPageChanged();
 	}
-
-	/**
-	 * Dont need this because it fires twice when also implementing setPage(int index)
-	 */
-//	@Override
-//	public void firstPage() {
-//		super.firstPage();
-//		handler.onPageChanged();
-//	}
 
 	@Override
 	public void setPage(int index) {

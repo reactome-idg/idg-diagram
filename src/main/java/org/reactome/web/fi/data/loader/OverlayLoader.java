@@ -1,21 +1,9 @@
 package org.reactome.web.fi.data.loader;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.reactome.web.fi.data.mediators.DataOverlayEntityMediator;
-import org.reactome.web.fi.data.overlay.model.OverlayEntities;
-import org.reactome.web.fi.data.overlay.model.OverlayEntityDataFactory;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntities;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntitiesFactory;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseEntity;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.model.OverlayDataType;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;

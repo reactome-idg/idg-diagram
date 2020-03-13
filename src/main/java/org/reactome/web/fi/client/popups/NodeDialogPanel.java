@@ -17,6 +17,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class NodeDialogPanel extends DialogBox{
 
 	private EventBus eventBus;

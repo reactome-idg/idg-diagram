@@ -7,7 +7,6 @@ import org.reactome.web.fi.data.model.TDarkProteinSetFactory;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeFactory;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -19,6 +18,11 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class TCRDInfoLoader{
 
 	public interface ETypeHandler{
@@ -35,15 +39,13 @@ public class TCRDInfoLoader{
 	}
 	
 	private static final String BASE_URL = "/tcrdws/";
-	private static Request request;
 	
 	public static void loadExpressionTypes(ETypeHandler handler) {
-		
 		String url = BASE_URL + "expressionTypes";
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
 		requestBuilder.setHeader("Accept", "application/json");
 		try {
-			request = requestBuilder.sendRequest(null, new RequestCallback() {
+			requestBuilder.sendRequest(null, new RequestCallback() {
 				@Override
 				public void onResponseReceived(Request request, Response response) {
 					if(response.getStatusCode() == Response.SC_OK) {
@@ -58,7 +60,6 @@ public class TCRDInfoLoader{
 						}
 					}
 				}
-				
 				@Override
 				public void onError(Request request, Throwable exception) {
 					handler.onExpressionTypesLoadedError(new Exception(exception.getMessage()));
@@ -69,13 +70,16 @@ public class TCRDInfoLoader{
 		}
 	}
 	
+	/**
+	 * Loads set of T Dark proteins and returns in a set
+	 * @param callback
+	 */
 	public static void loadTDarkSet(TDarkHandler callback) {
 		String url = BASE_URL + "tdark/uniprots";
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
 		requestBuilder.setHeader("Accept", "application/json");
 		try {
-			request = requestBuilder.sendRequest(null, new RequestCallback() {
-
+			requestBuilder.sendRequest(null, new RequestCallback() {
 				@Override
 				public void onResponseReceived(Request request, Response response) {
 					if(response.getStatusCode() == Response.SC_OK) {
@@ -101,14 +105,18 @@ public class TCRDInfoLoader{
 		}
 	}
 
+	/**
+	 * Loads a list of tissues available for a given eType
+	 * @param eType
+	 * @param handler
+	 */
 	public static void loadTissueTypes(String eType, TissueHandler handler) {
-		
 		String fixedEType = eType.replaceAll(" ", "+");
 		String url = BASE_URL + "tissues/" + fixedEType;
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
 		requestBuilder.setHeader("Accept", "application/json");
 		try {
-			request = requestBuilder.sendRequest(null, new RequestCallback() {
+			requestBuilder.sendRequest(null, new RequestCallback() {
 				@Override
 				public void onResponseReceived(Request request, Response response) {
 					List<String> tissueList = new ArrayList<>();
@@ -126,13 +134,17 @@ public class TCRDInfoLoader{
 				public void onError(Request request, Throwable exception) {
 					handler.onTissueTypesLoadedError(new Exception(exception.getMessage()));	
 				}
-				
 			});
 		} catch(RequestException ex) {
 			handler.onTissueTypesLoadedError(ex);
 		}
 	}
 	
+	/**
+	 * Loads a single target development level for a passed in uniprot and returns to callback
+	 * @param uniprot
+	 * @param callback
+	 */
 	public static void loadSingleTargetLevelProtein(String uniprot, AsyncCallback<String> callback) {
 		String url = "/tcrdws/targetlevel/uniprot/" + uniprot;
 		
@@ -156,5 +168,4 @@ public class TCRDInfoLoader{
 			callback.onFailure(ex);
 		}
 	}
-	
 }

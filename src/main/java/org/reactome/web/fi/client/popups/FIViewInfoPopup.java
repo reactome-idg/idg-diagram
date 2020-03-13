@@ -1,8 +1,5 @@
 package org.reactome.web.fi.client.popups;
 
-import java.util.Arrays;
-import java.util.Set;
-
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;

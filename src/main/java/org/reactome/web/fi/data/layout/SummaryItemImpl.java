@@ -3,6 +3,11 @@ package org.reactome.web.fi.data.layout;
 import org.reactome.web.diagram.data.layout.Shape;
 import org.reactome.web.diagram.data.layout.SummaryItem;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class SummaryItemImpl implements SummaryItem{
 
 	private String type = "TR";

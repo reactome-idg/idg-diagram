@@ -7,7 +7,6 @@ import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
@@ -17,15 +16,18 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class NodeOverlayPanel extends Composite{
 
-	private EventBus eventBus;
 	private String id;
 	private DataOverlay overlay;
 	private FlexTable table;
 	
-	public NodeOverlayPanel(EventBus eventBus, String id, DataOverlay overlay) {
-		this.eventBus = eventBus;
+	public NodeOverlayPanel(String id, DataOverlay overlay) {
 		this.id = id;
 		this.overlay = overlay;
 		

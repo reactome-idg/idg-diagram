@@ -32,7 +32,6 @@ import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.client.popups.EdgeContextPanel;
 import org.reactome.web.fi.client.popups.FILayoutChangerPanel;
 import org.reactome.web.fi.client.popups.FIViewInfoPopup;
-import org.reactome.web.fi.client.popups.NodeContextPanel;
 import org.reactome.web.fi.client.popups.NodeDialogPanel;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.FIViewOverlayEdgeHoveredEvent;
@@ -168,7 +167,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	@Override
 	public void exportView() {
 		// TODO Auto-generated method stub
-		
 	}
 
   @Override
@@ -278,7 +276,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
-				
 		NodeDialogPanel nodeDialogPanel;
 		
 		//Send overlay value to context panel if dataOverlay exists
@@ -293,7 +290,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		nodeContextPanelMap.forEach(panel -> {
 			panel.hide();
 		});
-		
 		nodeContextPanelMap.clear();
 	}
 	
@@ -586,15 +582,12 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 
 	@Override
 	public void setSize(int width, int height) {
-				
 		this.setWidth(width + "px");
 		this.setHeight(height + "px");
 		this.cyView.setWidth(width + "px");
 		this.cyView.setHeight(height + "px");
 		this.viewportWidth = width;
 		this.viewportHeight = height;
-		//TODO: make so center happens on resize
-//		cy.centerCytoscape(); action lags until next resize
 	}
 
 	@Override
@@ -663,7 +656,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
 			String color = colourMap.get(new Double(k));
 			cy.highlightNode(v, color);
-
 		});
 	}
 	

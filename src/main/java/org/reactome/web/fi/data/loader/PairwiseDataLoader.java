@@ -30,6 +30,11 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class PairwiseDataLoader {
 	
 	public abstract interface Handler{

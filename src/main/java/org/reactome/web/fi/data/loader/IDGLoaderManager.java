@@ -1,9 +1,5 @@
 package org.reactome.web.fi.data.loader;
 
-
-
-import java.util.ArrayList;
-
 import org.reactome.web.diagram.data.ContentFactory;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;

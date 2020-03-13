@@ -3,6 +3,11 @@ package org.reactome.web.fi.data.layout;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.Shape;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class ShapeImpl implements Shape{
 
 	private Coordinate c;

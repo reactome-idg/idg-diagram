@@ -7,6 +7,11 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.TextBox;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class IDGTextBox extends TextBox{
 
 	public IDGTextBox() {
@@ -20,17 +25,12 @@ public class IDGTextBox extends TextBox{
 		switch(DOM.eventGetType(event)) {
 			case Event.ONPASTE:
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
 					@Override
 					public void execute() {
 						ValueChangeEvent.fire(IDGTextBox.this, getText());
 					}
-					
 				});
 				break;
 		}
 	}
-	
-	
-	
 }

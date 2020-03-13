@@ -32,6 +32,10 @@ public class PairwiseInfoService {
 	
 	private static Map<String, String> uniprotToGeneMap;
 	
+	/**
+	 * Loads the types of pairwise overlay loadable
+	 * @param handler
+	 */
 	public static void loadDataDesc(dataDescHandler handler) {
 		if(request != null && request.isPending())
 			request.cancel();

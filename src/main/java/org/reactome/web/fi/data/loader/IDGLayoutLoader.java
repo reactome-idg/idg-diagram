@@ -5,7 +5,6 @@ import org.reactome.web.diagram.data.layout.factory.DiagramObjectException;
 import org.reactome.web.diagram.data.layout.factory.DiagramObjectsFactory;
 import org.reactome.web.diagram.data.loader.LayoutLoader;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONArray;
@@ -14,6 +13,11 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.json.client.JSONNumber;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class IDGLayoutLoader extends LayoutLoader{
 
 	IDGLayoutLoader(Handler handler) {
