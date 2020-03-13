@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 //import java.util.regex.Matcher;
 //import java.util.regex.Pattern;
@@ -287,8 +288,9 @@ public class PairwiseFormPanel extends FlowPanel{
 	}
 	
 	private void resetForm() {
-		negColorPicker.setColor("#FFF");
-		posColorPicker.setColor("#FFF");
+		Random r = new Random();
+		negColorPicker.setColor(negColorPicker.getColors()[r.nextInt(negColorPicker.getColors().length)]);
+		posColorPicker.setColor(posColorPicker.getColors()[r.nextInt(negColorPicker.getColors().length)]);
 	}
 	
 	/**

@@ -77,11 +77,15 @@ public class ColorPicker extends SimplePanel implements HasClickHandlers {
   public void addColorPickerListener( ColorPickerListener listener ) {
     listeners.add( listener );
   }
+  
+  public String[] getColors() {
+	  return picker.getColors();
+  }
 
   private class ColorPickerDialog extends PopupPanel {
     @SuppressWarnings( "nls" )
-    private String[] colors = new String[] { "#000", "#993300", "#333300", "#003300", "#003366", "#000080", "#333399",
-      "#333333",
+    private String[] colors = new String[] { 
+      "#0F0F0F", "#993300", "#333300", "#003300", "#003366", "#000080", "#333399", "#333333",
 
       "#800000", "#ff6600", "#808000", "#008000", "#008080", "#0000ff", "#666699", "#808080",
 
@@ -89,7 +93,7 @@ public class ColorPicker extends SimplePanel implements HasClickHandlers {
 
       "#ff00ff", "#ffcc00", "#ffff00", "#00ff00", "#00ffff", "#00ccff", "#993366", "#c0c0c0",
 
-      "#ff99cc", "#ffcc99", "#ffff99", "#ccffcc", "#ccffff", "#99ccff", "#cc99ff", "#FFF" };
+      "#ff99cc", "#ffcc99", "#ffff99", "#ccffcc", "#ccffff", "#99ccff", "#cc99ff", "#FFFFFF" };
 
     public ColorPickerDialog() {
       super( true );
@@ -110,6 +114,10 @@ public class ColorPicker extends SimplePanel implements HasClickHandlers {
       panel.add( table );
 
       this.add( panel );
+    }
+    
+    public String[] getColors() {
+    	return colors;
     }
 
   }
