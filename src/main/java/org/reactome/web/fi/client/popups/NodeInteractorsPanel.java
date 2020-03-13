@@ -56,7 +56,8 @@ public class NodeInteractorsPanel extends Composite{
 		table.setStyleName(RESOURCES.getCSS().dataTable());
 		
 		if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties() == null 
-				|| PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size() == 0) {
+				|| PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size() == 0
+				|| PairwiseOverlayFactory.get().getPairwiseNumberEntities() == null) {
 			table.setText(0, 0, "No relationshps for any data set");
 			return;
 		}

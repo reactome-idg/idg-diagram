@@ -72,6 +72,7 @@ public class NodeOverlayPanel extends Composite{
 		//handle case where no expression exists in any column
 		if(entities == null || entities.size() == 0) {
 			table.setText(0, 0, "N/A for all tissues or cell lines.");
+			return;
 		}
 		
 		//add row for each tissue. Col 0 is the tissue/cell line name.
