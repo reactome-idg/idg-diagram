@@ -10,7 +10,7 @@ public class HideOverlayLauncherEvent extends GwtEvent<HideOverlayLauncherHandle
 	
 	@Override
 	public Type<HideOverlayLauncherHandler> getAssociatedType() {
-		return this.TYPE;
+		return TYPE;
 	}
 
 	@Override

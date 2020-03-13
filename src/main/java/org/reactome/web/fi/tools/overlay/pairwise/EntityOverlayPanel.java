@@ -1,15 +1,11 @@
 package org.reactome.web.fi.tools.overlay.pairwise;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.HideOverlayLauncherEvent;
-import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.events.PairwiseInteractorsResetEvent;
 import org.reactome.web.fi.events.RequestPairwiseCountsEvent;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
@@ -24,7 +20,6 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 

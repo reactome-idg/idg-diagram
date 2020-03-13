@@ -1,7 +1,6 @@
 package org.reactome.web.fi.events;
 
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
 
 import com.google.gwt.event.shared.GwtEvent;

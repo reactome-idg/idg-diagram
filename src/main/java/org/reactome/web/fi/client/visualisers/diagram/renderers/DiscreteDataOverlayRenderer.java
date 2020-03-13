@@ -32,7 +32,6 @@ import org.reactome.web.fi.overlay.profiles.IDGExpressionGradient;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
 /**

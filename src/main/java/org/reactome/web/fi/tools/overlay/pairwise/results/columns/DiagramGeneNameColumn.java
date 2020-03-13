@@ -11,8 +11,6 @@ import com.google.gwt.user.cellview.client.Column;
  *
  */
 public class DiagramGeneNameColumn extends Column<PairwiseTableEntity, String> {
-
-	private static final String EXPLAINATION = "The reactome diagram source for the interaction";
 	
 	public DiagramGeneNameColumn() {
 		super(new TextCell());

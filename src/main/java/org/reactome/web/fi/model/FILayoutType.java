@@ -1,8 +1,5 @@
 package org.reactome.web.fi.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 
  * @author brunsont

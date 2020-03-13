@@ -2,7 +2,6 @@ package org.reactome.web.fi.data.mediators;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +15,6 @@ import org.reactome.web.fi.data.overlay.model.OverlayEntityDataFactory;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
-import org.reactome.web.fi.model.OverlayDataType;
 
 import com.google.gwt.core.client.GWT;
 

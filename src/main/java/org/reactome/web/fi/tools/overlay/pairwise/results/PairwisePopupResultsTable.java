@@ -12,8 +12,6 @@ import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseRelati
 import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseSourceColumn;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.view.client.CellPreviewEvent;
