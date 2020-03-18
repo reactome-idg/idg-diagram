@@ -86,7 +86,7 @@
     border: 1px solid #1e95cf;
 }
 
-.expressionSubmission button:activate:hover {
+.expressionSubmission button:active:hover {
 	color: #066b9e;
     background: white;
     border: 2px solid #066b9e;
