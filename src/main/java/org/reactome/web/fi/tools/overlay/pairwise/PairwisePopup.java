@@ -30,6 +30,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.FILayoutType;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
+import org.reactome.web.fi.tools.export.ExportPairwiseRelationshipsPanel;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
@@ -268,8 +269,12 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	
 	}
 
+	/**
+	 * Open export dialog for Pairwise Relationships
+	 */
 	private void onExportButtonClicked() {
-		
+		ExportPairwiseRelationshipsPanel export = new ExportPairwiseRelationshipsPanel(popupId, tableEntities);
+		export.show();
 	}
 
 	/**
@@ -343,7 +348,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			if(sourceListBox.getSelectedIndex() != 0 && !entity.getDataDesc().equals(sourceListBox.getSelectedItemText())) continue;
 			if((!showPositive.getValue() && entity.getPosOrNeg().equals("positive"))||(!showNegative.getValue() && entity.getPosOrNeg().equals("negative"))) continue;
 			if(!entity.getInteractorName().toUpperCase().contains(filterText) && !entity.getSourceName().toUpperCase().contains(filterText)) continue;
-//			if(existingEdges.contains(tableEntities.indexOf(entity))) continue;
+			if(existingEdges.contains(tableEntities.indexOf(entity))) continue;
 			
 			newList.add(entity);
 		}
