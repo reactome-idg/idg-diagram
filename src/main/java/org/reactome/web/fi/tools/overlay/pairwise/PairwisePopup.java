@@ -16,6 +16,7 @@ import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.popups.FILayoutChangerPanel;
 import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
+import org.reactome.web.fi.common.CommonButton;
 import org.reactome.web.fi.common.IDGListBox;
 import org.reactome.web.fi.common.IDGPager;
 import org.reactome.web.fi.common.IDGPager.Handler;
@@ -256,11 +257,19 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		eTypeAndTissue.addStyleName(RESOURCES.getCSS().eTypeAndTissueLabel());
 		pagerPanel.add(pager);
 		
+		CommonButton exportButton = new CommonButton("Export Relationships", e -> onExportButtonClicked());
+		exportButton.addStyleName(RESOURCES.getCSS().exportButton());
+		pagerPanel.add(exportButton);
+		
 		infoPanel.add(getFilterPanel());
 		infoPanel.add(table);
 		infoPanel.add(pagerPanel);
 		infoPanel.setVisible(true);
 	
+	}
+
+	private void onExportButtonClicked() {
+		
 	}
 
 	/**
@@ -334,7 +343,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			if(sourceListBox.getSelectedIndex() != 0 && !entity.getDataDesc().equals(sourceListBox.getSelectedItemText())) continue;
 			if((!showPositive.getValue() && entity.getPosOrNeg().equals("positive"))||(!showNegative.getValue() && entity.getPosOrNeg().equals("negative"))) continue;
 			if(!entity.getInteractorName().toUpperCase().contains(filterText) && !entity.getSourceName().toUpperCase().contains(filterText)) continue;
-			if(existingEdges.contains(tableEntities.indexOf(entity))) continue;
+//			if(existingEdges.contains(tableEntities.indexOf(entity))) continue;
 			
 			newList.add(entity);
 		}
@@ -876,6 +885,8 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		String eTypeAndTissueLabel();
 		
 		String smallText();
+		
+		String exportButton();
 		
 	}
 }

@@ -163,3 +163,8 @@
 .smallText {
 	font-size: smaller;
 }
+
+.exportButton {
+	margin-top: 3px;
+	float: right;
+}
