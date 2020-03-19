@@ -241,7 +241,8 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 
 			@Override
 			public void execute(PairwiseTableEntity object) {
-				addInteractions(object);
+				addInteraction(object);
+				cy.selectNode(object.getInteractorId());
 			}
 		});
 		
@@ -261,6 +262,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		CommonButton exportButton = new CommonButton("Export Relationships", e -> onExportButtonClicked());
 		exportButton.addStyleName(RESOURCES.getCSS().exportButton());
 		pagerPanel.add(exportButton);
+		exportButton.setVisible(false); //TODO: Find way to export table and re-enable this button
 		
 		infoPanel.add(getFilterPanel());
 		infoPanel.add(table);
@@ -348,7 +350,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			if(sourceListBox.getSelectedIndex() != 0 && !entity.getDataDesc().equals(sourceListBox.getSelectedItemText())) continue;
 			if((!showPositive.getValue() && entity.getPosOrNeg().equals("positive"))||(!showNegative.getValue() && entity.getPosOrNeg().equals("negative"))) continue;
 			if(!entity.getInteractorName().toUpperCase().contains(filterText) && !entity.getSourceName().toUpperCase().contains(filterText)) continue;
-			if(existingEdges.contains(tableEntities.indexOf(entity))) continue;
 			
 			newList.add(entity);
 		}
@@ -473,7 +474,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * Directs addition of interactor node and all edges present in tableEntities
 	 * @param entity
 	 */
-	private void addInteractions(PairwiseTableEntity entity) {
+	private void addInteraction(PairwiseTableEntity entity) {
 		addNode(entity.getInteractorId(), true);
 		for(PairwiseTableEntity rel : tableEntities)
 			if(entity.getInteractorId() == rel.getInteractorId())
@@ -490,8 +491,8 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		if(this.uniprotToGeneMap == null)
 			uniprotToGeneMap = PairwiseOverlayFactory.get().getUniprotToGeneMap();
 		
+		if(displayedNodes.contains(uniprot))return;
 		
-		if(displayedNodes.contains(uniprot)) return;
 		JSONValue val = getProtein(uniprot, uniprotToGeneMap.get(uniprot), interactor);
 		displayedNodes.add(uniprot);
 		cy.addCytoscapeNodes(containerId, val.toString());
