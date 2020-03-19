@@ -1,14 +1,20 @@
 package org.reactome.web.fi.data.loader;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.reactome.web.fi.data.mediators.DataOverlayEntityMediator;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
 
 import com.google.gwt.http.client.*;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 
@@ -100,4 +106,62 @@ public class OverlayLoader implements RequestCallback{
 		this.handler.onOverlayLoadedError(exception);
 	}
 
+	
+	/**
+	 * Load Target Development Levels for multiple uniprots
+	 * @param uniprots
+	 * @param callback
+	 */
+	public void loadMultipleTargetLevelProtein(String uniprots, AsyncCallback<Map<String,String>> callback) {
+		String url = "/tcrdws/targetlevel/uniprots";
+		
+		RequestBuilder request = new RequestBuilder(RequestBuilder.POST, url);
+		request.setHeader("Accept", "application/json");
+		try {
+			request.sendRequest(uniprots, new RequestCallback() {
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					if(response.getStatusCode() == Response.SC_OK) {
+						callback.onSuccess(getTargetLevelMap(response.getText()));
+					}
+					else {
+						callback.onFailure(new Throwable(response.getStatusText()));
+					}
+				}
+				@Override
+				public void onError(Request request, Throwable exception) {
+					callback.onFailure(exception);
+				}
+			});
+		}catch (RequestException ex) {
+			callback.onFailure(ex);
+		}
+	}
+
+	/**
+	 * Returns a map of uniprot to Target Development Level
+	 * @param text
+	 * @return
+	 */
+	protected Map<String, String> getTargetLevelMap(String text) {
+		Map<String, String> result = new HashMap<>();
+		
+		JSONArray textArr = JSONParser.parseStrict(text).isArray();
+		
+		if(textArr.isArray() != null) {
+			for(int i=0; i<textArr.size(); i++) {
+				JSONObject entity = textArr.get(i).isObject();
+				result.put(entity.get("uniprot").isString().stringValue(), 
+						entity.get("targetDevLevel").isString().stringValue());
+			}
+			return result;
+		}
+		
+		JSONObject obj = JSONParser.parseStrict(text).isObject();
+		result.put(obj.get("uniprot").isString().stringValue(), 
+				obj.get("targetDevLevel").isString().stringValue());
+		
+		return result;
+	}
+	
 }

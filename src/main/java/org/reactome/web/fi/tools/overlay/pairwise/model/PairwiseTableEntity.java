@@ -4,12 +4,13 @@ public class PairwiseTableEntity{
 
 	private String sourceId;
 	private String sourceName;
+	private String sourceTDL;
 	private String interactorId;
 	private String interactorName;
+	private String interactorTDL;
 	private String dataDesc;
 	private String posOrNeg;
 	private String overlayValue;
-	
 	
 	public PairwiseTableEntity(String sourceId, String sourceName, String interactorId, String interactorName, String dataDesc, String posOrNeg, String overlayValue) {
 		this.sourceId = sourceId;
@@ -81,6 +82,28 @@ public class PairwiseTableEntity{
 
 	public void setOverlayValue(String overlayValue) {
 		this.overlayValue = overlayValue;
+	}
+
+	public String getInteractorTDL() {
+		return interactorTDL;
+	}
+
+	public void setInteractorTDL(String targetDevelopmentLevel) {
+		this.interactorTDL = targetDevelopmentLevel;
+	}
+
+	public String getSourceTDL() {
+		return sourceTDL;
+	}
+
+	public void setSourceTDL(String sourceTDL) {
+		this.sourceTDL = sourceTDL;
+	}
+
+	public String toStringForExport() {
+		return this.sourceId + "\t" + this.sourceName + "\t" + this.sourceTDL + "\t" +
+			   this.interactorId + "\t" + this.interactorName + "\t" + this.interactorTDL + "\t" +
+			   this.posOrNeg + "\t" + this.dataDesc + "\t";
 	}
 
 }
