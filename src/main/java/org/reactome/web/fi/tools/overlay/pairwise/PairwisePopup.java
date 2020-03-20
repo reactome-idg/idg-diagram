@@ -652,7 +652,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		
 		//Use cytoscape views version of dataOverlay so it still works 
 		//if results are filtered to nothing
-		if(dataOverlay.getEType().equals("Target Development Level"))
+		if(tableDataOverlay.getEType().equals("Target Development Level"))
 			this.eTypeAndTissue.setText("Overlay data source: " + dataOverlay.getEType());
 		else
 			this.eTypeAndTissue.setText("Overlay data source: " + dataOverlay.getTissueTypes().get(tableDataOverlay.getColumn()) + " - " + tableDataOverlay.getEType());
