@@ -243,6 +243,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 					node.getInteractorsSummary().setNumber(null);
 			}
 		}
+		activeVisualiser.resetAnalysis(); //trick to get diagram to re-render now without decorators
 	}
 	
 	/**
