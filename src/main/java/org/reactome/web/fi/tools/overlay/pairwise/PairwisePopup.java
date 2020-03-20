@@ -76,7 +76,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	private Set<String> displayedNodes;
 	private Set<String> diagramNodes;
 	private int diagramEdgesCount;
-	private Set<Integer> existingEdges;
+	private Set<Integer> displayedEdges;
 	
 	private DataOverlay dataOverlay;
 	private DataOverlay tableDataOverlay;
@@ -119,7 +119,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		this.displayedNodes = new HashSet<>();
 		this.tableEntities = new ArrayList<>();
-		this.existingEdges = new HashSet<>();
+		this.displayedEdges = new HashSet<>();
 		initPanel();
 		panelClicked();
 		this.uniprotToGeneMap = PairwiseOverlayFactory.get().getUniprotToGeneMap();
@@ -458,7 +458,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 				int indexToGet = i+diagramEdgesCount;
 				if(indexToGet >= tableEntities.size())break;
 				PairwiseTableEntity entity = tableEntities.get(indexToGet); //offset by the number of diagram edges present in the array of table entities
-				if(entity.getSourceId() == diagramNode && !existingEdges.contains(indexToGet)) {
+				if(entity.getSourceId() == diagramNode && !displayedEdges.contains(indexToGet)) {
 					addNode(entity.getInteractorId(), true);
 					addEdge(entity);
 				}
@@ -508,7 +508,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 */
 	private boolean addEdge(PairwiseTableEntity tableEntity) {
 		
-		if(existingEdges.contains(tableEntities.indexOf(tableEntity))) return false;
+		if(displayedEdges.contains(tableEntities.indexOf(tableEntity))) return false;
 		
 		JSONValue val = makeFI(tableEntities.indexOf(tableEntity), 
 				tableEntity.getSourceId(), tableEntity.getInteractorId(), tableEntity.getPosOrNeg());
@@ -521,7 +521,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 				cy.recolorEdge(tableEntities.indexOf(tableEntity)+"", prop.getNegativeLineColorHex());
 		}
 		
-		existingEdges.add(tableEntities.indexOf(tableEntity));
+		displayedEdges.add(tableEntities.indexOf(tableEntity));
 		return true;
 	}
 	
@@ -734,7 +734,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		
 		for(int i=0; i<tableEntities.size(); i++) {
 			if(tableEntities.get(i).getInteractorId() == id) {
-				existingEdges.remove(i);
+				displayedEdges.remove(i);
 			}
 		}
 		filterTableEntities();
@@ -786,12 +786,18 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	
 	/**
 	 * Updates popup when pairwise overlay options change
+	 * Clears all values that need to be reset
 	 * @param pairwiseOverlayObjects
 	 */
 	public void updatePairwiseObjects(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		cy.clearCytoscapeGraph();
+		tableEntities.clear();
 		displayedNodes.clear();
+		filteredTableEntities.clear();
+		displayedNodes.clear();
+		displayedEdges.clear();
+		diagramEdgesCount = 0;
 		initBaseCytoscape();
 		loadPairwiseInteractors();
 	}
