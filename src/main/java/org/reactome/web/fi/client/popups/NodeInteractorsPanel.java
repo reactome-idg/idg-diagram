@@ -46,7 +46,7 @@ public class NodeInteractorsPanel extends Composite{
 		FlexTable header = new FlexTable();
 		header.setStyleName(RESOURCES.getCSS().headerTable());
 		header.setText(0, 0, "Source Description");
-		header.setText(0, 1, "num");
+		header.setText(0, 1, "number");
 		header.getFlexCellFormatter().setColSpan(0,0,2);
 		return header;
 	}
