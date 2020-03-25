@@ -1,5 +1,6 @@
 package org.reactome.web.fi.client.visualisers.diagram.renderers;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
@@ -15,6 +16,7 @@ import org.reactome.web.diagram.renderers.layout.abs.SummaryItemAbstractRenderer
 import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.fi.data.layout.ShapeImpl;
 import org.reactome.web.fi.data.layout.SummaryItemImpl;
+import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 
@@ -97,7 +99,11 @@ public class IDGDecoratorRenderer {
 		Set<GraphPhysicalEntity> peSet = entity.getParticipants();
 		for(GraphPhysicalEntity pe : peSet) {
 			for(PairwiseNumberEntity numberEntity : PairwiseOverlayFactory.get().getPairwiseNumberEntities()) {
-				if(pe.getIdentifier() == numberEntity.getGene()) {
+				String identifier = pe.getIdentifier();
+				if(identifier.contains("ENSG")) {
+					identifier = PairwiseInfoService.getGeneToUniprotMap().get(pe.getDisplayName().substring(0, pe.getDisplayName().indexOf(" ")));
+				}
+				if(identifier == numberEntity.getGene()) {
 					result += (numberEntity.getPosNum() + numberEntity.getNegNum());
 				}
 			}

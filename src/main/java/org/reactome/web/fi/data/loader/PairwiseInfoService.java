@@ -31,6 +31,7 @@ public class PairwiseInfoService {
 	private static Request request;
 	
 	private static Map<String, String> uniprotToGeneMap;
+	private static Map<String, String> geneToUniprotMap;
 	
 	/**
 	 * Loads the types of pairwise overlay loadable
@@ -100,16 +101,22 @@ public class PairwiseInfoService {
 		return uniprotToGeneMap;
 	}
 	
+	public static Map<String, String> getGeneToUniprotMap(){
+		return geneToUniprotMap;
+	}
+	
 	/**
 	 * Creates a map from gene name to uniprot and stores in a global variable
 	 * @param text
 	 */
 	private static void createMap(String text) {
 		uniprotToGeneMap = new HashMap<>();
+		geneToUniprotMap = new HashMap<>();
 		String[] lines = text.split("\n");
 		for(String line : lines) {
 			String[] mapTo = line.split("\t");
 			uniprotToGeneMap.put(mapTo[0], mapTo[1]);
+			geneToUniprotMap.put(mapTo[1], mapTo[0]);
 		}
 	}
 }
