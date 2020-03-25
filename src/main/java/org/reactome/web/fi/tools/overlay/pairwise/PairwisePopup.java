@@ -23,6 +23,7 @@ import org.reactome.web.fi.common.IDGPager.Handler;
 import org.reactome.web.fi.common.IDGTextBox;
 import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
+import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
@@ -186,11 +187,8 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 					if(identifier.contains("-"))													//removes any isoform identifiers
 						identifier = identifier.substring(0, identifier.indexOf("-"));
 					else if(identifier.contains("ENSG") || identifier.contains("ENST")) { 											//convert ENSG to uniprot
-						for(Map.Entry<String,String> entry: uniprotToGeneMap.entrySet()) {			//Iterate over map. Check value vs. display name
-							if(entity.getDisplayName().contains(entry.getValue())) {				//If equal, replace with key (uniprot)
-								identifier = entry.getKey();
-								break;
-							}
+						if(identifier.contains("ENSG")) {
+							identifier = PairwiseInfoService.getGeneToUniprotMap().get(entity.getDisplayName().substring(0, entity.getDisplayName().indexOf(" ")));
 						}
 					}
 					diagramNodes.add(identifier);
