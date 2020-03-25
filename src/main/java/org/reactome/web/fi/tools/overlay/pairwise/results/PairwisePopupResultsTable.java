@@ -12,7 +12,6 @@ import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseRelati
 import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseSourceColumn;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.ListDataProvider;
@@ -23,11 +22,16 @@ import com.google.gwt.view.client.ListDataProvider;
  *
  */
 public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
+	public interface Handler {
+		void onColumnSorted();
+	}
+	
 	public final static Integer PAGE_SIZE = 10;
 	
-	private ListHandler<PairwiseTableEntity> sorter;
+	private IDGListHandler<PairwiseTableEntity> sorter;
 	
-	public PairwisePopupResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, IDGPager pager) {
+	
+	public PairwisePopupResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, IDGPager pager, Handler handler) {
 		
 		super(PAGE_SIZE);
 		this.setRowData(0, entities);
@@ -36,10 +40,29 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 		this.setVisible(true);
 		this.setHeight("200px");
 		
-		sorter = new ListHandler<>(provider.getList());
+		//ListDataProvider setup
+		provider.addDataDisplay(this);
+		provider.setList(entities);
+		
+		//implementation of List handler so an event can be fired after column is sorted.
+		sorter = new IDGListHandler<PairwiseTableEntity>(provider.getList(), new IDGListHandler.ColumnSortedHandler() {
+			@Override
+			public void onColumnsSorted() {
+				handler.onColumnSorted();
+			}
+		});
 		this.addColumnSortHandler(sorter);
 		
-		this.addColumn(new DiagramGeneNameColumn(), "Diagram Source");	
+		DiagramGeneNameColumn diagramGeneNameColumn = new DiagramGeneNameColumn();
+		diagramGeneNameColumn.setSortable(true);
+		sorter.setComparator(diagramGeneNameColumn, new Comparator<PairwiseTableEntity>() {
+			@Override
+			public int compare(PairwiseTableEntity o1, PairwiseTableEntity o2) {
+				return o1.getSourceName().compareTo(o2.getSourceName());
+			}
+			
+		});
+		this.addColumn(diagramGeneNameColumn, "Diagram Source");	
 		
 		PairwiseInteractorColumn pairwiseInteractorColumn= new PairwiseInteractorColumn();
 		pairwiseInteractorColumn.setSortable(true);
@@ -52,16 +75,6 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 		this.addColumn(pairwiseInteractorColumn, "Pairwise Interactor");
 		
 		OverlayValueColumn overlayValueColumn = new OverlayValueColumn();
-//		overlayValueColumn.setSortable(true);
-//		sorter.setComparator(overlayValueColumn, new Comparator<PairwiseTableEntity>() {
-//			@Override
-//			public int compare(PairwiseTableEntity o1, PairwiseTableEntity o2) {
-//				if(Double.valueOf(o1.getOverlayValue()) != null)
-//					return Double.compare(Double.valueOf(o1.getOverlayValue()), Double.valueOf(o2.getOverlayValue()));
-//				else
-//					return o1.getOverlayValue().compareTo(o2.getOverlayValue());
-//			}
-//		});
 		this.addColumn(overlayValueColumn, "Overlay Value");	
 		
 		PairwiseRelationshipColumn pairwiseRelationshipColumn = new PairwiseRelationshipColumn();
@@ -74,8 +87,15 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 		});
 		this.addColumn(pairwiseRelationshipColumn, "Pos/Neg");
 		
-		PairwiseSourceColumn pairwiseSourceColumn;
-		this.addColumn(pairwiseSourceColumn = new PairwiseSourceColumn(), "Interaction Source");
+		PairwiseSourceColumn pairwiseSourceColumn = new PairwiseSourceColumn();
+		pairwiseSourceColumn.setSortable(true);
+		sorter.setComparator(pairwiseSourceColumn, new Comparator<PairwiseTableEntity>() {
+			@Override
+			public int compare(PairwiseTableEntity o1, PairwiseTableEntity o2) {
+				return o1.getDataDesc().compareTo(o2.getDataDesc());
+			}
+		});
+		this.addColumn(pairwiseSourceColumn, "Interaction Source");
 		this.setColumnWidth(pairwiseSourceColumn, 200+"px");
 		
 		this.addCellPreviewHandler(new CellPreviewEvent.Handler<PairwiseTableEntity>() {
@@ -87,10 +107,6 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
                 cellElement.setTitle(PairwisePopupResultsTable.this.getColumn(event.getColumn()).getValue(model)+"");
             }
         });
-
-		//ListDataProvider setup
-		provider.addDataDisplay(this);
-		provider.setList(entities);
 		
 		//Pager setup
 		pager.setDisplay(this);
@@ -99,5 +115,9 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 		this.setRowCount(entities.size(), true);
 		
 		this.redraw();
+	}
+	
+	private void onSort() {
+		
 	}
 }

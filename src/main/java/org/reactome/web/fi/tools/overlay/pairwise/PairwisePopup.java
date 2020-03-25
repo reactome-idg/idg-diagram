@@ -233,12 +233,16 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		provider = new ListDataProvider<>();
 		pager = new IDGPager(this);
 		
-		table = new PairwisePopupResultsTable(filteredTableEntities, provider, pager);
+		table = new PairwisePopupResultsTable(filteredTableEntities, provider, pager, new PairwisePopupResultsTable.Handler() {
+			@Override
+			public void onColumnSorted() {
+				onPageChanged();
+			}
+		});
 		table.setStyleName(RESOURCES.getCSS().table());
 		
 		//Add view button column
 		ActionCell<PairwiseTableEntity> actionCell = new ActionCell<>("View", new ActionCell.Delegate<PairwiseTableEntity>() {
-
 			@Override
 			public void execute(PairwiseTableEntity object) {
 				addInteraction(object);
