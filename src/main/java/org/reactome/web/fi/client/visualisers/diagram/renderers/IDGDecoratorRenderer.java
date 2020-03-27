@@ -1,6 +1,5 @@
 package org.reactome.web.fi.client.visualisers.diagram.renderers;
 
-import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
