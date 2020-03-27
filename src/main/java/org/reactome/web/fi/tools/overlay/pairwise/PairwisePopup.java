@@ -184,6 +184,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			for(GraphPhysicalEntity entity : entities) {
 				if(entity instanceof GraphEntityWithAccessionedSequence || entity instanceof GraphProteinDrug) {
 					String identifier = entity.getIdentifier();
+					if(identifier == null) continue;
 					if(identifier.contains("-"))													//removes any isoform identifiers
 						identifier = identifier.substring(0, identifier.indexOf("-"));
 					else if(identifier.contains("ENSG") || identifier.contains("ENST")) { 											//convert ENSG to uniprot
@@ -451,8 +452,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			for(PairwiseTableEntity entity: tableEntities) {
 				if(counter == 10) break;
 				if(entity.getSourceId() == diagramNode && darkProteins.contains(entity.getInteractorId())) {
-					addNode(entity.getInteractorId(), true);
-					addEdge(entity);
+					addInteraction(entity);
 					counter++;
 				}
 			}
@@ -461,8 +461,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 				if(indexToGet >= tableEntities.size())break;
 				PairwiseTableEntity entity = tableEntities.get(indexToGet); //offset by the number of diagram edges present in the array of table entities
 				if(entity.getSourceId() == diagramNode && !displayedEdges.contains(indexToGet)) {
-					addNode(entity.getInteractorId(), true);
-					addEdge(entity);
+					addInteraction(entity);
 				}
 			}
 		}
@@ -477,10 +476,15 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 * @param entity
 	 */
 	private void addInteraction(PairwiseTableEntity entity) {
+		//ensures interactions cannot be added if they exist as a diagram source edge. 
+		//These interactions should be implied.
+		if(diagramNodes.contains(entity.getSourceId()) && diagramNodes.contains(entity.getInteractorId())) return;
+		
 		addNode(entity.getInteractorId(), true);
+		addEdge(entity);
 		for(PairwiseTableEntity rel : tableEntities)
 			if(entity.getInteractorId() == rel.getInteractorId())
-				addEdge(entity);
+				addEdge(rel);
 		loadOverlay();
 		filterTableEntities();
 	}
