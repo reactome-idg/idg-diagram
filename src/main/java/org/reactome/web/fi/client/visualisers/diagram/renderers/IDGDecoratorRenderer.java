@@ -99,7 +99,7 @@ public class IDGDecoratorRenderer {
 		Set<GraphPhysicalEntity> peSet = entity.getParticipants();
 		for(GraphPhysicalEntity pe : peSet) {
 			String identifier = pe.getIdentifier();
-			if(identifier == null ) continue;
+			if(identifier == null ) continue; //ensure GraphPhysicalEntity contains an identifier. if not, continue
 			if(identifier.contains("ENSG")) {
 				int index = pe.getDisplayName() == null ? 0 : pe.getDisplayName().indexOf(" ");
 				identifier = PairwiseInfoService.getGeneToUniprotMap().get(pe.getDisplayName().substring(0, index));
