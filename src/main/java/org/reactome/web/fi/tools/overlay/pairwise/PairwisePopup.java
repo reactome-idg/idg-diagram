@@ -352,7 +352,13 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			if(entity.getInteractorName() == null)continue;
 			if(sourceListBox.getSelectedIndex() != 0 && !entity.getDataDesc().equals(sourceListBox.getSelectedItemText())) continue;
 			if((!showPositive.getValue() && entity.getPosOrNeg().equals("positive"))||(!showNegative.getValue() && entity.getPosOrNeg().equals("negative"))) continue;
-			if(!entity.getInteractorName().toUpperCase().contains(filterText) && !entity.getSourceName().toUpperCase().contains(filterText)) continue;
+			
+			//filter all columns based on filter box
+			if(!entity.getInteractorName().toUpperCase().contains(filterText) 
+					&& !entity.getSourceName().toUpperCase().contains(filterText)
+					&& !entity.getOverlayValue().toUpperCase().contains(filterText)
+					&& !entity.getPosOrNeg().toUpperCase().contains(filterText)
+					&& !entity.getDataDesc().toUpperCase().contains(filterText)) continue;
 			
 			newList.add(entity);
 		}
