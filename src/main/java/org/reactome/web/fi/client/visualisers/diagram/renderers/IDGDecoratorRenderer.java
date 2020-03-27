@@ -98,11 +98,13 @@ public class IDGDecoratorRenderer {
 		GraphPhysicalEntity entity = obj.getGraphObject(); //should always be GraphPhysicalEntity
 		Set<GraphPhysicalEntity> peSet = entity.getParticipants();
 		for(GraphPhysicalEntity pe : peSet) {
+			String identifier = pe.getIdentifier();
+			if(identifier == null ) continue;
+			if(identifier.contains("ENSG")) {
+				int index = pe.getDisplayName() == null ? 0 : pe.getDisplayName().indexOf(" ");
+				identifier = PairwiseInfoService.getGeneToUniprotMap().get(pe.getDisplayName().substring(0, index));
+			}
 			for(PairwiseNumberEntity numberEntity : PairwiseOverlayFactory.get().getPairwiseNumberEntities()) {
-				String identifier = pe.getIdentifier();
-				if(identifier.contains("ENSG")) {
-					identifier = PairwiseInfoService.getGeneToUniprotMap().get(pe.getDisplayName().substring(0, pe.getDisplayName().indexOf(" ")));
-				}
 				if(identifier == numberEntity.getGene()) {
 					result += (numberEntity.getPosNum() + numberEntity.getNegNum());
 				}
