@@ -16,7 +16,6 @@ import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.popups.FILayoutChangerPanel;
 import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
-import org.reactome.web.fi.common.CommonButton;
 import org.reactome.web.fi.common.IDGListBox;
 import org.reactome.web.fi.common.IDGPager;
 import org.reactome.web.fi.common.IDGPager.Handler;
@@ -31,7 +30,6 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.FILayoutType;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
-import org.reactome.web.fi.tools.export.ExportPairwiseRelationshipsPanel;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
@@ -101,7 +99,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	
 	public PairwisePopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayObjects, int zIndex) {
 		this(graphObject.getStId(), zIndex, pairwiseOverlayObjects);
-		this.zIndex = zIndex;
 		setDiagramNodes(graphObject);
 		initBaseCytoscape();
 		loadPairwiseInteractors();
@@ -262,24 +259,11 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		eTypeAndTissue.addStyleName(RESOURCES.getCSS().eTypeAndTissueLabel());
 		pagerPanel.add(pager);
 		
-		CommonButton exportButton = new CommonButton("Export Relationships", e -> onExportButtonClicked());
-		exportButton.addStyleName(RESOURCES.getCSS().exportButton());
-		pagerPanel.add(exportButton);
-		exportButton.setVisible(false); //TODO: Find way to export table and re-enable this button
-		
 		infoPanel.add(getFilterPanel());
 		infoPanel.add(table);
 		infoPanel.add(pagerPanel);
 		infoPanel.setVisible(true);
 	
-	}
-
-	/**
-	 * Open export dialog for Pairwise Relationships
-	 */
-	private void onExportButtonClicked() {
-		ExportPairwiseRelationshipsPanel export = new ExportPairwiseRelationshipsPanel(popupId, tableEntities);
-		export.show();
 	}
 
 	/**
