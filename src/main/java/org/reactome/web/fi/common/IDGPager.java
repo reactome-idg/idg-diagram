@@ -42,5 +42,4 @@ public class IDGPager extends SimplePager{
 		super.setPage(index);
 		handler.onPageChanged();
 	}
-	
 }
