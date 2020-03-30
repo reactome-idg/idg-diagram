@@ -475,7 +475,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 			if(entity.getInteractorId() == rel.getInteractorId())
 				addEdge(rel);
 		loadOverlay();
-		filterTableEntities();
 	}
 	
 	/**
