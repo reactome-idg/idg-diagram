@@ -7,10 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSequence;
-import org.reactome.web.diagram.data.graph.model.GraphObject;
-import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
-import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
@@ -21,14 +17,13 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * 
  * @author brunsont
  *
  */
-public class PairwisePopupCytoscapePanel extends SimplePanel implements Handler {
+public class PairwisePopupCytoscapePanel implements Handler {
 
 	public interface CytoscapePanelHandler{
 		
@@ -42,63 +37,20 @@ public class PairwisePopupCytoscapePanel extends SimplePanel implements Handler 
 	
 	private CytoscapeEntity cy;
 	
-	public PairwisePopupCytoscapePanel(String popupId, List<PairwiseOverlayObject> pairwiseOverlayObjects, NewPairwisePopup.Resources RESOURCES) {
+	private int edgeCount = 0;
+	
+	public PairwisePopupCytoscapePanel(String popupId, Set<String> diagramNodes, List<PairwiseOverlayObject> pairwiseOverlayObjects, NewPairwisePopup.Resources RESOURCES) {
+		this.diagramNodes = diagramNodes;
 		this.displayedNodes = new HashSet<>();
 		this.edgeIdToEntity = new HashMap<>();
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
-		
-		this.getElement().setId(containerId = "cy-" + popupId);
-		this.setStyleName(RESOURCES.getCSS().cyView());
+		this.containerId = "cy-" + popupId;
 		
 		this.cy = new CytoscapeEntity(RESOURCES.fiviewStyle().getText(), this);
 		cy.cytoscapeInit(new JSONArray().toString(), new JSONArray().toString(), "cose", containerId);
 		cy.setCytoscapeLayout("cose");
-	}
-
-	public void init(GraphObject graphObject) {
-		setDiagramNodes(graphObject);
+		
 		initBaseCytoscape();
-	}
-
-	public void init(String uniprot, String geneName) {
-		setDiagramNodes(uniprot, geneName);
-		initBaseCytoscape();
-	}
-	
-	/**
-	 * Sets diagram nodes when popup initiated from diagram view.
-	 * Converts any isoforms or ENSG to standard Uniprot identifier.
-	 * @param graphObject
-	 */
-	private void setDiagramNodes(GraphObject graphObject) {
-		this.diagramNodes = new HashSet<>();
-		if(graphObject instanceof GraphPhysicalEntity) {
-			Set<GraphPhysicalEntity> entities = ((GraphPhysicalEntity)graphObject).getParticipants();
-			for(GraphPhysicalEntity entity : entities) {
-				if(entity instanceof GraphEntityWithAccessionedSequence || entity instanceof GraphProteinDrug) {
-					String identifier = entity.getIdentifier();
-					if(identifier == null) continue;
-					if(identifier.contains("-"))													//removes any isoform identifiers
-						identifier = identifier.substring(0, identifier.indexOf("-"));
-					else if(identifier.contains("ENSG") || identifier.contains("ENST")) { 											//convert ENSG to uniprot
-						if(identifier.contains("ENSG")) {
-							identifier = PairwiseInfoService.getGeneToUniprotMap().get(entity.getDisplayName().substring(0, entity.getDisplayName().indexOf(" ")));
-						}
-					}
-					diagramNodes.add(identifier);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Sets diagram nodes when popup initiated from FI view
-	 * @param uniprot
-	 * @param geneName
-	 */
-	private void setDiagramNodes(String uniprot, String geneName) {
-		this.diagramNodes = new HashSet<>();
-		diagramNodes.add(uniprot);
 	}
 	
 	/**
@@ -123,6 +75,19 @@ public class PairwisePopupCytoscapePanel extends SimplePanel implements Handler 
 				addEdge(entity);
 			}
 		}
+		cy.setCytoscapeLayout("cose");
+	}
+	
+	public void addInteractions(Set<PairwiseTableEntity> entities) {
+		for(PairwiseTableEntity entity : entities) {
+			//ensures interactions cannot be added if they exist as a diagram source edge. 
+			//These interactions should be implied.
+			if(diagramNodes.contains(entity.getSourceId()) && diagramNodes.contains(entity.getInteractorId())) return;
+			
+			addNode(entity.getInteractorId(), true);
+			addEdge(entity);
+		}
+		cy.setCytoscapeLayout("cose");
 	}
 
 	/**
@@ -173,9 +138,9 @@ public class PairwisePopupCytoscapePanel extends SimplePanel implements Handler 
 		for(PairwiseTableEntity entity: edgeIdToEntity.keySet())
 			if(entity.equals(tableEntity)) return false;
 		
-		edgeIdToEntity.put(tableEntity, edgeIdToEntity.size());
+		edgeIdToEntity.put(tableEntity, edgeCount);
 		
-		JSONValue val = makeFI(edgeIdToEntity.size(), 
+		JSONValue val = makeFI(edgeCount, 
 				tableEntity.getSourceId(), tableEntity.getInteractorId(), tableEntity.getPosOrNeg());
 		
 		cy.addCytoscapeEdge(containerId, val.toString());
@@ -186,6 +151,7 @@ public class PairwisePopupCytoscapePanel extends SimplePanel implements Handler 
 				cy.recolorEdge(edgeIdToEntity.get(tableEntity)+"", prop.getNegativeLineColorHex());
 		}
 		
+		edgeCount++;
 		return true;
 	}
 	
