@@ -357,7 +357,7 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 	 */
 	@Override
 	public void onPageChanged() {
-		if(tableEntities.size() == 0) return;
+		if(tableEntities.size() == 0 || provider.getList().size()==0) return;
 		int pageStart = pager.getPageStart();
 		
 		//Set equal to page end or number of filteredTableEntities if less than PairwisePopupResultsTable.PAGE_SIZE
