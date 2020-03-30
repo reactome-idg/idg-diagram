@@ -458,7 +458,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		cy.setCytoscapeLayout("cose");
 		
 		loadOverlay();
-		filterTableEntities();
 	}
 
 	/**
