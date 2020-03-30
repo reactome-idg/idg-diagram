@@ -106,4 +106,17 @@ public class PairwiseTableEntity{
 			   this.posOrNeg + "\t" + this.dataDesc + "\t";
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(getClass() != obj.getClass()) return false;
+		PairwiseTableEntity entity = (PairwiseTableEntity) obj;
+		return sourceId == entity.sourceId
+			   && this.sourceName == entity.sourceName
+			   && this.interactorId == entity.interactorId
+			   && this.interactorName == entity.interactorName
+			   && this.dataDesc == entity.dataDesc
+			   && this.posOrNeg == entity.posOrNeg;
+	}
+
 }
