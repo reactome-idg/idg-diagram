@@ -9,9 +9,12 @@ import org.reactome.web.fi.common.IDGListBox;
 import org.reactome.web.fi.common.IDGPager;
 import org.reactome.web.fi.common.IDGPager.Handler;
 import org.reactome.web.fi.common.IDGTextBox;
+import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
+import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
+import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
@@ -59,6 +62,8 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 	private CheckBox showNegative;
 
 	private InlineLabel eTypeAndTissue;
+	
+	private DataOverlay dataOverlay;
 	
 	public PairwisePopupTablePanel(List<PairwiseOverlayObject> pairwiseOverlayProperties, Set<String> diagramNodes, NewPairwisePopup.Resources RESOURCES, PairwiseTableHandler handler) {
 		this.RESOURCES = RESOURCES;
@@ -176,13 +181,7 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 	private IDGListBox getSourceListBox() {
 		sourceListBox = new IDGListBox();
 		
-		List<String> list = new ArrayList<>();
-		list.add("Show all sources");
-		for(PairwiseOverlayObject obj : pairwiseOverlayProperties) {
-			list.add(obj.getId());
-		}
-		
-		sourceListBox.setListItems(list);
+		setSourceListBox();
 		sourceListBox.setMultipleSelect(false);
 		sourceListBox.setSelectedIndex(0);
 		sourceListBox.addChangeHandler(e -> filterTableEntities());
@@ -191,6 +190,18 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 		sourceListBox.getElement().getStyle().setWidth(225, Unit.PX);
 		
 		return sourceListBox;
+	}
+	
+	private void setSourceListBox() {
+		sourceListBox.clear();
+		
+		List<String> list = new ArrayList<>();
+		list.add("Show all sources");
+		for(PairwiseOverlayObject obj : pairwiseOverlayProperties) {
+			list.add(obj.getId());
+		}
+		
+		sourceListBox.setListItems(list);
 	}
 	
 	/**
@@ -242,8 +253,56 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 				provider.setList(filteredTableEntities);
 				provider.refresh();
 				getInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
+				loadOverlay();
 			}
 		});
+	}
+
+	public void loadOverlay() {
+		DataOverlayProperties props = PairwiseOverlayFactory.get().getDataOverlayProperties();
+		props.setUniprots(String.join(",", collectUniprots()));
+		
+		OverlayLoader loader = new OverlayLoader();
+		loader.load(props, new OverlayLoader.Handler() {
+			@Override
+			public void onDataOverlayLoaded(DataOverlay dataOverlay) {
+				PairwisePopupTablePanel.this.dataOverlay = dataOverlay;
+				updateTableData();
+			}
+			@Override
+			public void onOverlayLoadedError(Throwable exception) {
+				exception.printStackTrace();
+			}
+		});
+	}
+
+	private void updateTableData() {
+		this.dataOverlay.updateIdentifierValueMap();
+		if(dataOverlay.isDiscrete()) {
+			for(PairwiseTableEntity entity: tableEntities) {
+				entity.setOverlayValue("");
+				if(dataOverlay.getIdentifierValueMap().keySet().contains(entity.getInteractorId()))
+					entity.setOverlayValue(dataOverlay.getLegendTypes().get(dataOverlay.getIdentifierValueMap().get(entity.getInteractorId()).intValue()));
+			}
+		}
+		else {
+			for(PairwiseTableEntity entity : tableEntities) {
+				entity.setOverlayValue("");
+				if(dataOverlay.getIdentifierValueMap().keySet().contains(entity.getInteractorId()))
+					entity.setOverlayValue(""+dataOverlay.getIdentifierValueMap().get(entity.getInteractorId()));
+			}
+		}
+		filteredTableEntities.clear();
+		filteredTableEntities.addAll(tableEntities);
+		provider.refresh();
+	}
+		
+	
+	private Set<String> collectUniprots() {
+		Set<String> uniprots = new HashSet<>();
+		for(PairwiseTableEntity entity : tableEntities)
+			uniprots.add(entity.getInteractorId());
+		return uniprots;
 	}
 
 	private void getInitialInteractors() {
@@ -258,14 +317,29 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 					counter++;
 				}
 			}
-			for(int i=counter; i< 10; i++) {
-				if(i >= tableEntities.size())break;
-				PairwiseTableEntity entity = tableEntities.get(i); //offset by the number of diagram edges present in the array of table entities
-				if(entity.getSourceId() == diagramNode) {
-					initialEntities.add(entity);
-				}
-			}
+//			for(int i=counter; i< 10; i++) {
+//				if(i >= tableEntities.size())break;
+//				PairwiseTableEntity entity = tableEntities.get(i); //offset by the number of diagram edges present in the array of table entities
+//				if(entity.getSourceId() == diagramNode) {
+//					initialEntities.add(entity);
+//				}
+//			}
 		}
 		handler.addInteractions(initialEntities);
+	}
+
+	public void updateOverlayColumn(int column) {
+		if(dataOverlay != null) {
+			dataOverlay.setColumn(column);
+			updateTableData();
+		}
+	}
+	
+	public void pairwisePropertiesChanged() {
+		this.pairwiseOverlayProperties = PairwiseOverlayFactory.get().getCurrentPairwiseProperties();
+		tableEntities.clear();
+		filteredTableEntities.clear();
+		setSourceListBox();
+		loadTable();
 	}
 }

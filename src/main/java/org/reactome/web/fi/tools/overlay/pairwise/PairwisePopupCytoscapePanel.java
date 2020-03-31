@@ -7,9 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
+import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
+import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
+import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
+import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.overlay.profiles.OverlayColours;
+import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.gwtCytoscapeJs.client.CytoscapeWrapper.Handler;
 
@@ -38,6 +45,8 @@ public class PairwisePopupCytoscapePanel implements Handler {
 	private CytoscapeEntity cy;
 	
 	private int edgeCount = 0;
+	
+	private DataOverlay dataOverlay;
 	
 	public PairwisePopupCytoscapePanel(String popupId, Set<String> diagramNodes, List<PairwiseOverlayObject> pairwiseOverlayObjects, NewPairwisePopup.Resources RESOURCES) {
 		this.diagramNodes = diagramNodes;
@@ -79,15 +88,18 @@ public class PairwisePopupCytoscapePanel implements Handler {
 	}
 	
 	public void addInteractions(Set<PairwiseTableEntity> entities) {
+		boolean resetLayout = false;
 		for(PairwiseTableEntity entity : entities) {
 			//ensures interactions cannot be added if they exist as a diagram source edge. 
 			//These interactions should be implied.
 			if(diagramNodes.contains(entity.getSourceId()) && diagramNodes.contains(entity.getInteractorId())) return;
 			
 			addNode(entity.getInteractorId(), true);
-			addEdge(entity);
+			boolean added = addEdge(entity);
+			resetLayout = added == true ? added:resetLayout;
 		}
-		cy.setCytoscapeLayout("cose");
+		if(resetLayout) cy.setCytoscapeLayout("cose");
+		loadOverlay();
 	}
 
 	/**
@@ -177,6 +189,66 @@ public class PairwisePopupCytoscapePanel implements Handler {
 		return result;
 	}
 	
+	public void loadOverlay() {
+		DataOverlayProperties props = PairwiseOverlayFactory.get().getDataOverlayProperties();
+		props.setUniprots(String.join(",", this.displayedNodes));
+		
+		OverlayLoader loader = new OverlayLoader();
+		loader.load(props, new OverlayLoader.Handler() {
+			@Override
+			public void onDataOverlayLoaded(DataOverlay dataOverlay) {
+				PairwisePopupCytoscapePanel.this.dataOverlay = dataOverlay;
+				overlayData();
+			}
+			@Override
+			public void onOverlayLoadedError(Throwable exception) {
+				exception.printStackTrace();
+			}
+		});
+	}
+	
+	protected void overlayData() {
+		cy.resetNodeColor();
+		cy.resetSelection();
+		this.dataOverlay.updateIdentifierValueMap();
+		
+		if(dataOverlay.isDiscrete())
+			overlayDiscreteData();
+		else
+			overlayContinuousData();
+	}
+	
+	private void overlayContinuousData() {
+		ThreeColorGradient gradient = AnalysisColours.get().expressionGradient;
+		for(String uniprot: displayedNodes) {
+			if(dataOverlay.getIdentifierValueMap().get(uniprot) == null) continue;
+			String color = gradient.getColor(dataOverlay.getIdentifierValueMap().get(uniprot), dataOverlay.getMinValue(), dataOverlay.getMaxValue());
+			cy.highlightNode(uniprot, color);
+		}
+	}
+
+	private void overlayDiscreteData() {
+		Map<Double, String> colourMap = OverlayColours.get().getColours();
+		for(String uniprot : displayedNodes) {
+			String color = colourMap.get(dataOverlay.getIdentifierValueMap().get(uniprot));
+			if(color == null || color == "") continue;
+			cy.highlightNode(uniprot, color);
+		}
+	}
+	
+	public void updateOverlayColumn(int column) {
+		dataOverlay.setColumn(column);
+		overlayData();
+	}
+
+	public void pairwisePropertiesChanged() {
+		cy.clearCytoscapeGraph();
+		displayedNodes.clear();
+		this.edgeIdToEntity.clear();
+		this.edgeCount = 0;
+		initBaseCytoscape();
+	}
+	
 	@Override
 	public void onNodeClicked(String id, String name) {
 		// TODO Auto-generated method stub
@@ -236,5 +308,4 @@ public class PairwisePopupCytoscapePanel implements Handler {
 		// TODO Auto-generated method stub
 		
 	}
-	
 }

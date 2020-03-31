@@ -36,6 +36,7 @@ public class NewPairwisePopup extends AbstractPairwisePopup implements PairwiseT
 
 	private String popupId;
 	private PairwisePopupCytoscapePanel cyController;
+	private PairwisePopupTablePanel tablePanel;
 	private List<PairwiseOverlayObject> pairwiseOverlayProperties;
 	private Set<String> diagramNodes;
 	
@@ -84,7 +85,7 @@ public class NewPairwisePopup extends AbstractPairwisePopup implements PairwiseT
 		cyController = new PairwisePopupCytoscapePanel(popupId, diagramNodes, pairwiseOverlayProperties, RESOURCES);
 		
 		//must add Results table after cyController is created
-		main.add(new PairwisePopupTablePanel(pairwiseOverlayProperties, diagramNodes, RESOURCES, this));
+		main.add(tablePanel = new PairwisePopupTablePanel(pairwiseOverlayProperties, diagramNodes, RESOURCES, this));
 	}
 	
 	private void setTitlePanel() {
@@ -167,6 +168,16 @@ public class NewPairwisePopup extends AbstractPairwisePopup implements PairwiseT
 	public void addInteractions(Set<PairwiseTableEntity> entities) {
 		cyController.addInteractions(entities);
 	}
+	
+	public void loadOverlay() {
+		cyController.loadOverlay();
+		tablePanel.loadOverlay();
+	}
+	
+	public void changeOverlayColumn(int column) {
+		cyController.updateOverlayColumn(column);
+		tablePanel.updateOverlayColumn(column);
+	}
 
 	/**
 	 * Below here is all for styling. Handles styles of PairwisePopup,
@@ -242,17 +253,7 @@ public class NewPairwisePopup extends AbstractPairwisePopup implements PairwiseT
 	}
 
 	public void updatePairwiseObjects(List<PairwiseOverlayObject> currentPairwiseObjects) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void loadOverlay() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void changeOverlayColumn(int column) {
-		// TODO Auto-generated method stub
-		
+		cyController.pairwisePropertiesChanged();
+		tablePanel.pairwisePropertiesChanged();
 	}
 }
