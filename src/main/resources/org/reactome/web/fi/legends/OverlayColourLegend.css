@@ -9,3 +9,11 @@
     float: left;
     margin-right: 10px;
 }
+
+.legendLabel{
+	padding: 3px;
+	margin: 5px 0;
+	border-radius: 16px;
+	text-align: center;
+	font-weight: bold;
+}

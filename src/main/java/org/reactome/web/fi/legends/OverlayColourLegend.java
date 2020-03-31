@@ -2,7 +2,6 @@ package org.reactome.web.fi.legends;
 
 import java.util.Map;
 
-import org.reactome.web.diagram.common.PwpButton;
 import org.reactome.web.diagram.legends.LegendPanel;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
@@ -12,14 +11,12 @@ import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -101,8 +98,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 			Label lbl = new Label(i);
 			String colour = colourMap.get(new Double(dataOverlay.getLegendTypes().indexOf(i)));
 			lbl.getElement().getStyle().setBackgroundColor(colour);
-			lbl.getElement().getStyle().setPadding(3, Unit.PX);
-			lbl.getElement().getStyle().setMargin(0, Unit.PX);
+			lbl.setStyleName(IDGRESOURCES.getCSS().legendLabel());
 			colourMapPanel.add(lbl);
 		});
 		
@@ -153,5 +149,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		String colourMapPanel();
 		
 		String outerPanel();
+		
+		String legendLabel();
 	}
 }
