@@ -29,11 +29,13 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 	public final static Integer PAGE_SIZE = 10;
 	
 	private IDGListHandler<PairwiseTableEntity> sorter;
+	private ListDataProvider<PairwiseTableEntity> provider;
 	
 	
 	public PairwisePopupResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, IDGPager pager, Handler handler) {
 		
 		super(PAGE_SIZE);
+		this.provider = provider;
 		this.setRowData(0, entities);
 		this.setAutoHeaderRefreshDisabled(true);
 		this.setWidth("100%");
@@ -115,5 +117,9 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 		this.setRowCount(entities.size(), true);
 		
 		this.redraw();
+	}
+	
+	public void updateSorter() {
+		sorter.setList(provider.getList());
 	}
 }

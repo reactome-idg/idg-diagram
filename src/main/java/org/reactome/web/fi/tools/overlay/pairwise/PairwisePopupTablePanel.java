@@ -230,6 +230,7 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 		
 		provider.getList().clear();
 		provider.getList().addAll(newList);
+		resultsTable.updateSorter();
 		onPageChanged();
 	}
 	
@@ -253,6 +254,7 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 				filteredTableEntities = new ArrayList<>(tableEntities);
 				provider.setList(filteredTableEntities);
 				provider.refresh();
+				resultsTable.updateSorter();
 				getInitialInteractors(); //can add initial interactors only after uniprotToGeneMap and pairwiseOverlayMap are set.
 				loadOverlay();
 			}
