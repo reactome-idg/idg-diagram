@@ -16,12 +16,14 @@ import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -32,13 +34,16 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @author brunsont
  *
  */
-public class NewPairwisePopup extends AbstractPairwisePopup implements PairwiseTableHandler{
+public class NewPairwisePopup extends DialogBox implements PairwiseTableHandler{
 
 	private String popupId;
 	private PairwisePopupCytoscapePanel cyController;
 	private PairwisePopupTablePanel tablePanel;
 	private List<PairwiseOverlayObject> pairwiseOverlayProperties;
 	private Set<String> diagramNodes;
+	
+	private int zIndex;
+	private boolean focused = false;
 	
 	private FlowPanel main;
 	
@@ -53,6 +58,7 @@ public class NewPairwisePopup extends AbstractPairwisePopup implements PairwiseT
 	}
 	
 	private void initPanel(String popupId, int zIndex, List<PairwiseOverlayObject> pairwiseOverlayProperties) {
+		this.zIndex = zIndex;
 		this.popupId = popupId;
 		this.pairwiseOverlayProperties = pairwiseOverlayProperties;
 		initPanel();
@@ -82,7 +88,7 @@ public class NewPairwisePopup extends AbstractPairwisePopup implements PairwiseT
 		
 		//create PairwisePopupCytoscapePanel after panel creation 
 		//otherwise, cytoscape.js has no panel to mount to
-		cyController = new PairwisePopupCytoscapePanel(popupId, diagramNodes, pairwiseOverlayProperties, RESOURCES);
+		cyController = new PairwisePopupCytoscapePanel(popupId, diagramNodes, pairwiseOverlayProperties, RESOURCES, zIndex);
 		
 		//must add Results table after cyController is created
 		main.add(tablePanel = new PairwisePopupTablePanel(pairwiseOverlayProperties, diagramNodes, RESOURCES, this));
@@ -101,7 +107,14 @@ public class NewPairwisePopup extends AbstractPairwisePopup implements PairwiseT
 	private void panelClicked() {
 		PairwiseOverlayFactory.get().resetZIndexes();
 		this.getElement().getStyle().setZIndex(PairwiseOverlayFactory.get().getMaxZIndex());
-		focused=true;
+		focused = true;
+		cyController.setFocused(focused);
+	}
+	
+	public void resetZIndex() {
+		this.getElement().getStyle().setZIndex(zIndex);
+		focused = false;
+		cyController.setFocused(focused);
 	}
 
 	private FlowPanel getMainPanel() {
@@ -115,10 +128,7 @@ public class NewPairwisePopup extends AbstractPairwisePopup implements PairwiseT
 		cyPanel.getElement().setId(containerId);
 		cyPanel.setStyleName(RESOURCES.getCSS().cyView());
 		result.add(cyPanel);
-		
-//		cyController = new PairwisePopupCytoscapePanel(popupId, diagramNodes, pairwiseOverlayProperties, RESOURCES);
-//		result.add(new PairwisePopupTablePanel(pairwiseOverlayProperties, diagramNodes, RESOURCES, this));
-		
+
 		return result;
 	}
 	
@@ -177,6 +187,17 @@ public class NewPairwisePopup extends AbstractPairwisePopup implements PairwiseT
 	public void changeOverlayColumn(int column) {
 		cyController.updateOverlayColumn(column);
 		tablePanel.updateOverlayColumn(column);
+	}
+
+	@Override
+	protected void endDragging(MouseUpEvent event) {
+		cyController.resize();
+		super.endDragging(event);
+	}
+
+	public void updatePairwiseObjects(List<PairwiseOverlayObject> currentPairwiseObjects) {
+		cyController.pairwisePropertiesChanged();
+		tablePanel.pairwisePropertiesChanged();
 	}
 
 	/**
@@ -250,10 +271,7 @@ public class NewPairwisePopup extends AbstractPairwisePopup implements PairwiseT
 		
 		String exportButton();
 		
-	}
-
-	public void updatePairwiseObjects(List<PairwiseOverlayObject> currentPairwiseObjects) {
-		cyController.pairwisePropertiesChanged();
-		tablePanel.pairwisePropertiesChanged();
+		String pagerPanel();
+		
 	}
 }

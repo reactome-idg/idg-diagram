@@ -695,8 +695,8 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		else if(!dataOverlay.isDiscrete())
 			dataOverlayValue = dataOverlay.getIdentifierValueMap().get(id) +"";
 		
-		
-		PairwiseNodeContextPopup popup = new PairwiseNodeContextPopup(id,name, dataOverlayValue, new PairwiseNodeContextPopup.Handler() {
+		boolean showRemove = !diagramNodes.contains(id);
+		PairwiseNodeContextPopup popup = new PairwiseNodeContextPopup(id,name, dataOverlayValue, showRemove, new PairwiseNodeContextPopup.Handler() {
 			@Override
 			public void onRemoveButtonClicked(String id) {
 				PairwisePopup.this.removeEdge(id);
@@ -731,7 +731,6 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 				displayedEdges.remove(i);
 			}
 		}
-		filterTableEntities();
 	}
 
 	@Override
@@ -893,6 +892,8 @@ public class PairwisePopup extends AbstractPairwisePopup implements Handler{
 		String smallText();
 		
 		String exportButton();
+		
+		String pagerPanel();
 		
 	}
 }

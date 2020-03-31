@@ -141,6 +141,10 @@
 	font-size: small;
 }
 
+.pagerPanel{
+	width: 100%;
+}
+
 .pager{
 	display: inline;
 	float: right;
@@ -160,6 +164,8 @@
 .eTypeAndTissueLabel {
 	display: inline;
     padding: 10px 0 0 10px;
+    float: left;
+    color: white;
 }
 
 .smallText {

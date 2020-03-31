@@ -100,6 +100,7 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 		
 		provider = new ListDataProvider<>();
 		pager = new IDGPager(this);
+		pager.setStyleName(RESOURCES.getCSS().pager());
 		resultsTable = new PairwisePopupResultsTable(filteredTableEntities, provider, pager, new PairwisePopupResultsTable.Handler(){
 			@Override
 			public void onColumnSorted() {
@@ -126,7 +127,7 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 		FlowPanel result = new FlowPanel();
 		
 		result.getElement().getStyle().setHeight(30, Unit.PX);
-		result.setStyleName(RESOURCES.getCSS().pager());
+		result.setStyleName(RESOURCES.getCSS().pagerPanel());
 		
 		result.add(this.eTypeAndTissue = new InlineLabel());
 		eTypeAndTissue.setStyleName(RESOURCES.getCSS().smallText());
@@ -295,9 +296,21 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 		filteredTableEntities.clear();
 		filteredTableEntities.addAll(tableEntities);
 		provider.refresh();
+		
+		updateETypeAndTissueLabel();
 	}
 		
 	
+	private void updateETypeAndTissueLabel() {
+		//Use cytoscape views version of dataOverlay so it still works 
+		//if results are filtered to nothing
+		if(dataOverlay.getEType().equals("Target Development Level"))
+			this.eTypeAndTissue.setText("Overlay data source: " + dataOverlay.getEType());
+		else
+			this.eTypeAndTissue.setText("Overlay data source: " + dataOverlay.getTissueTypes().get(dataOverlay.getColumn()) + " - " + dataOverlay.getEType());
+	
+	}
+
 	private Set<String> collectUniprots() {
 		Set<String> uniprots = new HashSet<>();
 		for(PairwiseTableEntity entity : tableEntities)

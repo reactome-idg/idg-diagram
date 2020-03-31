@@ -34,7 +34,7 @@ public class PairwiseNodeContextPopup extends DialogBox{
 	private String accession;
 	private Label targetDevLevel;
 	
-	public PairwiseNodeContextPopup(String accession, String name, String dataOverlayValue, Handler handler) {
+	public PairwiseNodeContextPopup(String accession, String name, String dataOverlayValue, boolean showRemove, Handler handler) {
 		this.accession = accession;
 		this.handler = handler;
 		setStyleName(RESOURCES.getCSS().nodePopup());
@@ -67,7 +67,7 @@ public class PairwiseNodeContextPopup extends DialogBox{
 			infoPanel.add(new Label("Overlay value: " + (dataOverlayValue == "undefined" ? "N/A":dataOverlayValue)));
 		
 		main.add(infoPanel);
-		main.add(getOptionsPanel());
+		main.add(getOptionsPanel(showRemove));
 		setTitlePanel(name);
 		setWidget(main);
 	}
@@ -89,12 +89,14 @@ public class PairwiseNodeContextPopup extends DialogBox{
 	 * Add a row of options buttons for context popups
 	 * @return
 	 */
-	private FlowPanel getOptionsPanel() {
+	private FlowPanel getOptionsPanel(boolean showRemove) {
 		FlowPanel result = new FlowPanel();
 		
-		CommonButton removeButton;
-		result.add(removeButton = new CommonButton("Remove", e->onRemoveButtonClicked()));
-		removeButton.setStyleName(RESOURCES.getCSS().removeButton());
+		if(showRemove) {
+			CommonButton removeButton;
+			result.add(removeButton = new CommonButton("Remove", e->onRemoveButtonClicked()));
+			removeButton.setStyleName(RESOURCES.getCSS().removeButton());
+		}
 		
 		return result;
 	}

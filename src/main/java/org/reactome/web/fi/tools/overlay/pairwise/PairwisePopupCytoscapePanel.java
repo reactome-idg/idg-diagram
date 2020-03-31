@@ -5,13 +5,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
+import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
+import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.model.DataOverlay;
@@ -19,18 +22,20 @@ import org.reactome.web.fi.overlay.profiles.OverlayColours;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.gwtCytoscapeJs.client.CytoscapeWrapper.Handler;
+import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 
  * @author brunsont
  *
  */
-public class PairwisePopupCytoscapePanel implements Handler {
+public class PairwisePopupCytoscapePanel implements Handler{
 
 	public interface CytoscapePanelHandler{
 		
@@ -48,10 +53,15 @@ public class PairwisePopupCytoscapePanel implements Handler {
 	
 	private DataOverlay dataOverlay;
 	
-	public PairwisePopupCytoscapePanel(String popupId, Set<String> diagramNodes, List<PairwiseOverlayObject> pairwiseOverlayObjects, NewPairwisePopup.Resources RESOURCES) {
+	private boolean focused;
+	private int zIndex;
+	private FIViewInfoPopup infoPopup;
+	
+	public PairwisePopupCytoscapePanel(String popupId, Set<String> diagramNodes, List<PairwiseOverlayObject> pairwiseOverlayObjects, NewPairwisePopup.Resources RESOURCES, int zIndex) {
 		this.diagramNodes = diagramNodes;
 		this.displayedNodes = new HashSet<>();
 		this.edgeIdToEntity = new HashMap<>();
+		this.zIndex = zIndex;
 		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
 		this.containerId = "cy-" + popupId;
 		
@@ -243,52 +253,133 @@ public class PairwisePopupCytoscapePanel implements Handler {
 
 	public void pairwisePropertiesChanged() {
 		cy.clearCytoscapeGraph();
+		this.pairwiseOverlayObjects = PairwiseOverlayFactory.get().getCurrentPairwiseProperties();
 		displayedNodes.clear();
 		this.edgeIdToEntity.clear();
 		this.edgeCount = 0;
 		initBaseCytoscape();
 	}
 	
+	protected void removeEdge(String id) {
+		if(diagramNodes.contains(id)) return;
+		cy.removeCytoscapeNode(id);
+		displayedNodes.remove(id);
+		
+		edgeIdToEntity.keySet().forEach(k -> {
+			if(k.getInteractorId() == id) {
+				edgeIdToEntity.remove(k);
+				return;
+			}
+		});
+	}
+	
+	public void resize() {
+		cy.resize();
+	}
+	
+	public void setFocused(boolean focused) {
+		this.focused = focused;
+	}
+	
+	private int getCorrectZIndex() {
+		if(focused == true)
+			return PairwiseOverlayFactory.get().getMaxZIndex() + 1;
+		return zIndex+1;
+	}
+
+	@Override
+	public void onNodeHovered(String id, String name, int x, int y) {
+		if(infoPopup == null) infoPopup = new FIViewInfoPopup();
+		infoPopup.getElement().getStyle().setZIndex(getCorrectZIndex());
+		infoPopup.setNodeLabel(id, name, x, y);
+		infoPopup.show();
+	}
+
+	@Override
+	public void onEdgeHovered(String id, int x, int y) {
+		if(infoPopup == null) infoPopup = new FIViewInfoPopup();
+		infoPopup.getElement().getStyle().setZIndex(getCorrectZIndex());
+		
+		String description = "";
+		
+		PairwiseTableEntity edge = null;
+		for(Entry<PairwiseTableEntity, Integer> entry : edgeIdToEntity.entrySet()) {
+			if(Integer.parseInt(id) == entry.getValue()) {
+				edge = entry.getKey();
+				break;
+			}
+		}
+		if(edge == null)return;
+		
+		if(edge.getPosOrNeg() == "solid")
+			description = "Diagram source edge";
+		else
+			description = edge.getDataDesc() + "|" + edge.getPosOrNeg();
+		
+		infoPopup.setEdgeLabel(description, x, y);
+	}
+
+	@Override
+	public void onNodeMouseOut() {
+		infoPopup.hide();
+	}
+
+	@Override
+	public void onEdgeMouseOut() {
+		infoPopup.hide();
+		
+	}
+
+	/**
+	 * Opens remove context button on context click
+	 */
+	@Override
+	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
+		String dataOverlayValue = null;
+		if(dataOverlay.isDiscrete() && !dataOverlay.getEType().equals("Target Development Level"))
+			dataOverlayValue = dataOverlay.getLegendTypes().get((int)Math.round(dataOverlay.getIdentifierValueMap().get(id)));
+		else if(!dataOverlay.isDiscrete())
+			dataOverlayValue = dataOverlay.getIdentifierValueMap().get(id) +"";
+		
+		boolean showRemove = !diagramNodes.contains(id);
+		PairwiseNodeContextPopup popup = new PairwiseNodeContextPopup(id,name, dataOverlayValue, showRemove, new PairwiseNodeContextPopup.Handler() {
+			@Override
+			public void onRemoveButtonClicked(String id) {
+				removeEdge(id);
+				
+			}
+		});
+		
+		TCRDInfoLoader.loadSingleTargetLevelProtein(id, new AsyncCallback<String>() {
+			@Override
+			public void onSuccess(String result) {
+				popup.setTargetDevLevel(result);
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Console.error(caught);
+			}
+		});
+		
+		popup.getElement().getStyle().setZIndex(getCorrectZIndex());
+		popup.setPopupPosition(x+5, y+5);
+		popup.getElement().setId(this.containerId);
+		popup.show();
+	}
+	
 	@Override
 	public void onNodeClicked(String id, String name) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void onEdgeClicked(String id) {
 		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onNodeHovered(String id, String name, int x, int y) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onEdgeHovered(String id, int x, int y) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onNodeMouseOut() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onEdgeMouseOut() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void onCytoscapeCoreContextEvent(int x, int y) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -300,12 +391,5 @@ public class PairwisePopupCytoscapePanel implements Handler {
 	@Override
 	public void onEdgeContextSelectEvent(String id, int x, int y) {
 		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
-		// TODO Auto-generated method stub
-		
 	}
 }

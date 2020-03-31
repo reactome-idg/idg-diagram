@@ -116,8 +116,4 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 		
 		this.redraw();
 	}
-	
-	private void onSort() {
-		
-	}
 }
