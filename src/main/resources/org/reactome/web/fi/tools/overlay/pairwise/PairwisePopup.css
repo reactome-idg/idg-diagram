@@ -148,6 +148,7 @@
 .pager{
 	display: inline;
 	float: right;
+	color: white;
 }
 
 .pager td {
