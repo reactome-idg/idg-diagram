@@ -1,5 +1,6 @@
 package org.reactome.web.fi.client.visualisers.diagram.renderers;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
@@ -37,16 +38,17 @@ public class IDGDecoratorRenderer {
 	 * @param offset
 	 */
 	public void doRender(AdvancedContext2d ctx, DiagramObject obj, Double factor, Coordinate offset) {
-		SummaryItem summaryItem = makeSummaryItem(obj, factor, offset);
-		//dont render if no interactions exist
-		if(summaryItem.getNumber() == 0 || summaryItem.getNumber() == null) return;
-		
 		Node node = (Node) obj;
 		
-		node.setInteractorsSummary(summaryItem);
-		InteractorsSummary summary = new InteractorsSummary("test", obj.getId(), summaryItem.getNumber());
-		node.setDiagramEntityInteractorsSummary(summary);
-		
+		if (node.getInteractorsSummary() == null) {
+			SummaryItem summaryItem = makeSummaryItem(obj, factor, offset);
+			//dont render if no interactions exist
+			if (summaryItem.getNumber() == 0 || summaryItem.getNumber() == null)
+				return;
+			node.setInteractorsSummary(summaryItem);
+			InteractorsSummary summary = new InteractorsSummary("test", obj.getId(), summaryItem.getNumber());
+			node.setDiagramEntityInteractorsSummary(summary);
+		}
 		ctx.save();
 		ctx.setGlobalAlpha((factor - 0.5) * 2);		
 		ctx.setFillStyle(DiagramColours.get().PROFILE.getProperties().getSelection());
@@ -96,20 +98,17 @@ public class IDGDecoratorRenderer {
 		
 		GraphPhysicalEntity entity = obj.getGraphObject(); //should always be GraphPhysicalEntity
 		Set<GraphPhysicalEntity> peSet = entity.getParticipants();
+		Map<String, Integer> geneToTotalMap = PairwiseOverlayFactory.get().getGeneToTotalMap();
 		for(GraphPhysicalEntity pe : peSet) {
 			String identifier = pe.getIdentifier();
 			
-			if(identifier == null ) continue; //ensure GraphPhysicalEntity contains an identifier. if not, continue
+			if(identifier == null) continue; //ensure GraphPhysicalEntity contains an identifier. if not, continue
 			if(identifier.contains("ENSG")) {
 				int index = pe.getDisplayName() == null ? 0 : pe.getDisplayName().indexOf(" ");
 				identifier = PairwiseInfoService.getGeneToUniprotMap().get(pe.getDisplayName().substring(0, index));
 			}
 			
-			for(PairwiseNumberEntity numberEntity : PairwiseOverlayFactory.get().getPairwiseNumberEntities()) {
-				if(identifier == numberEntity.getGene()) {
-					result += (numberEntity.getPosNum() + numberEntity.getNegNum());
-				}
-			}
+			result += geneToTotalMap.get(identifier) != null ? geneToTotalMap.get(identifier): 0;
 			
 		}
 		return result;

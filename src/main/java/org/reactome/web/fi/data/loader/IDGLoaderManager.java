@@ -1,5 +1,7 @@
 package org.reactome.web.fi.data.loader;
 
+import java.util.Map;
+
 import org.reactome.web.diagram.data.ContentFactory;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
@@ -131,11 +133,12 @@ OverlayLoader.Handler{
 		PairwiseDataLoader loader = new PairwiseDataLoader();
 		loader.loadPairwiseData(pairwiseOverlayProperties, true, new PairwiseDataLoader.Handler() {
 			@Override
-			public void onPairwiseNumbersLoaded(RawInteractors result, PairwiseNumberEntities entities) {
+			public void onPairwiseNumbersLoaded(RawInteractors result, PairwiseNumberEntities entities, Map<String, Integer> geneToTotalMap) {
 				ContentFactory.fillInteractorsContent(context, result);
 				eventBus.fireEventFromSource(new InteractorsLoadedEvent(result, new Long(1)), this);
 				PairwiseOverlayFactory.get().setInteractorEntities(result);
 				PairwiseOverlayFactory.get().setPairwiseNumberEntities(entities.getPairwiseNumberEntities());
+				PairwiseOverlayFactory.get().setGeneToTotalMap(geneToTotalMap);
 				eventBus.fireEventFromSource(new PairwiseNumbersLoadedEvent(), this);
 				
 			}

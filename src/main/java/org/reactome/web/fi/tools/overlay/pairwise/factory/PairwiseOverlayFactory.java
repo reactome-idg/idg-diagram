@@ -37,6 +37,8 @@ public class PairwiseOverlayFactory{
 	private final int MAXIMUM_Z_INDEX = 1998;
 	
 	private DataOverlayProperties dataOverlayProperties;
+
+	private Map<String, Integer> geneToTotalMap;
 	
 	/**
 	 * On initialization, need to load TDark set and UniprotToGeneMap
@@ -208,5 +210,13 @@ public class PairwiseOverlayFactory{
 	public boolean hasOverlay() {
 		if(this.currentPairwiseObjects != null && this.currentPairwiseObjects.size() > 0) return true;
 		return false;
+	}
+
+	public void setGeneToTotalMap(Map<String, Integer> geneToTotalMap) {
+		this.geneToTotalMap = geneToTotalMap;
+	}
+	
+	public Map<String, Integer> getGeneToTotalMap(){
+		return this.geneToTotalMap;
 	}
 }

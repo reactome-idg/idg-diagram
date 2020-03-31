@@ -39,7 +39,7 @@ public class PairwiseDataLoader {
 	
 	public abstract interface Handler{
 		default void onPairwiseDataLoaded(List<PairwiseTableEntity> tableEntities) {};
-		default void onPairwiseNumbersLoaded(RawInteractors rawInteractors, PairwiseNumberEntities entities) {};
+		default void onPairwiseNumbersLoaded(RawInteractors rawInteractors, PairwiseNumberEntities entities, Map<String, Integer> geneToTotalMap) {};
 		void onPairwiseLoaderError(Throwable exception);
 	}
 	
@@ -75,13 +75,13 @@ public class PairwiseDataLoader {
 							JSONObject obj = new JSONObject();
 							obj.put("pairwiseNumberEntities", val.isArray());
 							PairwiseNumberEntities numberEntities = PairwiseNumberEntitiesFactory.getPairwiseNumberEntities(PairwiseNumberEntities.class, obj.toString());
-							handler.onPairwiseNumbersLoaded(processPairwiseNumbers(properties, numberEntities), numberEntities);
+							handler.onPairwiseNumbersLoaded(processPairwiseNumbers(properties, numberEntities), numberEntities, getInteractorToNumberMap(numberEntities.getPairwiseNumberEntities()));
 						}else {
 							JSONValue val = JSONParser.parseStrict(response.getText());
 							JSONObject obj = new JSONObject();
 							obj.put("pairwiseEntities", val.isArray());
 							PairwiseEntities entities = PairwiseEntitiesFactory.getPairwiseEntities(PairwiseEntities.class, obj.toString());
-							handler.onPairwiseDataLoaded(getEntitiesMap(entities));
+							handler.onPairwiseDataLoaded(getEntitiesList(entities));
 						}
 					}catch(Exception e) {
 						handler.onPairwiseLoaderError(e);
@@ -124,8 +124,25 @@ public class PairwiseDataLoader {
 		
 		return result;
 	}
+	
+	private Map<String, Integer> getInteractorToNumberMap(List<PairwiseNumberEntity> numberEntities){
+		Map<String, Integer> result = new HashMap<>();
+		
+		for(PairwiseNumberEntity entity: numberEntities) {
+			int current = result.get(entity.getGene()) != null ? result.get(entity.getGene()) : 0;
+			
+			result.put(entity.getGene(), current+entity.getPosNum()+entity.getNegNum());
+		}
+		
+		return result;
+	}
 
-	private List<PairwiseTableEntity> getEntitiesMap(PairwiseEntities entities) {
+	/**
+	 * Returns list of PairwiseTableEntities sorted by the gene name of the interactor
+	 * @param entities
+	 * @return
+	 */
+	private List<PairwiseTableEntity> getEntitiesList(PairwiseEntities entities) {
 		
 		List<PairwiseTableEntity> tableEntities = new ArrayList<>();
 		for(PairwiseEntity entity : entities.getPairwiseEntities()) {
