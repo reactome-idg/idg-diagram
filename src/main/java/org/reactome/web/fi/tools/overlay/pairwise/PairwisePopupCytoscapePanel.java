@@ -57,7 +57,7 @@ public class PairwisePopupCytoscapePanel implements Handler{
 	private int zIndex;
 	private FIViewInfoPopup infoPopup;
 	
-	public PairwisePopupCytoscapePanel(String popupId, Set<String> diagramNodes, List<PairwiseOverlayObject> pairwiseOverlayObjects, NewPairwisePopup.Resources RESOURCES, int zIndex) {
+	public PairwisePopupCytoscapePanel(String popupId, Set<String> diagramNodes, List<PairwiseOverlayObject> pairwiseOverlayObjects, PairwisePopup.Resources RESOURCES, int zIndex) {
 		this.diagramNodes = diagramNodes;
 		this.displayedNodes = new HashSet<>();
 		this.edgeIdToEntity = new HashMap<>();

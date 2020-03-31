@@ -12,6 +12,7 @@ import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseRelati
 import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseSourceColumn;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.ListDataProvider;
@@ -28,7 +29,7 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 	
 	public final static Integer PAGE_SIZE = 10;
 	
-	private IDGListHandler<PairwiseTableEntity> sorter;
+	private ListHandler<PairwiseTableEntity> sorter;
 	private ListDataProvider<PairwiseTableEntity> provider;
 	
 	
@@ -46,13 +47,8 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 		provider.addDataDisplay(this);
 		provider.setList(entities);
 		
-		//implementation of List handler so an event can be fired after column is sorted.
-		sorter = new IDGListHandler<PairwiseTableEntity>(provider.getList(), new IDGListHandler.ColumnSortedHandler() {
-			@Override
-			public void onColumnsSorted() {
-				handler.onColumnSorted();
-			}
-		});
+		sorter = new ListHandler<>(provider.getList());
+		
 		this.addColumnSortHandler(sorter);
 		
 		DiagramGeneNameColumn diagramGeneNameColumn = new DiagramGeneNameColumn();

@@ -13,7 +13,6 @@ import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
-import org.reactome.web.fi.tools.overlay.pairwise.NewPairwisePopup;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwisePopup;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
@@ -27,7 +26,7 @@ public class PairwiseOverlayFactory{
 
 	private static PairwiseOverlayFactory factory;
 	
-	private Map<String, NewPairwisePopup> popupMap;
+	private Map<String, PairwisePopup> popupMap;
 	private Map<String, String> uniprotToGeneMap;
 	private Set<String> tDarkSet;
 	private List<PairwiseOverlayObject> currentPairwiseObjects;
@@ -74,7 +73,7 @@ public class PairwiseOverlayFactory{
 	 */
 	public void openPopup(GraphObject graphObject) {
 		if(!popupMap.keySet().contains(graphObject.getStId()) && currentPairwiseObjects.size() > 0) {
-			NewPairwisePopup popup = new NewPairwisePopup(graphObject, currentPairwiseObjects, getZIndex());
+			PairwisePopup popup = new PairwisePopup(graphObject, currentPairwiseObjects, getZIndex());
 			popupMap.put(graphObject.getStId(), popup);
 			popup.show();
 		}
@@ -87,7 +86,7 @@ public class PairwiseOverlayFactory{
 	 */
 	public void openPopup(String uniprot, String geneName) {
 		if(!popupMap.keySet().contains(uniprot) && currentPairwiseObjects.size() > 0) {
-			NewPairwisePopup popup = new NewPairwisePopup(uniprot, geneName, currentPairwiseObjects, getZIndex());
+			PairwisePopup popup = new PairwisePopup(uniprot, geneName, currentPairwiseObjects, getZIndex());
 			popupMap.put(uniprot, popup);
 			popup.show();
 		}
@@ -121,7 +120,7 @@ public class PairwiseOverlayFactory{
 	 */
 	public void setCurrentPairwiseProperties(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.currentPairwiseObjects = pairwiseOverlayObjects;
-		for(NewPairwisePopup popup : popupMap.values())
+		for(PairwisePopup popup : popupMap.values())
 			popup.updatePairwiseObjects(this.currentPairwiseObjects);
 	}
 	
@@ -135,7 +134,7 @@ public class PairwiseOverlayFactory{
 	 */
 	public void setDataOverlayProperties(DataOverlayProperties dataOverlayProperties) {
 		this.dataOverlayProperties = dataOverlayProperties;
-		for(NewPairwisePopup popup : popupMap.values())
+		for(PairwisePopup popup : popupMap.values())
 			popup.loadOverlay();
 	}
 
@@ -148,7 +147,7 @@ public class PairwiseOverlayFactory{
 	 * @param column
 	 */
 	public void setOverlayColumn(int column) {
-		for(NewPairwisePopup popup: popupMap.values())
+		for(PairwisePopup popup: popupMap.values())
 			popup.changeOverlayColumn(column);
 	}
 
@@ -161,7 +160,7 @@ public class PairwiseOverlayFactory{
 	}
 
 	public void resetZIndexes() {
-		for(NewPairwisePopup popup : popupMap.values())
+		for(PairwisePopup popup : popupMap.values())
 			popup.resetZIndex();
 	}
 

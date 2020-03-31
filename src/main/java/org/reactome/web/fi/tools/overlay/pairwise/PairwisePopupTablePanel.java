@@ -43,7 +43,7 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 	
 	private PairwiseTableHandler handler;
 	
-	private NewPairwisePopup.Resources RESOURCES;
+	private PairwisePopup.Resources RESOURCES;
 	private List<PairwiseOverlayObject> pairwiseOverlayProperties;
 	private Set<String> diagramNodes;
 	
@@ -65,7 +65,7 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 	
 	private DataOverlay dataOverlay;
 	
-	public PairwisePopupTablePanel(List<PairwiseOverlayObject> pairwiseOverlayProperties, Set<String> diagramNodes, NewPairwisePopup.Resources RESOURCES, PairwiseTableHandler handler) {
+	public PairwisePopupTablePanel(List<PairwiseOverlayObject> pairwiseOverlayProperties, Set<String> diagramNodes, PairwisePopup.Resources RESOURCES, PairwiseTableHandler handler) {
 		this.RESOURCES = RESOURCES;
 		this.handler = handler;
 		this.pairwiseOverlayProperties = pairwiseOverlayProperties;
