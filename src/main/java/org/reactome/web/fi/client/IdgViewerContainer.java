@@ -237,6 +237,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 	@Override
 	public void onPairwiseInteractorsReset(PairwiseInteractorsResetEvent event) {
 		PairwiseOverlayFactory.get().setPairwiseNumberEntities(new ArrayList<>());
+		PairwiseOverlayFactory.get().setGeneToTotalMap(new HashMap<>());
 		
 		if(activeVisualiser == fIViewVisualizer) return;
 		
