@@ -41,9 +41,9 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	private DataOverlay dataOverlay;
 	private IDGDecoratorRenderer decoratorRenderer;
 	
-	public ContinuousDataOverlayRenderer(EventBus eventBus) {
+	public ContinuousDataOverlayRenderer(EventBus eventBus, IDGDecoratorRenderer idgDecoratorRenderer) {
 		this.eventBus = eventBus;
-		this.decoratorRenderer = new IDGDecoratorRenderer();
+		this.decoratorRenderer = idgDecoratorRenderer;
 		eventBus.addHandler(RenderOtherContextDialogInfoEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
 	}

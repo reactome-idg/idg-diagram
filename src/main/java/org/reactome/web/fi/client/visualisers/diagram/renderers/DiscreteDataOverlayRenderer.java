@@ -51,9 +51,9 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 	private DataOverlay dataOverlay;
 	private IDGDecoratorRenderer decoratorRenderer;
 	
-	public DiscreteDataOverlayRenderer(EventBus eventBus){
+	public DiscreteDataOverlayRenderer(EventBus eventBus, IDGDecoratorRenderer idgDecoratorRenderer){
 		this.eventBus = eventBus;
-		this.decoratorRenderer = new IDGDecoratorRenderer();
+		this.decoratorRenderer = idgDecoratorRenderer;
 		eventBus.addHandler(RenderOtherContextDialogInfoEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
 	}

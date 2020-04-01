@@ -139,7 +139,7 @@ OverlayLoader.Handler{
 				PairwiseOverlayFactory.get().setInteractorEntities(result);
 				PairwiseOverlayFactory.get().setPairwiseNumberEntities(entities.getPairwiseNumberEntities());
 				PairwiseOverlayFactory.get().setGeneToTotalMap(geneToTotalMap);
-				eventBus.fireEventFromSource(new PairwiseNumbersLoadedEvent(), this);
+				eventBus.fireEventFromSource(new PairwiseNumbersLoadedEvent(context, geneToTotalMap), this);
 				
 			}
 			@Override

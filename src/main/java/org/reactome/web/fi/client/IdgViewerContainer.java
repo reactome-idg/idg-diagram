@@ -25,6 +25,7 @@ import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.fi.client.visualisers.OverlayDataHandler;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.ContinuousDataOverlayRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOverlayRenderer;
+import org.reactome.web.fi.client.visualisers.diagram.renderers.IDGDecoratorRenderer;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualizer;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
@@ -134,8 +135,11 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 				
 		bind();
 		
-		OverlayDataHandler.getHandler().registerHelper(new DiscreteDataOverlayRenderer(eventBus));
-		OverlayDataHandler.getHandler().registerHelper(new ContinuousDataOverlayRenderer(eventBus));
+		//create custom renderers for rendering over or re-rendering pathway diagrams. 
+		//Each custom renderer needs to access the decorator renderer
+		IDGDecoratorRenderer idgDecoratorRenderer = new IDGDecoratorRenderer(eventBus);
+		OverlayDataHandler.getHandler().registerHelper(new DiscreteDataOverlayRenderer(eventBus, idgDecoratorRenderer));
+		OverlayDataHandler.getHandler().registerHelper(new ContinuousDataOverlayRenderer(eventBus, idgDecoratorRenderer));
 	}
 	
 	@Override

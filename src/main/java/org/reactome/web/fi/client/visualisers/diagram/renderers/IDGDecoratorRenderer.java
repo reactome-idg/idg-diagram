@@ -17,18 +17,26 @@ import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.fi.data.layout.ShapeImpl;
 import org.reactome.web.fi.data.layout.SummaryItemImpl;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
+import org.reactome.web.fi.events.PairwiseNumbersLoadedEvent;
+import org.reactome.web.fi.handlers.PairwiseNumbersLoadedHandler;
+
+import com.google.gwt.event.shared.EventBus;
 
 /**
  * 
  * @author brunsont
  *
  */
-public class IDGDecoratorRenderer {
+public class IDGDecoratorRenderer implements PairwiseNumbersLoadedHandler {
 		
+	private EventBus eventBus;
+	private Map<String,Integer> currentTotalsMap;
 	
-	public IDGDecoratorRenderer() {}
+	public IDGDecoratorRenderer(EventBus eventBus) {
+		this.eventBus = eventBus;
+		
+		eventBus.addHandler(PairwiseNumbersLoadedEvent.TYPE, this);
+	}
 	
 	/**
 	 * performs render of decorator on a passed in diagramObject in the diagram view.
@@ -39,16 +47,6 @@ public class IDGDecoratorRenderer {
 	 */
 	public void doRender(AdvancedContext2d ctx, DiagramObject obj, Double factor, Coordinate offset) {
 		Node node = (Node) obj;
-		
-		if (node.getInteractorsSummary() == null) {
-			SummaryItem summaryItem = makeSummaryItem(obj, factor, offset);
-			//dont render if no interactions exist
-			if (summaryItem.getNumber() == 0 || summaryItem.getNumber() == null)
-				return;
-			node.setInteractorsSummary(summaryItem);
-			InteractorsSummary summary = new InteractorsSummary("test", obj.getId(), summaryItem.getNumber());
-			node.setDiagramEntityInteractorsSummary(summary);
-		}
 		ctx.save();
 		ctx.setGlobalAlpha((factor - 0.5) * 2);		
 		ctx.setFillStyle(DiagramColours.get().PROFILE.getProperties().getSelection());
@@ -57,12 +55,30 @@ public class IDGDecoratorRenderer {
 	}
 
 	/**
+	 * Called when new set of interactors are chosen and loads correct summary items for
+	 * complexes and entity sets
+	 */
+	@Override
+	public void onPairwiseNumbersLoaded(PairwiseNumbersLoadedEvent event) {
+		this.currentTotalsMap = event.getGeneToTotalMap();
+
+		for(DiagramObject obj : event.getContext().getContent().getDiagramObjects()) {
+			if(obj.getRenderableClass() != "Complex" && obj.getRenderableClass() != "EntitySet") continue;
+			Node node = (Node) obj;
+			SummaryItem summaryItem = makeSummaryItem(obj);
+			node.setInteractorsSummary(summaryItem);
+			InteractorsSummary summary = new InteractorsSummary("test", obj.getId(), summaryItem.getNumber());
+			node.setDiagramEntityInteractorsSummary(summary);
+		}
+	}
+	
+	/**
 	 * Gets summary item needed to render decorator
 	 * @param obj
 	 * @return
 	 */
-	private SummaryItem makeSummaryItem(DiagramObject obj, Double factor, Coordinate offset) {
-		SummaryItem result = new SummaryItemImpl(getShape(obj, factor, offset), getNumber(obj));
+	private SummaryItem makeSummaryItem(DiagramObject obj) {
+		SummaryItem result = new SummaryItemImpl(getShape(obj), getNumber(obj));
 		
 		return result;
 	}
@@ -72,8 +88,8 @@ public class IDGDecoratorRenderer {
 	 * @param obj
 	 * @return
 	 */
-	private Shape getShape(DiagramObject obj, Double factor, Coordinate offset) {
-		Shape result = new ShapeImpl(getCoordinate(obj, factor, offset), new Double(6), "CIRCLE", true);
+	private Shape getShape(DiagramObject obj) {
+		Shape result = new ShapeImpl(getCoordinate(obj), new Double(6), "CIRCLE", true);
 		return result;
 	}
 	
@@ -82,7 +98,7 @@ public class IDGDecoratorRenderer {
 	 * @param obj
 	 * @return
 	 */
-	private Coordinate getCoordinate(DiagramObject obj, Double factor, Coordinate offset) {
+	private Coordinate getCoordinate(DiagramObject obj) {
 		Node node = (Node) obj;
 		double x = node.getProp().getX() + node.getProp().getWidth();
 		double y = node.getProp().getY();
@@ -98,7 +114,6 @@ public class IDGDecoratorRenderer {
 		
 		GraphPhysicalEntity entity = obj.getGraphObject(); //should always be GraphPhysicalEntity
 		Set<GraphPhysicalEntity> peSet = entity.getParticipants();
-		Map<String, Integer> geneToTotalMap = PairwiseOverlayFactory.get().getGeneToTotalMap();
 		for(GraphPhysicalEntity pe : peSet) {
 			String identifier = pe.getIdentifier();
 			
@@ -108,10 +123,9 @@ public class IDGDecoratorRenderer {
 				identifier = PairwiseInfoService.getGeneToUniprotMap().get(pe.getDisplayName().substring(0, index));
 			}
 			
-			result += geneToTotalMap.get(identifier) != null ? geneToTotalMap.get(identifier): 0;
+			result += currentTotalsMap.get(identifier) != null ? currentTotalsMap.get(identifier): 0;
 			
 		}
 		return result;
 	}
-	
 }
