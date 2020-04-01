@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.reactome.web.fi.common.IDGListBox;
-import org.reactome.web.fi.common.IDGPager;
-import org.reactome.web.fi.common.IDGPager.Handler;
 import org.reactome.web.fi.common.IDGTextBox;
 import org.reactome.web.fi.data.loader.OverlayLoader;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
@@ -24,6 +22,7 @@ import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.cellview.client.IdentityColumn;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -35,7 +34,7 @@ import com.google.gwt.view.client.ListDataProvider;
  * @author brunsont
  *
  */
-public class PairwisePopupTablePanel extends FlowPanel implements Handler{
+public class PairwisePopupTablePanel extends FlowPanel{
 
 	public interface PairwiseTableHandler {
 		void addInteractions(Set<PairwiseTableEntity> entities);
@@ -51,7 +50,7 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 	private List<PairwiseTableEntity> filteredTableEntities;
 	private PairwisePopupResultsTable resultsTable;
 	private ListDataProvider<PairwiseTableEntity> provider;
-	private IDGPager pager;
+	private SimplePager pager;
 	
 	private FlowPanel mainPanel;
 	
@@ -99,7 +98,7 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 	private void createPairwiseTable() {
 		
 		provider = new ListDataProvider<>();
-		pager = new IDGPager(this);
+		pager = new SimplePager();
 		pager.setStyleName(RESOURCES.getCSS().pager());
 		resultsTable = new PairwisePopupResultsTable(filteredTableEntities, provider, pager);
 		resultsTable.setStyleName(RESOURCES.getCSS().table());
@@ -226,13 +225,6 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 		provider.getList().clear();
 		provider.getList().addAll(newList);
 		resultsTable.updateSorter();
-		onPageChanged();
-	}
-	
-	@Override
-	public void onPageChanged() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	private void loadTable() {

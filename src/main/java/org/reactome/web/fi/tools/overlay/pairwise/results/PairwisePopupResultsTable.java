@@ -3,7 +3,6 @@ package org.reactome.web.fi.tools.overlay.pairwise.results;
 import java.util.Comparator;
 import java.util.List;
 
-import org.reactome.web.fi.common.IDGPager;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.results.columns.DiagramGeneNameColumn;
 import org.reactome.web.fi.tools.overlay.pairwise.results.columns.OverlayValueColumn;
@@ -14,6 +13,7 @@ import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseSource
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.DataGrid;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.ListDataProvider;
 
@@ -30,7 +30,7 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 	private ListDataProvider<PairwiseTableEntity> provider;
 	
 	
-	public PairwisePopupResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, IDGPager pager) {
+	public PairwisePopupResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, SimplePager pager) {
 		
 		super(PAGE_SIZE);
 		this.provider = provider;
