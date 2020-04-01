@@ -335,13 +335,13 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 					counter++;
 				}
 			}
-//			for(int i=counter; i< 10; i++) {
-//				if(i >= tableEntities.size())break;
-//				PairwiseTableEntity entity = tableEntities.get(i); //offset by the number of diagram edges present in the array of table entities
-//				if(entity.getSourceId() == diagramNode) {
-//					initialEntities.add(entity);
-//				}
-//			}
+			for(PairwiseTableEntity entity: tableEntities) {
+				if(counter == 10) break;
+				if(entity.getSourceId() == diagramNode && !initialEntities.contains(entity)) {
+					initialEntities.add(entity);
+					counter++;
+				}
+			}
 		}
 		handler.addInteractions(initialEntities);
 	}

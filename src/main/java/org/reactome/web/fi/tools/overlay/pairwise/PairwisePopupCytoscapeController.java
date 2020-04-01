@@ -102,7 +102,7 @@ public class PairwisePopupCytoscapeController implements Handler{
 		for(PairwiseTableEntity entity : entities) {
 			//ensures interactions cannot be added if they exist as a diagram source edge. 
 			//These interactions should be implied.
-			if(diagramNodes.contains(entity.getSourceId()) && diagramNodes.contains(entity.getInteractorId())) return;
+			if(diagramNodes.contains(entity.getSourceId()) && diagramNodes.contains(entity.getInteractorId())) continue;
 			
 			addNode(entity.getInteractorId(), true);
 			boolean added = addEdge(entity);
