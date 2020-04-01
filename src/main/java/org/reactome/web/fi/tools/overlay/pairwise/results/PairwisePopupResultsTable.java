@@ -23,9 +23,6 @@ import com.google.gwt.view.client.ListDataProvider;
  *
  */
 public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
-	public interface Handler {
-		void onColumnSorted();
-	}
 	
 	public final static Integer PAGE_SIZE = 10;
 	
@@ -33,7 +30,7 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 	private ListDataProvider<PairwiseTableEntity> provider;
 	
 	
-	public PairwisePopupResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, IDGPager pager, Handler handler) {
+	public PairwisePopupResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, IDGPager pager) {
 		
 		super(PAGE_SIZE);
 		this.provider = provider;

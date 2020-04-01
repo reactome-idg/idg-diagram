@@ -101,12 +101,7 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 		provider = new ListDataProvider<>();
 		pager = new IDGPager(this);
 		pager.setStyleName(RESOURCES.getCSS().pager());
-		resultsTable = new PairwisePopupResultsTable(filteredTableEntities, provider, pager, new PairwisePopupResultsTable.Handler(){
-			@Override
-			public void onColumnSorted() {
-				//TODO: Check if this is still needed after loading all of the overlay data
-			}
-		});
+		resultsTable = new PairwisePopupResultsTable(filteredTableEntities, provider, pager);
 		resultsTable.setStyleName(RESOURCES.getCSS().table());
 		
 		//Add view button column
@@ -262,6 +257,7 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 	}
 
 	public void loadOverlay() {
+		
 		DataOverlayProperties props = PairwiseOverlayFactory.get().getDataOverlayProperties();
 		props.setUniprots(String.join(",", collectUniprots()));
 		
