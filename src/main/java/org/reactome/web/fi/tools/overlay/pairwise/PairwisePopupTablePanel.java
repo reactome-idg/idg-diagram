@@ -302,8 +302,11 @@ public class PairwisePopupTablePanel extends FlowPanel implements Handler{
 		updateETypeAndTissueLabel();
 	}
 		
-	
+	/**
+	 * Updates label to the left of the pager with the correct E type and tissue depending on overlay and tissue selection
+	 */
 	private void updateETypeAndTissueLabel() {
+		if(dataOverlay == null) return;
 		//Use cytoscape views version of dataOverlay so it still works 
 		//if results are filtered to nothing
 		if(dataOverlay.getEType().equals("Target Development Level"))
