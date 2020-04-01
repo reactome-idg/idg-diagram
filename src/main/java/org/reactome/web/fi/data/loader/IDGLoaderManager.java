@@ -136,9 +136,7 @@ OverlayLoader.Handler{
 			public void onPairwiseNumbersLoaded(RawInteractors result, PairwiseNumberEntities entities, Map<String, Integer> geneToTotalMap) {
 				ContentFactory.fillInteractorsContent(context, result);
 				eventBus.fireEventFromSource(new InteractorsLoadedEvent(result, new Long(1)), this);
-				PairwiseOverlayFactory.get().setInteractorEntities(result);
-				PairwiseOverlayFactory.get().setPairwiseNumberEntities(entities.getPairwiseNumberEntities());
-				PairwiseOverlayFactory.get().setGeneToTotalMap(geneToTotalMap);
+				PairwiseOverlayFactory.get().setupNewOverlay(result, entities.getPairwiseNumberEntities(), geneToTotalMap);
 				eventBus.fireEventFromSource(new PairwiseNumbersLoadedEvent(context, geneToTotalMap), this);
 				
 			}

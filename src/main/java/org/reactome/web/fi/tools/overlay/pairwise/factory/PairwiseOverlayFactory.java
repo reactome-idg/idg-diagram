@@ -165,6 +165,12 @@ public class PairwiseOverlayFactory{
 		for(PairwisePopup popup : popupMap.values())
 			popup.resetZIndex();
 	}
+	
+	public void setupNewOverlay(RawInteractors result, List<PairwiseNumberEntity> pairwiseNumberEntities, Map<String, Integer> geneToTotalMap) {
+		this.setInteractorEntities(result);
+		this.setPairwiseNumberEntities(pairwiseNumberEntities);
+		this.setGeneToTotalMap(geneToTotalMap);
+	}
 
 	public Map<String, String> getUniprotToGeneMap() {
 		if(this.uniprotToGeneMap == null)
