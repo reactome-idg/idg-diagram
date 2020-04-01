@@ -35,7 +35,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author brunsont
  *
  */
-public class PairwisePopupCytoscapePanel implements Handler{
+public class PairwisePopupCytoscapeController implements Handler{
 
 	public interface CytoscapePanelHandler{
 		
@@ -57,7 +57,7 @@ public class PairwisePopupCytoscapePanel implements Handler{
 	private int zIndex;
 	private FIViewInfoPopup infoPopup;
 	
-	public PairwisePopupCytoscapePanel(String popupId, Set<String> diagramNodes, List<PairwiseOverlayObject> pairwiseOverlayObjects, PairwisePopup.Resources RESOURCES, int zIndex) {
+	public PairwisePopupCytoscapeController(String popupId, Set<String> diagramNodes, List<PairwiseOverlayObject> pairwiseOverlayObjects, PairwisePopup.Resources RESOURCES, int zIndex) {
 		this.diagramNodes = diagramNodes;
 		this.displayedNodes = new HashSet<>();
 		this.edgeIdToEntity = new HashMap<>();
@@ -207,7 +207,7 @@ public class PairwisePopupCytoscapePanel implements Handler{
 		loader.load(props, new OverlayLoader.Handler() {
 			@Override
 			public void onDataOverlayLoaded(DataOverlay dataOverlay) {
-				PairwisePopupCytoscapePanel.this.dataOverlay = dataOverlay;
+				PairwisePopupCytoscapeController.this.dataOverlay = dataOverlay;
 				overlayData();
 			}
 			@Override

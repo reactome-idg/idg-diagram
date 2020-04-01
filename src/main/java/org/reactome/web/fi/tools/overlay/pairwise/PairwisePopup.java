@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class PairwisePopup extends DialogBox implements PairwiseTableHandler{
 
 	private String popupId;
-	private PairwisePopupCytoscapePanel cyController;
+	private PairwisePopupCytoscapeController cyController;
 	private PairwisePopupTablePanel tablePanel;
 	private List<PairwiseOverlayObject> pairwiseOverlayProperties;
 	private Set<String> diagramNodes;
@@ -86,9 +86,9 @@ public class PairwisePopup extends DialogBox implements PairwiseTableHandler{
 		
 		show();
 		
-		//create PairwisePopupCytoscapePanel after panel creation 
+		//create PairwisePopupCytoscapeController after panel creation 
 		//otherwise, cytoscape.js has no panel to mount to
-		cyController = new PairwisePopupCytoscapePanel(popupId, diagramNodes, pairwiseOverlayProperties, RESOURCES, zIndex);
+		cyController = new PairwisePopupCytoscapeController(popupId, diagramNodes, pairwiseOverlayProperties, RESOURCES, zIndex);
 		
 		//must add Results table after cyController is created
 		main.add(tablePanel = new PairwisePopupTablePanel(pairwiseOverlayProperties, diagramNodes, RESOURCES, this));
@@ -202,7 +202,7 @@ public class PairwisePopup extends DialogBox implements PairwiseTableHandler{
 
 	/**
 	 * Below here is all for styling. Handles styles of PairwisePopup,
-	 * PairwisePopupTablePanel, and PairwisePopupCytoscapePanel
+	 * PairwisePopupTablePanel, and PairwisePopupCytoscapeController
 	 */
 	public static Resources RESOURCES;
 	static {
