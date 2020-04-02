@@ -1,4 +1,4 @@
-package org.reactome.web.fi.tools.overlay.pairwise;
+package org.reactome.web.fi.tools.overlay.pairwise.popup;
 
 import java.util.ArrayList;
 import java.util.HashSet;

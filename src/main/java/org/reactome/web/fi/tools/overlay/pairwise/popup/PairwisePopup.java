@@ -1,4 +1,4 @@
-package org.reactome.web.fi.tools.overlay.pairwise;
+package org.reactome.web.fi.tools.overlay.pairwise.popup;
 
 import java.util.HashSet;
 import java.util.List;
@@ -11,9 +11,9 @@ import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
-import org.reactome.web.fi.tools.overlay.pairwise.PairwisePopupTablePanel.PairwiseTableHandler;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
+import org.reactome.web.fi.tools.overlay.pairwise.popup.PairwisePopupTablePanel.PairwiseTableHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.MouseUpEvent;
@@ -229,7 +229,7 @@ public class PairwisePopup extends DialogBox implements PairwiseTableHandler{
 	
 	@CssResource.ImportedWithPrefix("idg-pairwisePopup")
 	public interface ResourceCSS extends CssResource{
-		String CSS = "org/reactome/web/fi/tools/overlay/pairwise/PairwisePopup.css";
+		String CSS = "org/reactome/web/fi/tools/overlay/pairwise/popup/PairwisePopup.css";
 		
 		String popupPanel();
 				

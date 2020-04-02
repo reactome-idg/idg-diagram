@@ -13,7 +13,7 @@ import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
-import org.reactome.web.fi.tools.overlay.pairwise.PairwisePopup;
+import org.reactome.web.fi.tools.overlay.pairwise.popup.PairwisePopup;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 

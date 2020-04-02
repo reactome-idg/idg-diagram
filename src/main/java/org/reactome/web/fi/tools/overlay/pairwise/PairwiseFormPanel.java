@@ -345,24 +345,6 @@ public class PairwiseFormPanel extends FlowPanel{
 	public interface Resources extends ClientBundle{
 		@Source(ResourceCSS.CSS)
 		ResourceCSS getCSS();
-		
-		@Source("images/solid_line.jpg")
-		ImageResource solidLine();
-		
-		@Source("images/close_dashed.jpg")
-		ImageResource closeDashed();
-		
-		@Source("images/medium_dashed.jpg")
-		ImageResource mediumDashed();
-		
-		@Source("images/far_dashed.jpg")
-		ImageResource farDashed();
-		
-		@Source("images/close_dotted.jpg")
-		ImageResource dotted();
-		
-		@Source("images/far_dotted.jpg")
-		ImageResource farDotted();
 	}
 	
 	@CssResource.ImportedWithPrefix("idg-PairwiseFormPanel")
