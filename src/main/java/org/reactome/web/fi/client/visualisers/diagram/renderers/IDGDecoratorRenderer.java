@@ -66,6 +66,8 @@ public class IDGDecoratorRenderer implements PairwiseNumbersLoadedHandler {
 			if(obj.getRenderableClass() != "Complex" && obj.getRenderableClass() != "EntitySet") continue;
 			Node node = (Node) obj;
 			SummaryItem summaryItem = makeSummaryItem(obj);
+			
+			if(summaryItem.getNumber() == 0) continue;
 			node.setInteractorsSummary(summaryItem);
 			InteractorsSummary summary = new InteractorsSummary("test", obj.getId(), summaryItem.getNumber());
 			node.setDiagramEntityInteractorsSummary(summary);
