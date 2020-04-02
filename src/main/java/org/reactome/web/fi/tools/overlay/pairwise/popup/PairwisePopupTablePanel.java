@@ -270,9 +270,9 @@ public class PairwisePopupTablePanel extends FlowPanel{
 
 	private void clearOverlayColumn() {
 		for(PairwiseTableEntity entity: tableEntities)
-			entity.setOverlayValue("");
+			entity.setOverlayValue("Loading...");
 		for(PairwiseTableEntity entity: filteredTableEntities)
-			entity.setOverlayValue("");
+			entity.setOverlayValue("Loading...");
 		
 		provider.refresh();
 		
