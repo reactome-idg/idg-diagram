@@ -249,6 +249,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	}
 
 	public void loadOverlay() {
+		clearOverlayColumn();
 		
 		DataOverlayProperties props = PairwiseOverlayFactory.get().getDataOverlayProperties();
 		props.setUniprots(String.join(",", collectUniprots()));
@@ -265,6 +266,16 @@ public class PairwisePopupTablePanel extends FlowPanel{
 				exception.printStackTrace();
 			}
 		});
+	}
+
+	private void clearOverlayColumn() {
+		for(PairwiseTableEntity entity: tableEntities)
+			entity.setOverlayValue("");
+		for(PairwiseTableEntity entity: filteredTableEntities)
+			entity.setOverlayValue("");
+		
+		provider.refresh();
+		
 	}
 
 	private void updateTableData() {
