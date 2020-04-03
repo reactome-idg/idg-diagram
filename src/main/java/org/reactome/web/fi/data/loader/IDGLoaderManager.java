@@ -5,6 +5,7 @@ import java.util.Map;
 import org.reactome.web.diagram.data.ContentFactory;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
+import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.diagram.data.interactors.raw.RawInteractors;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.data.loader.SVGLoader;
@@ -135,15 +136,16 @@ OverlayLoader.Handler{
 			@Override
 			public void onPairwiseNumbersLoaded(RawInteractors result, PairwiseNumberEntities entities, Map<String, Integer> geneToTotalMap) {
 				ContentFactory.fillInteractorsContent(context, result);
+				
+				INTERACTORS_RESOURCE = new OverlayResource(result.getResource(), "Pairwise/Interactors", OverlayResource.ResourceType.CUSTOM);
+				
 				eventBus.fireEventFromSource(new InteractorsLoadedEvent(result, new Long(1)), this);
 				PairwiseOverlayFactory.get().setupNewOverlay(result, entities.getPairwiseNumberEntities(), geneToTotalMap);
 				eventBus.fireEventFromSource(new PairwiseNumbersLoadedEvent(context, geneToTotalMap), this);
-				
 			}
 			@Override
 			public void onPairwiseLoaderError(Throwable exception) {
 				Console.error(exception.getMessage());
-
 			}
 		});
 	}
