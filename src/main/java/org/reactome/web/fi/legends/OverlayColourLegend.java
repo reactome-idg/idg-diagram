@@ -11,7 +11,6 @@ import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
