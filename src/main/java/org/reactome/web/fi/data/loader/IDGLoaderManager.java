@@ -27,6 +27,7 @@ import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 
@@ -34,11 +35,11 @@ import com.google.gwt.event.shared.EventBus;
  *
  */
 public class IDGLoaderManager extends LoaderManager implements FIViewLoader.Handler,
-OverlayLoader.Handler{
+TCRDDataLoader.Handler{
 
 	private EventBus eventBus;
 	private FIViewLoader fIViewLoader;
-	private OverlayLoader overlayLoader;
+	private TCRDDataLoader overlayLoader;
 	
 	private final String SPECIES = "Homo sapiens";
 			
@@ -49,7 +50,7 @@ OverlayLoader.Handler{
 		
 		fIViewLoader = new FIViewLoader(this);
 		layoutLoader = new IDGLayoutLoader(this);
-		overlayLoader = new OverlayLoader();
+		overlayLoader = new TCRDDataLoader();
 	}
 	
 	@Override
@@ -159,5 +160,19 @@ OverlayLoader.Handler{
 			PairwiseOverlayFactory.get().setInteractorEntities(new RawInteractorsImpl("Empty", null));
 		}
 		return;
+	}
+
+	public void loadDrugTargets(String uniprots) {
+		overlayLoader.loadDrugTargetsForUniprots(uniprots, new AsyncCallback<String>() {
+			@Override
+			public void onSuccess(String result) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Console.error(caught.getMessage());
+			}
+		});
 	}
 }

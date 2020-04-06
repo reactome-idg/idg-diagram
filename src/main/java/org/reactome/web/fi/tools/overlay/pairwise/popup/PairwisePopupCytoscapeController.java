@@ -12,7 +12,7 @@ import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
-import org.reactome.web.fi.data.loader.OverlayLoader;
+import org.reactome.web.fi.data.loader.TCRDDataLoader;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
@@ -204,8 +204,8 @@ public class PairwisePopupCytoscapeController implements Handler{
 		DataOverlayProperties props = PairwiseOverlayFactory.get().getDataOverlayProperties();
 		props.setUniprots(String.join(",", this.displayedNodes));
 		
-		OverlayLoader loader = new OverlayLoader();
-		loader.load(props, new OverlayLoader.Handler() {
+		TCRDDataLoader loader = new TCRDDataLoader();
+		loader.load(props, new TCRDDataLoader.Handler() {
 			@Override
 			public void onDataOverlayLoaded(DataOverlay dataOverlay) {
 				PairwisePopupCytoscapeController.this.dataOverlay = dataOverlay;

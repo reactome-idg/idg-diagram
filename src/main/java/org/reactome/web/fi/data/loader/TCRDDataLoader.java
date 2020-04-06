@@ -7,6 +7,7 @@ import org.reactome.web.fi.data.mediators.DataOverlayEntityMediator;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -21,7 +22,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author brunsont
  *
  */
-public class OverlayLoader implements RequestCallback{
+public class TCRDDataLoader implements RequestCallback{
 
 	public interface Handler{
 		void onDataOverlayLoaded(DataOverlay dataOverlay);
@@ -34,7 +35,7 @@ public class OverlayLoader implements RequestCallback{
 	private Request request;
 	private DataOverlayProperties dataOverlayProperties;
 	
-	public OverlayLoader(){
+	public TCRDDataLoader(){
 	}
 	
 	public void cancel() {
@@ -134,6 +135,27 @@ public class OverlayLoader implements RequestCallback{
 				}
 			});
 		}catch (RequestException ex) {
+			callback.onFailure(ex);
+		}
+	}
+	
+	public void loadDrugTargetsForUniprots(String uniprots, AsyncCallback<String> callback) {
+		String url = "/tcrdws/drug/uniprots";
+		
+		RequestBuilder request = new RequestBuilder(RequestBuilder.POST, url);
+		request.setHeader("Accept", "application/json");
+		try {
+			request.sendRequest(uniprots, new RequestCallback() {
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					GWT.log(response.getText());
+				}
+				@Override
+				public void onError(Request request, Throwable exception) {
+					callback.onFailure(exception);
+				}
+			});
+		}catch(RequestException ex) {
 			callback.onFailure(ex);
 		}
 	}

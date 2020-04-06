@@ -34,6 +34,7 @@ import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
+import org.reactome.web.fi.events.DrugTargetsRequestedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
 import org.reactome.web.fi.events.PairwiseCountsRequestedEvent;
@@ -192,6 +193,12 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 		if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties() != null && PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size() > 0) {
 			eventBus.fireEventFromSource(new RequestPairwiseCountsEvent(PairwiseOverlayFactory.get().getCurrentPairwiseProperties()), this);
 		}
+		
+		loadDrugActivities();
+	}
+
+	private void loadDrugActivities() {
+//		eventBus.fireEventFromSource(new DrugTargetsRequestedEvent(collectAllDiagramUniprots()), this);
 	}
 
 	private DataOverlayProperties getTargetLevelProperties() {

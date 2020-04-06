@@ -14,10 +14,12 @@ import org.reactome.web.diagram.handlers.PairwiseOverlayButtonClickedHandler;
 import org.reactome.web.diagram.profiles.diagram.DiagramColours;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
+import org.reactome.web.fi.events.DrugTargetsRequestedEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
 import org.reactome.web.fi.events.PairwiseCountsRequestedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
+import org.reactome.web.fi.handlers.DrugTargetsRequestedHandler;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
 import org.reactome.web.fi.handlers.PairwiseCountsRequestedHandler;
 import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
@@ -29,7 +31,7 @@ import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory
  */
 public class IdgDiagramViewerImpl extends DiagramViewerImpl implements CytoscapeToggledHandler,
 OverlayDataRequestedHandler, PairwiseOverlayButtonClickedHandler, PairwiseCountsRequestedHandler,
-EntityDecoratorSelectedHandler{
+EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	
 	public IdgDiagramViewerImpl() {
 		super();
@@ -39,6 +41,7 @@ EntityDecoratorSelectedHandler{
 		eventBus.addHandler(PairwiseOverlayButtonClickedEvent.TYPE, this);
 		eventBus.addHandler(PairwiseCountsRequestedEvent.TYPE, this);
 		eventBus.addHandler(EntityDecoratorSelectedEvent.TYPE, this);
+		eventBus.addHandler(DrugTargetsRequestedEvent.TYPE, this);
 		
 	}
 	
@@ -52,7 +55,10 @@ EntityDecoratorSelectedHandler{
 		return new IDGLoaderManager(eventBus);
 	}
 	
-	
+	@Override
+	public void onDrugTargetsRequested(DrugTargetsRequestedEvent event) {
+		((IDGLoaderManager)loaderManager).loadDrugTargets(event.getUniprots());
+	}
 
 	@Override
 	public void onContentLoaded(ContentLoadedEvent event) {

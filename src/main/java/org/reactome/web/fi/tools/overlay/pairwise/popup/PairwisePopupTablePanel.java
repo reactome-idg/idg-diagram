@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.reactome.web.fi.common.IDGListBox;
 import org.reactome.web.fi.common.IDGTextBox;
-import org.reactome.web.fi.data.loader.OverlayLoader;
+import org.reactome.web.fi.data.loader.TCRDDataLoader;
 import org.reactome.web.fi.data.loader.PairwiseDataLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
@@ -254,8 +254,8 @@ public class PairwisePopupTablePanel extends FlowPanel{
 		DataOverlayProperties props = PairwiseOverlayFactory.get().getDataOverlayProperties();
 		props.setUniprots(String.join(",", collectUniprots()));
 		
-		OverlayLoader loader = new OverlayLoader();
-		loader.load(props, new OverlayLoader.Handler() {
+		TCRDDataLoader loader = new TCRDDataLoader();
+		loader.load(props, new TCRDDataLoader.Handler() {
 			@Override
 			public void onDataOverlayLoaded(DataOverlay dataOverlay) {
 				PairwisePopupTablePanel.this.dataOverlay = dataOverlay;

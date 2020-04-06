@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.reactome.web.diagram.common.PwpButton;
 import org.reactome.web.fi.common.CommonButton;
-import org.reactome.web.fi.data.loader.OverlayLoader;
+import org.reactome.web.fi.data.loader.TCRDDataLoader;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
@@ -116,7 +116,7 @@ public class ExportPairwiseRelationshipsPanel extends PopupPanel{
 			uniprotSet.add(entity.getSourceId());
 		}
 		
-		OverlayLoader loader = new OverlayLoader();
+		TCRDDataLoader loader = new TCRDDataLoader();
 		loader.loadMultipleTargetLevelProtein(String.join(",", uniprotSet), new AsyncCallback<Map<String, String>>(){
 			@Override
 			public void onSuccess(Map<String, String> result) {
