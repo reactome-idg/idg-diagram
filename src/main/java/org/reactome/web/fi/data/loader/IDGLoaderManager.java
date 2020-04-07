@@ -20,6 +20,7 @@ import org.reactome.web.fi.data.model.interactors.RawInteractorsImpl;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
+import org.reactome.web.fi.events.DrugTargetsLoadedEvent;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.PairwiseNumbersLoadedEvent;
@@ -168,9 +169,7 @@ TCRDDataLoader.Handler{
 		overlayLoader.loadDrugTargetsForUniprots(uniprots, new AsyncCallback<Map<String, List<DrugTargetEntity>>>() {
 			@Override
 			public void onSuccess(Map<String, List<DrugTargetEntity>> result) {
-				// TODO Auto-generated method stub
-				
-			}
+				eventBus.fireEventFromSource(new DrugTargetsLoadedEvent(context,result), this);			}
 			@Override
 			public void onFailure(Throwable caught) {
 				Console.error(caught.getMessage());
