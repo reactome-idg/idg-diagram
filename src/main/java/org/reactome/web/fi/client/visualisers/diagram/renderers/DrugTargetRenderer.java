@@ -50,7 +50,6 @@ public class DrugTargetRenderer implements DrugTargetsLoadedHandler{
 			
 			if(drugTargetItem.getNumber() == 0) continue;
 			currentItems.add(drugTargetItem);
-			GWT.log(drugTargetItem.getNumber() +"");
 		}
 	}
 
