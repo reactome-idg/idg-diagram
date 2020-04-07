@@ -3,6 +3,7 @@ package org.reactome.web.fi.client.visualisers.diagram.renderers;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
 
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.layout.Coordinate;
@@ -18,6 +19,7 @@ import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.events.DrugTargetsLoadedEvent;
 import org.reactome.web.fi.handlers.DrugTargetsLoadedHandler;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
 public class DrugTargetRenderer implements DrugTargetsLoadedHandler{
@@ -37,15 +39,18 @@ public class DrugTargetRenderer implements DrugTargetsLoadedHandler{
 	
 	@Override
 	public void onDrugTargetsLoaded(DrugTargetsLoadedEvent event) {
+		if(currentItems == null) currentItems = new HashSet<>();
+		this.uniprotToDrugTargetEntityMap = event.getDrugTaretEntityMap();
 		for(DiagramObject obj : event.getContext().getContent().getDiagramObjects()) {
-			if(obj.getRenderableClass() != "Complex" || 
-			   obj.getRenderableClass() != "EntitySet" ||
+			if(obj.getRenderableClass() != "Complex" && 
+			   obj.getRenderableClass() != "EntitySet" &&
 			   obj.getRenderableClass() != "Protein") continue;
 			
 			DrugTargetItem drugTargetItem = makeItem(obj);
 			
 			if(drugTargetItem.getNumber() == 0) continue;
 			currentItems.add(drugTargetItem);
+			GWT.log(drugTargetItem.getNumber() +"");
 		}
 	}
 
