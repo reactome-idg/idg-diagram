@@ -1,5 +1,6 @@
 package org.reactome.web.fi.data.loader;
 
+import java.util.List;
 import java.util.Map;
 
 import org.reactome.web.diagram.data.ContentFactory;
@@ -14,6 +15,7 @@ import org.reactome.web.diagram.events.DiagramInternalErrorEvent;
 import org.reactome.web.diagram.events.InteractorsLoadedEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
+import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.data.model.interactors.RawInteractorsImpl;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntities;
@@ -163,9 +165,9 @@ TCRDDataLoader.Handler{
 	}
 
 	public void loadDrugTargets(String uniprots) {
-		overlayLoader.loadDrugTargetsForUniprots(uniprots, new AsyncCallback<String>() {
+		overlayLoader.loadDrugTargetsForUniprots(uniprots, new AsyncCallback<Map<String, List<DrugTargetEntity>>>() {
 			@Override
-			public void onSuccess(String result) {
+			public void onSuccess(Map<String, List<DrugTargetEntity>> result) {
 				// TODO Auto-generated method stub
 				
 			}

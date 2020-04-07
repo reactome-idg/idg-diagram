@@ -1,20 +1,23 @@
 package org.reactome.web.fi.data.loader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.reactome.web.fi.data.mediators.DataOverlayEntityMediator;
+import org.reactome.web.fi.data.model.drug.DrugTargetEntities;
+import org.reactome.web.fi.data.model.drug.DrugTargetEntitiesFactory;
+import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -139,7 +142,7 @@ public class TCRDDataLoader implements RequestCallback{
 		}
 	}
 	
-	public void loadDrugTargetsForUniprots(String uniprots, AsyncCallback<String> callback) {
+	public void loadDrugTargetsForUniprots(String uniprots, AsyncCallback<Map<String, List<DrugTargetEntity>>> callback) {
 		String url = "/tcrdws/drug/uniprots";
 		
 		RequestBuilder request = new RequestBuilder(RequestBuilder.POST, url);
@@ -148,7 +151,17 @@ public class TCRDDataLoader implements RequestCallback{
 			request.sendRequest(uniprots, new RequestCallback() {
 				@Override
 				public void onResponseReceived(Request request, Response response) {
-					GWT.log(response.getText());
+					if(response.getStatusCode() == Response.SC_OK) {
+						try {
+							JSONObject obj = new JSONObject();
+							obj.put("drugTargetEntities", JSONParser.parseStrict(response.getText()).isArray());
+							DrugTargetEntities entities = DrugTargetEntitiesFactory.getDrugTargetEntities(DrugTargetEntities.class, obj.toString());
+							callback.onSuccess(processDrugTargets(entities));
+						}catch(Throwable e) {
+							callback.onFailure(e);
+						}
+					}
+					else callback.onFailure(new Throwable(response.getText()));
 				}
 				@Override
 				public void onError(Request request, Throwable exception) {
@@ -158,6 +171,24 @@ public class TCRDDataLoader implements RequestCallback{
 		}catch(RequestException ex) {
 			callback.onFailure(ex);
 		}
+	}
+
+	/**
+	 * Returns map of uniprot to list of drug target entities with that uniprot
+	 * @param entities
+	 * @return
+	 */
+	protected Map<String, List<DrugTargetEntity>> processDrugTargets(DrugTargetEntities entities) {
+		Map<String, List<DrugTargetEntity>> rtn = new HashMap<>();
+		
+		for(DrugTargetEntity entity: entities.getDrugTargetEntity()) {
+			String uniprot = entity.getTarget().getProtein().getUniprot();
+			if(!rtn.keySet().contains(uniprot))
+				rtn.put(uniprot, new ArrayList<>());
+			rtn.get(uniprot).add(entity);
+		}
+		
+		return rtn;
 	}
 
 	/**
