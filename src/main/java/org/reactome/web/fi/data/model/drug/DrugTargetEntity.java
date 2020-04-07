@@ -25,7 +25,7 @@ public interface DrugTargetEntity {
 	
 	String getActionType();
 	
-	boolean getHasMoa();
+	Boolean getHasMoa();
 	
 	String getSource();
 	
