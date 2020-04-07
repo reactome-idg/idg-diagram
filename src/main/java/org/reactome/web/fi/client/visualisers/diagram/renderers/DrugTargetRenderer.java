@@ -19,7 +19,6 @@ import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.events.DrugTargetsLoadedEvent;
 import org.reactome.web.fi.handlers.DrugTargetsLoadedHandler;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
 public class DrugTargetRenderer implements DrugTargetsLoadedHandler{
