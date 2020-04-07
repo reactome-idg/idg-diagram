@@ -198,7 +198,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 	}
 
 	private void loadDrugActivities() {
-//		eventBus.fireEventFromSource(new DrugTargetsRequestedEvent(collectAllDiagramUniprots()), this);
+		eventBus.fireEventFromSource(new DrugTargetsRequestedEvent(collectAllDiagramUniprots()), this);
 	}
 
 	private DataOverlayProperties getTargetLevelProperties() {
