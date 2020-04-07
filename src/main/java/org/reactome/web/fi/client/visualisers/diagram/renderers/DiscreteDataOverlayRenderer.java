@@ -50,10 +50,12 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 	private OverlayContext originalOverlay;
 	private DataOverlay dataOverlay;
 	private IDGDecoratorRenderer decoratorRenderer;
+	private DrugTargetRenderer drugTargetRenderer;
 	
-	public DiscreteDataOverlayRenderer(EventBus eventBus, IDGDecoratorRenderer idgDecoratorRenderer){
+	public DiscreteDataOverlayRenderer(EventBus eventBus, IDGDecoratorRenderer idgDecoratorRenderer, DrugTargetRenderer drugTargetRenderer){
 		this.eventBus = eventBus;
 		this.decoratorRenderer = idgDecoratorRenderer;
+		this.drugTargetRenderer = drugTargetRenderer;
 		eventBus.addHandler(RenderOtherContextDialogInfoEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
 	}
@@ -87,6 +89,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
         renderDiscreteProteinData(itemsDistribution.getItems("Protein"));
         renderDiscreteComplexData(itemsDistribution.getItems("Complex"), "Complex");
         renderDiscreteComplexData(itemsDistribution.getItems("EntitySet"), "EntitySet");
+        drugTargetRenderer.doRender();
 	}
 
 	/**

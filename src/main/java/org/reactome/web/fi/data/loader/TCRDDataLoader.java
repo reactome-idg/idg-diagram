@@ -152,14 +152,16 @@ public class TCRDDataLoader implements RequestCallback{
 				@Override
 				public void onResponseReceived(Request request, Response response) {
 					if(response.getStatusCode() == Response.SC_OK) {
+						DrugTargetEntities entities = null;
 						try {
 							JSONObject obj = new JSONObject();
-							obj.put("drugTargetEntities", JSONParser.parseStrict(response.getText()).isArray());
-							DrugTargetEntities entities = DrugTargetEntitiesFactory.getDrugTargetEntities(DrugTargetEntities.class, obj.toString());
-							callback.onSuccess(processDrugTargets(entities));
+							obj.put("drugTargetEntity", JSONParser.parseStrict(response.getText()).isArray());
+							entities = DrugTargetEntitiesFactory.getDrugTargetEntities(DrugTargetEntities.class, obj.toString());
+							
 						}catch(Throwable e) {
 							callback.onFailure(e);
 						}
+						callback.onSuccess(processDrugTargets(entities.getDrugTargetEntity()));
 					}
 					else callback.onFailure(new Throwable(response.getText()));
 				}
@@ -178,10 +180,10 @@ public class TCRDDataLoader implements RequestCallback{
 	 * @param entities
 	 * @return
 	 */
-	protected Map<String, List<DrugTargetEntity>> processDrugTargets(DrugTargetEntities entities) {
+	protected Map<String, List<DrugTargetEntity>> processDrugTargets(List<DrugTargetEntity> entities) {
 		Map<String, List<DrugTargetEntity>> rtn = new HashMap<>();
 		
-		for(DrugTargetEntity entity: entities.getDrugTargetEntity()) {
+		for(DrugTargetEntity entity: entities) {
 			String uniprot = entity.getTarget().getProtein().getUniprot();
 			if(!rtn.keySet().contains(uniprot))
 				rtn.put(uniprot, new ArrayList<>());
