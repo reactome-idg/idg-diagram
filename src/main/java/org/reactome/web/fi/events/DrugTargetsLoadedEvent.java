@@ -21,6 +21,11 @@ public class DrugTargetsLoadedEvent extends GwtEvent<DrugTargetsLoadedHandler> {
 	private Context context;
 	private Map<String, List<DrugTargetEntity>> uniprotToEntityListMap;
 	
+	public DrugTargetsLoadedEvent(Context context, Map<String, List<DrugTargetEntity>> uniprotToEntityListMap) {
+		this.context = context;
+		this.uniprotToEntityListMap = uniprotToEntityListMap;
+	}
+	
 	@Override
 	public Type<DrugTargetsLoadedHandler> getAssociatedType() {
 		return TYPE;
