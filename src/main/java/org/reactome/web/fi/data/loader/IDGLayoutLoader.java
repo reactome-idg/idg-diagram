@@ -57,6 +57,8 @@ public class IDGLayoutLoader extends LayoutLoader{
 			JSONObject node = nodeArray.get(i).isObject();
 			double newX = node.get("maxX").isNumber().doubleValue() + 10;
 			node.put("maxX", new JSONNumber(newX));
+			double newMinX = node.get("minX").isNumber().doubleValue() - 10;
+			node.put("minX", new JSONNumber(newMinX));
 			double newY = node.get("minY").isNumber().doubleValue() - 10;
 			node.put("minY", new JSONNumber(newY));
 		}
