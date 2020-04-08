@@ -26,6 +26,10 @@ public class SummaryItemImpl implements SummaryItem{
 		return type;
 	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
+	
 	@Override
 	public Shape getShape() {
 		return shape;
