@@ -40,10 +40,12 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	private OverlayContext originalOverlayContext;
 	private DataOverlay dataOverlay;
 	private IDGDecoratorRenderer decoratorRenderer;
+	private DrugTargetRenderer drugTargetRenderer;
 	
-	public ContinuousDataOverlayRenderer(EventBus eventBus, IDGDecoratorRenderer idgDecoratorRenderer) {
+	public ContinuousDataOverlayRenderer(EventBus eventBus, IDGDecoratorRenderer idgDecoratorRenderer, DrugTargetRenderer drugTargetRenderer) {
 		this.eventBus = eventBus;
 		this.decoratorRenderer = idgDecoratorRenderer;
+		this.drugTargetRenderer = drugTargetRenderer;
 		eventBus.addHandler(RenderOtherContextDialogInfoEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
 	}
@@ -67,6 +69,8 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
         renderContinuousProteinData(itemsDistribution.getItems("Protein"));
         renderContinuousComplexData(itemsDistribution.getItems("Complex"), "Complex");
         renderContinuousComplexData(itemsDistribution.getItems("EntitySet"), "EntitySet");
+        drugTargetRenderer.doRender(overlayContext.getOverlay(), factor, offset);
+
 	}
 
 	/**
