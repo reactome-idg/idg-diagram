@@ -33,9 +33,7 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 
 	public OverlayColourLegend(EventBus eventBus) {
 		super(eventBus);
-		
-		LegendPanelCSS css = RESOURCES.getCSS();
-		
+				
 		initPanel(eventBus);
 		
 		initHandlers();

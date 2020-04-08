@@ -2,7 +2,6 @@ package org.reactome.web.fi.legends;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +29,6 @@ import org.reactome.web.fi.handlers.FIViewOverlayEdgeHoveredHandler;
 import org.reactome.web.fi.handlers.FIViewOverlayEdgeSelectedHandler;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.model.DataOverlayEntity;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.CanvasGradient;
@@ -66,9 +64,6 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 
 	private double min;
 	private double max;
-	
-	private List<Double> fiHoveredExpression = new ArrayList<>();
-	private List<Double> fiSelectedExpression = new ArrayList<>();
 	
 	List<Double> hoveredValues = new ArrayList<>();
 	List<Double> selectedValues = new ArrayList<>();

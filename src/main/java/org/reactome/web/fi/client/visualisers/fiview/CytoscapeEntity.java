@@ -2,8 +2,6 @@ package org.reactome.web.fi.client.visualisers.fiview;
 
 import org.reactome.web.gwtCytoscapeJs.client.CytoscapeWrapper;
 
-import com.google.gwt.event.shared.EventBus;
-
 /**
  * 
  * @author brunsont

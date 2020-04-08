@@ -2,7 +2,6 @@ package org.reactome.web.fi.legends;
 
 import org.reactome.web.diagram.common.PwpButton;
 import org.reactome.web.diagram.legends.LegendPanel;
-import org.reactome.web.diagram.util.slider.Slider;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
