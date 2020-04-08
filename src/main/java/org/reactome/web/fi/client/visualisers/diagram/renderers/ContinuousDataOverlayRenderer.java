@@ -27,7 +27,7 @@ import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
+import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -127,7 +127,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 			}
 		}
 		//render decorators for pairwisePopups if exists
-		if(PairwiseOverlayFactory.get().getPairwiseNumberEntities() != null) {
+		if(IDGPopupFactoryFactory.get().getPairwiseNumberEntities() != null) {
 			for(DiagramObject item : objectSet)
 				decoratorRenderer.doRender(overlayContext.getOverlay(), item, factor, offset);
 		}

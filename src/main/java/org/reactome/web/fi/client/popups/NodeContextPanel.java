@@ -12,7 +12,7 @@ import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.handlers.PairwiseInteractorsResetHandler;
 import org.reactome.web.fi.handlers.PairwiseNumbersLoadedHandler;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
+import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -58,7 +58,7 @@ PairwiseNumbersLoadedHandler, PairwiseInteractorsResetHandler{
 		buttonsPanel.add(this.interactorsButton = getButton("Interactors", RESOURCES.interactors()));
 	
 		//set Interactors button to enabled or disabled
-		boolean enabled = PairwiseOverlayFactory.get().getCurrentPairwiseProperties() != null && PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size() > 0;
+		boolean enabled = IDGPopupFactoryFactory.get().getCurrentPairwiseProperties() != null && IDGPopupFactoryFactory.get().getCurrentPairwiseProperties().size() > 0;
 		this.interactorsButton.setEnabled(enabled);
 		
 		//set dialog button to enabled only if overlay is other than Target Dev Level

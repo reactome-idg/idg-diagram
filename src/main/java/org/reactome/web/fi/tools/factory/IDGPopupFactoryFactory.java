@@ -1,4 +1,4 @@
-package org.reactome.web.fi.tools.overlay.pairwise.factory;
+package org.reactome.web.fi.tools.factory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
-import org.reactome.web.fi.tools.overlay.pairwise.popup.PairwisePopup;
+import org.reactome.web.fi.tools.popup.IDGPopup;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 
@@ -22,11 +22,11 @@ import org.reactome.web.gwtCytoscapeJs.util.Console;
  * @author brunsont
  *
  */
-public class PairwiseOverlayFactory{
+public class IDGPopupFactoryFactory{
 
-	private static PairwiseOverlayFactory factory;
+	private static IDGPopupFactoryFactory factory;
 	
-	private Map<String, PairwisePopup> popupMap;
+	private Map<String, IDGPopup> popupMap;
 	private Map<String, String> uniprotToGeneMap;
 	private Set<String> tDarkSet;
 	private List<PairwiseOverlayObject> currentPairwiseObjects;
@@ -43,7 +43,7 @@ public class PairwiseOverlayFactory{
 	/**
 	 * On initialization, need to load TDark set and UniprotToGeneMap
 	 */
-	private PairwiseOverlayFactory() {
+	private IDGPopupFactoryFactory() {
 		popupMap = new HashMap<>();
 		currentPairwiseObjects = new ArrayList<>();
 		
@@ -56,15 +56,15 @@ public class PairwiseOverlayFactory{
 			
 			@Override
 			public void onTDarkLoaded(Set<String> tDarkSet) {
-				PairwiseOverlayFactory.this.tDarkSet = tDarkSet;
+				IDGPopupFactoryFactory.this.tDarkSet = tDarkSet;
 			}
 		});
 		this.uniprotToGeneMap = PairwiseInfoService.getUniprotToGeneMap();
 	}
 	
-	public static PairwiseOverlayFactory get() {
+	public static IDGPopupFactoryFactory get() {
 		if(factory == null) {
-			factory = new PairwiseOverlayFactory();
+			factory = new IDGPopupFactoryFactory();
 		}
 		return factory;
 	}
@@ -75,7 +75,7 @@ public class PairwiseOverlayFactory{
 	 */
 	public void openPopup(GraphObject graphObject) {
 		if(!popupMap.keySet().contains(graphObject.getStId()) && currentPairwiseObjects.size() > 0) {
-			PairwisePopup popup = new PairwisePopup(graphObject, currentPairwiseObjects, getZIndex());
+			IDGPopup popup = new IDGPopup(graphObject, currentPairwiseObjects, getZIndex());
 			popupMap.put(graphObject.getStId(), popup);
 			popup.show();
 		}
@@ -88,7 +88,7 @@ public class PairwiseOverlayFactory{
 	 */
 	public void openPopup(String uniprot, String geneName) {
 		if(!popupMap.keySet().contains(uniprot) && currentPairwiseObjects.size() > 0) {
-			PairwisePopup popup = new PairwisePopup(uniprot, geneName, currentPairwiseObjects, getZIndex());
+			IDGPopup popup = new IDGPopup(uniprot, geneName, currentPairwiseObjects, getZIndex());
 			popupMap.put(uniprot, popup);
 			popup.show();
 		}
@@ -122,7 +122,7 @@ public class PairwiseOverlayFactory{
 	 */
 	public void setCurrentPairwiseProperties(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.currentPairwiseObjects = pairwiseOverlayObjects;
-		for(PairwisePopup popup : popupMap.values())
+		for(IDGPopup popup : popupMap.values())
 			popup.updatePairwiseObjects(this.currentPairwiseObjects);
 	}
 	
@@ -136,7 +136,7 @@ public class PairwiseOverlayFactory{
 	 */
 	public void setDataOverlayProperties(DataOverlayProperties dataOverlayProperties) {
 		this.dataOverlayProperties = dataOverlayProperties;
-		for(PairwisePopup popup : popupMap.values())
+		for(IDGPopup popup : popupMap.values())
 			popup.loadOverlay();
 	}
 
@@ -149,7 +149,7 @@ public class PairwiseOverlayFactory{
 	 * @param column
 	 */
 	public void setOverlayColumn(int column) {
-		for(PairwisePopup popup: popupMap.values())
+		for(IDGPopup popup: popupMap.values())
 			popup.changeOverlayColumn(column);
 	}
 
@@ -162,7 +162,7 @@ public class PairwiseOverlayFactory{
 	}
 
 	public void resetZIndexes() {
-		for(PairwisePopup popup : popupMap.values())
+		for(IDGPopup popup : popupMap.values())
 			popup.resetZIndex();
 	}
 	

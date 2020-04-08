@@ -1,4 +1,4 @@
-package org.reactome.web.fi.tools.overlay.pairwise.popup;
+package org.reactome.web.fi.tools.popup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,8 +19,8 @@ import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
+import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwiseNodeContextPopup;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.gwtCytoscapeJs.client.CytoscapeWrapper.Handler;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author brunsont
  *
  */
-public class PairwisePopupCytoscapeController implements Handler{
+public class IDGPopupCytoscapeController implements Handler{
 
 	public interface CytoscapePanelHandler{
 		
@@ -58,7 +58,7 @@ public class PairwisePopupCytoscapeController implements Handler{
 	private int zIndex;
 	private FIViewInfoPopup infoPopup;
 	
-	public PairwisePopupCytoscapeController(String popupId, Set<String> diagramNodes, List<PairwiseOverlayObject> pairwiseOverlayObjects, PairwisePopup.Resources RESOURCES, int zIndex) {
+	public IDGPopupCytoscapeController(String popupId, Set<String> diagramNodes, List<PairwiseOverlayObject> pairwiseOverlayObjects, IDGPopup.Resources RESOURCES, int zIndex) {
 		this.diagramNodes = diagramNodes;
 		this.displayedNodes = new HashSet<>();
 		this.edgeIdToEntity = new HashMap<>();
@@ -201,14 +201,14 @@ public class PairwisePopupCytoscapeController implements Handler{
 	}
 	
 	public void loadOverlay() {
-		DataOverlayProperties props = PairwiseOverlayFactory.get().getDataOverlayProperties();
+		DataOverlayProperties props = IDGPopupFactoryFactory.get().getDataOverlayProperties();
 		props.setUniprots(String.join(",", this.displayedNodes));
 		
 		TCRDDataLoader loader = new TCRDDataLoader();
 		loader.load(props, new TCRDDataLoader.Handler() {
 			@Override
 			public void onDataOverlayLoaded(DataOverlay dataOverlay) {
-				PairwisePopupCytoscapeController.this.dataOverlay = dataOverlay;
+				IDGPopupCytoscapeController.this.dataOverlay = dataOverlay;
 				overlayData();
 			}
 			@Override
@@ -254,7 +254,7 @@ public class PairwisePopupCytoscapeController implements Handler{
 
 	public void pairwisePropertiesChanged() {
 		cy.clearCytoscapeGraph();
-		this.pairwiseOverlayObjects = PairwiseOverlayFactory.get().getCurrentPairwiseProperties();
+		this.pairwiseOverlayObjects = IDGPopupFactoryFactory.get().getCurrentPairwiseProperties();
 		displayedNodes.clear();
 		this.edgeIdToEntity.clear();
 		this.edgeCount = 0;
@@ -284,7 +284,7 @@ public class PairwisePopupCytoscapeController implements Handler{
 	
 	private int getCorrectZIndex() {
 		if(focused == true)
-			return PairwiseOverlayFactory.get().getMaxZIndex() + 1;
+			return IDGPopupFactoryFactory.get().getMaxZIndex() + 1;
 		return zIndex+1;
 	}
 

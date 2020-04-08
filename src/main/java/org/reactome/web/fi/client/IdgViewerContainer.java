@@ -54,8 +54,8 @@ import org.reactome.web.fi.legends.OverlayControlLegend;
 import org.reactome.web.fi.messages.CytoscapeViewLoadingMessage;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
+import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
 import org.reactome.web.fi.tools.overlay.OverlayLauncherDisplay;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -192,8 +192,8 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 			eventBus.fireEventFromSource(new MakeOverlayRequestEvent(getTargetLevelProperties()), this);
 		}
 		
-		if(PairwiseOverlayFactory.get().getCurrentPairwiseProperties() != null && PairwiseOverlayFactory.get().getCurrentPairwiseProperties().size() > 0) {
-			eventBus.fireEventFromSource(new RequestPairwiseCountsEvent(PairwiseOverlayFactory.get().getCurrentPairwiseProperties()), this);
+		if(IDGPopupFactoryFactory.get().getCurrentPairwiseProperties() != null && IDGPopupFactoryFactory.get().getCurrentPairwiseProperties().size() > 0) {
+			eventBus.fireEventFromSource(new RequestPairwiseCountsEvent(IDGPopupFactoryFactory.get().getCurrentPairwiseProperties()), this);
 		}
 		
 		loadDrugActivities();
@@ -245,8 +245,8 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 	
 	@Override
 	public void onPairwiseInteractorsReset(PairwiseInteractorsResetEvent event) {
-		PairwiseOverlayFactory.get().setPairwiseNumberEntities(new ArrayList<>());
-		PairwiseOverlayFactory.get().setGeneToTotalMap(new HashMap<>());
+		IDGPopupFactoryFactory.get().setPairwiseNumberEntities(new ArrayList<>());
+		IDGPopupFactoryFactory.get().setGeneToTotalMap(new HashMap<>());
 		
 		if(activeVisualiser == fIViewVisualizer) return;
 		
@@ -372,7 +372,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 		this.overlayColourLegend.setUnit(dataOverlay.getOverlayProperties().getUnit());
 		context.setDialogMap(new HashMap<>());
 		
-		PairwiseOverlayFactory.get().setDataOverlayProperties(event.getDataOverlay().getOverlayProperties());
+		IDGPopupFactoryFactory.get().setDataOverlayProperties(event.getDataOverlay().getOverlayProperties());
 
 		
 		//testing new way to set is hit for all data so it works in FIViz without overlaying on diagram first
@@ -463,7 +463,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 	@Override
 	public void onDataOverlayColumnChanged(DataOverlayColumnChangedEvent event) {
 		this.dataOverlay.setColumn(event.getColumn());
-		PairwiseOverlayFactory.get().setOverlayColumn(event.getColumn());
+		IDGPopupFactoryFactory.get().setOverlayColumn(event.getColumn());
 		context.setDialogMap(new HashMap<>());
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();

@@ -1,4 +1,4 @@
-package org.reactome.web.fi.tools.overlay.pairwise.popup;
+package org.reactome.web.fi.tools.popup;
 
 import java.util.HashSet;
 import java.util.List;
@@ -11,9 +11,9 @@ import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
+import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
-import org.reactome.web.fi.tools.overlay.pairwise.popup.PairwisePopupTablePanel.PairwiseTableHandler;
+import org.reactome.web.fi.tools.popup.PairwisePopupTablePanel.PairwiseTableHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.MouseUpEvent;
@@ -34,10 +34,10 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @author brunsont
  *
  */
-public class PairwisePopup extends DialogBox implements PairwiseTableHandler{
+public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 
 	private String popupId;
-	private PairwisePopupCytoscapeController cyController;
+	private IDGPopupCytoscapeController cyController;
 	private PairwisePopupTablePanel tablePanel;
 	private List<PairwiseOverlayObject> pairwiseOverlayProperties;
 	private Set<String> diagramNodes;
@@ -47,12 +47,12 @@ public class PairwisePopup extends DialogBox implements PairwiseTableHandler{
 	
 	private FlowPanel main;
 	
-	public PairwisePopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayProperties, int zIndex) {
+	public IDGPopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayProperties, int zIndex) {
 		setDiagramNodes(graphObject);
 		initPanel(graphObject.getStId(), zIndex, pairwiseOverlayProperties);
 	}
 	
-	public PairwisePopup(String uniprot, String geneName, List<PairwiseOverlayObject> pairwiseOverlayProperties, int zIndex) {
+	public IDGPopup(String uniprot, String geneName, List<PairwiseOverlayObject> pairwiseOverlayProperties, int zIndex) {
 		setDiagramNodes(uniprot);
 		initPanel(uniprot, zIndex, pairwiseOverlayProperties);
 	}
@@ -81,14 +81,14 @@ public class PairwisePopup extends DialogBox implements PairwiseTableHandler{
 		setTitlePanel();
 		setWidget(focus);
 		
-		int popupNumber = PairwiseOverlayFactory.get().getNumberOfPopups();
+		int popupNumber = IDGPopupFactoryFactory.get().getNumberOfPopups();
 		this.setPopupPosition(popupNumber*20, popupNumber*20);
 		
 		show();
 		
-		//create PairwisePopupCytoscapeController after panel creation 
+		//create IDGPopupCytoscapeController after panel creation 
 		//otherwise, cytoscape.js has no panel to mount to
-		cyController = new PairwisePopupCytoscapeController(popupId, diagramNodes, pairwiseOverlayProperties, RESOURCES, zIndex);
+		cyController = new IDGPopupCytoscapeController(popupId, diagramNodes, pairwiseOverlayProperties, RESOURCES, zIndex);
 		
 		//must add Results table after cyController is created
 		main.add(tablePanel = new PairwisePopupTablePanel(pairwiseOverlayProperties, diagramNodes, RESOURCES, this));
@@ -105,8 +105,8 @@ public class PairwisePopup extends DialogBox implements PairwiseTableHandler{
 	}
 
 	private void panelClicked() {
-		PairwiseOverlayFactory.get().resetZIndexes();
-		this.getElement().getStyle().setZIndex(PairwiseOverlayFactory.get().getMaxZIndex());
+		IDGPopupFactoryFactory.get().resetZIndexes();
+		this.getElement().getStyle().setZIndex(IDGPopupFactoryFactory.get().getMaxZIndex());
 		focused = true;
 		cyController.setFocused(focused);
 	}
@@ -170,7 +170,7 @@ public class PairwisePopup extends DialogBox implements PairwiseTableHandler{
 
 	@Override
 	public void hide() {
-		PairwiseOverlayFactory.get().removePopup(this.popupId);
+		IDGPopupFactoryFactory.get().removePopup(this.popupId);
 		super.hide();
 	}
 
@@ -201,8 +201,8 @@ public class PairwisePopup extends DialogBox implements PairwiseTableHandler{
 	}
 
 	/**
-	 * Below here is all for styling. Handles styles of PairwisePopup,
-	 * PairwisePopupTablePanel, and PairwisePopupCytoscapeController
+	 * Below here is all for styling. Handles styles of IDGPopup,
+	 * PairwisePopupTablePanel, and IDGPopupCytoscapeController
 	 */
 	public static Resources RESOURCES;
 	static {
@@ -229,7 +229,7 @@ public class PairwisePopup extends DialogBox implements PairwiseTableHandler{
 	
 	@CssResource.ImportedWithPrefix("idg-pairwisePopup")
 	public interface ResourceCSS extends CssResource{
-		String CSS = "org/reactome/web/fi/tools/overlay/pairwise/popup/PairwisePopup.css";
+		String CSS = "org/reactome/web/fi/tools/popup/IDGPopup.css";
 		
 		String popupPanel();
 				

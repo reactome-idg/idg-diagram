@@ -32,7 +32,7 @@ import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.IDGExpressionGradient;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
+import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -158,7 +158,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 			}
 		}
 		//render decorators for pairwisePopups if exists
-		if(PairwiseOverlayFactory.get().getPairwiseNumberEntities() != null) {
+		if(IDGPopupFactoryFactory.get().getPairwiseNumberEntities() != null) {
 			for(DiagramObject item : objectSet)
 				decoratorRenderer.doRender(overlayContext.getOverlay(), item, factor, offset);
 		}

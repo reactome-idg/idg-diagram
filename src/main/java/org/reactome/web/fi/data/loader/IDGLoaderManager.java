@@ -25,7 +25,7 @@ import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.PairwiseNumbersLoadedEvent;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
+import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
@@ -144,7 +144,7 @@ TCRDDataLoader.Handler{
 				INTERACTORS_RESOURCE = new OverlayResource(result.getResource(), "Pairwise/Interactors", OverlayResource.ResourceType.CUSTOM);
 				
 				eventBus.fireEventFromSource(new InteractorsLoadedEvent(result, new Long(1)), this);
-				PairwiseOverlayFactory.get().setupNewOverlay(result, entities.getPairwiseNumberEntities(), geneToTotalMap);
+				IDGPopupFactoryFactory.get().setupNewOverlay(result, entities.getPairwiseNumberEntities(), geneToTotalMap);
 				eventBus.fireEventFromSource(new PairwiseNumbersLoadedEvent(context, geneToTotalMap), this);
 			}
 			@Override
@@ -156,11 +156,11 @@ TCRDDataLoader.Handler{
 	
 	@Override
 	public void interactorsLoaded(RawInteractors interactors, long time) {
-		if(PairwiseOverlayFactory.get().getRawInteractors() !=null && 
-		   PairwiseOverlayFactory.get().getRawInteractors().getEntities().size() > 0) {
-			ContentFactory.fillInteractorsContent(context, PairwiseOverlayFactory.get().getRawInteractors());
-			eventBus.fireEventFromSource(new InteractorsLoadedEvent(PairwiseOverlayFactory.get().getRawInteractors(), new Long(1)), this);
-			PairwiseOverlayFactory.get().setInteractorEntities(new RawInteractorsImpl("Empty", null));
+		if(IDGPopupFactoryFactory.get().getRawInteractors() !=null && 
+		   IDGPopupFactoryFactory.get().getRawInteractors().getEntities().size() > 0) {
+			ContentFactory.fillInteractorsContent(context, IDGPopupFactoryFactory.get().getRawInteractors());
+			eventBus.fireEventFromSource(new InteractorsLoadedEvent(IDGPopupFactoryFactory.get().getRawInteractors(), new Long(1)), this);
+			IDGPopupFactoryFactory.get().setInteractorEntities(new RawInteractorsImpl("Empty", null));
 		}
 		return;
 	}

@@ -1,4 +1,4 @@
-package org.reactome.web.fi.tools.overlay.pairwise.popup;
+package org.reactome.web.fi.tools.popup;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,7 +13,7 @@ import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.tools.overlay.pairwise.factory.PairwiseOverlayFactory;
+import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
@@ -42,7 +42,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	
 	private PairwiseTableHandler handler;
 	
-	private PairwisePopup.Resources RESOURCES;
+	private IDGPopup.Resources RESOURCES;
 	private List<PairwiseOverlayObject> pairwiseOverlayProperties;
 	private Set<String> diagramNodes;
 	
@@ -64,7 +64,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	
 	private DataOverlay dataOverlay;
 	
-	public PairwisePopupTablePanel(List<PairwiseOverlayObject> pairwiseOverlayProperties, Set<String> diagramNodes, PairwisePopup.Resources RESOURCES, PairwiseTableHandler handler) {
+	public PairwisePopupTablePanel(List<PairwiseOverlayObject> pairwiseOverlayProperties, Set<String> diagramNodes, IDGPopup.Resources RESOURCES, PairwiseTableHandler handler) {
 		this.RESOURCES = RESOURCES;
 		this.handler = handler;
 		this.pairwiseOverlayProperties = pairwiseOverlayProperties;
@@ -251,7 +251,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	public void loadOverlay() {
 		clearOverlayColumn();
 		
-		DataOverlayProperties props = PairwiseOverlayFactory.get().getDataOverlayProperties();
+		DataOverlayProperties props = IDGPopupFactoryFactory.get().getDataOverlayProperties();
 		props.setUniprots(String.join(",", collectUniprots()));
 		
 		TCRDDataLoader loader = new TCRDDataLoader();
@@ -323,7 +323,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	}
 
 	private void getInitialInteractors() {
-		Set<String> darkProteins = PairwiseOverlayFactory.get().getTDarkSet();
+		Set<String> darkProteins = IDGPopupFactoryFactory.get().getTDarkSet();
 		Set<PairwiseTableEntity> initialEntities = new HashSet<>();
 		for(String diagramNode : diagramNodes) {
 			int counter  = 0;
@@ -353,7 +353,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	}
 	
 	public void pairwisePropertiesChanged() {
-		this.pairwiseOverlayProperties = PairwiseOverlayFactory.get().getCurrentPairwiseProperties();
+		this.pairwiseOverlayProperties = IDGPopupFactoryFactory.get().getCurrentPairwiseProperties();
 		tableEntities.clear();
 		filteredTableEntities.clear();
 		setSourceListBox();
