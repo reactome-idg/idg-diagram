@@ -142,7 +142,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 		IDGDecoratorRenderer idgDecoratorRenderer = new IDGDecoratorRenderer(eventBus);
 		DrugTargetRenderer drugTargetRenderer = new DrugTargetRenderer(eventBus);
 		OverlayDataHandler.getHandler().registerHelper(new DiscreteDataOverlayRenderer(eventBus, idgDecoratorRenderer, drugTargetRenderer));
-		OverlayDataHandler.getHandler().registerHelper(new ContinuousDataOverlayRenderer(eventBus, idgDecoratorRenderer));
+		OverlayDataHandler.getHandler().registerHelper(new ContinuousDataOverlayRenderer(eventBus, idgDecoratorRenderer, drugTargetRenderer));
 	}
 	
 	@Override
