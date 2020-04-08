@@ -89,7 +89,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
         renderDiscreteProteinData(itemsDistribution.getItems("Protein"));
         renderDiscreteComplexData(itemsDistribution.getItems("Complex"), "Complex");
         renderDiscreteComplexData(itemsDistribution.getItems("EntitySet"), "EntitySet");
-        drugTargetRenderer.doRender();
+        drugTargetRenderer.doRender(overlayContext.getOverlay(), factor, offset);
 	}
 
 	/**

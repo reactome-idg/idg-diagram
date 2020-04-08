@@ -10,10 +10,13 @@ import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.data.layout.Node;
 import org.reactome.web.diagram.data.layout.Shape;
+import org.reactome.web.diagram.data.layout.SummaryItem;
 import org.reactome.web.diagram.data.layout.impl.CoordinateFactory;
-import org.reactome.web.fi.data.layout.DrugTargetItem;
-import org.reactome.web.fi.data.layout.DrugTargetItemImpl;
+import org.reactome.web.diagram.profiles.diagram.DiagramColours;
+import org.reactome.web.diagram.renderers.layout.abs.SummaryItemAbstractRenderer;
+import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.fi.data.layout.ShapeImpl;
+import org.reactome.web.fi.data.layout.SummaryItemImpl;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.events.DrugTargetsLoadedEvent;
@@ -25,15 +28,21 @@ public class DrugTargetRenderer implements DrugTargetsLoadedHandler{
 
 	private EventBus eventBus;
 	private Map<String, List<DrugTargetEntity>> uniprotToDrugTargetEntityMap;
-	private Set<DrugTargetItem> currentItems;
+	private Set<SummaryItem> currentItems;
 	
 	public DrugTargetRenderer(EventBus eventBus) {
 		this.eventBus = eventBus;
 		eventBus.addHandler(DrugTargetsLoadedEvent.TYPE, this);
 	}
 
-	public void doRender() {
-		
+	public void doRender(AdvancedContext2d ctx, Double factor, Coordinate offset) {
+		currentItems.forEach(x -> {
+			ctx.save();
+			ctx.setGlobalAlpha((factor-.5)*2);
+			ctx.setFillStyle(DiagramColours.get().PROFILE.getProperties().getSelection());
+			SummaryItemAbstractRenderer.draw(ctx, x, factor, offset);
+			ctx.restore();
+		});
 	}
 	
 	@Override
@@ -45,15 +54,16 @@ public class DrugTargetRenderer implements DrugTargetsLoadedHandler{
 			   obj.getRenderableClass() != "EntitySet" &&
 			   obj.getRenderableClass() != "Protein") continue;
 			
-			DrugTargetItem drugTargetItem = makeItem(obj);
+			SummaryItem drugTargetItem = makeItem(obj);
 			
 			if(drugTargetItem.getNumber() == 0) continue;
 			currentItems.add(drugTargetItem);
 		}
 	}
 
-	private DrugTargetItem makeItem(DiagramObject obj) {
-		DrugTargetItem result = new DrugTargetItemImpl(getShape(obj), getNumber(obj));
+	private SummaryItem makeItem(DiagramObject obj) {
+		SummaryItem result = new SummaryItemImpl(getShape(obj), getNumber(obj));
+		((SummaryItemImpl)result).setType("DG");
 		return result;
 	}
 
