@@ -253,8 +253,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 		for(DiagramObject item : context.getContent().getDiagramObjects()) {
 			if(item instanceof Node) {
 				Node node = (Node)item;
-				if(node.getInteractorsSummary() != null)
-					node.getInteractorsSummary().setNumber(null);
+				node.setInteractorsSummary(null);
 			}
 		}
 		activeVisualiser.resetAnalysis(); //trick to get diagram to re-render now without decorators
