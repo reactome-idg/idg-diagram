@@ -3,6 +3,7 @@ package org.reactome.web.fi.client.visualisers.diagram.renderers;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
@@ -58,6 +59,12 @@ public class DrugTargetRenderer implements DrugTargetsLoadedHandler{
 			
 			if(drugTargetItem.getNumber() == 0) continue;
 			currentItems.add(drugTargetItem);
+			
+			Node node = (Node) obj;
+			List<SummaryItem> otherInteractorList = node.getOtherInteractorList();
+			if(otherInteractorList == null) otherInteractorList = new ArrayList<>(); 
+			otherInteractorList.add(drugTargetItem);
+			node.setOtherInteractorList(otherInteractorList);
 		}
 	}
 
