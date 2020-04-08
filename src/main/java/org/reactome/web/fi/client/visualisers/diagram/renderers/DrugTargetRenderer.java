@@ -61,10 +61,10 @@ public class DrugTargetRenderer implements DrugTargetsLoadedHandler{
 			currentItems.add(drugTargetItem);
 			
 			Node node = (Node) obj;
-			List<SummaryItem> otherInteractorList = node.getOtherInteractorList();
+			List<SummaryItem> otherInteractorList = node.getOtherDecoratorsList();
 			if(otherInteractorList == null) otherInteractorList = new ArrayList<>(); 
 			otherInteractorList.add(drugTargetItem);
-			node.setOtherInteractorList(otherInteractorList);
+			node.setOtherDecoratorsList(otherInteractorList);
 		}
 	}
 
