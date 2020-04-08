@@ -24,6 +24,8 @@ import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.client.visualisers.OverlayRenderer;
+import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.DrugTargetRenderer;
+import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.PairwiseInteractorRenderer;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
@@ -49,10 +51,10 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 	private Map<Double, String> colourMap;
 	private OverlayContext originalOverlay;
 	private DataOverlay dataOverlay;
-	private IDGDecoratorRenderer decoratorRenderer;
+	private PairwiseInteractorRenderer decoratorRenderer;
 	private DrugTargetRenderer drugTargetRenderer;
 	
-	public DiscreteDataOverlayRenderer(EventBus eventBus, IDGDecoratorRenderer idgDecoratorRenderer, DrugTargetRenderer drugTargetRenderer){
+	public DiscreteDataOverlayRenderer(EventBus eventBus, PairwiseInteractorRenderer idgDecoratorRenderer, DrugTargetRenderer drugTargetRenderer){
 		this.eventBus = eventBus;
 		this.decoratorRenderer = idgDecoratorRenderer;
 		this.drugTargetRenderer = drugTargetRenderer;

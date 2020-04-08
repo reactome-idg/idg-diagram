@@ -21,6 +21,8 @@ import org.reactome.web.diagram.renderers.layout.RendererManager;
 import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.fi.client.visualisers.OverlayRenderer;
+import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.DrugTargetRenderer;
+import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.PairwiseInteractorRenderer;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
@@ -39,10 +41,10 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	private Coordinate offset;
 	private OverlayContext originalOverlayContext;
 	private DataOverlay dataOverlay;
-	private IDGDecoratorRenderer decoratorRenderer;
+	private PairwiseInteractorRenderer decoratorRenderer;
 	private DrugTargetRenderer drugTargetRenderer;
 	
-	public ContinuousDataOverlayRenderer(EventBus eventBus, IDGDecoratorRenderer idgDecoratorRenderer, DrugTargetRenderer drugTargetRenderer) {
+	public ContinuousDataOverlayRenderer(EventBus eventBus, PairwiseInteractorRenderer idgDecoratorRenderer, DrugTargetRenderer drugTargetRenderer) {
 		this.eventBus = eventBus;
 		this.decoratorRenderer = idgDecoratorRenderer;
 		this.drugTargetRenderer = drugTargetRenderer;

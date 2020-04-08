@@ -1,4 +1,4 @@
-package org.reactome.web.fi.client.visualisers.diagram.renderers;
+package org.reactome.web.fi.client.visualisers.diagram.renderers.decorators;
 
 import java.util.Map;
 import java.util.Set;
@@ -27,12 +27,12 @@ import com.google.gwt.event.shared.EventBus;
  * @author brunsont
  *
  */
-public class IDGDecoratorRenderer implements PairwiseNumbersLoadedHandler {
+public class PairwiseInteractorRenderer implements PairwiseNumbersLoadedHandler {
 		
 	private EventBus eventBus;
 	private Map<String,Integer> currentTotalsMap;
 	
-	public IDGDecoratorRenderer(EventBus eventBus) {
+	public PairwiseInteractorRenderer(EventBus eventBus) {
 		this.eventBus = eventBus;
 		
 		eventBus.addHandler(PairwiseNumbersLoadedEvent.TYPE, this);
