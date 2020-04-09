@@ -200,6 +200,14 @@ public class IDGPopupCytoscapeController implements Handler{
 		return result;
 	}
 	
+	/**
+	 * Adds drugs for diagram source nodes to the table
+	 */
+	public void addDrugs() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	public void loadOverlay() {
 		DataOverlayProperties props = IDGPopupFactoryFactory.get().getDataOverlayProperties();
 		props.setUniprots(String.join(",", this.displayedNodes));

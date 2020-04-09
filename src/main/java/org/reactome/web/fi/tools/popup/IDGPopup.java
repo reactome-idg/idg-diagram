@@ -11,7 +11,7 @@ import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
-import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
+import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.popup.PairwisePopupTablePanel.PairwiseTableHandler;
 
@@ -82,7 +82,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		setWidget(focus);
 		
 		//set initial position of popup
-		int popupNumber = IDGPopupFactoryFactory.get().getNumberOfPopups();
+		int popupNumber = IDGPopupFactory.get().getNumberOfPopups();
 		this.setPopupPosition(popupNumber*20, popupNumber*20);
 		
 		show();
@@ -92,7 +92,10 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		cyController = new IDGPopupCytoscapeController(popupId, diagramNodes, RESOURCES, zIndex);
 		
 		//must add Results table after cyController is created
-		main.add(tablePanel = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
+		if(initialType == "TR")
+			main.add(tablePanel = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
+		else if(initialType == "DG")
+			cyController.addDrugs();
 	}
 	
 	private void setTitlePanel() {
@@ -106,8 +109,8 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	}
 
 	private void panelClicked() {
-		IDGPopupFactoryFactory.get().resetZIndexes();
-		this.getElement().getStyle().setZIndex(IDGPopupFactoryFactory.get().getMaxZIndex());
+		IDGPopupFactory.get().resetZIndexes();
+		this.getElement().getStyle().setZIndex(IDGPopupFactory.get().getMaxZIndex());
 		focused = true;
 		cyController.setFocused(focused);
 	}
@@ -170,7 +173,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 
 	@Override
 	public void hide() {
-		IDGPopupFactoryFactory.get().removePopup(this.popupId);
+		IDGPopupFactory.get().removePopup(this.popupId);
 		super.hide();
 	}
 

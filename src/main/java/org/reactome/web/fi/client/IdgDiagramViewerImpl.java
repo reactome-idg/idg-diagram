@@ -22,7 +22,7 @@ import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 import org.reactome.web.fi.handlers.DrugTargetsRequestedHandler;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
 import org.reactome.web.fi.handlers.PairwiseCountsRequestedHandler;
-import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
+import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 
 /**
  * 
@@ -69,7 +69,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	@Override
 	public void onContentRequested(ContentRequestedEvent event) {
 		//resets pairwise number entities to 0 for new diagrams because the correct ones need to be loaded
-		IDGPopupFactoryFactory.get().setPairwiseNumberEntities(null);
+		IDGPopupFactory.get().setPairwiseNumberEntities(null);
 		super.onContentRequested(event);
 	}
 
@@ -92,9 +92,9 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	@Override
 	public void onPairwiseOverlayButtonClicked(PairwiseOverlayButtonClickedEvent event) {
 		if(event.getGraphObject() != null)
-			IDGPopupFactoryFactory.get().openPopup(event.getGraphObject(), "TR");
+			IDGPopupFactory.get().openPopup(event.getGraphObject(), "TR");
 		else
-			IDGPopupFactoryFactory.get().openPopup(event.getUniprot(), event.getGeneName(), "TR");
+			IDGPopupFactory.get().openPopup(event.getUniprot(), event.getGeneName(), "TR");
 	}
 
 	@Override
@@ -105,6 +105,6 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	@Override
 	public void onEntityDecoratorSelected(EntityDecoratorSelectedEvent event) {
 		if(event.getSummaryItem() != null)
-			IDGPopupFactoryFactory.get().openPopup(event.getGraphObject(), event.getSummaryItem().getType());
+			IDGPopupFactory.get().openPopup(event.getGraphObject(), event.getSummaryItem().getType());
 	}
 }

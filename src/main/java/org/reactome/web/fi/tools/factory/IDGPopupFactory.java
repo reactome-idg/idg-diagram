@@ -23,9 +23,9 @@ import org.reactome.web.gwtCytoscapeJs.util.Console;
  * @author brunsont
  *
  */
-public class IDGPopupFactoryFactory{
+public class IDGPopupFactory{
 
-	private static IDGPopupFactoryFactory factory;
+	private static IDGPopupFactory factory;
 	
 	private Map<String, IDGPopup> popupMap;
 	private Map<String, String> uniprotToGeneMap;
@@ -46,7 +46,7 @@ public class IDGPopupFactoryFactory{
 	/**
 	 * On initialization, need to load TDark set and UniprotToGeneMap
 	 */
-	private IDGPopupFactoryFactory() {
+	private IDGPopupFactory() {
 		popupMap = new HashMap<>();
 		currentPairwiseObjects = new ArrayList<>();
 		
@@ -59,15 +59,15 @@ public class IDGPopupFactoryFactory{
 			
 			@Override
 			public void onTDarkLoaded(Set<String> tDarkSet) {
-				IDGPopupFactoryFactory.this.tDarkSet = tDarkSet;
+				IDGPopupFactory.this.tDarkSet = tDarkSet;
 			}
 		});
 		this.uniprotToGeneMap = PairwiseInfoService.getUniprotToGeneMap();
 	}
 	
-	public static IDGPopupFactoryFactory get() {
+	public static IDGPopupFactory get() {
 		if(factory == null) {
-			factory = new IDGPopupFactoryFactory();
+			factory = new IDGPopupFactory();
 		}
 		return factory;
 	}

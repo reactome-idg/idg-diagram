@@ -3,7 +3,7 @@ package org.reactome.web.fi.client.popups;
 import java.util.List;
 
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
-import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
+import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -55,14 +55,14 @@ public class NodeInteractorsPanel extends Composite{
 		table.clear();
 		table.setStyleName(RESOURCES.getCSS().dataTable());
 		
-		if(IDGPopupFactoryFactory.get().getCurrentPairwiseProperties() == null 
-				|| IDGPopupFactoryFactory.get().getCurrentPairwiseProperties().size() == 0
-				|| IDGPopupFactoryFactory.get().getPairwiseNumberEntities() == null) {
+		if(IDGPopupFactory.get().getCurrentPairwiseProperties() == null 
+				|| IDGPopupFactory.get().getCurrentPairwiseProperties().size() == 0
+				|| IDGPopupFactory.get().getPairwiseNumberEntities() == null) {
 			table.setText(0, 0, "No relationshps for any data set");
 			return;
 		}
 		
-		List<PairwiseNumberEntity> entities = IDGPopupFactoryFactory.get().getPairwiseNumberEntities();
+		List<PairwiseNumberEntity> entities = IDGPopupFactory.get().getPairwiseNumberEntities();
 		
 		int counter = 0;
 		

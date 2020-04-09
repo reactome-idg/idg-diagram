@@ -14,7 +14,7 @@ import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
+import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
@@ -71,7 +71,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	public PairwisePopupTablePanel(Set<String> diagramNodes, IDGPopup.Resources RESOURCES, PairwiseTableHandler handler) {
 		this.RESOURCES = RESOURCES;
 		this.handler = handler;
-		this.pairwiseOverlayProperties = IDGPopupFactoryFactory.get().getCurrentPairwiseProperties();
+		this.pairwiseOverlayProperties = IDGPopupFactory.get().getCurrentPairwiseProperties();
 		this.diagramNodes = diagramNodes;
 		
 		this.tableEntities = new ArrayList<>();
@@ -265,7 +265,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	public void loadOverlay() {
 		clearOverlayColumn();
 		
-		DataOverlayProperties props = IDGPopupFactoryFactory.get().getDataOverlayProperties();
+		DataOverlayProperties props = IDGPopupFactory.get().getDataOverlayProperties();
 		props.setUniprots(String.join(",", collectUniprots()));
 		
 		TCRDDataLoader loader = new TCRDDataLoader();
@@ -337,7 +337,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	}
 
 	private void getInitialInteractors() {
-		Set<String> darkProteins = IDGPopupFactoryFactory.get().getTDarkSet();
+		Set<String> darkProteins = IDGPopupFactory.get().getTDarkSet();
 		Set<PairwiseTableEntity> initialEntities = new HashSet<>();
 		for(String diagramNode : diagramNodes) {
 			int counter  = 0;
@@ -367,7 +367,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	}
 	
 	public void pairwisePropertiesChanged() {
-		this.pairwiseOverlayProperties = IDGPopupFactoryFactory.get().getCurrentPairwiseProperties();
+		this.pairwiseOverlayProperties = IDGPopupFactory.get().getCurrentPairwiseProperties();
 		tableEntities.clear();
 		filteredTableEntities.clear();
 		setSourceListBox();
