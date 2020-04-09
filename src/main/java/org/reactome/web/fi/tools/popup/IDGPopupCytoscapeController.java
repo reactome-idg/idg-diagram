@@ -15,11 +15,12 @@ import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.data.loader.TCRDDataLoader;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
+import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
-import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
+import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwiseNodeContextPopup;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.gwtCytoscapeJs.client.CytoscapeWrapper.Handler;
@@ -47,6 +48,8 @@ public class IDGPopupCytoscapeController implements Handler{
 	private Set<String> diagramNodes;
 	private Set<String> displayedNodes;
 	private Map<PairwiseTableEntity, Integer> edgeIdToEntity;
+	private Map<Integer, DrugTargetEntity> edgeIdToDrugTarget;
+	private Set<Double> presentDrugs;
 	
 	private CytoscapeEntity cy;
 	
@@ -62,8 +65,9 @@ public class IDGPopupCytoscapeController implements Handler{
 		this.diagramNodes = diagramNodes;
 		this.displayedNodes = new HashSet<>();
 		this.edgeIdToEntity = new HashMap<>();
+		this.edgeIdToDrugTarget = new HashMap<>();
 		this.zIndex = zIndex;
-		this.pairwiseOverlayObjects = IDGPopupFactoryFactory.get().getCurrentPairwiseProperties();
+		this.pairwiseOverlayObjects = IDGPopupFactory.get().getCurrentPairwiseProperties();
 		this.containerId = "cy-" + popupId;
 		
 		this.cy = new CytoscapeEntity(RESOURCES.fiviewStyle().getText(), this);
@@ -129,16 +133,16 @@ public class IDGPopupCytoscapeController implements Handler{
 	
 	/**
 	 * Makes a node for only a passed in gene name string
-	 * @param gene
+	 * @param displayName
 	 * @return
 	 */
-	private JSONValue getProtein(String uniprot, String gene, boolean interactor) {
+	private JSONValue getProtein(String id, String displayName, boolean interactor) {
 		JSONObject result = new JSONObject();
 		result.put("group", new JSONString("nodes"));
 		
 		JSONObject node = new JSONObject();
-		node.put("id", new JSONString(uniprot));
-		node.put("name", new JSONString(gene));
+		node.put("id", new JSONString(id));
+		node.put("name", new JSONString(displayName));
 		if(interactor == true)
 			node.put("interactor", new JSONString("true"));
 		else
@@ -169,9 +173,9 @@ public class IDGPopupCytoscapeController implements Handler{
 		cy.addCytoscapeEdge(containerId, val.toString());
 		for(PairwiseOverlayObject prop:  pairwiseOverlayObjects) {
 			if(prop.getId() == tableEntity.getDataDesc() && tableEntity.getPosOrNeg() == "positive")
-				cy.recolorEdge(edgeIdToEntity.get(tableEntity)+"", prop.getPositiveLineColorHex());
+				cy.recolorEdge(edgeCount+"", prop.getPositiveLineColorHex());
 			else if(prop.getId() == tableEntity.getDataDesc() && tableEntity.getPosOrNeg() == "negative")
-				cy.recolorEdge(edgeIdToEntity.get(tableEntity)+"", prop.getNegativeLineColorHex());
+				cy.recolorEdge(edgeCount+"", prop.getNegativeLineColorHex());
 		}
 		
 		edgeCount++;
@@ -204,12 +208,32 @@ public class IDGPopupCytoscapeController implements Handler{
 	 * Adds drugs for diagram source nodes to the table
 	 */
 	public void addDrugs() {
-		// TODO Auto-generated method stub
-		
+		presentDrugs = new HashSet<>();
+		Map<String, List<DrugTargetEntity>> uniprotToEntity = IDGPopupFactory.get().getUniprotToDrugTarget();
+		diagramNodes.forEach(x -> {
+			uniprotToEntity.get(x).forEach(entity -> {
+				//make and add protein for the drug
+				if(!displayedNodes.contains(entity.getId()+"")) {
+					JSONObject protein = getProtein(entity.getId()+"", entity.getDrug(), false).isObject();
+					protein.put("drug", new JSONString("true"));
+					cy.addCytoscapeNodes(containerId, protein.toString());
+					cy.highlightNode(entity.getId()+"", "#B89AE6");
+					presentDrugs.add(entity.getId());
+				}
+				
+				//make and add edges for drugs
+				JSONObject edge = makeFI(edgeCount, entity.getTarget().getProtein().getUniprot(), entity.getId()+"", "solid").isObject();
+				edgeIdToDrugTarget.put(edgeCount, entity);
+				cy.addCytoscapeEdge(containerId, edge.toString());
+				edgeCount++;
+			});
+		});
+		cy.setCytoscapeLayout("cose");
 	}
 	
+
 	public void loadOverlay() {
-		DataOverlayProperties props = IDGPopupFactoryFactory.get().getDataOverlayProperties();
+		DataOverlayProperties props = IDGPopupFactory.get().getDataOverlayProperties();
 		props.setUniprots(String.join(",", this.displayedNodes));
 		
 		TCRDDataLoader loader = new TCRDDataLoader();
@@ -262,7 +286,7 @@ public class IDGPopupCytoscapeController implements Handler{
 
 	public void pairwisePropertiesChanged() {
 		cy.clearCytoscapeGraph();
-		this.pairwiseOverlayObjects = IDGPopupFactoryFactory.get().getCurrentPairwiseProperties();
+		this.pairwiseOverlayObjects = IDGPopupFactory.get().getCurrentPairwiseProperties();
 		displayedNodes.clear();
 		this.edgeIdToEntity.clear();
 		this.edgeCount = 0;
@@ -292,7 +316,7 @@ public class IDGPopupCytoscapeController implements Handler{
 	
 	private int getCorrectZIndex() {
 		if(focused == true)
-			return IDGPopupFactoryFactory.get().getMaxZIndex() + 1;
+			return IDGPopupFactory.get().getMaxZIndex() + 1;
 		return zIndex+1;
 	}
 
@@ -344,6 +368,32 @@ public class IDGPopupCytoscapeController implements Handler{
 	 */
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
+		if(presentDrugs!= null && presentDrugs.contains(Double.parseDouble(id)))
+			openDrugContextInfo(id,name,x,y);
+		else
+			openProteinContextInfo(id, name, x, y);
+	}
+
+	/**
+	 * Makes context info for drug context select
+	 * @param id
+	 * @param name
+	 * @param x
+	 * @param y
+	 */
+	private void openDrugContextInfo(String id, String name, int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * Makes context info for node or interactor context select
+	 * @param id
+	 * @param name
+	 * @param x
+	 * @param y
+	 */
+	private void openProteinContextInfo(String id, String name, int x, int y) {
 		String dataOverlayValue = null;
 		if(dataOverlay.isDiscrete() && !dataOverlay.getEType().equals("Target Development Level"))
 			dataOverlayValue = dataOverlay.getLegendTypes().get((int)Math.round(dataOverlay.getIdentifierValueMap().get(id)));

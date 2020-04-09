@@ -25,7 +25,7 @@ import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.PairwiseNumbersLoadedEvent;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.tools.factory.IDGPopupFactoryFactory;
+import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
@@ -144,7 +144,7 @@ TCRDDataLoader.Handler{
 				INTERACTORS_RESOURCE = new OverlayResource(result.getResource(), "Pairwise/Interactors", OverlayResource.ResourceType.CUSTOM);
 				
 				eventBus.fireEventFromSource(new InteractorsLoadedEvent(result, new Long(1)), this);
-				IDGPopupFactoryFactory.get().setupNewOverlay(result, entities.getPairwiseNumberEntities(), geneToTotalMap);
+				IDGPopupFactory.get().setupNewOverlay(result, entities.getPairwiseNumberEntities(), geneToTotalMap);
 				eventBus.fireEventFromSource(new PairwiseNumbersLoadedEvent(context, geneToTotalMap), this);
 			}
 			@Override
@@ -156,11 +156,11 @@ TCRDDataLoader.Handler{
 	
 	@Override
 	public void interactorsLoaded(RawInteractors interactors, long time) {
-		if(IDGPopupFactoryFactory.get().getRawInteractors() !=null && 
-		   IDGPopupFactoryFactory.get().getRawInteractors().getEntities().size() > 0) {
-			ContentFactory.fillInteractorsContent(context, IDGPopupFactoryFactory.get().getRawInteractors());
-			eventBus.fireEventFromSource(new InteractorsLoadedEvent(IDGPopupFactoryFactory.get().getRawInteractors(), new Long(1)), this);
-			IDGPopupFactoryFactory.get().setInteractorEntities(new RawInteractorsImpl("Empty", null));
+		if(IDGPopupFactory.get().getRawInteractors() !=null && 
+		   IDGPopupFactory.get().getRawInteractors().getEntities().size() > 0) {
+			ContentFactory.fillInteractorsContent(context, IDGPopupFactory.get().getRawInteractors());
+			eventBus.fireEventFromSource(new InteractorsLoadedEvent(IDGPopupFactory.get().getRawInteractors(), new Long(1)), this);
+			IDGPopupFactory.get().setInteractorEntities(new RawInteractorsImpl("Empty", null));
 		}
 		return;
 	}
@@ -169,7 +169,9 @@ TCRDDataLoader.Handler{
 		overlayLoader.loadDrugTargetsForUniprots(uniprots, new AsyncCallback<Map<String, List<DrugTargetEntity>>>() {
 			@Override
 			public void onSuccess(Map<String, List<DrugTargetEntity>> result) {
-				eventBus.fireEventFromSource(new DrugTargetsLoadedEvent(context,result), this);			}
+				IDGPopupFactory.get().setUniprotToDrugTarget(result);
+				eventBus.fireEventFromSource(new DrugTargetsLoadedEvent(context,result), this);			
+			}
 			@Override
 			public void onFailure(Throwable caught) {
 				Console.error(caught.getMessage());
