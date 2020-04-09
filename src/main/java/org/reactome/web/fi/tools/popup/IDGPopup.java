@@ -37,9 +37,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 
 	private String popupId;
+	private String initialType;
 	private IDGPopupCytoscapeController cyController;
 	private PairwisePopupTablePanel tablePanel;
-	private List<PairwiseOverlayObject> pairwiseOverlayProperties;
 	private Set<String> diagramNodes;
 	
 	private int zIndex;
@@ -47,20 +47,20 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	
 	private FlowPanel main;
 	
-	public IDGPopup(GraphObject graphObject, List<PairwiseOverlayObject> pairwiseOverlayProperties, int zIndex) {
+	public IDGPopup(GraphObject graphObject, String initialType, int zIndex) {
 		setDiagramNodes(graphObject);
-		initPanel(graphObject.getStId(), zIndex, pairwiseOverlayProperties);
+		initPanel(graphObject.getStId(), initialType, zIndex);
 	}
 	
-	public IDGPopup(String uniprot, String geneName, List<PairwiseOverlayObject> pairwiseOverlayProperties, int zIndex) {
+	public IDGPopup(String uniprot, String geneName, String initialType, int zIndex) {
 		setDiagramNodes(uniprot);
-		initPanel(uniprot, zIndex, pairwiseOverlayProperties);
+		initPanel(uniprot, initialType, zIndex);
 	}
 	
-	private void initPanel(String popupId, int zIndex, List<PairwiseOverlayObject> pairwiseOverlayProperties) {
+	private void initPanel(String popupId, String initialType, int zIndex) {
 		this.zIndex = zIndex;
 		this.popupId = popupId;
-		this.pairwiseOverlayProperties = pairwiseOverlayProperties;
+		this.initialType = initialType;
 		initPanel();
 		panelClicked();
 	}
@@ -81,6 +81,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		setTitlePanel();
 		setWidget(focus);
 		
+		//set initial position of popup
 		int popupNumber = IDGPopupFactoryFactory.get().getNumberOfPopups();
 		this.setPopupPosition(popupNumber*20, popupNumber*20);
 		
@@ -88,10 +89,10 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		
 		//create IDGPopupCytoscapeController after panel creation 
 		//otherwise, cytoscape.js has no panel to mount to
-		cyController = new IDGPopupCytoscapeController(popupId, diagramNodes, pairwiseOverlayProperties, RESOURCES, zIndex);
+		cyController = new IDGPopupCytoscapeController(popupId, diagramNodes, RESOURCES, zIndex);
 		
 		//must add Results table after cyController is created
-		main.add(tablePanel = new PairwisePopupTablePanel(pairwiseOverlayProperties, diagramNodes, RESOURCES, this));
+		main.add(tablePanel = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
 	}
 	
 	private void setTitlePanel() {
@@ -124,8 +125,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		
 		//Panel for cytoscape to interact with
 		SimplePanel cyPanel = new SimplePanel();
-		String containerId = "cy-" + popupId;
-		cyPanel.getElement().setId(containerId);
+		cyPanel.getElement().setId("cy-" + popupId);
 		cyPanel.setStyleName(RESOURCES.getCSS().cyView());
 		result.add(cyPanel);
 
@@ -225,6 +225,9 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 
         @Source("images/close_normal.png")
         ImageResource closeNormal();
+        
+        @Source("images/filter_warning.png")
+        ImageResource filterWarning();
 	}
 	
 	@CssResource.ImportedWithPrefix("idg-pairwisePopup")
@@ -260,9 +263,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		String filterTextBox();
 		
 		String pager();
-		
-		String filterPanel();
-		
+				
 		String table();
 		
 		String eTypeAndTissueLabel();
@@ -273,5 +274,8 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		
 		String pagerPanel();
 		
+		String filterBtn();
+		
+		String sourcesListBox();
 	}
 }

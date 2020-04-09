@@ -72,10 +72,11 @@ public class IDGPopupFactoryFactory{
 	/**
 	 * Open a popup from the diagram view
 	 * @param graphObject
+	 * @param string 
 	 */
-	public void openPopup(GraphObject graphObject) {
+	public void openPopup(GraphObject graphObject, String initialType) {
 		if(!popupMap.keySet().contains(graphObject.getStId()) && currentPairwiseObjects.size() > 0) {
-			IDGPopup popup = new IDGPopup(graphObject, currentPairwiseObjects, getZIndex());
+			IDGPopup popup = new IDGPopup(graphObject, initialType, getZIndex());
 			popupMap.put(graphObject.getStId(), popup);
 			popup.show();
 		}
@@ -85,10 +86,11 @@ public class IDGPopupFactoryFactory{
 	 * Open a popup from the FIView
 	 * @param uniprot
 	 * @param geneName
+	 * @param initialType 
 	 */
-	public void openPopup(String uniprot, String geneName) {
+	public void openPopup(String uniprot, String geneName, String initialType) {
 		if(!popupMap.keySet().contains(uniprot) && currentPairwiseObjects.size() > 0) {
-			IDGPopup popup = new IDGPopup(uniprot, geneName, currentPairwiseObjects, getZIndex());
+			IDGPopup popup = new IDGPopup(uniprot, geneName, initialType, getZIndex());
 			popupMap.put(uniprot, popup);
 			popup.show();
 		}

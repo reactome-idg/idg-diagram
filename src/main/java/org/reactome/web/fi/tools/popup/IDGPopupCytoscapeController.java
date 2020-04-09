@@ -58,12 +58,12 @@ public class IDGPopupCytoscapeController implements Handler{
 	private int zIndex;
 	private FIViewInfoPopup infoPopup;
 	
-	public IDGPopupCytoscapeController(String popupId, Set<String> diagramNodes, List<PairwiseOverlayObject> pairwiseOverlayObjects, IDGPopup.Resources RESOURCES, int zIndex) {
+	public IDGPopupCytoscapeController(String popupId, Set<String> diagramNodes, IDGPopup.Resources RESOURCES, int zIndex) {
 		this.diagramNodes = diagramNodes;
 		this.displayedNodes = new HashSet<>();
 		this.edgeIdToEntity = new HashMap<>();
 		this.zIndex = zIndex;
-		this.pairwiseOverlayObjects = pairwiseOverlayObjects;
+		this.pairwiseOverlayObjects = IDGPopupFactoryFactory.get().getCurrentPairwiseProperties();
 		this.containerId = "cy-" + popupId;
 		
 		this.cy = new CytoscapeEntity(RESOURCES.fiviewStyle().getText(), this);

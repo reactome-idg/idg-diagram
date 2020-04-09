@@ -92,9 +92,9 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	@Override
 	public void onPairwiseOverlayButtonClicked(PairwiseOverlayButtonClickedEvent event) {
 		if(event.getGraphObject() != null)
-			IDGPopupFactoryFactory.get().openPopup(event.getGraphObject());
+			IDGPopupFactoryFactory.get().openPopup(event.getGraphObject(), "TR");
 		else
-			IDGPopupFactoryFactory.get().openPopup(event.getUniprot(), event.getGeneName());
+			IDGPopupFactoryFactory.get().openPopup(event.getUniprot(), event.getGeneName(), "TR");
 	}
 
 	@Override
@@ -105,6 +105,6 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	@Override
 	public void onEntityDecoratorSelected(EntityDecoratorSelectedEvent event) {
 		if(event.getSummaryItem() != null)
-			IDGPopupFactoryFactory.get().openPopup(event.getGraphObject());
+			IDGPopupFactoryFactory.get().openPopup(event.getGraphObject(), event.getSummaryItem().getType());
 	}
 }

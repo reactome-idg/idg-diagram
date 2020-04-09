@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.reactome.web.diagram.common.IconButton;
 import org.reactome.web.fi.common.IDGListBox;
 import org.reactome.web.fi.common.IDGTextBox;
 import org.reactome.web.fi.data.loader.TCRDDataLoader;
@@ -21,12 +22,14 @@ import org.reactome.web.gwtCytoscapeJs.util.Console;
 import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.cellview.client.IdentityColumn;
 import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.ListDataProvider;
 
 /**
@@ -55,6 +58,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	private FlowPanel mainPanel;
 	
 	//ui for filtering panel
+	private DialogBox filterPopup;
 	private IDGTextBox filterGeneNameBox;
 	private IDGListBox sourceListBox;
 	private CheckBox showPositive;
@@ -64,10 +68,10 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	
 	private DataOverlay dataOverlay;
 	
-	public PairwisePopupTablePanel(List<PairwiseOverlayObject> pairwiseOverlayProperties, Set<String> diagramNodes, IDGPopup.Resources RESOURCES, PairwiseTableHandler handler) {
+	public PairwisePopupTablePanel(Set<String> diagramNodes, IDGPopup.Resources RESOURCES, PairwiseTableHandler handler) {
 		this.RESOURCES = RESOURCES;
 		this.handler = handler;
-		this.pairwiseOverlayProperties = pairwiseOverlayProperties;
+		this.pairwiseOverlayProperties = IDGPopupFactoryFactory.get().getCurrentPairwiseProperties();
 		this.diagramNodes = diagramNodes;
 		
 		this.tableEntities = new ArrayList<>();
@@ -75,16 +79,12 @@ public class PairwisePopupTablePanel extends FlowPanel{
 		
 		initPanel();
 		loadTable();
+		createFilterPopup();
 	}
 
 	private void initPanel() {
-		Button infoButton = new Button("Show/Hide info");
-		infoButton.setStyleName(RESOURCES.getCSS().infoButton());
-		infoButton.addClickHandler(e -> onInfoButtonClicked());
-		this.add(infoButton);
-		
 		mainPanel = new FlowPanel();
-		mainPanel.add(getFilterPanel());
+//		mainPanel.add(getFilterPanel());
 		
 		createPairwiseTable(); //must create before adding results table to panel;
 		mainPanel.add(resultsTable);
@@ -128,23 +128,37 @@ public class PairwisePopupTablePanel extends FlowPanel{
 		eTypeAndTissue.addStyleName(RESOURCES.getCSS().eTypeAndTissueLabel());
 		result.add(pager);
 		
+		IconButton filterBtn = new IconButton(RESOURCES.filterWarning(), RESOURCES.getCSS().filterBtn(), "Filter Table Results", e -> onFilterButtonClicked(e));
+		result.add(filterBtn);
+		
 		return result;
 	}
 	
-	private void onInfoButtonClicked() {
-		mainPanel.setVisible(!mainPanel.isVisible());
+	/**
+	 * Handler for filterBtn click
+	 * @param e 
+	 */
+	private void onFilterButtonClicked(ClickEvent e) {
+		int x = e.getClientX()-150;
+		int y = e.getClientY()-120;
+		filterPopup.setPopupPosition(x, y);
+		filterPopup.show();
 	}
-	
+
 	/**
 	 * This panel is for filtering table results;
 	 * @return
 	 */
-	private FlowPanel getFilterPanel() {
+	private void createFilterPopup() {
 		
+		filterPopup = new DialogBox();
+		filterPopup.setStyleName(RESOURCES.getCSS().popupPanel());
 		FlowPanel panel = new FlowPanel();
-		panel.addStyleName(RESOURCES.getCSS().filterPanel());
+		filterPopup.setAutoHideEnabled(true);
+		filterPopup.setModal(false);
+		panel.addStyleName(RESOURCES.getCSS().filter());
 		
-		panel.add(new InlineLabel("Filter table results:"));
+		panel.add(new Label("Filter table results:"));
 		
 		filterGeneNameBox = new IDGTextBox();
 		filterGeneNameBox.addKeyUpHandler(e -> filterTableEntities());
@@ -165,8 +179,9 @@ public class PairwisePopupTablePanel extends FlowPanel{
 		
 		showPositive.setValue(true, false);
 		showNegative.setValue(true, false);
-				
-		return panel;
+		filterPopup.getElement().getStyle().setZIndex(30000);
+		filterPopup.add(panel);
+		filterPopup.hide();
 	}
 	
 	/**
@@ -181,8 +196,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 		sourceListBox.setSelectedIndex(0);
 		sourceListBox.addChangeHandler(e -> filterTableEntities());
 		
-		sourceListBox.getElement().getStyle().setMarginLeft(5, Unit.PX);
-		sourceListBox.getElement().getStyle().setWidth(225, Unit.PX);
+		sourceListBox.setStyleName(RESOURCES.getCSS().sourcesListBox());
 		
 		return sourceListBox;
 	}

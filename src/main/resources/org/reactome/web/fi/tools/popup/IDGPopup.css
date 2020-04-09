@@ -2,6 +2,8 @@
 	border: 3px solid gray !important;
     border-radius: 15px;
     background-color: rgb(30,148,208)!important;
+    width: 275;
+    padding: 0.5em;
 }
 
 .table th {
@@ -64,9 +66,21 @@
 }
 
 .filter{
-	height: 380px;
 	width: 100%;
-	border-radius: 0px 15px 0px 0px;
+}
+
+.filterTextBox {
+	display: block;
+	margin-bottom: .5em;
+}
+
+.filterTextBox input{
+    font-size: medium;
+}
+
+.sourcesListBox {
+	display: block;
+	width: 100%;
 }
 
 .controls{
@@ -133,14 +147,6 @@
 	margin: 10px;
 }
 
-.filterTextBox{
-	margin: 0 0 0 10px;
-}
-
-.filterTextBox input{
-	font-size: small;
-}
-
 .pagerPanel{
 	width: 100%;
 }
@@ -155,17 +161,8 @@
 	font-size: smaller;
 }
 
-.filterPanel{
-	padding: 2px 0;
-	text-align: center;
-	border-bottom: 1px solid #0e7cd3;
-	background-color: white;
-}
-
 .eTypeAndTissueLabel {
-	display: inline;
     padding: 10px 0 0 10px;
-    float: left;
     color: white;
 }
 
@@ -176,4 +173,51 @@
 .exportButton {
 	margin-top: 3px;
 	float: right;
+}
+
+.filterBtn {
+    float: right;
+    margin: 2px 5px 2px 4px;
+    background-color: #58C3E5;
+    border: none;
+    outline: none;
+    border-radius: 12px;
+    color: white;
+    padding: 0;
+    border: 0;
+}
+
+.filterBtn>div {
+    margin: 0;
+    position: relative;
+}
+
+.filterBtn span {
+    display: none;
+}
+
+.filterBtn img {
+    display: block;
+    height: 24px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    -webkit-user-drag: none; /* Prevents dragging of images/divs etc */
+}
+
+.filterBtn:hover {
+    background-color: #1E95CF;
+    cursor: pointer !important;
+}
+
+.filterBtn:active:hover {
+    background-color: #066B9E;
+    cursor: pointer !important;
+}
+
+.filterBtn:disabled, .filterBtn:disabled:hover, .filterBtn:disabled:active{
+    background-color: #9a9c9e;
+    cursor: default !important;
 }
