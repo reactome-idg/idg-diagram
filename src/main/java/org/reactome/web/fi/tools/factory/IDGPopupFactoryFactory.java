@@ -10,6 +10,7 @@ import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.interactors.raw.RawInteractors;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
+import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
@@ -31,6 +32,8 @@ public class IDGPopupFactoryFactory{
 	private Set<String> tDarkSet;
 	private List<PairwiseOverlayObject> currentPairwiseObjects;
 	private List<PairwiseNumberEntity> pairwiseNumberEntities;
+	private Map<String, List<DrugTargetEntity>> uniprotToDrugTarget;
+	
 	private RawInteractors rawInteractors;
 	
 	private int zIndexCounter = 1;
@@ -75,7 +78,7 @@ public class IDGPopupFactoryFactory{
 	 * @param string 
 	 */
 	public void openPopup(GraphObject graphObject, String initialType) {
-		if(!popupMap.keySet().contains(graphObject.getStId()) && currentPairwiseObjects.size() > 0) {
+		if(!popupMap.keySet().contains(graphObject.getStId())) {
 			IDGPopup popup = new IDGPopup(graphObject, initialType, getZIndex());
 			popupMap.put(graphObject.getStId(), popup);
 			popup.show();
@@ -89,7 +92,7 @@ public class IDGPopupFactoryFactory{
 	 * @param initialType 
 	 */
 	public void openPopup(String uniprot, String geneName, String initialType) {
-		if(!popupMap.keySet().contains(uniprot) && currentPairwiseObjects.size() > 0) {
+		if(!popupMap.keySet().contains(uniprot)) {
 			IDGPopup popup = new IDGPopup(uniprot, geneName, initialType, getZIndex());
 			popupMap.put(uniprot, popup);
 			popup.show();
@@ -190,6 +193,14 @@ public class IDGPopupFactoryFactory{
 	
 	public RawInteractors getRawInteractors() {
 		return this.rawInteractors;
+	}
+	
+	public Map<String, List<DrugTargetEntity>> getUniprotToDrugTarget() {
+		return uniprotToDrugTarget;
+	}
+
+	public void setUniprotToDrugTarget(Map<String, List<DrugTargetEntity>> uniprotToDrugTarget) {
+		this.uniprotToDrugTarget = uniprotToDrugTarget;
 	}
 
 	public void setPairwiseNumberEntities(List<PairwiseNumberEntity> entities) {
