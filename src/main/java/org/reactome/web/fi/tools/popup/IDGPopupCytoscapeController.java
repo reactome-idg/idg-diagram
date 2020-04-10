@@ -217,16 +217,16 @@ public class IDGPopupCytoscapeController implements Handler{
 			if(target == null) return;
 			target.forEach(entity -> {
 				//make and add protein for the drug
-				if(!displayedNodes.contains(entity.getId()+"")) {
-					JSONObject protein = getProtein(entity.getId()+"", entity.getDrug(), false).isObject();
+				if(!presentDrugs.contains(entity.getId()+"")) {
+					JSONObject protein = getProtein("DG"+entity.getId(), entity.getDrug()+"("+entity.getActionType()+")", false).isObject();
 					protein.get("data").isObject().put("drug", new JSONString("true"));
 					cy.addCytoscapeNodes(containerId, protein.toString());
-					cy.highlightNode(entity.getId()+"", "#B89AE6");
-					presentDrugs.add(entity.getId()+"");
+					cy.highlightNode("DG"+entity.getId(), "#B89AE6");
+					presentDrugs.add("DG"+entity.getId());
 				}
 				
 				//make and add edges for drugs
-				JSONObject edge = makeFI(edgeCount, entity.getTarget().getProtein().getUniprot(), entity.getId()+"", "solid").isObject();
+				JSONObject edge = makeFI(edgeCount, entity.getTarget().getProtein().getUniprot(), "DG"+entity.getId(), "solid").isObject();
 				edgeIdToDrugTarget.put(edgeCount, entity);
 				cy.addCytoscapeEdge(containerId, edge.toString());
 				edgeCount++;
@@ -394,7 +394,7 @@ public class IDGPopupCytoscapeController implements Handler{
 	 * @param y
 	 */
 	private void openDrugContextInfo(String id, String name, int x, int y) {
-		DrugTargetEntity target = getDrugFromId(id);
+		DrugTargetEntity target = getDrugFromId(id.substring(2));
 		if(target == null) return;
 		DrugTargetContextPanel popup = new DrugTargetContextPanel(target);
 		
