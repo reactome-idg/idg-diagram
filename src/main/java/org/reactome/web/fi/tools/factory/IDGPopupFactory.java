@@ -98,6 +98,8 @@ public class IDGPopupFactory{
 			popupMap.put(uniprot, popup);
 			popup.show();
 		}
+		else
+			popupMap.get(uniprot).addType(initialType);
 	}
 	
 	public int getNumberOfPopups() {

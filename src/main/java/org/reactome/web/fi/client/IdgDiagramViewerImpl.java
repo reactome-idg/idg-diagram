@@ -92,9 +92,9 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	@Override
 	public void onPairwiseOverlayButtonClicked(PairwiseOverlayButtonClickedEvent event) {
 		if(event.getGraphObject() != null)
-			IDGPopupFactory.get().openPopup(event.getGraphObject(), "TR");
+			IDGPopupFactory.get().openPopup(event.getGraphObject(), "TR"); //hard coded "TR" to minimize changes to the diagram project
 		else
-			IDGPopupFactory.get().openPopup(event.getUniprot(), event.getGeneName(), "TR");
+			IDGPopupFactory.get().openPopup(event.getUniprot(), event.getGeneName(), event.getType());
 	}
 
 	@Override

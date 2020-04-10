@@ -218,7 +218,7 @@ public class IDGPopupCytoscapeController implements Handler{
 			target.forEach(entity -> {
 				//make and add protein for the drug
 				if(!presentDrugs.contains(entity.getId()+"")) {
-					JSONObject protein = getProtein("DG"+entity.getId(), entity.getDrug()+"("+entity.getActionType()+")", false).isObject();
+					JSONObject protein = getProtein("DG"+entity.getId(), entity.getDrug(), false).isObject();
 					protein.get("data").isObject().put("drug", new JSONString("true"));
 					cy.addCytoscapeNodes(containerId, protein.toString());
 					cy.highlightNode("DG"+entity.getId(), "#B89AE6");

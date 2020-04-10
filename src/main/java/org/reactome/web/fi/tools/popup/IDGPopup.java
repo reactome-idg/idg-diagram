@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 
 	private String popupId;
-	private Set<String> initialType;
+	private Set<String> types;
 	private IDGPopupCytoscapeController cyController;
 	private PairwisePopupTablePanel tablePanel;
 	private Set<String> diagramNodes;
@@ -58,8 +58,8 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	private void initPanel(String popupId, String initialType, int zIndex) {
 		this.zIndex = zIndex;
 		this.popupId = popupId;
-		this.initialType = new HashSet<>();
-		this.initialType.add(initialType);
+		this.types = new HashSet<>();
+		this.types.add(initialType);
 		initPanel();
 		panelClicked();
 	}
@@ -91,9 +91,9 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		cyController = new IDGPopupCytoscapeController(popupId, diagramNodes, RESOURCES, zIndex);
 		
 		//choose which type of popup to initialize as the inital popup
-		if(initialType.contains("TR"))
+		if(types.contains("TR"))
 			main.add(tablePanel = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
-		else if(initialType.contains("DG"))
+		else if(types.contains("DG"))
 			cyController.addDrugs();
 	}
 	
@@ -104,8 +104,8 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	 * @param addType
 	 */
 	public void addType(String addType) {
-		if(initialType.contains(addType)) return;
-		initialType.add(addType);
+		if(types.contains(addType)) return;
+		types.add(addType);
 		if(addType == "TR")
 			main.add(tablePanel = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
 		else if(addType == "DG")
@@ -199,7 +199,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	
 	public void loadOverlay() {
 		cyController.loadOverlay();
-		if(initialType.contains("TR"))
+		if(types.contains("TR"))
 			tablePanel.loadOverlay();
 	}
 	
@@ -215,7 +215,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	}
 
 	public void updatePairwiseObjects() {
-		if(initialType.contains("TR")) {
+		if(types.contains("TR")) {
 			cyController.pairwisePropertiesChanged();
 			tablePanel.pairwisePropertiesChanged();
 		}
