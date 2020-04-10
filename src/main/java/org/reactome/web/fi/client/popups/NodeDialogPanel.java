@@ -50,6 +50,7 @@ public class NodeDialogPanel extends DialogBox{
 		setStyleName(RESOURCES.getCSS().popup());
 		
 		FlowPanel fp = new FlowPanel();
+		fp.add(new PwpButton("Show Drug Targets", RESOURCES.getCSS().drugTargetButton(), e-> onDrugTargetButtonClicked()));
 		fp.add(new PwpButton("Show Pairwise Relationships", RESOURCES.getCSS().pairwiseOverlayButton(), e -> onPairwiseOverlayButtonClicked()));
 		fp.add(this.pin = new PwpButton("Keep the panel visible", RESOURCES.getCSS().pin(), e -> onPinButtonClicked()));
 		fp.add(new PwpButton("Close", RESOURCES.getCSS().close(), e -> onCloseButtonClicked()));
@@ -59,7 +60,7 @@ public class NodeDialogPanel extends DialogBox{
 		setWidget(fp);
 		show();
 	}
-	
+
 	private void setTitlePanel() {
 		FlowPanel fp = new FlowPanel();
 		Image img = new Image(RESOURCES.entity());
@@ -91,6 +92,11 @@ public class NodeDialogPanel extends DialogBox{
 		eventBus.fireEventFromSource(new PairwiseOverlayButtonClickedEvent(id, name), this);
 	}
 	
+	private Object onDrugTargetButtonClicked() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public void hide(boolean autoClosed) {
 		if(autoClosed && !this.pinned)
@@ -117,6 +123,15 @@ public class NodeDialogPanel extends DialogBox{
         
         @Source("images/pairwise_clicked.png")
         ImageResource pairwiseClicked();
+        
+        @Source ("images/DT_normal.png")
+        ImageResource DTNormal();
+        
+        @Source("images/DT_hovered.png")
+        ImageResource DTHovered();
+        
+        @Source("images/DT_clicked.png")
+        ImageResource DTClicked();
         
         @Source("images/pin_clicked.png")
         ImageResource pinClicked();
@@ -155,5 +170,7 @@ public class NodeDialogPanel extends DialogBox{
 		String close();
 		
 		String header();
+		
+		String drugTargetButton();
 	}
 }

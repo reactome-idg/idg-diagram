@@ -39,6 +39,27 @@
     gwt-image: 'pairwiseClicked';
 }
 
+@sprite .drugTargetButton{
+	gwt-image: 'DTNormal';
+	outline: none;
+    background-repeat: no-repeat;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    margin-right: 5px;
+    position: absolute;
+    top: 5px;
+    right: 65px;
+}
+
+@sprite .drugTargetButton:hover {
+	gwt-image: 'DTHovered';
+}
+
+@sprite .drugTargetButton:active:hover {
+	gwt-image: "DTClicked";
+}
+
 @sprite .pin {
     float: right;
     gwt-image: 'pinNormal';
