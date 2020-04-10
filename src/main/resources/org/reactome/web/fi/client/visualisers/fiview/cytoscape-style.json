@@ -175,6 +175,12 @@
     }
 },
 {
+    "selector": "node[drug=\"true\"]",
+    "style": {
+        "shape": "hexagon"
+    }
+},
+{
     "selector": "edge[lineStyle=\"positive\"]",
     "style": {
         "line-style": "dashed"
