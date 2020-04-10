@@ -17,7 +17,6 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.tools.popup.IDGPopup;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
-
 /**
  * 
  * @author brunsont
@@ -83,6 +82,8 @@ public class IDGPopupFactory{
 			popupMap.put(graphObject.getStId(), popup);
 			popup.show();
 		}
+		else
+			popupMap.get(graphObject.getStId()).addType(initialType);
 	}
 
 	/**
@@ -128,7 +129,7 @@ public class IDGPopupFactory{
 	public void setCurrentPairwiseProperties(List<PairwiseOverlayObject> pairwiseOverlayObjects) {
 		this.currentPairwiseObjects = pairwiseOverlayObjects;
 		for(IDGPopup popup : popupMap.values())
-			popup.updatePairwiseObjects(this.currentPairwiseObjects);
+			popup.updatePairwiseObjects();
 	}
 	
 	public List<PairwiseOverlayObject> getCurrentPairwiseProperties(){

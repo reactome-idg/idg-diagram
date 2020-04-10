@@ -1,7 +1,6 @@
 package org.reactome.web.fi.tools.popup;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.reactome.web.diagram.common.PwpButton;
@@ -10,7 +9,6 @@ import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.popup.PairwisePopupTablePanel.PairwiseTableHandler;
@@ -37,7 +35,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 
 	private String popupId;
-	private String initialType;
+	private Set<String> initialType;
 	private IDGPopupCytoscapeController cyController;
 	private PairwisePopupTablePanel tablePanel;
 	private Set<String> diagramNodes;
@@ -60,7 +58,8 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	private void initPanel(String popupId, String initialType, int zIndex) {
 		this.zIndex = zIndex;
 		this.popupId = popupId;
-		this.initialType = initialType;
+		this.initialType = new HashSet<>();
+		this.initialType.add(initialType);
 		initPanel();
 		panelClicked();
 	}
@@ -91,11 +90,27 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		//otherwise, cytoscape.js has no panel to mount to
 		cyController = new IDGPopupCytoscapeController(popupId, diagramNodes, RESOURCES, zIndex);
 		
-		//must add Results table after cyController is created
-		if(initialType == "TR")
+		//choose which type of popup to initialize as the inital popup
+		if(initialType.contains("TR"))
 			main.add(tablePanel = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
-		else if(initialType == "DG")
+		else if(initialType.contains("DG"))
 			cyController.addDrugs();
+	}
+	
+	/**
+	 * If popup for diagram object is open when a decorator for that object is clicked,
+	 * IDGPopupFactory will call this method to direct the addition of a new type to the popup.
+	 * This will check to make sure the type hasnt already been added and, if not, add it.
+	 * @param addType
+	 */
+	public void addType(String addType) {
+		if(initialType.contains(addType)) return;
+		initialType.add(addType);
+		if(addType == "TR")
+			main.add(tablePanel = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
+		else if(addType == "DG")
+			cyController.addDrugs();
+			
 	}
 	
 	private void setTitlePanel() {
@@ -184,7 +199,8 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	
 	public void loadOverlay() {
 		cyController.loadOverlay();
-		tablePanel.loadOverlay();
+		if(initialType.contains("TR"))
+			tablePanel.loadOverlay();
 	}
 	
 	public void changeOverlayColumn(int column) {
@@ -198,9 +214,11 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		super.endDragging(event);
 	}
 
-	public void updatePairwiseObjects(List<PairwiseOverlayObject> currentPairwiseObjects) {
-		cyController.pairwisePropertiesChanged();
-		tablePanel.pairwisePropertiesChanged();
+	public void updatePairwiseObjects() {
+		if(initialType.contains("TR")) {
+			cyController.pairwisePropertiesChanged();
+			tablePanel.pairwisePropertiesChanged();
+		}
 	}
 
 	/**
