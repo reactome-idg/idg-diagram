@@ -18,7 +18,6 @@ import org.reactome.web.fi.data.layout.ShapeImpl;
 import org.reactome.web.fi.data.layout.SummaryItemImpl;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.events.PairwiseNumbersLoadedEvent;
-import org.reactome.web.fi.handlers.PairwiseNumbersLoadedHandler;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -27,15 +26,13 @@ import com.google.gwt.event.shared.EventBus;
  * @author brunsont
  *
  */
-public class PairwiseInteractorRenderer implements PairwiseNumbersLoadedHandler {
+public class PairwiseInteractorRenderer {
 		
 	private EventBus eventBus;
 	private Map<String,Integer> currentTotalsMap;
 	
 	public PairwiseInteractorRenderer(EventBus eventBus) {
-		this.eventBus = eventBus;
-		
-		eventBus.addHandler(PairwiseNumbersLoadedEvent.TYPE, this);
+		this.eventBus = eventBus;	
 	}
 	
 	/**
@@ -58,7 +55,6 @@ public class PairwiseInteractorRenderer implements PairwiseNumbersLoadedHandler 
 	 * Called when new set of interactors are chosen and loads correct summary items for
 	 * complexes and entity sets
 	 */
-	@Override
 	public void onPairwiseNumbersLoaded(PairwiseNumbersLoadedEvent event) {
 		this.currentTotalsMap = event.getGeneToTotalMap();
 

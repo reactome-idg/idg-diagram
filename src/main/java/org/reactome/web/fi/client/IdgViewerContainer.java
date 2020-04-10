@@ -35,19 +35,23 @@ import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
+import org.reactome.web.fi.events.DrugTargetsLoadedEvent;
 import org.reactome.web.fi.events.DrugTargetsRequestedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
 import org.reactome.web.fi.events.PairwiseCountsRequestedEvent;
 import org.reactome.web.fi.events.PairwiseInteractorsResetEvent;
+import org.reactome.web.fi.events.PairwiseNumbersLoadedEvent;
 import org.reactome.web.fi.events.RequestPairwiseCountsEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.events.MakeOverlayRequestEvent;
 import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.handlers.PairwiseInteractorsResetHandler;
+import org.reactome.web.fi.handlers.PairwiseNumbersLoadedHandler;
 import org.reactome.web.fi.handlers.RequestPairwiseCountsHandler;
 import org.reactome.web.fi.handlers.DataOverlayColumnChangedHandler;
+import org.reactome.web.fi.handlers.DrugTargetsLoadedHandler;
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
 import org.reactome.web.fi.legends.OverlayColourLegend;
 import org.reactome.web.fi.legends.OverlayControlLegend;
@@ -71,7 +75,7 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public class IdgViewerContainer extends ViewerContainer implements RenderOtherDataHandler,
 OverlayDataLoadedHandler, OverlayDataResetHandler, MakeOverlayRequestHandler, DataOverlayColumnChangedHandler,
-RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
+RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLoadedHandler, DrugTargetsLoadedHandler{
 
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
@@ -83,6 +87,9 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 	
 	private DataOverlay dataOverlay;
 	private DataOverlay targetLevelOverlay;
+	
+	private PairwiseInteractorRenderer pairwiseDecoratorRenderer;
+	private DrugTargetRenderer drugTargetRenderer;
 	
 	private DataOverlayProperties lastOverlayProperties = null;
 		
@@ -101,6 +108,8 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 		eventBus.addHandler(DataOverlayColumnChangedEvent.TYPE, this);
 		eventBus.addHandler(RequestPairwiseCountsEvent.TYPE, this);
 		eventBus.addHandler(PairwiseInteractorsResetEvent.TYPE, this);
+		eventBus.addHandler(PairwiseNumbersLoadedEvent.TYPE, this);
+		eventBus.addHandler(DrugTargetsLoadedEvent.TYPE, this);
 	}
 
 	@Override
@@ -139,10 +148,10 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 		
 		//create custom renderers for rendering over or re-rendering pathway diagrams. 
 		//Each custom renderer needs to access the decorator renderer
-		PairwiseInteractorRenderer idgDecoratorRenderer = new PairwiseInteractorRenderer(eventBus);
-		DrugTargetRenderer drugTargetRenderer = new DrugTargetRenderer(eventBus);
-		OverlayDataHandler.getHandler().registerHelper(new DiscreteDataOverlayRenderer(eventBus, idgDecoratorRenderer, drugTargetRenderer));
-		OverlayDataHandler.getHandler().registerHelper(new ContinuousDataOverlayRenderer(eventBus, idgDecoratorRenderer, drugTargetRenderer));
+		pairwiseDecoratorRenderer = new PairwiseInteractorRenderer(eventBus);
+		drugTargetRenderer = new DrugTargetRenderer(eventBus);
+		OverlayDataHandler.getHandler().registerHelper(new DiscreteDataOverlayRenderer(eventBus, pairwiseDecoratorRenderer, drugTargetRenderer));
+		OverlayDataHandler.getHandler().registerHelper(new ContinuousDataOverlayRenderer(eventBus, pairwiseDecoratorRenderer, drugTargetRenderer));
 	}
 	
 	@Override
@@ -179,14 +188,14 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 	@Override
 	public void contentLoaded(Context context) {
 		super.contentLoaded(context);
-				
+		
+		if(context.getContent().getType() == Content.Type.SVG)
+			return;
+		
 		//check if overlay should be loaded and if so, load new Overlay data
 		if(dataOverlay != null) {
 			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
-			
-			//don't bother reloading when new content is an SVG
-			if(context.getContent().getType() != Content.Type.SVG)
-				eventBus.fireEventFromSource(new MakeOverlayRequestEvent(this.lastOverlayProperties), this);
+			eventBus.fireEventFromSource(new MakeOverlayRequestEvent(this.lastOverlayProperties), this);
 		}
 		else {
 			eventBus.fireEventFromSource(new MakeOverlayRequestEvent(getTargetLevelProperties()), this);
@@ -469,6 +478,18 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler{
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualizer)
 			((FIViewVisualizer)activeVisualiser).overlayNodes(dataOverlay);
+	}
+	
+	@Override
+	public void onPairwiseNumbersLoaded(PairwiseNumbersLoadedEvent event) {
+		if(context.getContent().getType() == Content.Type.DIAGRAM && !CytoscapeViewFlag.isCytoscapeViewFlag())
+			pairwiseDecoratorRenderer.onPairwiseNumbersLoaded(event);
+	}
+	
+	@Override
+	public void onDrugTargetsLoaded(DrugTargetsLoadedEvent event) {
+		if(context.getContent().getType() == Content.Type.DIAGRAM && !CytoscapeViewFlag.isCytoscapeViewFlag())
+			drugTargetRenderer.onDrugTargetsLoaded(event);
 	}
 	
 	@Override

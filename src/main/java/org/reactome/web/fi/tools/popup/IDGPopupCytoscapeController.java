@@ -49,7 +49,7 @@ public class IDGPopupCytoscapeController implements Handler{
 	private Set<String> displayedNodes;
 	private Map<PairwiseTableEntity, Integer> edgeIdToEntity;
 	private Map<Integer, DrugTargetEntity> edgeIdToDrugTarget;
-	private Set<Double> presentDrugs;
+	private Set<String> presentDrugs;
 	
 	private CytoscapeEntity cy;
 	
@@ -87,6 +87,7 @@ public class IDGPopupCytoscapeController implements Handler{
 		//triggers when popup loads from FIView
 		if(diagramNodes.size() == 1) {
 			addNode(diagramNodesList.get(0), false);
+			loadOverlay();
 			return;
 		}
 		
@@ -100,6 +101,7 @@ public class IDGPopupCytoscapeController implements Handler{
 			}
 		}
 		cy.setCytoscapeLayout("cose");
+		loadOverlay();
 	}
 	
 	public void addInteractions(Set<PairwiseTableEntity> entities) {
@@ -211,14 +213,16 @@ public class IDGPopupCytoscapeController implements Handler{
 		presentDrugs = new HashSet<>();
 		Map<String, List<DrugTargetEntity>> uniprotToEntity = IDGPopupFactory.get().getUniprotToDrugTarget();
 		diagramNodes.forEach(x -> {
-			uniprotToEntity.get(x).forEach(entity -> {
+			List<DrugTargetEntity> target = uniprotToEntity.get(x);
+			if(target == null) return;
+			target.forEach(entity -> {
 				//make and add protein for the drug
 				if(!displayedNodes.contains(entity.getId()+"")) {
 					JSONObject protein = getProtein(entity.getId()+"", entity.getDrug(), false).isObject();
-					protein.put("drug", new JSONString("true"));
+					protein.get("data").isObject().put("drug", new JSONString("true"));
 					cy.addCytoscapeNodes(containerId, protein.toString());
 					cy.highlightNode(entity.getId()+"", "#B89AE6");
-					presentDrugs.add(entity.getId());
+					presentDrugs.add(entity.getId()+"");
 				}
 				
 				//make and add edges for drugs
@@ -253,6 +257,7 @@ public class IDGPopupCytoscapeController implements Handler{
 	protected void overlayData() {
 		cy.resetNodeColor();
 		cy.resetSelection();
+		recolorDrugs();
 		this.dataOverlay.updateIdentifierValueMap();
 		
 		if(dataOverlay.isDiscrete())
@@ -261,6 +266,13 @@ public class IDGPopupCytoscapeController implements Handler{
 			overlayContinuousData();
 	}
 	
+	private void recolorDrugs() {
+		if(presentDrugs != null)
+			presentDrugs.forEach(d -> {
+				cy.highlightNode(d+"", "#B89AE6");
+			});
+	}
+
 	private void overlayContinuousData() {
 		ThreeColorGradient gradient = AnalysisColours.get().expressionGradient;
 		for(String uniprot: displayedNodes) {
@@ -368,7 +380,7 @@ public class IDGPopupCytoscapeController implements Handler{
 	 */
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
-		if(presentDrugs!= null && presentDrugs.contains(Double.parseDouble(id)))
+		if(presentDrugs!= null && presentDrugs.contains(id))
 			openDrugContextInfo(id,name,x,y);
 		else
 			openProteinContextInfo(id, name, x, y);
@@ -382,8 +394,27 @@ public class IDGPopupCytoscapeController implements Handler{
 	 * @param y
 	 */
 	private void openDrugContextInfo(String id, String name, int x, int y) {
-		// TODO Auto-generated method stub
+		DrugTargetEntity target = getDrugFromId(id);
+		if(target == null) return;
+		DrugTargetContextPanel popup = new DrugTargetContextPanel(target);
 		
+		popup.getElement().getStyle().setZIndex(getCorrectZIndex());
+		popup.setPopupPosition(x+5, y+5);
+		popup.show();
+	}
+
+	/**
+	 * Gets Drug Target off of edgeIdToDrugTarget values set
+	 * edgeIdToDrugTarget values set will contain all present drugs
+	 * @param id
+	 * @return
+	 */
+	private DrugTargetEntity getDrugFromId(String id) {
+		for(DrugTargetEntity t : edgeIdToDrugTarget.values()) {
+			if(id == t.getId()+"")
+				return t;
+		}
+		return null;
 	}
 
 	/**

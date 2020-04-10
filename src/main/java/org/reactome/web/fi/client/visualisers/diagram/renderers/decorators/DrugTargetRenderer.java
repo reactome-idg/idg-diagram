@@ -21,11 +21,10 @@ import org.reactome.web.fi.data.layout.SummaryItemImpl;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.events.DrugTargetsLoadedEvent;
-import org.reactome.web.fi.handlers.DrugTargetsLoadedHandler;
 
 import com.google.gwt.event.shared.EventBus;
 
-public class DrugTargetRenderer implements DrugTargetsLoadedHandler{
+public class DrugTargetRenderer{
 
 	private EventBus eventBus;
 	private Map<String, List<DrugTargetEntity>> uniprotToDrugTargetEntityMap;
@@ -33,10 +32,10 @@ public class DrugTargetRenderer implements DrugTargetsLoadedHandler{
 	
 	public DrugTargetRenderer(EventBus eventBus) {
 		this.eventBus = eventBus;
-		eventBus.addHandler(DrugTargetsLoadedEvent.TYPE, this);
 	}
 
 	public void doRender(AdvancedContext2d ctx, Double factor, Coordinate offset) {
+		if(currentItems == null) return;
 		currentItems.forEach(x -> {
 			ctx.save();
 			ctx.setGlobalAlpha((factor-.5)*2);
@@ -46,9 +45,8 @@ public class DrugTargetRenderer implements DrugTargetsLoadedHandler{
 		});
 	}
 	
-	@Override
 	public void onDrugTargetsLoaded(DrugTargetsLoadedEvent event) {
-		if(currentItems == null) currentItems = new HashSet<>();
+		currentItems = new HashSet<>();
 		this.uniprotToDrugTargetEntityMap = event.getDrugTaretEntityMap();
 		for(DiagramObject obj : event.getContext().getContent().getDiagramObjects()) {
 			if(obj.getRenderableClass() != "Complex" && 
