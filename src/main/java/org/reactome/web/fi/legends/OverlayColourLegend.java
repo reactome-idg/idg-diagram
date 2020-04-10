@@ -53,7 +53,6 @@ OverlayDataLoadedHandler, OverlayDataResetHandler{
 		
 		addStyleName(IDGRESOURCES.getCSS().outerPanel());
 		this.getElement().getStyle().setWidth(100, Unit.PX);
-		this.getElement().getStyle().setHeight(270, Unit.PX);
 		this.setVisible(false);
 	}
 
