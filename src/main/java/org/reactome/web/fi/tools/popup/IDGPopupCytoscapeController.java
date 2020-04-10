@@ -453,7 +453,6 @@ public class IDGPopupCytoscapeController implements Handler{
 		
 		popup.getElement().getStyle().setZIndex(getCorrectZIndex());
 		popup.setPopupPosition(x+5, y+5);
-		popup.getElement().setId(this.containerId);
 		popup.show();
 	}
 	
