@@ -15,4 +15,10 @@ public class CommonButton extends Button{
 		addClickHandler(handler);
 	}
 	
+	public CommonButton(String name, String style, ClickHandler handler) {
+		setText(name);
+		setStyleName(style);
+		addClickHandler(handler);
+	}
+	
 }
