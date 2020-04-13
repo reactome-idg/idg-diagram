@@ -171,7 +171,7 @@ TCRDDataLoader.Handler{
 		overlayLoader.loadDrugTargetsForUniprots(uniprots, new AsyncCallback<Collection<Drug>>() {
 			@Override
 			public void onSuccess(Collection<Drug> result) {
-				IDGPopupFactory.get().setUniprotToDrugTarget(result);
+				IDGPopupFactory.get().setDrugTargets(result);
 				eventBus.fireEventFromSource(new DrugTargetsLoadedEvent(context,result), this);			
 			}
 			@Override

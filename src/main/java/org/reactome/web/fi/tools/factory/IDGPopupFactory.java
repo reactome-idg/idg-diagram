@@ -12,7 +12,6 @@ import org.reactome.web.diagram.data.interactors.raw.RawInteractors;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.model.drug.Drug;
-import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
@@ -200,11 +199,11 @@ public class IDGPopupFactory{
 		return this.rawInteractors;
 	}
 	
-	public Collection<Drug> getUniprotToDrugTarget() {
+	public Collection<Drug> getDrugTargets() {
 		return uniprotToDrugTarget;
 	}
 
-	public void setUniprotToDrugTarget(Collection<Drug> uniprotToDrugTarget) {
+	public void setDrugTargets(Collection<Drug> uniprotToDrugTarget) {
 		this.uniprotToDrugTarget = uniprotToDrugTarget;
 	}
 

@@ -1,4 +1,4 @@
-package org.reactome.web.fi.tools.popup;
+package org.reactome.web.fi.tools.popup.tables;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,7 +16,8 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
-import org.reactome.web.fi.tools.popup.tables.PairwiseResultsTable;
+import org.reactome.web.fi.tools.popup.IDGPopup;
+import org.reactome.web.fi.tools.popup.IDGPopup.Resources;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.cell.client.ActionCell;
@@ -37,7 +38,7 @@ import com.google.gwt.view.client.ListDataProvider;
  * @author brunsont
  *
  */
-public class PairwisePopupTablePanel extends FlowPanel{
+public class PairwiseResultsTablePanel extends FlowPanel{
 
 	public interface PairwiseTableHandler {
 		void addInteractions(Set<PairwiseTableEntity> entities);
@@ -68,7 +69,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	
 	private DataOverlay dataOverlay;
 	
-	public PairwisePopupTablePanel(Set<String> diagramNodes, IDGPopup.Resources RESOURCES, PairwiseTableHandler handler) {
+	public PairwiseResultsTablePanel(Set<String> diagramNodes, IDGPopup.Resources RESOURCES, PairwiseTableHandler handler) {
 		this.RESOURCES = RESOURCES;
 		this.handler = handler;
 		this.pairwiseOverlayProperties = IDGPopupFactory.get().getCurrentPairwiseProperties();
@@ -255,7 +256,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 			}
 			@Override
 			public void onPairwiseDataLoaded(List<PairwiseTableEntity> tableEntities) {
-				PairwisePopupTablePanel.this.tableEntities.addAll(tableEntities);
+				PairwiseResultsTablePanel.this.tableEntities.addAll(tableEntities);
 				filteredTableEntities = new ArrayList<>(tableEntities);
 				provider.setList(filteredTableEntities);
 				provider.refresh();
@@ -276,7 +277,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 		loader.load(props, new TCRDDataLoader.Handler() {
 			@Override
 			public void onDataOverlayLoaded(DataOverlay dataOverlay) {
-				PairwisePopupTablePanel.this.dataOverlay = dataOverlay;
+				PairwiseResultsTablePanel.this.dataOverlay = dataOverlay;
 				updateTableData();
 			}
 			@Override

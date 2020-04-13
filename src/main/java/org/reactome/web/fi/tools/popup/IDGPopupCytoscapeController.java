@@ -216,7 +216,7 @@ public class IDGPopupCytoscapeController implements Handler{
 	 */
 	public void addDrugs() {
 		presentDrugs = new HashSet<>();
-		Collection<Drug> drugs = IDGPopupFactory.get().getUniprotToDrugTarget();
+		Collection<Drug> drugs = IDGPopupFactory.get().getDrugTargets();
 		drugs.forEach(drug -> {
 			JSONArray edgeArray = new JSONArray();
 			drug.getDrugInteractions().forEach((k,v) -> {

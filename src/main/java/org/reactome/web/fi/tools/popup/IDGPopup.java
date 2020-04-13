@@ -14,8 +14,9 @@ import org.reactome.web.fi.common.CommonButton;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
-import org.reactome.web.fi.tools.popup.PairwisePopupTablePanel.PairwiseTableHandler;
-import org.reactome.web.fi.tools.popup.tables.DrugTargetTable;
+import org.reactome.web.fi.tools.popup.tables.DrugTargetTablePanel;
+import org.reactome.web.fi.tools.popup.tables.PairwiseResultsTablePanel;
+import org.reactome.web.fi.tools.popup.tables.PairwiseResultsTablePanel.PairwiseTableHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -50,8 +51,8 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	private CommonButton pairwiseButton;
 	private CommonButton drugTargetButton;
 	
-	private PairwisePopupTablePanel pairwiseTable;
-	private DrugTargetTable drugTargetTable;
+	private PairwiseResultsTablePanel pairwiseTable;
+	private DrugTargetTablePanel drugTargetTablePanel;
 	
 	private DeckLayoutPanel tablePanel;
 	
@@ -134,11 +135,11 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		
 		buttonPanel.add(pairwiseButton = new CommonButton("Pairwise Relationships", e-> rowButtonClicked(e)));
 		btns.add(pairwiseButton);
-		tablePanel.add(pairwiseTable = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
+		tablePanel.add(pairwiseTable = new PairwiseResultsTablePanel(diagramNodes, RESOURCES, this));
 		
 		buttonPanel.add(drugTargetButton = new CommonButton("Drug Targets", e -> rowButtonClicked(e)));
 		btns.add(drugTargetButton);
-		tablePanel.add(drugTargetTable = new DrugTargetTable());
+		tablePanel.add(drugTargetTablePanel = new DrugTargetTablePanel(diagramNodes, RESOURCES));
 		
 		tablePanel.showWidget(0);
 		tablePanel.setAnimationVertical(false);
@@ -300,7 +301,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 
 	/**
 	 * Below here is all for styling. Handles styles of IDGPopup,
-	 * PairwisePopupTablePanel, and IDGPopupCytoscapeController
+	 * PairwiseResultsTablePanel, and IDGPopupCytoscapeController
 	 */
 	public static Resources RESOURCES;
 	static {
