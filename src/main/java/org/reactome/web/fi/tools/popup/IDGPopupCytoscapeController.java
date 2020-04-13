@@ -210,7 +210,9 @@ public class IDGPopupCytoscapeController implements Handler{
 	}
 	
 	/**
-	 * Adds drugs for diagram source nodes to the table
+	 * Iterate over interactions in each drug. If diagramNodes contains the interaction uniprot, make and add edge to edgeArray
+	 * If edgeArray > 0 for a drug, make the node for that drug, add it to the cytoscape view, and add all the edges.
+	 * Repeat for all drugs present in the diagram.
 	 */
 	public void addDrugs() {
 		presentDrugs = new HashSet<>();
@@ -221,21 +223,18 @@ public class IDGPopupCytoscapeController implements Handler{
 				if(diagramNodes.contains(i.getTargetUniprot())) {
 					JSONObject edge = makeFI(edgeCount, i.getTargetUniprot(), "DG"+drug.getCompoundChEMBLId(), "solid").isObject();
 					edgeIdToDrugTarget.put(edgeCount, i);
-					cy.addCytoscapeEdge(containerId, edge.toString());
+					edgeArray.set(edgeArray.size(), edge);
 					edgeCount++;
 				}
 			});
-//			if(target == null) return;
-//			target.forEach(entity -> {
-//				//make and add protein for the drug
-//				if(!presentDrugs.contains(entity.getId()+"")) {
-//					JSONObject protein = getProtein("DG"+entity.getId(), entity.getDrug(), false).isObject();
-//					protein.get("data").isObject().put("drug", new JSONString("true"));
-//					cy.addCytoscapeNodes(containerId, protein.toString());
-//					cy.highlightNode("DG"+entity.getId(), "#B89AE6");
-//					presentDrugs.add("DG"+entity.getId());
-//				}
-//			});
+			if(edgeArray.size() > 0) {
+				JSONObject protein = getProtein("DG"+drug.getCompoundChEMBLId(), drug.getName(), false).isObject();
+				protein.get("data").isObject().put("drug", new JSONString("true"));
+				cy.addCytoscapeNodes(containerId, protein.toString());
+				cy.highlightNode("DG"+drug.getCompoundChEMBLId(), "#B89AE6");
+				presentDrugs.add("DG"+drug.getCompoundChEMBLId());
+				cy.addCytoscapeEdge(containerId, edgeArray.toString());
+			}
 		});
 		cy.setCytoscapeLayout("cose");
 	}
@@ -385,42 +384,41 @@ public class IDGPopupCytoscapeController implements Handler{
 	 */
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
-		if(presentDrugs!= null && presentDrugs.contains(id))
-			openDrugContextInfo(id,name,x,y);
-		else
+		//only opening if node is not a drug node
+		if(presentDrugs== null || !presentDrugs.contains(id))
 			openProteinContextInfo(id, name, x, y);
 	}
 
-	/**
-	 * Makes context info for drug context select
-	 * @param id
-	 * @param name
-	 * @param x
-	 * @param y
-	 */
-	private void openDrugContextInfo(String id, String name, int x, int y) {
-		DrugTargetEntity target = getDrugFromId(id.substring(2));
-		if(target == null) return;
-		DrugTargetContextPanel popup = new DrugTargetContextPanel(target);
-		
-		popup.getElement().getStyle().setZIndex(getCorrectZIndex());
-		popup.setPopupPosition(x+5, y+5);
-		popup.show();
-	}
-
-	/**
-	 * Gets Drug Target off of edgeIdToDrugTarget values set
-	 * edgeIdToDrugTarget values set will contain all present drugs
-	 * @param id
-	 * @return
-	 */
-	private DrugTargetEntity getDrugFromId(String id) {
-		for(DrugTargetEntity t : edgeIdToDrugTarget.values()) {
-			if(id == t.getId()+"")
-				return t;
-		}
-		return null;
-	}
+//	/**
+//	 * Makes context info for drug context select
+//	 * @param id
+//	 * @param name
+//	 * @param x
+//	 * @param y
+//	 */
+//	private void openDrugContextInfo(String id, String name, int x, int y) {
+//		DrugTargetEntity target = getDrugFromId(id.substring(2));
+//		if(target == null) return;
+//		DrugTargetContextPanel popup = new DrugTargetContextPanel(target);
+//		
+//		popup.getElement().getStyle().setZIndex(getCorrectZIndex());
+//		popup.setPopupPosition(x+5, y+5);
+//		popup.show();
+//	}
+//
+//	/**
+//	 * Gets Drug Target off of edgeIdToDrugTarget values set
+//	 * edgeIdToDrugTarget values set will contain all present drugs
+//	 * @param id
+//	 * @return
+//	 */
+//	private DrugTargetEntity getDrugFromId(String id) {
+//		for(DrugTargetEntity t : edgeIdToDrugTarget.values()) {
+//			if(id == t.getId()+"")
+//				return t;
+//		}
+//		return null;
+//	}
 
 	/**
 	 * Makes context info for node or interactor context select

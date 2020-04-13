@@ -17,6 +17,7 @@ import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -159,10 +160,10 @@ public class TCRDDataLoader implements RequestCallback{
 					if(response.getStatusCode() == Response.SC_OK) {
 						DrugTargetEntities entities = null;
 						try {
+							GWT.log(response.getText());
 							JSONObject obj = new JSONObject();
 							obj.put("drugTargetEntity", JSONParser.parseStrict(response.getText()).isArray());
 							entities = DrugTargetEntitiesFactory.getDrugTargetEntities(DrugTargetEntities.class, obj.toString());
-							
 						}catch(Throwable e) {
 							callback.onFailure(e);
 						}
@@ -186,7 +187,6 @@ public class TCRDDataLoader implements RequestCallback{
 	 * @return
 	 */
 	protected Collection<Drug> processDrugTargets(List<DrugTargetEntity> entities) {
-//		Map<String, List<DrugTargetEntity>> rtn = new HashMap<>();
 		Map<String, Drug> drugNameToDrugs = new HashMap<>();		
 		
 		for(DrugTargetEntity entity: entities) {
@@ -200,11 +200,6 @@ public class TCRDDataLoader implements RequestCallback{
 										entity.getActionType(),
 										entity.getActivityType(),
 										entity.getActivityValue()));
-			
-//			String uniprot = entity.getTarget().getProtein().getUniprot();
-//			if(!rtn.keySet().contains(uniprot))
-//				rtn.put(uniprot, new ArrayList<>());
-//			rtn.get(uniprot).add(entity);
 		}
 		
 		return drugNameToDrugs.values();

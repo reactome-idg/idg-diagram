@@ -11,10 +11,10 @@ public class DrugInteraction {
 	private String targetSymbol;
 	private String actionType;
 	private String activityType;
-	private float activityValue;
+	private Float activityValue;
 	
 	public DrugInteraction(String targetUniprot, String targetSymbol, String actionType, String activityType,
-			float activityValue) {
+			Float activityValue) {
 		this.targetUniprot = targetUniprot;
 		this.targetSymbol = targetSymbol;
 		this.actionType = actionType;
@@ -54,11 +54,11 @@ public class DrugInteraction {
 		this.activityType = activityType;
 	}
 
-	public float getActivityValue() {
+	public Float getActivityValue() {
 		return activityValue;
 	}
 
-	public void setActivityValue(float activityValue) {
+	public void setActivityValue(Float activityValue) {
 		this.activityValue = activityValue;
 	}
 }
