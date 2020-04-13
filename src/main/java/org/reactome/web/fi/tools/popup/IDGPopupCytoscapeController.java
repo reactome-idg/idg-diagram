@@ -219,10 +219,10 @@ public class IDGPopupCytoscapeController implements Handler{
 		Collection<Drug> drugs = IDGPopupFactory.get().getUniprotToDrugTarget();
 		drugs.forEach(drug -> {
 			JSONArray edgeArray = new JSONArray();
-			drug.getDrugInteractions().forEach(i -> {
-				if(diagramNodes.contains(i.getTargetUniprot())) {
-					JSONObject edge = makeFI(edgeCount, i.getTargetUniprot(), "DG"+drug.getCompoundChEMBLId(), "solid").isObject();
-					edgeIdToDrugTarget.put(edgeCount, i);
+			drug.getDrugInteractions().forEach((k,v) -> {
+				if(diagramNodes.contains(k)) {
+					JSONObject edge = makeFI(edgeCount, k, "DG"+drug.getCompoundChEMBLId(), "solid").isObject();
+					edgeIdToDrugTarget.put(edgeCount, v);
 					edgeArray.set(edgeArray.size(), edge);
 					edgeCount++;
 				}

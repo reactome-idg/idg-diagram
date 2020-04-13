@@ -160,7 +160,6 @@ public class TCRDDataLoader implements RequestCallback{
 					if(response.getStatusCode() == Response.SC_OK) {
 						DrugTargetEntities entities = null;
 						try {
-							GWT.log(response.getText());
 							JSONObject obj = new JSONObject();
 							obj.put("drugTargetEntity", JSONParser.parseStrict(response.getText()).isArray());
 							entities = DrugTargetEntitiesFactory.getDrugTargetEntities(DrugTargetEntities.class, obj.toString());
@@ -199,11 +198,13 @@ public class TCRDDataLoader implements RequestCallback{
 											  entity.getActionType(),
 											  entity.getActivityType(),
 											  entity.getActivityValue());
-			if(drugNameToDrugs.get(entity.getDrug()).getDrugInteractions().containsKey(uniprot)
-			   && drugNameToDrugs.get(entity.getDrug()).getDrugInteractions().get(uniprot).getActivityValue()< entity.getActivityValue())
-				continue;
-//			drugNameToDrugs.get(key)
-//			drugNameToDrugs.get(entity.getDrug()).addDrugTargetInteraction(interaction);
+			
+			Drug addTo = drugNameToDrugs.get(entity.getDrug());
+			if(addTo.getDrugInteractions().containsKey(uniprot) && addTo.getDrugInteractions().get(uniprot).getActivityValue() != null
+			    && addTo.getDrugInteractions().get(uniprot).getActivityValue().floatValue() < entity.getActivityValue().floatValue())
+					continue;
+			drugNameToDrugs.get(entity.getDrug()).getDrugInteractions().put(uniprot, interaction);
+
 		}
 		
 		return drugNameToDrugs.values();

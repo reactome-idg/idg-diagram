@@ -76,12 +76,12 @@ public class DrugTargetRenderer{
 
 	private void processDrugNumbers(Collection<Drug> drugTargets) {
 		drugTargets.forEach(drug -> {
-			drug.getDrugInteractions().forEach(i -> {
+			drug.getDrugInteractions().keySet().forEach(k -> {
 				//for each drug Interaction, put uniprot mapped to 1 
 				//or 1+ the current number for that uniprot if it exists on the map already.
-				uniprotToInteractionNumber.put(i.getTargetUniprot(),
-						uniprotToInteractionNumber.get(i.getTargetUniprot()) == null ? 1 :
-						uniprotToInteractionNumber.get(i.getTargetUniprot()) + 1);
+				uniprotToInteractionNumber.put(k,
+						uniprotToInteractionNumber.get(k) == null ? 1 :
+						uniprotToInteractionNumber.get(k) + 1);
 			});
 		});
 	}
