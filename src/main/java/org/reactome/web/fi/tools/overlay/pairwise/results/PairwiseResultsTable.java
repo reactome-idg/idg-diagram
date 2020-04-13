@@ -22,7 +22,7 @@ import com.google.gwt.view.client.ListDataProvider;
  * @author brunsont
  *
  */
-public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
+public class PairwiseResultsTable extends DataGrid<PairwiseTableEntity>{
 	
 	public final static Integer PAGE_SIZE = 10;
 	
@@ -30,7 +30,7 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
 	private ListDataProvider<PairwiseTableEntity> provider;
 	
 	
-	public PairwisePopupResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, SimplePager pager) {
+	public PairwiseResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, SimplePager pager) {
 		
 		super(PAGE_SIZE);
 		this.provider = provider;
@@ -98,8 +98,8 @@ public class PairwisePopupResultsTable extends DataGrid<PairwiseTableEntity>{
             public void onCellPreview(final CellPreviewEvent<PairwiseTableEntity> event) {
                 if (!event.getNativeEvent().getType().equals("mouseover")) return;
                 Element cellElement = event.getNativeEvent().getEventTarget().cast();
-                PairwiseTableEntity model = (PairwiseTableEntity) PairwisePopupResultsTable.this.getValueKey(event.getValue());
-                cellElement.setTitle(PairwisePopupResultsTable.this.getColumn(event.getColumn()).getValue(model)+"");
+                PairwiseTableEntity model = (PairwiseTableEntity) PairwiseResultsTable.this.getValueKey(event.getValue());
+                cellElement.setTitle(PairwiseResultsTable.this.getColumn(event.getColumn()).getValue(model)+"");
             }
         });
 		

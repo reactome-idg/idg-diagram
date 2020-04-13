@@ -221,3 +221,27 @@
     background-color: #9a9c9e;
     cursor: default !important;
 }
+
+.buttonsPanel button {
+	color: white;
+	border-radius: 10px 10px 0 0;
+	background: none rgb(88,195,229);
+	font-size: small;
+	outline: none;
+}
+
+.buttonsPanel button:hover {
+	background: none rgb(30,148, 208);
+}
+
+.buttonsPanel button:disabled {
+	background: none rgb(88,195,229);
+}
+
+.buttonSelected {
+    background: none rgb(6, 107, 158) !important;
+}
+
+.deckPanel{
+	
+}

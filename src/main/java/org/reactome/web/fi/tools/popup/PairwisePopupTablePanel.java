@@ -16,7 +16,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
-import org.reactome.web.fi.tools.overlay.pairwise.results.PairwisePopupResultsTable;
+import org.reactome.web.fi.tools.overlay.pairwise.results.PairwiseResultsTable;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.cell.client.ActionCell;
@@ -51,7 +51,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 	
 	private List<PairwiseTableEntity> tableEntities;
 	private List<PairwiseTableEntity> filteredTableEntities;
-	private PairwisePopupResultsTable resultsTable;
+	private PairwiseResultsTable resultsTable;
 	private ListDataProvider<PairwiseTableEntity> provider;
 	private SimplePager pager;
 	
@@ -78,7 +78,7 @@ public class PairwisePopupTablePanel extends FlowPanel{
 		this.filteredTableEntities = new ArrayList<>();
 		
 		initPanel();
-		loadTable();
+//		loadTable();
 		createFilterPopup();
 	}
 
@@ -95,12 +95,16 @@ public class PairwisePopupTablePanel extends FlowPanel{
 		mainPanel.setVisible(true); //Show by default
 	}
 
+	public void initialize() {
+		loadTable();
+	}
+	
 	private void createPairwiseTable() {
 		
 		provider = new ListDataProvider<>();
 		pager = new SimplePager();
 		pager.setStyleName(RESOURCES.getCSS().pager());
-		resultsTable = new PairwisePopupResultsTable(filteredTableEntities, provider, pager);
+		resultsTable = new PairwiseResultsTable(filteredTableEntities, provider, pager);
 		resultsTable.setStyleName(RESOURCES.getCSS().table());
 		
 		//Add view button column

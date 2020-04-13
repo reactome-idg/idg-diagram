@@ -1,6 +1,8 @@
 package org.reactome.web.fi.tools.popup;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.reactome.web.diagram.common.PwpButton;
@@ -8,12 +10,15 @@ import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSeque
 import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
+import org.reactome.web.fi.common.CommonButton;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.popup.PairwisePopupTablePanel.PairwiseTableHandler;
+import org.reactome.web.fi.tools.popup.tables.DrugTargetTable;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
@@ -21,6 +26,8 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DeckLayoutPanel;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -35,10 +42,18 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 
 	private String popupId;
-	private Set<String> types;
+	private List<String> types;
 	private IDGPopupCytoscapeController cyController;
-	private PairwisePopupTablePanel tablePanel;
 	private Set<String> diagramNodes;
+	
+	private Set<CommonButton> btns = new HashSet<>();
+	private CommonButton pairwiseButton;
+	private CommonButton drugTargetButton;
+	
+	private PairwisePopupTablePanel pairwiseTable;
+	private DrugTargetTable drugTargetTable;
+	
+	private DeckLayoutPanel tablePanel;
 	
 	private int zIndex;
 	private boolean focused = false;
@@ -47,20 +62,27 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	
 	public IDGPopup(GraphObject graphObject, String initialType, int zIndex) {
 		setDiagramNodes(graphObject);
-		initPanel(graphObject.getStId(), initialType, zIndex);
+		createPopup(graphObject.getStId(), initialType, zIndex);
 	}
 	
 	public IDGPopup(String uniprot, String geneName, String initialType, int zIndex) {
 		setDiagramNodes(uniprot);
-		initPanel(uniprot, initialType, zIndex);
+		createPopup(uniprot, initialType, zIndex);
 	}
 	
-	private void initPanel(String popupId, String initialType, int zIndex) {
+	private void createPopup(String popupId, String initialType, int zIndex) {
 		this.zIndex = zIndex;
 		this.popupId = popupId;
-		this.types = new HashSet<>();
-		this.types.add(initialType);
 		initPanel();
+		
+		//create IDGPopupCytoscapeController after panel creation 
+		//otherwise, cytoscape.js has no panel to mount to
+		//this line initialises cytoscape and adds the initial source nodes and edges
+		cyController = new IDGPopupCytoscapeController(popupId, diagramNodes, RESOURCES, zIndex);
+		
+		//add initial type to popup
+		addType(initialType);
+		
 		panelClicked();
 	}
 
@@ -74,6 +96,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		main.add(new PwpButton("Close", RESOURCES.getCSS().close(), e-> hide()));
 		
 		main.add(getMainPanel());
+		main.add(getTableDeck());
 		
 		focus.add(main);
 		focus.addClickHandler(e -> panelClicked());
@@ -85,18 +108,61 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		this.setPopupPosition(popupNumber*20, popupNumber*20);
 		
 		show();
+	}
+
+	private FlowPanel getMainPanel() {
+		FlowPanel result = new FlowPanel();
 		
-		//create IDGPopupCytoscapeController after panel creation 
-		//otherwise, cytoscape.js has no panel to mount to
-		cyController = new IDGPopupCytoscapeController(popupId, diagramNodes, RESOURCES, zIndex);
+		result.setStyleName(RESOURCES.getCSS().container());
 		
-		//choose which type of popup to initialize as the inital popup
-		if(types.contains("TR"))
-			main.add(tablePanel = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
-		else if(types.contains("DG"))
-			cyController.addDrugs();
+		//Panel for cytoscape to interact with
+		SimplePanel cyPanel = new SimplePanel();
+		cyPanel.getElement().setId("cy-" + popupId);
+		cyPanel.setStyleName(RESOURCES.getCSS().cyView());
+		result.add(cyPanel);
+
+		return result;
 	}
 	
+	private FlowPanel getTableDeck() {
+		FlowPanel result = new FlowPanel();
+		result.setStyleName(RESOURCES.getCSS().deckPanel());
+		
+		FlowPanel buttonPanel = new FlowPanel();
+		buttonPanel.setStyleName(RESOURCES.getCSS().buttonsPanel());
+		tablePanel = new DeckLayoutPanel();
+		
+		buttonPanel.add(pairwiseButton = new CommonButton("Pairwise Relationships", e-> rowButtonClicked(e)));
+		btns.add(pairwiseButton);
+		tablePanel.add(pairwiseTable = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
+		
+		buttonPanel.add(drugTargetButton = new CommonButton("Drug Targets", e -> rowButtonClicked(e)));
+		btns.add(drugTargetButton);
+		tablePanel.add(drugTargetTable = new DrugTargetTable());
+		
+		tablePanel.showWidget(0);
+		tablePanel.setAnimationVertical(false);
+		tablePanel.setAnimationDuration(500);
+		
+		result.add(buttonPanel);
+		result.add(tablePanel);
+		
+		return result;
+	}
+
+	private void rowButtonClicked(ClickEvent e) {
+		for(CommonButton btn : btns) {
+			btn.removeStyleName(RESOURCES.getCSS().buttonSelected());
+		}
+		
+		Button btn = (Button) e.getSource();
+		btn.addStyleName(RESOURCES.getCSS().buttonSelected());
+		if(btn.equals(this.pairwiseButton))
+			this.tablePanel.showWidget(0);
+		else if(btn.equals(this.drugTargetButton))
+			this.tablePanel.showWidget(1);
+	}
+
 	/**
 	 * If popup for diagram object is open when a decorator for that object is clicked,
 	 * IDGPopupFactory will call this method to direct the addition of a new type to the popup.
@@ -104,15 +170,41 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	 * @param addType
 	 */
 	public void addType(String addType) {
+		if(types == null) types = new ArrayList<>();
 		if(types.contains(addType)) return;
 		types.add(addType);
+		
+		enableTabs(addType);
+		
 		if(addType == "TR")
-			main.add(tablePanel = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
+			pairwiseTable.initialize();
+//			main.add(pairwiseTable = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
 		else if(addType == "DG")
 			cyController.addDrugs();
 			
 	}
 	
+	private void enableTabs(String selectedType) {
+		for(CommonButton btn : btns) {
+			btn.setEnabled(false);
+			btn.removeStyleName(RESOURCES.getCSS().buttonSelected());
+		}
+		
+		if(types.contains("TR"))
+			this.pairwiseButton.setEnabled(true);
+		if(types.contains("DG"))
+			this.drugTargetButton.setEnabled(true);
+		
+		if(selectedType == "TR") {
+			this.tablePanel.showWidget(0);
+			this.pairwiseButton.addStyleName(RESOURCES.getCSS().buttonSelected());
+		}
+		else if(selectedType == "DG") {
+			this.tablePanel.showWidget(1);
+			this.drugTargetButton.addStyleName(RESOURCES.getCSS().buttonSelected());
+		}
+	}
+
 	private void setTitlePanel() {
 		FlowPanel fp = new FlowPanel();
 		InlineLabel title = new InlineLabel("Pairwise popup: " + popupId);
@@ -134,20 +226,6 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		this.getElement().getStyle().setZIndex(zIndex);
 		focused = false;
 		cyController.setFocused(focused);
-	}
-
-	private FlowPanel getMainPanel() {
-		FlowPanel result = new FlowPanel();
-		
-		result.setStyleName(RESOURCES.getCSS().container());
-		
-		//Panel for cytoscape to interact with
-		SimplePanel cyPanel = new SimplePanel();
-		cyPanel.getElement().setId("cy-" + popupId);
-		cyPanel.setStyleName(RESOURCES.getCSS().cyView());
-		result.add(cyPanel);
-
-		return result;
 	}
 	
 	/**
@@ -200,12 +278,12 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	public void loadOverlay() {
 		cyController.loadOverlay();
 		if(types.contains("TR"))
-			tablePanel.loadOverlay();
+			pairwiseTable.loadOverlay();
 	}
 	
 	public void changeOverlayColumn(int column) {
 		cyController.updateOverlayColumn(column);
-		tablePanel.updateOverlayColumn(column);
+		pairwiseTable.updateOverlayColumn(column);
 	}
 
 	@Override
@@ -217,7 +295,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	public void updatePairwiseObjects() {
 		if(types.contains("TR")) {
 			cyController.pairwisePropertiesChanged();
-			tablePanel.pairwisePropertiesChanged();
+			pairwiseTable.pairwisePropertiesChanged();
 		}
 	}
 
@@ -298,5 +376,11 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		String filterBtn();
 		
 		String sourcesListBox();
+		
+		String buttonsPanel();
+		
+		String buttonSelected();
+		
+		String deckPanel();
 	}
 }
