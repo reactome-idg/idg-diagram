@@ -79,13 +79,11 @@ public class PairwiseResultsTablePanel extends FlowPanel{
 		this.filteredTableEntities = new ArrayList<>();
 		
 		initPanel();
-//		loadTable();
 		createFilterPopup();
 	}
 
 	private void initPanel() {
 		mainPanel = new FlowPanel();
-//		mainPanel.add(getFilterPanel());
 		
 		createPairwiseTable(); //must create before adding results table to panel;
 		mainPanel.add(resultsTable);

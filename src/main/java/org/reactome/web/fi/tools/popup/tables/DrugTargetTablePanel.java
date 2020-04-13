@@ -13,15 +13,39 @@ import org.reactome.web.fi.tools.popup.IDGPopup.Resources;
 import org.reactome.web.fi.tools.popup.tables.models.DrugTargetResult;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class DrugTargetTablePanel extends FlowPanel{
 
 	private IDGPopup.Resources RESOURCES;
 	private List<DrugTargetResult> drugTargetData;
 	
+	private DrugTargetResultsTable resultsTable;
+	
 	public DrugTargetTablePanel(Set<String> diagramNodes, Resources RESOURCES) {
 		this.RESOURCES = RESOURCES;
 		fillDrugTargetData(diagramNodes);
+		
+		initPanel();
+	}
+
+	private void initPanel() {
+		FlowPanel mainPanel = new FlowPanel();
+		
+		createDrugTargetTable();
+		mainPanel.add(resultsTable);
+		
+		mainPanel.add(getPagerPanel());
+	}
+
+	private void createDrugTargetTable() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private FlowPanel getPagerPanel() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
