@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
@@ -19,16 +21,21 @@ import org.reactome.web.diagram.util.AdvancedContext2d;
 import org.reactome.web.fi.data.layout.ShapeImpl;
 import org.reactome.web.fi.data.layout.SummaryItemImpl;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
-import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
+import org.reactome.web.fi.data.model.drug.Drug;
 import org.reactome.web.fi.events.DrugTargetsLoadedEvent;
 
 import com.google.gwt.event.shared.EventBus;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class DrugTargetRenderer{
 
 	private EventBus eventBus;
-	private Map<String, List<DrugTargetEntity>> uniprotToDrugTargetEntityMap;
 	private Set<SummaryItem> currentItems;
+	private Map<String, Integer> uniprotToInteractionNumber;
 	
 	public DrugTargetRenderer(EventBus eventBus) {
 		this.eventBus = eventBus;
@@ -47,7 +54,8 @@ public class DrugTargetRenderer{
 	
 	public void onDrugTargetsLoaded(DrugTargetsLoadedEvent event) {
 		currentItems = new HashSet<>();
-		this.uniprotToDrugTargetEntityMap = event.getDrugTaretEntityMap();
+		if(uniprotToInteractionNumber == null) uniprotToInteractionNumber = new HashMap<>();
+		processDrugNumbers(event.getDrugTargets());
 		for(DiagramObject obj : event.getContext().getContent().getDiagramObjects()) {
 			if(obj.getRenderableClass() != "Complex" && 
 			   obj.getRenderableClass() != "EntitySet" &&
@@ -64,6 +72,18 @@ public class DrugTargetRenderer{
 			otherInteractorList.add(drugTargetItem);
 			node.setOtherDecoratorsList(otherInteractorList);
 		}
+	}
+
+	private void processDrugNumbers(Collection<Drug> drugTargets) {
+		drugTargets.forEach(drug -> {
+			drug.getDrugInteractions().forEach(i -> {
+				//for each drug Interaction, put uniprot mapped to 1 
+				//or 1+ the current number for that uniprot if it exists on the map already.
+				uniprotToInteractionNumber.put(i.getTargetUniprot(),
+						uniprotToInteractionNumber.get(i.getTargetUniprot()) == null ? 1 :
+						uniprotToInteractionNumber.get(i.getTargetUniprot()) + 1);
+			});
+		});
 	}
 
 	private SummaryItem makeItem(DiagramObject obj) {
@@ -102,8 +122,8 @@ public class DrugTargetRenderer{
 				int index = pe.getDisplayName() == null ? 0 : pe.getDisplayName().indexOf(" ");
 				identifier = geneToUniprotMap.get(pe.getDisplayName().substring(0, index));
 			}
-			result += uniprotToDrugTargetEntityMap.get(identifier) != null 
-					? uniprotToDrugTargetEntityMap.get(identifier).size() : 0;
+			result += uniprotToInteractionNumber.get(identifier) != null 
+					? uniprotToInteractionNumber.get(identifier) : 0;
 		}
 		
 		return result;

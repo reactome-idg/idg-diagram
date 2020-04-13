@@ -1,6 +1,7 @@
 package org.reactome.web.fi.tools.popup;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +16,8 @@ import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.data.loader.TCRDDataLoader;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
+import org.reactome.web.fi.data.model.drug.Drug;
+import org.reactome.web.fi.data.model.drug.DrugInteraction;
 import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
@@ -48,7 +51,7 @@ public class IDGPopupCytoscapeController implements Handler{
 	private Set<String> diagramNodes;
 	private Set<String> displayedNodes;
 	private Map<PairwiseTableEntity, Integer> edgeIdToEntity;
-	private Map<Integer, DrugTargetEntity> edgeIdToDrugTarget;
+	private Map<Integer, DrugInteraction> edgeIdToDrugTarget;
 	private Set<String> presentDrugs;
 	
 	private CytoscapeEntity cy;
@@ -211,26 +214,28 @@ public class IDGPopupCytoscapeController implements Handler{
 	 */
 	public void addDrugs() {
 		presentDrugs = new HashSet<>();
-		Map<String, List<DrugTargetEntity>> uniprotToEntity = IDGPopupFactory.get().getUniprotToDrugTarget();
-		diagramNodes.forEach(x -> {
-			List<DrugTargetEntity> target = uniprotToEntity.get(x);
-			if(target == null) return;
-			target.forEach(entity -> {
-				//make and add protein for the drug
-				if(!presentDrugs.contains(entity.getId()+"")) {
-					JSONObject protein = getProtein("DG"+entity.getId(), entity.getDrug(), false).isObject();
-					protein.get("data").isObject().put("drug", new JSONString("true"));
-					cy.addCytoscapeNodes(containerId, protein.toString());
-					cy.highlightNode("DG"+entity.getId(), "#B89AE6");
-					presentDrugs.add("DG"+entity.getId());
+		Collection<Drug> drugs = IDGPopupFactory.get().getUniprotToDrugTarget();
+		drugs.forEach(drug -> {
+			JSONArray edgeArray = new JSONArray();
+			drug.getDrugInteractions().forEach(i -> {
+				if(diagramNodes.contains(i.getTargetUniprot())) {
+					JSONObject edge = makeFI(edgeCount, i.getTargetUniprot(), "DG"+drug.getCompoundChEMBLId(), "solid").isObject();
+					edgeIdToDrugTarget.put(edgeCount, i);
+					cy.addCytoscapeEdge(containerId, edge.toString());
+					edgeCount++;
 				}
-				
-				//make and add edges for drugs
-				JSONObject edge = makeFI(edgeCount, entity.getTarget().getProtein().getUniprot(), "DG"+entity.getId(), "solid").isObject();
-				edgeIdToDrugTarget.put(edgeCount, entity);
-				cy.addCytoscapeEdge(containerId, edge.toString());
-				edgeCount++;
 			});
+//			if(target == null) return;
+//			target.forEach(entity -> {
+//				//make and add protein for the drug
+//				if(!presentDrugs.contains(entity.getId()+"")) {
+//					JSONObject protein = getProtein("DG"+entity.getId(), entity.getDrug(), false).isObject();
+//					protein.get("data").isObject().put("drug", new JSONString("true"));
+//					cy.addCytoscapeNodes(containerId, protein.toString());
+//					cy.highlightNode("DG"+entity.getId(), "#B89AE6");
+//					presentDrugs.add("DG"+entity.getId());
+//				}
+//			});
 		});
 		cy.setCytoscapeLayout("cose");
 	}

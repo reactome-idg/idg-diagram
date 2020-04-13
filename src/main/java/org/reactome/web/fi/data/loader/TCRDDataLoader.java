@@ -1,11 +1,16 @@
 package org.reactome.web.fi.data.loader;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.reactome.web.fi.data.mediators.DataOverlayEntityMediator;
+import org.reactome.web.fi.data.model.drug.Drug;
+import org.reactome.web.fi.data.model.drug.DrugInteraction;
 import org.reactome.web.fi.data.model.drug.DrugTargetEntities;
 import org.reactome.web.fi.data.model.drug.DrugTargetEntitiesFactory;
 import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
@@ -142,7 +147,7 @@ public class TCRDDataLoader implements RequestCallback{
 		}
 	}
 	
-	public void loadDrugTargetsForUniprots(String uniprots, AsyncCallback<Map<String, List<DrugTargetEntity>>> callback) {
+	public void loadDrugTargetsForUniprots(String uniprots, AsyncCallback<Collection<Drug>> callback) {
 		String url = "/tcrdws/drug/uniprots";
 		
 		RequestBuilder request = new RequestBuilder(RequestBuilder.POST, url);
@@ -180,17 +185,29 @@ public class TCRDDataLoader implements RequestCallback{
 	 * @param entities
 	 * @return
 	 */
-	protected Map<String, List<DrugTargetEntity>> processDrugTargets(List<DrugTargetEntity> entities) {
-		Map<String, List<DrugTargetEntity>> rtn = new HashMap<>();
+	protected Collection<Drug> processDrugTargets(List<DrugTargetEntity> entities) {
+//		Map<String, List<DrugTargetEntity>> rtn = new HashMap<>();
+		Map<String, Drug> drugNameToDrugs = new HashMap<>();		
 		
 		for(DrugTargetEntity entity: entities) {
-			String uniprot = entity.getTarget().getProtein().getUniprot();
-			if(!rtn.keySet().contains(uniprot))
-				rtn.put(uniprot, new ArrayList<>());
-			rtn.get(uniprot).add(entity);
+			if(!drugNameToDrugs.containsKey(entity.getDrug())) {
+				Drug drug = new Drug(entity.getDrug(), entity.getCompoundChEMBLId());
+				drugNameToDrugs.put(drug.getName(), drug);
+			}
+			drugNameToDrugs.get(entity.getDrug()).addDrugTargetInteraction(
+					new DrugInteraction(entity.getTarget().getProtein().getUniprot(),
+										entity.getTarget().getProtein().getSym(),
+										entity.getActionType(),
+										entity.getActivityType(),
+										entity.getActivityValue()));
+			
+//			String uniprot = entity.getTarget().getProtein().getUniprot();
+//			if(!rtn.keySet().contains(uniprot))
+//				rtn.put(uniprot, new ArrayList<>());
+//			rtn.get(uniprot).add(entity);
 		}
 		
-		return rtn;
+		return drugNameToDrugs.values();
 	}
 
 	/**

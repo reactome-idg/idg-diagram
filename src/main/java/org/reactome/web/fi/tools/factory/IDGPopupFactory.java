@@ -1,6 +1,7 @@
 package org.reactome.web.fi.tools.factory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.reactome.web.diagram.data.graph.model.GraphObject;
 import org.reactome.web.diagram.data.interactors.raw.RawInteractors;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
+import org.reactome.web.fi.data.model.drug.Drug;
 import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
@@ -31,7 +33,7 @@ public class IDGPopupFactory{
 	private Set<String> tDarkSet;
 	private List<PairwiseOverlayObject> currentPairwiseObjects;
 	private List<PairwiseNumberEntity> pairwiseNumberEntities;
-	private Map<String, List<DrugTargetEntity>> uniprotToDrugTarget;
+	private Collection<Drug> uniprotToDrugTarget;
 	
 	private RawInteractors rawInteractors;
 	
@@ -198,11 +200,11 @@ public class IDGPopupFactory{
 		return this.rawInteractors;
 	}
 	
-	public Map<String, List<DrugTargetEntity>> getUniprotToDrugTarget() {
+	public Collection<Drug> getUniprotToDrugTarget() {
 		return uniprotToDrugTarget;
 	}
 
-	public void setUniprotToDrugTarget(Map<String, List<DrugTargetEntity>> uniprotToDrugTarget) {
+	public void setUniprotToDrugTarget(Collection<Drug> uniprotToDrugTarget) {
 		this.uniprotToDrugTarget = uniprotToDrugTarget;
 	}
 

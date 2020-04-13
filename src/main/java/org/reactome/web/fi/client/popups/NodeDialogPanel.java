@@ -51,8 +51,7 @@ public class NodeDialogPanel extends DialogBox{
 		setStyleName(RESOURCES.getCSS().popup());
 		
 		FlowPanel fp = new FlowPanel();
-		if(IDGPopupFactory.get().getUniprotToDrugTarget().get(id) != null) //only add drug target popup if a drug exists for a protein
-			fp.add(new PwpButton("Show Drug Targets", RESOURCES.getCSS().drugTargetButton(), e-> onDrugTargetButtonClicked()));
+		fp.add(new PwpButton("Show Drug Targets", RESOURCES.getCSS().drugTargetButton(), e-> onDrugTargetButtonClicked()));
 		fp.add(new PwpButton("Show Pairwise Relationships", RESOURCES.getCSS().pairwiseOverlayButton(), e -> onPairwiseOverlayButtonClicked()));
 		fp.add(this.pin = new PwpButton("Keep the panel visible", RESOURCES.getCSS().pin(), e -> onPinButtonClicked()));
 		fp.add(new PwpButton("Close", RESOURCES.getCSS().close(), e -> onCloseButtonClicked()));
