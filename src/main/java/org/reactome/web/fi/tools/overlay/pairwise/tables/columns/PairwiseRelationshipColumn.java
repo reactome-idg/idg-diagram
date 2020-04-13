@@ -1,4 +1,4 @@
-package org.reactome.web.fi.tools.overlay.pairwise.results.columns;
+package org.reactome.web.fi.tools.overlay.pairwise.tables.columns;
 
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 
@@ -10,16 +10,17 @@ import com.google.gwt.user.cellview.client.Column;
  * @author brunsont
  *
  */
-public class PairwiseSourceColumn extends Column<PairwiseTableEntity, String> {
+public class PairwiseRelationshipColumn extends Column<PairwiseTableEntity, String> {
 
-	public PairwiseSourceColumn() {
+	public PairwiseRelationshipColumn() {
 		super(new TextCell());
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public String getValue(PairwiseTableEntity object) {
-		return object.getDataDesc();
+		return object.getPosOrNeg();
 	}
 
+	
+	
 }

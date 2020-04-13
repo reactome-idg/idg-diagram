@@ -178,7 +178,6 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		
 		if(addType == "TR")
 			pairwiseTable.initialize();
-//			main.add(pairwiseTable = new PairwisePopupTablePanel(diagramNodes, RESOURCES, this));
 		else if(addType == "DG")
 			cyController.addDrugs();
 			

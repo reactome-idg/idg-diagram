@@ -1,14 +1,14 @@
-package org.reactome.web.fi.tools.overlay.pairwise.results;
+package org.reactome.web.fi.tools.popup.tables;
 
 import java.util.Comparator;
 import java.util.List;
 
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
-import org.reactome.web.fi.tools.overlay.pairwise.results.columns.DiagramGeneNameColumn;
-import org.reactome.web.fi.tools.overlay.pairwise.results.columns.OverlayValueColumn;
-import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseInteractorColumn;
-import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseRelationshipColumn;
-import org.reactome.web.fi.tools.overlay.pairwise.results.columns.PairwiseSourceColumn;
+import org.reactome.web.fi.tools.overlay.pairwise.tables.columns.DiagramGeneNameColumn;
+import org.reactome.web.fi.tools.overlay.pairwise.tables.columns.OverlayValueColumn;
+import org.reactome.web.fi.tools.overlay.pairwise.tables.columns.PairwiseInteractorColumn;
+import org.reactome.web.fi.tools.overlay.pairwise.tables.columns.PairwiseRelationshipColumn;
+import org.reactome.web.fi.tools.overlay.pairwise.tables.columns.PairwiseSourceColumn;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;

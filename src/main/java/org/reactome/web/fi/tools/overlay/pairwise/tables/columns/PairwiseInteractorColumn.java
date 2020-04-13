@@ -1,4 +1,4 @@
-package org.reactome.web.fi.tools.overlay.pairwise.results.columns;
+package org.reactome.web.fi.tools.overlay.pairwise.tables.columns;
 
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 
