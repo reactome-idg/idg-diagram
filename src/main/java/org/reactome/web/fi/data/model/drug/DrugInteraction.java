@@ -7,35 +7,15 @@ package org.reactome.web.fi.data.model.drug;
  */
 public class DrugInteraction {
 
-	private String targetUniprot;
-	private String targetSymbol;
 	private String actionType;
 	private String activityType;
 	private Float activityValue;
 	
-	public DrugInteraction(String targetUniprot, String targetSymbol, String actionType, String activityType,
+	public DrugInteraction(String actionType, String activityType,
 			Float activityValue) {
-		this.targetUniprot = targetUniprot;
-		this.targetSymbol = targetSymbol;
 		this.actionType = actionType;
 		this.activityType = activityType;
 		this.activityValue = activityValue;
-	}
-
-	public String getTargetUniprot() {
-		return targetUniprot;
-	}
-
-	public void setTargetUniprot(String targetUniprot) {
-		this.targetUniprot = targetUniprot;
-	}
-
-	public String getTargetSymbol() {
-		return targetSymbol;
-	}
-
-	public void setTargetSymbol(String targetSymbol) {
-		this.targetSymbol = targetSymbol;
 	}
 
 	public String getActionType() {

@@ -1,7 +1,7 @@
 package org.reactome.web.fi.data.model.drug;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -12,12 +12,12 @@ public class Drug {
 
 	private String name;
 	private String compoundChEMBLId;
-	private List<DrugInteraction> drugInteractions;
+	private Map<String, DrugInteraction> drugInteractions;
 	
 	public Drug(String name, String compoundChEMBLId) {
 		this.name = name;
 		this.compoundChEMBLId = compoundChEMBLId;
-		drugInteractions = new ArrayList<>();
+		drugInteractions = new HashMap<>();
 	}
 
 	public String getName() {
@@ -36,16 +36,16 @@ public class Drug {
 		this.compoundChEMBLId = compoundChEMBLId;
 	}
 
-	public List<DrugInteraction> getDrugInteractions() {
+	public Map<String, DrugInteraction> getDrugInteractions() {
 		return drugInteractions;
 	}
 
-	public void setDrugInteractions(List<DrugInteraction> drugInteractions) {
+	public void setDrugInteractions(Map<String, DrugInteraction> drugInteractions) {
 		this.drugInteractions = drugInteractions;
 	}
 	
-	public void addDrugTargetInteraction(DrugInteraction drugInteraction) {
-		this.getDrugInteractions().add(drugInteraction);
+	public void addDrugTargetInteraction(String uniprot, DrugInteraction drugInteraction) {
+		this.getDrugInteractions().put(uniprot, drugInteraction);
 	}
 	
 }
