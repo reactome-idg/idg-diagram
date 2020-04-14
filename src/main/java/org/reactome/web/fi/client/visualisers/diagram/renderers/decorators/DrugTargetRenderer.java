@@ -131,6 +131,6 @@ public class DrugTargetRenderer{
 
 	public void contentRequested() {
 		currentItems = null;
-		uniprotToInteractionNumber.clear();
+		uniprotToInteractionNumber = null;
 	}
 }

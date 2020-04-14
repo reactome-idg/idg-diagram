@@ -208,6 +208,12 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		loadDrugActivities();
 	}
 
+	@Override
+	public void contentRequested() {
+		drugTargetRenderer.contentRequested();
+		super.contentRequested();
+	}
+
 	private void loadDrugActivities() {
 		eventBus.fireEventFromSource(new DrugTargetsRequestedEvent(collectAllDiagramUniprots()), this);
 	}
