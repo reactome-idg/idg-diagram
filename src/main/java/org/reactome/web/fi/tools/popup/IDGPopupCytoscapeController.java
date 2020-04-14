@@ -230,9 +230,12 @@ public class IDGPopupCytoscapeController implements Handler{
 			if(edgeArray.size() > 0) {
 				JSONObject protein = getProtein("DG"+drug.getId(), drug.getName(), false).isObject();
 				protein.get("data").isObject().put("drug", new JSONString("true"));
-				cy.addCytoscapeNodes(containerId, protein.toString());
-				cy.highlightNode("DG"+drug.getId(), "#B89AE6");
-				presentDrugs.add("DG"+drug.getId());
+				
+				if(!presentDrugs.contains("DG"+drug.getId())) {
+					cy.addCytoscapeNodes(containerId, protein.toString());
+					cy.highlightNode("DG"+drug.getId(), "#B89AE6");
+					presentDrugs.add("DG"+drug.getId());
+				}
 				cy.addCytoscapeEdge(containerId, edgeArray.toString());
 			}
 		});

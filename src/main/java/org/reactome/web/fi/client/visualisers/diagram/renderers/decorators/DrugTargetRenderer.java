@@ -128,4 +128,9 @@ public class DrugTargetRenderer{
 		
 		return result;
 	}
+
+	public void contentRequested() {
+		currentItems = null;
+		uniprotToInteractionNumber.clear();
+	}
 }

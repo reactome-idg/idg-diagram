@@ -69,7 +69,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	@Override
 	public void onContentRequested(ContentRequestedEvent event) {
 		//resets pairwise number entities to 0 for new diagrams because the correct ones need to be loaded
-		IDGPopupFactory.get().setPairwiseNumberEntities(null);
+		IDGPopupFactory.get().onContentRequested();
 		super.onContentRequested(event);
 	}
 

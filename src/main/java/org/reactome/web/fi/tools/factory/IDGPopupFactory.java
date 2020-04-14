@@ -32,7 +32,7 @@ public class IDGPopupFactory{
 	private Set<String> tDarkSet;
 	private List<PairwiseOverlayObject> currentPairwiseObjects;
 	private List<PairwiseNumberEntity> pairwiseNumberEntities;
-	private Collection<Drug> uniprotToDrugTarget;
+	private Collection<Drug> drugCollection;
 	
 	private RawInteractors rawInteractors;
 	
@@ -200,11 +200,11 @@ public class IDGPopupFactory{
 	}
 	
 	public Collection<Drug> getDrugTargets() {
-		return uniprotToDrugTarget;
+		return drugCollection;
 	}
 
 	public void setDrugTargets(Collection<Drug> uniprotToDrugTarget) {
-		this.uniprotToDrugTarget = uniprotToDrugTarget;
+		this.drugCollection = uniprotToDrugTarget;
 	}
 
 	public void setPairwiseNumberEntities(List<PairwiseNumberEntity> entities) {
@@ -241,5 +241,15 @@ public class IDGPopupFactory{
 	
 	public Map<String, Integer> getGeneToTotalMap(){
 		return this.geneToTotalMap;
+	}
+
+	public void onContentRequested() {
+		this.pairwiseNumberEntities = null;
+		this.drugCollection = null;
+		popupMap.values().forEach(x -> {
+			x.setVisible(false);
+		});
+		popupMap.clear();
+		
 	}
 }

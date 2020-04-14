@@ -191,7 +191,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		
 		if(context.getContent().getType() == Content.Type.SVG)
 			return;
-		
+			
 		//check if overlay should be loaded and if so, load new Overlay data
 		if(dataOverlay != null) {
 			eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
@@ -488,7 +488,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	
 	@Override
 	public void onDrugTargetsLoaded(DrugTargetsLoadedEvent event) {
-		if(context.getContent().getType() == Content.Type.DIAGRAM && !CytoscapeViewFlag.isCytoscapeViewFlag())
+		if(activeVisualiser instanceof DiagramVisualiser) 
 			drugTargetRenderer.onDrugTargetsLoaded(event);
 	}
 	

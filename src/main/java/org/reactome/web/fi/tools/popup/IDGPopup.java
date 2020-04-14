@@ -300,9 +300,11 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		if(types.contains("TR")) {
 			cyController.pairwisePropertiesChanged();
 			pairwiseTable.pairwisePropertiesChanged();
+			
+			//add drugs back if popup contains drugs
+			if(types.contains("DG"))
+				cyController.addDrugs();
 		}
-		if(types.contains("DG"))
-			cyController.addDrugs();
 	}
 
 	/**
