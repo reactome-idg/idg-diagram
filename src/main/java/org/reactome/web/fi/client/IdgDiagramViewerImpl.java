@@ -75,6 +75,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 
 	@Override
 	public void onCytoscapeToggled(CytoscapeToggledEvent event) {
+		IDGPopupFactory.get().onContentRequested();
 		load(event.getContext().getContent().getStableId());
 	}	
 
