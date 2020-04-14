@@ -188,10 +188,11 @@ public class TCRDDataLoader implements RequestCallback{
 	protected Collection<Drug> processDrugTargets(List<DrugTargetEntity> entities) {
 		Map<String, Drug> drugNameToDrugs = new HashMap<>();		
 		
+		int counter = 0;
 		for(DrugTargetEntity entity: entities) {
 			String uniprot = entity.getTarget().getProtein().getUniprot();
 			if(!drugNameToDrugs.containsKey(entity.getDrug())) {
-				Drug drug = new Drug(entity.getDrug(), entity.getCompoundChEMBLId());
+				Drug drug = new Drug(counter++, entity.getDrug(), entity.getCompoundChEMBLId());
 				drugNameToDrugs.put(drug.getName(), drug);
 			}
 			DrugInteraction interaction = new DrugInteraction(

@@ -13,7 +13,7 @@ public class ActionTypeColumn extends Column<DrugTargetResult, String>{
 	
 	@Override
 	public String getValue(DrugTargetResult object) {
-		return object.getActionType();
+		return object.getActionType() == null ? "" : object.getActionType();
 	}
 	
 }

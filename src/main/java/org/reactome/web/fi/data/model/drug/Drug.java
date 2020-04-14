@@ -10,14 +10,24 @@ import java.util.Map;
  */
 public class Drug {
 
+	private int id;
 	private String name;
 	private String compoundChEMBLId;
 	private Map<String, DrugInteraction> drugInteractions;
 	
-	public Drug(String name, String compoundChEMBLId) {
+	public Drug(int id, String name, String compoundChEMBLId) {
+		this.id = id;
 		this.name = name;
 		this.compoundChEMBLId = compoundChEMBLId;
 		drugInteractions = new HashMap<>();
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getName() {

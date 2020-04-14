@@ -18,7 +18,7 @@ public class ActivityValueColumn extends Column<DrugTargetResult, String>{
 	
 	@Override
 	public String getValue(DrugTargetResult object) {
-		return object.getActivityValue().toString();
+		return object.getActivityValue() == null ? "" : object.getActivityValue().toString();
 	}
 
 }

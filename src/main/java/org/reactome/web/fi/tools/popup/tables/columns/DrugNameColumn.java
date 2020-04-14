@@ -18,7 +18,7 @@ public class DrugNameColumn extends Column<DrugTargetResult, String>{
 	
 	@Override
 	public String getValue(DrugTargetResult object) {
-		return object.getDrugName();
+		return object.getDrugName() != null ? object.getDrugName(): "unknown";
 	}
 	
 }
