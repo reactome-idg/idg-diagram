@@ -143,7 +143,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		tablePanel.add(drugTargetTablePanel = new DrugTargetTablePanel());
 		
 		tablePanel.showWidget(0);
-		tablePanel.getElement().getStyle().setHeight(250, Unit.PX);
+		tablePanel.getElement().getStyle().setHeight(225, Unit.PX);
 		
 		result.add(buttonPanel);
 		result.add(tablePanel);
@@ -276,8 +276,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	@Override
 	public void addInteractions(Set<PairwiseTableEntity> entities) {
 		cyController.addInteractions(entities);
-		if(types.contains("DG"))
-			cyController.addDrugs();
+		
 	}
 	
 	public void loadOverlay() {
@@ -302,6 +301,8 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 			cyController.pairwisePropertiesChanged();
 			pairwiseTable.pairwisePropertiesChanged();
 		}
+		if(types.contains("DG"))
+			cyController.addDrugs();
 	}
 
 	/**
