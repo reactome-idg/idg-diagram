@@ -1,5 +1,10 @@
 package org.reactome.web.fi.tools.popup.tables.models;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class DrugTargetResult {
 
 	private String geneName;

@@ -305,6 +305,8 @@ public class IDGPopupCytoscapeController implements Handler{
 		this.pairwiseOverlayObjects = IDGPopupFactory.get().getCurrentPairwiseProperties();
 		displayedNodes.clear();
 		this.edgeIdToEntity.clear();
+		presentDrugs.clear();
+		this.edgeIdToDrugTarget.clear();
 		this.edgeCount = 0;
 		initBaseCytoscape();
 	}

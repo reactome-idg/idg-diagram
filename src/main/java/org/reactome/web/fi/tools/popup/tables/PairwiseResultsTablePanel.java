@@ -69,17 +69,8 @@ public class PairwiseResultsTablePanel extends FlowPanel{
 	
 	private DataOverlay dataOverlay;
 	
-	public PairwiseResultsTablePanel(Set<String> diagramNodes, IDGPopup.Resources RESOURCES, PairwiseTableHandler handler) {
-		this.RESOURCES = RESOURCES;
-		this.handler = handler;
-		this.pairwiseOverlayProperties = IDGPopupFactory.get().getCurrentPairwiseProperties();
-		this.diagramNodes = diagramNodes;
+	public PairwiseResultsTablePanel() {
 		
-		this.tableEntities = new ArrayList<>();
-		this.filteredTableEntities = new ArrayList<>();
-		
-		initPanel();
-		createFilterPopup();
 	}
 
 	private void initPanel() {
@@ -94,7 +85,17 @@ public class PairwiseResultsTablePanel extends FlowPanel{
 		mainPanel.setVisible(true); //Show by default
 	}
 
-	public void initialize() {
+	public void initialize(Set<String> diagramNodes, IDGPopup.Resources RESOURCES, PairwiseTableHandler handler) {
+		this.RESOURCES = RESOURCES;
+		this.handler = handler;
+		this.pairwiseOverlayProperties = IDGPopupFactory.get().getCurrentPairwiseProperties();
+		this.diagramNodes = diagramNodes;
+		
+		this.tableEntities = new ArrayList<>();
+		this.filteredTableEntities = new ArrayList<>();
+		
+		initPanel();
+		createFilterPopup();
 		loadTable();
 	}
 	

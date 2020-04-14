@@ -19,6 +19,7 @@ import org.reactome.web.fi.tools.popup.tables.PairwiseResultsTablePanel;
 import org.reactome.web.fi.tools.popup.tables.PairwiseResultsTablePanel.PairwiseTableHandler;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.resources.client.ClientBundle;
@@ -135,15 +136,14 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		
 		buttonPanel.add(pairwiseButton = new CommonButton("Pairwise Relationships", e-> rowButtonClicked(e)));
 		btns.add(pairwiseButton);
-		tablePanel.add(pairwiseTable = new PairwiseResultsTablePanel(diagramNodes, RESOURCES, this));
+		tablePanel.add(pairwiseTable = new PairwiseResultsTablePanel());
 		
 		buttonPanel.add(drugTargetButton = new CommonButton("Drug Targets", e -> rowButtonClicked(e)));
 		btns.add(drugTargetButton);
-		tablePanel.add(drugTargetTablePanel = new DrugTargetTablePanel(diagramNodes, RESOURCES));
+		tablePanel.add(drugTargetTablePanel = new DrugTargetTablePanel());
 		
 		tablePanel.showWidget(0);
-		tablePanel.setAnimationVertical(false);
-		tablePanel.setAnimationDuration(500);
+		tablePanel.getElement().getStyle().setHeight(250, Unit.PX);
 		
 		result.add(buttonPanel);
 		result.add(tablePanel);
@@ -177,10 +177,13 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		
 		enableTabs(addType);
 		
-		if(addType == "TR")
-			pairwiseTable.initialize();
-		else if(addType == "DG")
+		if(addType == "TR") {
+			pairwiseTable.initialize(diagramNodes, RESOURCES, this);
+		}
+		else if(addType == "DG") {
 			cyController.addDrugs();
+			drugTargetTablePanel.initialize(diagramNodes, RESOURCES);
+		}
 			
 	}
 	
@@ -273,6 +276,8 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	@Override
 	public void addInteractions(Set<PairwiseTableEntity> entities) {
 		cyController.addInteractions(entities);
+		if(types.contains("DG"))
+			cyController.addDrugs();
 	}
 	
 	public void loadOverlay() {
