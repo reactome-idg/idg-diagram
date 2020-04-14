@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
+import org.reactome.web.fi.data.model.drug.Drug;
+import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
@@ -69,6 +71,9 @@ public class NodeInfoPanel extends Composite{
 			table.getFlexCellFormatter().setColSpan(4, 0, 3);
 		}
 		
+		table.setText(5, 0, "Drug Targes");
+		table.setText(5, 1, getDrugTargets(id));
+		table.getFlexCellFormatter().setColSpan(5, 0, 3);
 		
 		ScrollPanel scrollPanel = new ScrollPanel();
 		scrollPanel.setStyleName(RESOURCES.getCSS().scrollPanel());
@@ -80,6 +85,17 @@ public class NodeInfoPanel extends Composite{
 
 		
 		initWidget(infoPanel);
+	}
+
+	private String getDrugTargets(String id) {
+		int result = 0;
+		
+		for(Drug drug : IDGPopupFactory.get().getDrugTargets())
+			if(drug.getDrugInteractions().containsKey(id))
+				result ++;
+				
+		
+		return result+"";
 	}
 
 	private Anchor getLinkWithAppend(String baseUrl, String id) {

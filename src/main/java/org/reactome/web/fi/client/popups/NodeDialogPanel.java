@@ -1,9 +1,13 @@
 package org.reactome.web.fi.client.popups;
 
+import java.util.Collection;
+
 import org.reactome.web.diagram.common.PwpButton;
 import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
+import org.reactome.web.fi.data.model.drug.Drug;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.tools.factory.IDGPopupFactory;
+import org.reactome.web.fi.tools.popup.IDGPopup;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -51,7 +55,8 @@ public class NodeDialogPanel extends DialogBox{
 		setStyleName(RESOURCES.getCSS().popup());
 		
 		FlowPanel fp = new FlowPanel();
-		fp.add(new PwpButton("Show Drug Targets", RESOURCES.getCSS().drugTargetButton(), e-> onDrugTargetButtonClicked()));
+		if(showDrugButton())
+			fp.add(new PwpButton("Show Drug Targets", RESOURCES.getCSS().drugTargetButton(), e-> onDrugTargetButtonClicked()));
 		fp.add(new PwpButton("Show Pairwise Relationships", RESOURCES.getCSS().pairwiseOverlayButton(), e -> onPairwiseOverlayButtonClicked()));
 		fp.add(this.pin = new PwpButton("Keep the panel visible", RESOURCES.getCSS().pin(), e -> onPinButtonClicked()));
 		fp.add(new PwpButton("Close", RESOURCES.getCSS().close(), e -> onCloseButtonClicked()));
@@ -60,6 +65,14 @@ public class NodeDialogPanel extends DialogBox{
 		setTitlePanel();
 		setWidget(fp);
 		show();
+	}
+
+	private boolean showDrugButton() {
+		for(Drug drug : IDGPopupFactory.get().getDrugTargets())
+			if(drug.getDrugInteractions().keySet().contains(id))
+				return true;
+				
+		return false;
 	}
 
 	private void setTitlePanel() {
