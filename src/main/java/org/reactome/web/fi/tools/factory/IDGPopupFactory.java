@@ -83,8 +83,9 @@ public class IDGPopupFactory{
 			popupMap.put(graphObject.getStId(), popup);
 			popup.show();
 		}
-		else
+		else 
 			popupMap.get(graphObject.getStId()).addType(type);
+		
 	}
 
 	/**
@@ -99,7 +100,7 @@ public class IDGPopupFactory{
 			popupMap.put(uniprot, popup);
 			popup.show();
 		}
-		else
+		else 
 			popupMap.get(uniprot).addType(type);
 	}
 	
@@ -230,7 +231,7 @@ public class IDGPopupFactory{
 		return this.pairwiseNumberEntities;
 	}
 
-	public boolean hasOverlay() {
+	public boolean hasPairwiseObjects() {
 		if(this.currentPairwiseObjects != null && this.currentPairwiseObjects.size() > 0) return true;
 		return false;
 	}

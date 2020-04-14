@@ -173,6 +173,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	public void addType(String addType) {
 		if(types == null) types = new ArrayList<>();
 		if(types.contains(addType)) return;
+		if(addType == "TR" && !IDGPopupFactory.get().hasPairwiseObjects()) return;
 		types.add(addType);
 		
 		enableTabs(addType);
