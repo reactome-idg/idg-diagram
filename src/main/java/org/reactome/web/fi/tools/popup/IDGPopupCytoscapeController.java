@@ -18,7 +18,6 @@ import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.model.drug.Drug;
 import org.reactome.web.fi.data.model.drug.DrugInteraction;
-import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.model.DataOverlay;
@@ -28,6 +27,7 @@ import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.gwtCytoscapeJs.client.CytoscapeWrapper.Handler;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -353,6 +353,11 @@ public class IDGPopupCytoscapeController implements Handler{
 		if(infoPopup == null) infoPopup = new FIViewInfoPopup();
 		infoPopup.getElement().getStyle().setZIndex(getCorrectZIndex());
 		
+		if(this.edgeIdToDrugTarget.containsKey(Integer.parseInt(id))) {
+			openDrugEdgePopup(Integer.parseInt(id), x, y);
+			return;
+		}
+		
 		String description = "";
 		
 		PairwiseTableEntity edge = null;
@@ -369,6 +374,15 @@ public class IDGPopupCytoscapeController implements Handler{
 		else
 			description = edge.getDataDesc() + "|" + edge.getPosOrNeg();
 		
+		infoPopup.setEdgeLabel(description, x, y);
+	}
+
+	private void openDrugEdgePopup(int edgeId, int x, int y) {
+		String description = "";
+		DrugInteraction interaction = this.edgeIdToDrugTarget.get(edgeId);
+		description = "Action Type: " + interaction.getActionType() + "\n" +
+					  "Activity Type: " + interaction.getActivityType() + "\n" +
+					  "Activity Value: " + NumberFormat.getFormat("#.##E0").format(interaction.getActivityValue());
 		infoPopup.setEdgeLabel(description, x, y);
 	}
 
