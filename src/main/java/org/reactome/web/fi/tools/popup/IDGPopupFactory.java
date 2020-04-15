@@ -23,7 +23,7 @@ import org.reactome.web.gwtCytoscapeJs.util.Console;
  *
  */
 public class IDGPopupFactory{
-
+	
 	private static IDGPopupFactory factory;
 	
 	private Map<String, IDGPopup> popupMap;
@@ -76,7 +76,7 @@ public class IDGPopupFactory{
 	 * @param graphObject
 	 * @param string 
 	 */
-	public void openPopup(GraphObject graphObject, String type) {
+	public void openPopup(GraphObject graphObject, PopupTypes type) {
 		if(!popupMap.keySet().contains(graphObject.getStId())) {
 			IDGPopup popup = new IDGPopup(graphObject, type, getZIndex());
 			popupMap.put(graphObject.getStId(), popup);
@@ -93,7 +93,7 @@ public class IDGPopupFactory{
 	 * @param geneName
 	 * @param type 
 	 */
-	public void openPopup(String uniprot, String geneName, String type) {
+	public void openPopup(String uniprot, String geneName, PopupTypes type) {
 		if(!popupMap.keySet().contains(uniprot)) {
 			IDGPopup popup = new IDGPopup(uniprot, geneName, type, getZIndex());
 			popupMap.put(uniprot, popup);

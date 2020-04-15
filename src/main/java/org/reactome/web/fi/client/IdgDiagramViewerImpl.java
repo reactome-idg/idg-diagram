@@ -23,6 +23,7 @@ import org.reactome.web.fi.handlers.DrugTargetsRequestedHandler;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
 import org.reactome.web.fi.handlers.PairwiseCountsRequestedHandler;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
+import org.reactome.web.fi.tools.popup.PopupTypes;
 
 /**
  * 
@@ -93,9 +94,9 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	@Override
 	public void onPairwiseOverlayButtonClicked(PairwiseOverlayButtonClickedEvent event) {
 		if(event.getGraphObject() != null)
-			IDGPopupFactory.get().openPopup(event.getGraphObject(), "TR"); //hard coded "TR" to minimize changes to the diagram project
+			IDGPopupFactory.get().openPopup(event.getGraphObject(), PopupTypes.fromString("TR")); //hard coded "TR" to minimize changes to the diagram project
 		else
-			IDGPopupFactory.get().openPopup(event.getUniprot(), event.getGeneName(), event.getType());
+			IDGPopupFactory.get().openPopup(event.getUniprot(), event.getGeneName(), PopupTypes.fromString(event.getType()));
 	}
 
 	@Override
@@ -105,7 +106,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 
 	@Override
 	public void onEntityDecoratorSelected(EntityDecoratorSelectedEvent event) {
-		if(event.getSummaryItem() != null)
-			IDGPopupFactory.get().openPopup(event.getGraphObject(), event.getSummaryItem().getType());
+		if(event.getSummaryItem() == null) return;
+		IDGPopupFactory.get().openPopup(event.getGraphObject(), PopupTypes.fromString(event.getSummaryItem().getType()));
 	}
 }

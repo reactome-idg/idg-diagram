@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 
 	private String popupId;
-	private List<String> types;
+	private List<PopupTypes> types;
 	private IDGPopupCytoscapeController cyController;
 	private Set<String> diagramNodes;
 	
@@ -61,17 +61,17 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	
 	private FlowPanel main;
 	
-	public IDGPopup(GraphObject graphObject, String initialType, int zIndex) {
+	public IDGPopup(GraphObject graphObject, PopupTypes type, int zIndex) {
 		setDiagramNodes(graphObject);
-		createPopup(graphObject.getStId(), initialType, zIndex);
+		createPopup(graphObject.getStId(), type, zIndex);
 	}
 	
-	public IDGPopup(String uniprot, String geneName, String initialType, int zIndex) {
+	public IDGPopup(String uniprot, String geneName, PopupTypes type, int zIndex) {
 		setDiagramNodes(uniprot);
-		createPopup(uniprot, initialType, zIndex);
+		createPopup(uniprot, type, zIndex);
 	}
 	
-	private void createPopup(String popupId, String initialType, int zIndex) {
+	private void createPopup(String popupId, PopupTypes type, int zIndex) {
 		this.zIndex = zIndex;
 		this.popupId = popupId;
 		initPanel();
@@ -82,7 +82,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		cyController = new IDGPopupCytoscapeController(popupId, diagramNodes, RESOURCES, zIndex);
 		
 		//add initial type to popup
-		addType(initialType);
+		addType(type);
 		
 		panelClicked();
 	}
@@ -169,40 +169,40 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	 * This will check to make sure the type hasnt already been added and, if not, add it.
 	 * @param addType
 	 */
-	public void addType(String addType) {
+	public void addType(PopupTypes addType) {
 		if(types == null) types = new ArrayList<>();
 		if(types.contains(addType)) return;
-		if(addType == "TR" && !IDGPopupFactory.get().hasPairwiseObjects()) return;
+		if(addType == PopupTypes.TR && !IDGPopupFactory.get().hasPairwiseObjects()) return;
 		types.add(addType);
 		
 		enableTabs(addType);
 		
-		if(addType == "TR") {
+		if(addType == PopupTypes.TR) {
 			pairwiseTable.initialize(diagramNodes, RESOURCES, this);
 		}
-		else if(addType == "DG") {
+		else if(addType == PopupTypes.DG) {
 			cyController.addDrugs();
 			drugTargetTablePanel.initialize(diagramNodes, RESOURCES);
 		}
 			
 	}
 	
-	private void enableTabs(String selectedType) {
+	private void enableTabs(PopupTypes selectedType) {
 		for(CommonButton btn : btns) {
 			btn.setEnabled(false);
 			btn.removeStyleName(RESOURCES.getCSS().buttonSelected());
 		}
 		
-		if(types.contains("TR"))
+		if(types.contains(PopupTypes.TR))
 			this.pairwiseButton.setEnabled(true);
-		if(types.contains("DG"))
+		if(types.contains(PopupTypes.DG))
 			this.drugTargetButton.setEnabled(true);
 		
-		if(selectedType == "TR") {
+		if(selectedType == PopupTypes.TR) {
 			this.tablePanel.showWidget(0);
 			this.pairwiseButton.addStyleName(RESOURCES.getCSS().buttonSelected());
 		}
-		else if(selectedType == "DG") {
+		else if(selectedType == PopupTypes.DG) {
 			this.tablePanel.showWidget(1);
 			this.drugTargetButton.addStyleName(RESOURCES.getCSS().buttonSelected());
 		}
@@ -281,7 +281,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	
 	public void loadOverlay() {
 		cyController.loadOverlay();
-		if(types.contains("TR"))
+		if(types.contains(PopupTypes.TR))
 			pairwiseTable.loadOverlay();
 	}
 	
@@ -297,12 +297,12 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	}
 
 	public void updatePairwiseObjects() {
-		if(types.contains("TR")) {
+		if(types.contains(PopupTypes.TR)) {
 			cyController.pairwisePropertiesChanged();
 			pairwiseTable.pairwisePropertiesChanged();
 			
 			//add drugs back if popup contains drugs
-			if(types.contains("DG"))
+			if(types.contains(PopupTypes.DG))
 				cyController.addDrugs();
 		}
 	}
