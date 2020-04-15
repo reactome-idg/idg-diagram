@@ -407,37 +407,6 @@ public class IDGPopupCytoscapeController implements Handler{
 			openProteinContextInfo(id, name, x, y);
 	}
 
-//	/**
-//	 * Makes context info for drug context select
-//	 * @param id
-//	 * @param name
-//	 * @param x
-//	 * @param y
-//	 */
-//	private void openDrugContextInfo(String id, String name, int x, int y) {
-//		DrugTargetEntity target = getDrugFromId(id.substring(2));
-//		if(target == null) return;
-//		DrugTargetContextPanel popup = new DrugTargetContextPanel(target);
-//		
-//		popup.getElement().getStyle().setZIndex(getCorrectZIndex());
-//		popup.setPopupPosition(x+5, y+5);
-//		popup.show();
-//	}
-//
-//	/**
-//	 * Gets Drug Target off of edgeIdToDrugTarget values set
-//	 * edgeIdToDrugTarget values set will contain all present drugs
-//	 * @param id
-//	 * @return
-//	 */
-//	private DrugTargetEntity getDrugFromId(String id) {
-//		for(DrugTargetEntity t : edgeIdToDrugTarget.values()) {
-//			if(id == t.getId()+"")
-//				return t;
-//		}
-//		return null;
-//	}
-
 	/**
 	 * Makes context info for node or interactor context select
 	 * @param id
