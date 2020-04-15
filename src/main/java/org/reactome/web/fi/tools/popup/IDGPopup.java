@@ -12,7 +12,6 @@ import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.fi.common.CommonButton;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.popup.tables.DrugTargetTablePanel;
 import org.reactome.web.fi.tools.popup.tables.PairwiseResultsTablePanel;

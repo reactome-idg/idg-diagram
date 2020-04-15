@@ -1,4 +1,4 @@
-package org.reactome.web.fi.tools.factory;
+package org.reactome.web.fi.tools.popup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +15,6 @@ import org.reactome.web.fi.data.model.drug.Drug;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
-import org.reactome.web.fi.tools.popup.IDGPopup;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 /**

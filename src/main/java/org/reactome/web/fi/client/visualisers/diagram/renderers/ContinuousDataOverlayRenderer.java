@@ -27,7 +27,7 @@ import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
+import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
 import com.google.gwt.event.shared.EventBus;
 

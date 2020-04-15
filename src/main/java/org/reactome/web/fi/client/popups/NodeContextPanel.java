@@ -12,7 +12,7 @@ import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.handlers.PairwiseInteractorsResetHandler;
 import org.reactome.web.fi.handlers.PairwiseNumbersLoadedHandler;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
+import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

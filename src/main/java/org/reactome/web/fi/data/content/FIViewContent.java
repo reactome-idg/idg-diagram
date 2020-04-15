@@ -22,7 +22,7 @@ import org.reactome.web.fi.data.model.FIEntityFactory;
 import org.reactome.web.fi.data.model.FIEntityNode;
 import org.reactome.web.fi.data.model.FIEventNode;
 import org.reactome.web.fi.data.model.ProteinEntityNode;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
+import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;

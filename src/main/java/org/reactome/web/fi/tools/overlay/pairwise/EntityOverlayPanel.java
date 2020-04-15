@@ -8,7 +8,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.events.HideOverlayLauncherEvent;
 import org.reactome.web.fi.events.PairwiseInteractorsResetEvent;
 import org.reactome.web.fi.events.RequestPairwiseCountsEvent;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
+import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;

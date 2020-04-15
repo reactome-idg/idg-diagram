@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
 import org.reactome.web.fi.data.model.drug.Drug;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
+import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;

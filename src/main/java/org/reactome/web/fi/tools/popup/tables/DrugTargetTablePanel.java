@@ -8,8 +8,8 @@ import java.util.Set;
 
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.model.drug.Drug;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.popup.IDGPopup;
+import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 import org.reactome.web.fi.tools.popup.IDGPopup.Resources;
 import org.reactome.web.fi.tools.popup.tables.models.DrugTargetResult;
 

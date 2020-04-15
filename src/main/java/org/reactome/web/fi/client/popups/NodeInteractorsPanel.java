@@ -3,7 +3,7 @@ package org.reactome.web.fi.client.popups;
 import java.util.List;
 
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntity;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
+import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;

@@ -58,8 +58,8 @@ import org.reactome.web.fi.legends.OverlayControlLegend;
 import org.reactome.web.fi.messages.CytoscapeViewLoadingMessage;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.overlay.OverlayLauncherDisplay;
+import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;

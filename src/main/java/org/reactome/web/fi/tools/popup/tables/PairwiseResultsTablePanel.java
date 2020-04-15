@@ -14,9 +14,9 @@ import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.popup.IDGPopup;
+import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 import org.reactome.web.fi.tools.popup.IDGPopup.Resources;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 

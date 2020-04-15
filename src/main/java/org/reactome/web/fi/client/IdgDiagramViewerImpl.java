@@ -22,7 +22,7 @@ import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 import org.reactome.web.fi.handlers.DrugTargetsRequestedHandler;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
 import org.reactome.web.fi.handlers.PairwiseCountsRequestedHandler;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
+import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
 /**
  * 

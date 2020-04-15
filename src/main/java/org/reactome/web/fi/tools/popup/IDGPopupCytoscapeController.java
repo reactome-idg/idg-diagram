@@ -23,7 +23,6 @@ import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwiseNodeContextPopup;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.gwtCytoscapeJs.client.CytoscapeWrapper.Handler;

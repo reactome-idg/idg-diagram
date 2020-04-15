@@ -27,7 +27,7 @@ import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.PairwiseNumbersLoadedEvent;
 import org.reactome.web.fi.model.DataOverlay;
-import org.reactome.web.fi.tools.factory.IDGPopupFactory;
+import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
