@@ -70,7 +70,7 @@ public class NodeInfoPanel extends Composite{
 			table.getFlexCellFormatter().setColSpan(4, 0, 3);
 		}
 		
-		table.setText(5, 0, "Drug Targes");
+		table.setText(5, 0, "Drug Targets");
 		table.setText(5, 1, getDrugTargets(id));
 		table.getFlexCellFormatter().setColSpan(5, 0, 3);
 		
