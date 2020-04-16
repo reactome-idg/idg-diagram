@@ -51,7 +51,7 @@ public class IDGPopupCytoscapeController implements Handler{
 	private Set<String> displayedNodes;
 	private Map<PairwiseTableEntity, Integer> edgeIdToEntity;
 	private Map<Integer, DrugInteraction> edgeIdToDrugTarget;
-	private Set<String> presentDrugs;
+	private Map<String, Drug> presentDrugs;
 	
 	private CytoscapeEntity cy;
 	
@@ -214,7 +214,7 @@ public class IDGPopupCytoscapeController implements Handler{
 	 * Repeat for all drugs present in the diagram.
 	 */
 	public void addDrugs() {
-		presentDrugs = new HashSet<>();
+		presentDrugs = new HashMap<>();
 		Collection<Drug> drugs = IDGPopupFactory.get().getDrugTargets();
 		drugs.forEach(drug -> {
 			JSONArray edgeArray = new JSONArray();
@@ -230,10 +230,10 @@ public class IDGPopupCytoscapeController implements Handler{
 				JSONObject protein = getProtein("DG"+drug.getId(), drug.getName(), false).isObject();
 				protein.get("data").isObject().put("drug", new JSONString("true"));
 				
-				if(!presentDrugs.contains("DG"+drug.getId())) {
+				if(!presentDrugs.containsKey("DG"+drug.getId())) {
 					cy.addCytoscapeNodes(containerId, protein.toString());
 					cy.highlightNode("DG"+drug.getId(), "#B89AE6");
-					presentDrugs.add("DG"+drug.getId());
+					presentDrugs.put("DG"+drug.getId(), drug);
 				}
 				cy.addCytoscapeEdge(containerId, edgeArray.toString());
 			}
@@ -274,7 +274,7 @@ public class IDGPopupCytoscapeController implements Handler{
 	
 	private void recolorDrugs() {
 		if(presentDrugs != null)
-			presentDrugs.forEach(d -> {
+			presentDrugs.keySet().forEach(d -> {
 				cy.highlightNode(d+"", "#B89AE6");
 			});
 	}
@@ -403,8 +403,17 @@ public class IDGPopupCytoscapeController implements Handler{
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
 		//only opening if node is not a drug node
-		if(presentDrugs== null || !presentDrugs.contains(id))
+		if(presentDrugs== null || !presentDrugs.containsKey(id))
 			openProteinContextInfo(id, name, x, y);
+		else if(presentDrugs != null && presentDrugs.containsKey(id))
+			openDrugContextInfo(id, x,y);
+	}
+
+	private void openDrugContextInfo(String id, int x, int y) {
+		DrugTargetContextPanel popup = new DrugTargetContextPanel(presentDrugs.get(id));
+		popup.getElement().getStyle().setZIndex(getCorrectZIndex());
+		popup.setPopupPosition(x+5, y+5);
+		popup.show();
 	}
 
 	/**

@@ -1,30 +1,35 @@
 package org.reactome.web.fi.tools.popup;
 
-import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
+import org.reactome.web.fi.data.model.drug.Drug;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 
 public class DrugTargetContextPanel extends DialogBox{
 
-	public DrugTargetContextPanel(DrugTargetEntity target) {
+	private final String DRUG_CENTRAL_URL = "http://drugcentral.org/?q=";
+	
+	public DrugTargetContextPanel(Drug drug) {
 		setStyleName(RESOURCES.getCSS().nodePopup());
 		setAutoHideEnabled(true);
 		setModal(false);
 		
-		setTitlePanel(target.getDrug());
+		setTitlePanel(drug.getName());
 		
 		FlowPanel main = new FlowPanel();
 		main.setStyleName(RESOURCES.getCSS().mainPanel());
-		main.add(getTablePanel(target));
+		main.add(getTablePanel(drug));
 		setWidget(main);
 	}
 
@@ -38,27 +43,33 @@ public class DrugTargetContextPanel extends DialogBox{
 		getCaption().asWidget().setStyleName(RESOURCES.getCSS().header());
 	}
 
-	private FlexTable getTablePanel(DrugTargetEntity target) {
+	private FlexTable getTablePanel(Drug drug) {
 		FlexTable table = new FlexTable();
 		
 		table.setStyleName(RESOURCES.getCSS().table());
 		
-		table.setText(0, 0, "Activity: ");
-		table.setText(0, 1, NumberFormat.getFormat("#.##E0").format(target.getActivityValue()));
+		table.setText(0, 0, "Drug Central: ");
+		table.setWidget(0, 1, getDrugCentralLink(drug.getName()));
 		table.getFlexCellFormatter().setColSpan(0, 0, 3);
 		
-		table.setText(1, 0, "Activity Type: ");
-		table.setText(1, 1, target.getActivityType());
-		table.getFlexCellFormatter().setColSpan(1, 0, 3);
-		
-		table.setText(2, 0, "Action Type: ");
-		table.setText(2, 1, target.getActionType().toLowerCase());
-		table.getFlexCellFormatter().setColSpan(2, 0, 3);
+		table.setText(1, 0, "Protein Interactions: ");
+		table.setText(1, 1, drug.getDrugInteractions().keySet().toString());
 		
 		return table;
 	}
 	
 	
+	private Anchor getDrugCentralLink(String name) {
+		String link = DRUG_CENTRAL_URL + name;
+		Anchor result = new Anchor(new SafeHtmlBuilder()
+				.appendEscapedLines("Go!").toSafeHtml(),
+				link, "_blank");
+		result.setStyleName(RESOURCES.getCSS().linkAnchor());
+		result.getElement().appendChild(new Image(RESOURCES.linkOut()).getElement());
+		return result;
+	}
+
+
 	public static Resources RESOURCES;
 	static {
 		RESOURCES = GWT.create(Resources.class);
@@ -68,6 +79,9 @@ public class DrugTargetContextPanel extends DialogBox{
 	public interface Resources extends ClientBundle{
 		@Source(ResourceCSS.CSS)
 		ResourceCSS getCSS();
+		
+		@Source("images/external_link_icon.gif")
+		ImageResource linkOut();
 	}
 	
 	@CssResource.ImportedWithPrefix("idg-DrugTargetContextPanel")
