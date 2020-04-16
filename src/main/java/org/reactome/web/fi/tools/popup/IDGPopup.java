@@ -1,8 +1,10 @@
 package org.reactome.web.fi.tools.popup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.diagram.common.PwpButton;
@@ -47,7 +49,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	private IDGPopupCytoscapeController cyController;
 	private Set<String> diagramNodes;
 	
-	private Set<CommonButton> btns = new HashSet<>();
+	private Map<PopupTypes, CommonButton> btns = new HashMap<>();
 	private CommonButton pairwiseButton;
 	private CommonButton drugTargetButton;
 	
@@ -134,11 +136,11 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 		tablePanel = new DeckLayoutPanel();
 		
 		buttonPanel.add(pairwiseButton = new CommonButton("Pairwise Relationships", e-> rowButtonClicked(e)));
-		btns.add(pairwiseButton);
+		btns.put(PopupTypes.TR,pairwiseButton);
 		tablePanel.add(pairwiseTable = new PairwiseResultsTablePanel());
 		
 		buttonPanel.add(drugTargetButton = new CommonButton("Drug Targets", e -> rowButtonClicked(e)));
-		btns.add(drugTargetButton);
+		btns.put(PopupTypes.DG, drugTargetButton);
 		tablePanel.add(drugTargetTablePanel = new DrugTargetTablePanel());
 		
 		tablePanel.showWidget(0);
@@ -151,7 +153,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	}
 
 	private void rowButtonClicked(ClickEvent e) {
-		for(CommonButton btn : btns) {
+		for(CommonButton btn : btns.values()) {
 			btn.removeStyleName(RESOURCES.getCSS().buttonSelected());
 		}
 		
@@ -188,15 +190,18 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler{
 	}
 	
 	private void enableTabs(PopupTypes selectedType) {
-		for(CommonButton btn : btns) {
+		for(CommonButton btn : btns.values()) {
 			btn.setEnabled(false);
+			btn.setVisible(false);
 			btn.removeStyleName(RESOURCES.getCSS().buttonSelected());
 		}
 		
-		if(types.contains(PopupTypes.TR))
-			this.pairwiseButton.setEnabled(true);
-		if(types.contains(PopupTypes.DG))
-			this.drugTargetButton.setEnabled(true);
+		btns.forEach((k,v) -> {
+			if(types.contains(k)) {
+				v.setVisible(true);
+				v.setEnabled(true);
+			}
+		});
 		
 		if(selectedType == PopupTypes.TR) {
 			this.tablePanel.showWidget(0);
