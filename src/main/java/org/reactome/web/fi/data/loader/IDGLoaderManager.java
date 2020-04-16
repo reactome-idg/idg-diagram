@@ -1,7 +1,6 @@
 package org.reactome.web.fi.data.loader;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.reactome.web.diagram.data.ContentFactory;
@@ -17,7 +16,6 @@ import org.reactome.web.diagram.events.InteractorsLoadedEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.data.model.drug.Drug;
-import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.data.model.interactors.RawInteractorsImpl;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntities;

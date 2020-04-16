@@ -1,12 +1,9 @@
 package org.reactome.web.fi.events;
 
 import org.reactome.web.fi.data.model.drug.Drug;
-import org.reactome.web.fi.data.model.drug.DrugTargetEntity;
 import org.reactome.web.fi.handlers.DrugTargetsLoadedHandler;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 import org.reactome.web.diagram.data.Context;
 

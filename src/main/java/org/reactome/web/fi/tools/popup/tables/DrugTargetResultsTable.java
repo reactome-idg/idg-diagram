@@ -23,11 +23,9 @@ public class DrugTargetResultsTable extends DataGrid<DrugTargetResult> {
 
 	public final static Integer PAGE_SIZE = 10;
 	
-	private ListDataProvider<DrugTargetResult> provider;
 	
 	public DrugTargetResultsTable(List<DrugTargetResult> entities, ListDataProvider<DrugTargetResult> provider, SimplePager pager) {
 		super(PAGE_SIZE);
-		this.provider = provider;
 		this.setRowData(0, entities);
 		this.setWidth("100%");
 		this.setVisible(true);
