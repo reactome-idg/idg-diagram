@@ -16,6 +16,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 
+/**
+ * 
+ * @author brunsont
+ *
+ */
 public class DrugTargetContextPanel extends DialogBox{
 
 	private final String DRUG_CENTRAL_URL = "http://drugcentral.org/?q=";
