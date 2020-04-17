@@ -30,7 +30,7 @@ import org.reactome.web.diagram.profiles.interactors.InteractorColours;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.client.popups.EdgeContextPanel;
-import org.reactome.web.fi.client.popups.FILayoutChangerPanel;
+import org.reactome.web.fi.client.popups.FICoreCtxPanel;
 import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.popups.NodeDialogPanel;
 import org.reactome.web.fi.events.FIViewMessageEvent;
@@ -261,7 +261,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onCytoscapeCoreContextEvent(int x, int y) {
-		FILayoutChangerPanel popup = new FILayoutChangerPanel(cy.getLayout(), e -> onCytoscapeLayoutChange(e));
+		FICoreCtxPanel popup = new FICoreCtxPanel(cy.getLayout(), e -> onCytoscapeLayoutChange(e));
 		popup.show();
 		setPopupLocation(x, y, popup);
 	}

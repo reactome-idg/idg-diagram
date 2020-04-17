@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.ListBox;
  * @author brunsont
  *
  */
-public class FILayoutChangerPanel extends DialogBox implements ChangeHandler {
+public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 	
 	public interface LayoutChangeHandler{
 		void onLayoutChange(FILayoutType type);
@@ -28,7 +28,7 @@ public class FILayoutChangerPanel extends DialogBox implements ChangeHandler {
 	private ListBox layoutSelector;
 	private String currentLayout;
 	
-	public FILayoutChangerPanel(String currentLayout, LayoutChangeHandler handler) {
+	public FICoreCtxPanel(String currentLayout, LayoutChangeHandler handler) {
 		this.currentLayout = currentLayout;
 		this.handler = handler;
 		setAutoHideEnabled(true);
@@ -83,7 +83,7 @@ public class FILayoutChangerPanel extends DialogBox implements ChangeHandler {
 		ResourceCSS getCSS();
 	}
 	
-	@CssResource.ImportedWithPrefix("idgDiagram-FILayoutChangerPanel")
+	@CssResource.ImportedWithPrefix("idgDiagram-FICoreCtxPanel")
 	public interface ResourceCSS extends CssResource {
 		String CSS = "org/reactome/web/fi/client/FIContextPanel.css";
 		
