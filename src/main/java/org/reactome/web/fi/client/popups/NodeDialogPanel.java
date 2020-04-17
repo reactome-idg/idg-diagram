@@ -102,10 +102,12 @@ public class NodeDialogPanel extends DialogBox{
 
 	private void onPairwiseOverlayButtonClicked() {
 		eventBus.fireEventFromSource(new PairwiseOverlayButtonClickedEvent(id, name, "TR"), this);
+		hide();
 	}
 	
 	private void onDrugTargetButtonClicked() {
 		eventBus.fireEventFromSource(new PairwiseOverlayButtonClickedEvent(id, name, "DG"), this);
+		hide();
 	}
 	
 	@Override
