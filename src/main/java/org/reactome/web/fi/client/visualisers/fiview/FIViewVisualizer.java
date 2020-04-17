@@ -3,6 +3,7 @@ package org.reactome.web.fi.client.visualisers.fiview;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,8 +30,11 @@ import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.profiles.interactors.InteractorColours;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.data.content.FIViewContent;
+import org.reactome.web.fi.data.model.drug.Drug;
+import org.reactome.web.fi.data.model.drug.DrugInteraction;
 import org.reactome.web.fi.client.popups.EdgeContextPanel;
 import org.reactome.web.fi.client.popups.FICoreCtxPanel;
+import org.reactome.web.fi.client.popups.FICoreCtxPanel.LayoutChangeHandler;
 import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.popups.NodeDialogPanel;
 import org.reactome.web.fi.events.FIViewMessageEvent;
@@ -41,13 +45,17 @@ import org.reactome.web.fi.handlers.FireGraphObjectSelectedHandler;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.FILayoutType;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
+import org.reactome.web.fi.tools.popup.DrugTargetContextPanel;
+import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.TextResource;
@@ -61,7 +69,7 @@ import com.google.gwt.user.client.ui.DialogBox;
  *
  */
 public class FIViewVisualizer extends AbsolutePanel implements Visualiser, AnalysisProfileChangedHandler,
-	ExpressionColumnChangedHandler, FireGraphObjectSelectedHandler, CytoscapeEntity.Handler{
+	ExpressionColumnChangedHandler, FireGraphObjectSelectedHandler, CytoscapeEntity.Handler, LayoutChangeHandler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -86,6 +94,10 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	private SimplePanel cyView;
 	private DataOverlay dataOverlay;
+	
+	private boolean showingDrugs = false;
+	private Map<String, Drug> presentDrugs;
+	Map<Integer, DrugInteraction> edgeIdToDrugInteraction;
     
 	public FIViewVisualizer(EventBus eventBus) {
 		super();
@@ -95,7 +107,10 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		edgeContextPanel = new EdgeContextPanel(eventBus);
 		nodeContextPanelMap = new HashSet<>();
 		cyView =  new SimplePanel();
-				
+		
+		presentDrugs = new HashMap<>();
+		edgeIdToDrugInteraction = new HashMap<>();
+		
 		initHandlers();
 		
 		//default this value to false
@@ -185,8 +200,9 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 			cytoscapeInitialised = true;
 		}
 		cy.clearCytoscapeGraph();
+		showingDrugs = false;
 		cy.addCytoscapeNodes("cy", ((FIViewContent)content).getProteinArray());
-		cy.addCytoscapeEdge("cy", ((FIViewContent)content).getFIArray());
+		cy.addCytoscapeEdge("cy", ((FIViewContent)content).getFIArray().toString());
 		
 		cy.setCytoscapeLayout("cose");
 		eventBus.fireEventFromSource(new FIViewMessageEvent(false), this);
@@ -213,6 +229,12 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 
 	@Override
 	public void onEdgeHovered(String id, int x, int y) {
+		
+		if(this.edgeIdToDrugInteraction.containsKey(Integer.parseInt(id))) {
+			openDrugEdgeHoverPopup(id, x, y);
+			return;
+		}
+		
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(id).get("data").isObject();
 		
 		infoPopup.setEdgeLabel(
@@ -232,9 +254,20 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 			eventBus.fireEventFromSource(new FIViewOverlayEdgeHoveredEvent(getNodeExpression(fi)), this);
 	}
 
+	private void openDrugEdgeHoverPopup(String id, int x, int y) {
+		DrugInteraction interaction = this.edgeIdToDrugInteraction.get(Integer.parseInt(id));
+		String description = "Action Type: " + interaction.getActionType() + "\n" +
+					  "Activity Type: " + interaction.getActivityType() + "\n" +
+					  "Activity Value: " + NumberFormat.getFormat("#.##E0").format(interaction.getActivityValue());
+		infoPopup.setEdgeLabel(description, x, y);
+	}
+
 	@Override
 	public void onEdgeClicked(String id) {
 		infoPopup.hide();
+		
+		//do nothing if edge is a drug interaction edge
+		if(this.edgeIdToDrugInteraction.containsKey(Integer.parseInt(id)))return;
 		
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(id).get("data").isObject();
 		
@@ -261,13 +294,16 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onCytoscapeCoreContextEvent(int x, int y) {
-		FICoreCtxPanel popup = new FICoreCtxPanel(cy.getLayout(), e -> onCytoscapeLayoutChange(e));
+		FICoreCtxPanel popup = new FICoreCtxPanel(cy.getLayout(),this);
 		popup.show();
 		setPopupLocation(x, y, popup);
 	}
 
 	@Override
 	public void onEdgeContextSelectEvent(String id, int x, int y) {
+		//do nothing if edge is a drug interaction edge
+		if(this.edgeIdToDrugInteraction.containsKey(Integer.parseInt(id)))return;
+		
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(id).get("data").isObject();
 		edgeContextPanel.updateContext(fi);
 		edgeContextPanel.show();
@@ -276,6 +312,11 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
+		if(this.presentDrugs.containsKey(id)) {
+			openDrugNodeContext(id, x, y);
+			return;
+		}
+		
 		NodeDialogPanel nodeDialogPanel;
 		
 		//Send overlay value to context panel if dataOverlay exists
@@ -286,6 +327,12 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		nodeContextPanelMap.add(nodeDialogPanel);
 	}
 	
+	private void openDrugNodeContext(String id, int x, int y) {
+		DrugTargetContextPanel popup = new DrugTargetContextPanel(presentDrugs.get(id));
+		popup.setPopupPosition(x+5, y+5);
+		popup.show();
+	}
+
 	public void clearNodeContextMap() {
 		nodeContextPanelMap.forEach(panel -> {
 			panel.hide();
@@ -606,8 +653,87 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		loadAnalysis();
 	}
 	
-	private void onCytoscapeLayoutChange(FILayoutType type) {
+	@Override
+	public void onLayoutChange(FILayoutType type) {
 		cy.setCytoscapeLayout(type.toString().toLowerCase());
+	}
+
+	@Override
+	public void addDrugs() {
+		if(showingDrugs) return;
+		showingDrugs = true;
+		
+		int edgeCount = ((FIViewContent)context.getContent()).getFIArray().size();
+		for(Drug drug : IDGPopupFactory.get().getDrugTargets()) {
+			JSONArray edgeArray = new JSONArray();
+			for(Map.Entry<String,DrugInteraction> entry : drug.getDrugInteractions().entrySet()) {
+				JSONObject edge = makeFI(edgeCount, entry.getKey(), "DG"+drug.getId(), "solid").isObject();
+				edgeIdToDrugInteraction.put(edgeCount, entry.getValue());
+				edgeArray.set(edgeArray.size(), edge);
+				edgeCount++;
+			}
+			if(edgeArray.size() > 0) {
+				JSONObject protein = getProtein("DG"+drug.getId(), drug.getName(), false).isObject();
+				protein.get("data").isObject().put("drug", new JSONString("true"));
+				
+				if(!presentDrugs.containsKey("DG"+drug.getId())) {
+					cy.addCytoscapeNodes("cy", protein.toString());
+					cy.highlightNode("DG"+drug.getId(), "#B89AE6");
+					presentDrugs.put("DG"+drug.getId(), drug);
+				}
+				cy.addCytoscapeEdge("cy", edgeArray.toString());
+			}
+		}
+		cy.setCytoscapeLayout("cose");
+	}
+
+	/**
+	 * Makes a node for only a passed in gene name string
+	 * @param displayName
+	 * @return
+	 */
+	private JSONValue getProtein(String id, String displayName, boolean interactor) {
+		JSONObject result = new JSONObject();
+		result.put("group", new JSONString("nodes"));
+		
+		JSONObject node = new JSONObject();
+		node.put("id", new JSONString(id));
+		node.put("name", new JSONString(displayName));
+		if(interactor == true)
+			node.put("interactor", new JSONString("true"));
+		else
+			node.put("interactor", new JSONString("false"));
+		node.put("color", new JSONString("#FF0000"));
+		result.put("data", node);
+		return result;
+	}
+
+	/**
+	 * Makes a FI edge bassed on a passed in id, target and source
+	 * @param id
+	 * @param source
+	 * @param target
+	 * @return
+	 */
+	private JSONValue makeFI(int id, String source, String target, String relationship) {
+		JSONObject result = new JSONObject();
+		result.put("group", new JSONString("edges"));
+		
+		JSONObject edge = new JSONObject();
+		edge.put("id", new JSONString(id+""));
+		edge.put("source", new JSONString(source));
+		edge.put("target", new JSONString(target));
+		edge.put("direction", new JSONString("-"));
+		edge.put("lineStyle", new JSONString(relationship));
+		
+		result.put("data", edge);
+		return result;
+	}
+
+	@Override
+	public void searchProteins(Set<String> searchlist) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

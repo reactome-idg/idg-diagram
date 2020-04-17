@@ -350,8 +350,8 @@ public class FIViewContent extends GenericContent{
 		return proteinArray.toString();
 	}
 	
-	public String getFIArray() {
-		return fIArray.toString();
+	public JSONArray getFIArray() {
+		return fIArray;
 	}
 
 	public JSONObject getFIFromMap(String id) {

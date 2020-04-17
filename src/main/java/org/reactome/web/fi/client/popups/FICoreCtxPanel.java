@@ -1,10 +1,20 @@
 package org.reactome.web.fi.client.popups;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.reactome.web.fi.common.CommonButton;
+import org.reactome.web.fi.common.IDGTextBox;
 import org.reactome.web.fi.model.FILayoutType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -21,12 +31,15 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 	
 	public interface LayoutChangeHandler{
 		void onLayoutChange(FILayoutType type);
+		void addDrugs();
+		void searchProteins(Set<String> searchlist);
 	}
 
 	private LayoutChangeHandler handler;
 	
 	private ListBox layoutSelector;
 	private String currentLayout;
+	private IDGTextBox proteinSearch;
 	
 	public FICoreCtxPanel(String currentLayout, LayoutChangeHandler handler) {
 		this.currentLayout = currentLayout;
@@ -45,10 +58,55 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 		layoutSelector.setMultipleSelect(false);
 		setSelections();
 		
+		main.add(getShowDrugsButton());
+		main.add(getProteinSearchBox());
+		
 		initHandlers();
 		
 		this.add(main);
 		
+	}
+
+	private FlowPanel getProteinSearchBox() {
+		FlowPanel result = new FlowPanel();
+		result.setStyleName(FICONTEXTRESOURCES.getCSS().option());
+		proteinSearch  = new IDGTextBox();
+		proteinSearch.addStyleName(FICONTEXTRESOURCES.getCSS().search());
+		proteinSearch.getElement().setPropertyString("placeholder", "Search proteins...");
+		proteinSearch.addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+					searchForProteins();
+			}
+		});
+		
+		result.add(proteinSearch);
+		
+		return result;
+	}
+
+	protected void searchForProteins() {
+		String searchString = proteinSearch.getText();
+		Set<String> searchSet = new HashSet<>();
+		if(searchString.contains(","))
+			searchSet.addAll(Arrays.asList(searchString.split(",")));
+		else searchSet.add(searchString);
+		
+		handler.searchProteins(searchSet);
+	}
+
+	private FlowPanel getShowDrugsButton() {
+		FlowPanel result = new FlowPanel();
+		result.setStyleName(FICONTEXTRESOURCES.getCSS().option());
+		result.add(new CommonButton("Show Drug Targets", FICONTEXTRESOURCES.getCSS().button(), e -> onShowDrugTargetsClicked()));
+		
+		return result;
+	}
+
+	private void onShowDrugTargetsClicked() {
+		handler.addDrugs();
+		this.hide();
 	}
 
 	private void setSelections() {
@@ -90,5 +148,11 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 		String fipopup();
 		
 		String layoutLabel();
+		
+		String button();
+		
+		String option();
+		
+		String search();
 	}
 }
