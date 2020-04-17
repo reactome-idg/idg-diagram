@@ -1,6 +1,6 @@
 package org.reactome.web.fi.tools.popup;
 
-import org.reactome.web.fi.data.model.drug.Drug;
+import org.reactome.web.fi.tools.popup.tables.models.DrugTargetResult;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -25,12 +25,12 @@ public class DrugTargetContextPanel extends DialogBox{
 
 	private final String DRUG_CENTRAL_URL = "http://drugcentral.org/?q=";
 	
-	public DrugTargetContextPanel(Drug drug) {
+	public DrugTargetContextPanel(DrugTargetResult drug) {
 		setStyleName(RESOURCES.getCSS().nodePopup());
 		setAutoHideEnabled(true);
 		setModal(false);
 		
-		setTitlePanel(drug.getName());
+		setTitlePanel(drug.getDrugName());
 		
 		FlowPanel main = new FlowPanel();
 		main.setStyleName(RESOURCES.getCSS().mainPanel());
@@ -48,17 +48,14 @@ public class DrugTargetContextPanel extends DialogBox{
 		getCaption().asWidget().setStyleName(RESOURCES.getCSS().header());
 	}
 
-	private FlexTable getTablePanel(Drug drug) {
+	private FlexTable getTablePanel(DrugTargetResult drug) {
 		FlexTable table = new FlexTable();
 		
 		table.setStyleName(RESOURCES.getCSS().table());
 		
 		table.setText(0, 0, "Drug Central: ");
-		table.setWidget(0, 1, getDrugCentralLink(drug.getName()));
+		table.setWidget(0, 1, getDrugCentralLink(drug.getDrugName()));
 		table.getFlexCellFormatter().setColSpan(0, 0, 3);
-		
-		table.setText(1, 0, "Protein Interactions: ");
-		table.setText(1, 1, drug.getDrugInteractions().keySet().toString());
 		
 		return table;
 	}
