@@ -64,6 +64,7 @@ public class DrugTargetRenderer{
 			SummaryItem drugTargetItem = makeItem(obj);
 			
 			if(drugTargetItem.getNumber() == 0) continue;
+			drugTargetItem.setLabel(drugTargetItem.getNumber() + " drug interactions");
 			currentItems.add(drugTargetItem);
 			
 			Node node = (Node) obj;

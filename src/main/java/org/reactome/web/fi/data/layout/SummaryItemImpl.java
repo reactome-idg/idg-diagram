@@ -15,6 +15,7 @@ public class SummaryItemImpl implements SummaryItem{
 	private Boolean pressed;
 	private Integer number;
 	private Boolean isHit;
+	private String label;
 	
 	public SummaryItemImpl(Shape shape, Integer number) {
 		this.shape = shape;
@@ -67,6 +68,16 @@ public class SummaryItemImpl implements SummaryItem{
 	@Override
 	public Boolean getHit() {
 		return isHit;
+	}
+
+	@Override
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	@Override
+	public String getLabel() {
+		return label;
 	}
 
 }
