@@ -40,7 +40,8 @@
 {
 	"selector": "edge:selected",
 	"style": {
-		"line-color": "#FF0000"
+		"line-color": "#FF0000",
+		"width": "2"
 	}
 },
 {

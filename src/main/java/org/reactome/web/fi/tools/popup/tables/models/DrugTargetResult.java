@@ -9,16 +9,18 @@ public class DrugTargetResult {
 
 	private String geneName;
 	private String uniprot;
+	private int drugId;
 	private String drugName;
 	private String compoundChMBLId;
 	private String actionType;
 	private String activityType;
 	private Float activityValue;
 	
-	public DrugTargetResult(String uniprot, String geneName, String drugName, String compoundChMBLId, String actionType,
+	public DrugTargetResult(String uniprot, String geneName, int drugId, String drugName, String compoundChMBLId, String actionType,
 			String activityType, Float activityValue) {
 		this.geneName = geneName;
 		this.uniprot = uniprot;
+		this.drugId = drugId;
 		this.drugName = drugName;
 		this.compoundChMBLId = compoundChMBLId;
 		this.actionType = actionType;
@@ -36,6 +38,12 @@ public class DrugTargetResult {
 	}
 	public void setUniprot(String uniprot) {
 		this.uniprot = uniprot;
+	}
+	public int getDrugId() {
+		return drugId;
+	}
+	public void setDrugId(int drugId) {
+		this.drugId = drugId;
 	}
 	public String getDrugName() {
 		return drugName;

@@ -1,7 +1,6 @@
 package org.reactome.web.fi.tools.popup;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,14 +15,13 @@ import org.reactome.web.fi.client.visualisers.fiview.CytoscapeEntity;
 import org.reactome.web.fi.data.loader.TCRDDataLoader;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.TCRDInfoLoader;
-import org.reactome.web.fi.data.model.drug.Drug;
-import org.reactome.web.fi.data.model.drug.DrugInteraction;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 import org.reactome.web.fi.tools.overlay.pairwise.PairwiseNodeContextPopup;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
+import org.reactome.web.fi.tools.popup.tables.models.DrugTargetResult;
 import org.reactome.web.gwtCytoscapeJs.client.CytoscapeWrapper.Handler;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
@@ -42,16 +40,20 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class IDGPopupCytoscapeController implements Handler{
 
 	public interface CytoscapePanelHandler{
-		
+		void highlightPIRow(PairwiseTableEntity entity, boolean select);
+		void highlightDrugRow(DrugTargetResult entity, boolean select);
+		void resetSelection();
 	}
+	
+	private CytoscapePanelHandler handler;
 	
 	private String containerId;
 	private List<PairwiseOverlayObject> pairwiseOverlayObjects;
 	private Set<String> diagramNodes;
 	private Set<String> displayedNodes;
-	private Map<PairwiseTableEntity, Integer> edgeIdToEntity;
-	private Map<Integer, DrugInteraction> edgeIdToDrugTarget;
-	private Map<String, Drug> presentDrugs;
+	private Map<PairwiseTableEntity, Integer> entityToEdgeId;
+	private Map<Integer, DrugTargetResult> edgeIdToDrugTarget;
+	private Map<String, DrugTargetResult> presentDrugs;
 	
 	private CytoscapeEntity cy;
 	
@@ -63,10 +65,11 @@ public class IDGPopupCytoscapeController implements Handler{
 	private int zIndex;
 	private FIViewInfoPopup infoPopup;
 	
-	public IDGPopupCytoscapeController(String popupId, Set<String> diagramNodes, IDGPopup.Resources RESOURCES, int zIndex) {
+	public IDGPopupCytoscapeController(String popupId, Set<String> diagramNodes, IDGPopup.Resources RESOURCES, int zIndex, CytoscapePanelHandler handler) {
 		this.diagramNodes = diagramNodes;
+		this.handler = handler;
 		this.displayedNodes = new HashSet<>();
-		this.edgeIdToEntity = new HashMap<>();
+		this.entityToEdgeId = new HashMap<>();
 		this.edgeIdToDrugTarget = new HashMap<>();
 		this.zIndex = zIndex;
 		this.pairwiseOverlayObjects = IDGPopupFactory.get().getCurrentPairwiseProperties();
@@ -166,10 +169,10 @@ public class IDGPopupCytoscapeController implements Handler{
 	 */
 	private boolean addEdge(PairwiseTableEntity tableEntity) {
 		
-		for(PairwiseTableEntity entity: edgeIdToEntity.keySet())
+		for(PairwiseTableEntity entity: entityToEdgeId.keySet())
 			if(entity.equals(tableEntity)) return false;
 		
-		edgeIdToEntity.put(tableEntity, edgeCount);
+		entityToEdgeId.put(tableEntity, edgeCount);
 		
 		JSONValue val = makeFI(edgeCount, 
 				tableEntity.getSourceId(), tableEntity.getInteractorId(), tableEntity.getPosOrNeg());
@@ -212,32 +215,46 @@ public class IDGPopupCytoscapeController implements Handler{
 	 * Iterate over interactions in each drug. If diagramNodes contains the interaction uniprot, make and add edge to edgeArray
 	 * If edgeArray > 0 for a drug, make the node for that drug, add it to the cytoscape view, and add all the edges.
 	 * Repeat for all drugs present in the diagram.
+	 * @param entities 
 	 */
-	public void addDrugs() {
+	public void addDrugs(List<DrugTargetResult> entities) {
 		presentDrugs = new HashMap<>();
-		Collection<Drug> drugs = IDGPopupFactory.get().getDrugTargets();
-		drugs.forEach(drug -> {
-			JSONArray edgeArray = new JSONArray();
-			drug.getDrugInteractions().forEach((k,v) -> {
-				if(diagramNodes.contains(k)) {
-					JSONObject edge = makeFI(edgeCount, k, "DG"+drug.getId(), "solid").isObject();
-					edgeIdToDrugTarget.put(edgeCount, v);
-					edgeArray.set(edgeArray.size(), edge);
-					edgeCount++;
-				}
-			});
-			if(edgeArray.size() > 0) {
-				JSONObject protein = getProtein("DG"+drug.getId(), drug.getName(), false).isObject();
-				protein.get("data").isObject().put("drug", new JSONString("true"));
-				
-				if(!presentDrugs.containsKey("DG"+drug.getId())) {
-					cy.addCytoscapeNodes(containerId, protein.toString());
-					cy.highlightNode("DG"+drug.getId(), "#B89AE6");
-					presentDrugs.put("DG"+drug.getId(), drug);
-				}
-				cy.addCytoscapeEdge(containerId, edgeArray.toString());
+		entities.forEach(x -> {
+			if(!presentDrugs.containsKey("DG" + x.getDrugId())) {
+				JSONObject drug = getProtein("DG"+x.getDrugId(), x.getDrugName(), false).isObject();
+				drug.get("data").isObject().put("drug", new JSONString("true"));
+				cy.addCytoscapeNodes(containerId, drug.toString());
+				cy.highlightNode("DG"+x.getDrugId(), "#B89AE6");
+				presentDrugs.put("DG"+x.getDrugId(), x);
 			}
+			JSONObject edge = makeFI(edgeCount, x.getUniprot(), "DG"+x.getDrugId(), "solid").isObject();
+			edgeIdToDrugTarget.put(edgeCount, x);
+			cy.addCytoscapeEdge(containerId, edge.toString());
+			edgeCount++;
 		});
+//		Collection<Drug> drugs = IDGPopupFactory.get().getDrugTargets();
+//		drugs.forEach(drug -> {
+//			JSONArray edgeArray = new JSONArray();
+//			drug.getDrugInteractions().forEach((k,v) -> {
+//				if(diagramNodes.contains(k)) {
+//					JSONObject edge = makeFI(edgeCount, k, "DG"+drug.getId(), "solid").isObject();
+//					edgeIdToDrugTarget.put(edgeCount, v);
+//					edgeArray.set(edgeArray.size(), edge);
+//					edgeCount++;
+//				}
+//			});
+//			if(edgeArray.size() > 0) {
+//				JSONObject protein = getProtein("DG"+drug.getId(), drug.getName(), false).isObject();
+//				protein.get("data").isObject().put("drug", new JSONString("true"));
+//				
+//				if(!presentDrugs.containsKey("DG"+drug.getId())) {
+//					cy.addCytoscapeNodes(containerId, protein.toString());
+//					cy.highlightNode("DG"+drug.getId(), "#B89AE6");
+//					presentDrugs.put("DG"+drug.getId(), drug);
+//				}
+//				cy.addCytoscapeEdge(containerId, edgeArray.toString());
+//			}
+//		});
 		cy.setCytoscapeLayout("cose");
 	}
 	
@@ -306,7 +323,7 @@ public class IDGPopupCytoscapeController implements Handler{
 		cy.clearCytoscapeGraph();
 		this.pairwiseOverlayObjects = IDGPopupFactory.get().getCurrentPairwiseProperties();
 		displayedNodes.clear();
-		this.edgeIdToEntity.clear();
+		this.entityToEdgeId.clear();
 		presentDrugs.clear();
 		this.edgeIdToDrugTarget.clear();
 		this.edgeCount = 0;
@@ -318,12 +335,26 @@ public class IDGPopupCytoscapeController implements Handler{
 		cy.removeCytoscapeNode(id);
 		displayedNodes.remove(id);
 		
-		edgeIdToEntity.keySet().forEach(k -> {
+		entityToEdgeId.keySet().forEach(k -> {
 			if(k.getInteractorId() == id) {
-				edgeIdToEntity.remove(k);
+				entityToEdgeId.remove(k);
 				return;
 			}
 		});
+	}
+	
+	public void selectInteraction(PairwiseTableEntity entity) {
+		if(entityToEdgeId.containsKey(entity)) {
+			cy.selectEdge(entityToEdgeId.get(entity)+"");
+		}
+	}
+	
+	public void selectDrug(DrugTargetResult entity) {
+		if(edgeIdToDrugTarget.containsValue(entity))
+			edgeIdToDrugTarget.forEach((k,v) -> {
+				if(entity == v)
+					cy.selectEdge(k+"");
+			});
 	}
 	
 	public void resize() {
@@ -361,7 +392,7 @@ public class IDGPopupCytoscapeController implements Handler{
 		String description = "";
 		
 		PairwiseTableEntity edge = null;
-		for(Entry<PairwiseTableEntity, Integer> entry : edgeIdToEntity.entrySet()) {
+		for(Entry<PairwiseTableEntity, Integer> entry : entityToEdgeId.entrySet()) {
 			if(Integer.parseInt(id) == entry.getValue()) {
 				edge = entry.getKey();
 				break;
@@ -379,7 +410,7 @@ public class IDGPopupCytoscapeController implements Handler{
 
 	private void openDrugEdgePopup(int edgeId, int x, int y) {
 		String description = "";
-		DrugInteraction interaction = this.edgeIdToDrugTarget.get(edgeId);
+		DrugTargetResult interaction = this.edgeIdToDrugTarget.get(edgeId);
 		description = "Action Type: " + interaction.getActionType() + "\n" +
 					  "Activity Type: " + interaction.getActivityType() + "\n" +
 					  "Activity Value: " + NumberFormat.getFormat("#.##E0").format(interaction.getActivityValue());
@@ -462,7 +493,15 @@ public class IDGPopupCytoscapeController implements Handler{
 
 	@Override
 	public void onEdgeClicked(String id) {
-		// TODO Auto-generated method stub
+		int idInt = Integer.parseInt(id);
+		if(edgeIdToDrugTarget.containsKey(idInt)) {
+			handler.highlightDrugRow(edgeIdToDrugTarget.get(idInt), true);
+			return;
+		}
+		entityToEdgeId.forEach((k,v) -> {
+			if(v == idInt)
+				handler.highlightPIRow(k, true);
+		});
 	}
 
 	@Override
@@ -472,12 +511,15 @@ public class IDGPopupCytoscapeController implements Handler{
 
 	@Override
 	public void onCytoscapeCoreSelectedEvent() {
-		// TODO Auto-generated method stub
-		
+		handler.resetSelection();
 	}
 
 	@Override
 	public void onEdgeContextSelectEvent(String id, int x, int y) {
 		// TODO Auto-generated method stub
+	}
+
+	public void resetSelection() {
+		cy.deselectAll();
 	}
 }

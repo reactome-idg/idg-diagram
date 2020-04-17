@@ -16,6 +16,7 @@ import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 /**
  * 
@@ -24,15 +25,23 @@ import com.google.gwt.view.client.ListDataProvider;
  */
 public class PairwiseResultsTable extends DataGrid<PairwiseTableEntity>{
 	
+	public interface Handler {
+		void onRowClicked(PairwiseTableEntity entity);
+	}
+	
+	private Handler handler;
+	
 	public final static Integer PAGE_SIZE = 10;
 	
 	private ListHandler<PairwiseTableEntity> sorter;
 	private ListDataProvider<PairwiseTableEntity> provider;
+	private SingleSelectionModel<PairwiseTableEntity> selectionModel;
 	
 	
-	public PairwiseResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, SimplePager pager) {
+	public PairwiseResultsTable(List<PairwiseTableEntity> entities, ListDataProvider<PairwiseTableEntity> provider, SimplePager pager, Handler handler) {
 		
 		super(PAGE_SIZE);
+		this.handler = handler;
 		this.provider = provider;
 		this.setRowData(0, entities);
 		this.setAutoHeaderRefreshDisabled(true);
@@ -96,12 +105,18 @@ public class PairwiseResultsTable extends DataGrid<PairwiseTableEntity>{
 		this.addCellPreviewHandler(new CellPreviewEvent.Handler<PairwiseTableEntity>() {
             @Override
             public void onCellPreview(final CellPreviewEvent<PairwiseTableEntity> event) {
+            	if(event.getNativeEvent().getType().equals("click")) {
+            		handler.onRowClicked(event.getValue());
+            	}
                 if (!event.getNativeEvent().getType().equals("mouseover")) return;
                 Element cellElement = event.getNativeEvent().getEventTarget().cast();
                 PairwiseTableEntity model = (PairwiseTableEntity) PairwiseResultsTable.this.getValueKey(event.getValue());
                 cellElement.setTitle(PairwiseResultsTable.this.getColumn(event.getColumn()).getValue(model)+"");
             }
         });
+		
+		selectionModel = new SingleSelectionModel<>();
+		this.setSelectionModel(selectionModel);
 		
 		//Pager setup
 		pager.setDisplay(this);
@@ -114,5 +129,14 @@ public class PairwiseResultsTable extends DataGrid<PairwiseTableEntity>{
 	
 	public void updateSorter() {
 		sorter.setList(provider.getList());
+	}
+	
+	public void selectRow(PairwiseTableEntity entity, boolean select) {
+		selectionModel.setSelected(entity, select);
+	}
+
+	public void resetSelection() {
+		if(selectionModel.getSelectedObject() == null)return;
+		selectionModel.setSelected(selectionModel.getSelectedObject(), false);
 	}
 }

@@ -17,7 +17,7 @@ import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.tools.overlay.pairwise.model.PairwiseTableEntity;
 import org.reactome.web.fi.tools.popup.IDGPopup;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
-import org.reactome.web.fi.tools.popup.IDGPopup.Resources;
+import org.reactome.web.fi.tools.popup.tables.PairwiseResultsTable.Handler;
 import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.cell.client.ActionCell;
@@ -38,10 +38,11 @@ import com.google.gwt.view.client.ListDataProvider;
  * @author brunsont
  *
  */
-public class PairwiseResultsTablePanel extends FlowPanel{
+public class PairwiseResultsTablePanel extends FlowPanel implements Handler{
 
 	public interface PairwiseTableHandler {
 		void addInteractions(Set<PairwiseTableEntity> entities);
+		void selectInteraction(PairwiseTableEntity entity);
 	}
 	
 	private PairwiseTableHandler handler;
@@ -55,7 +56,7 @@ public class PairwiseResultsTablePanel extends FlowPanel{
 	private PairwiseResultsTable resultsTable;
 	private ListDataProvider<PairwiseTableEntity> provider;
 	private SimplePager pager;
-	
+		
 	private FlowPanel mainPanel;
 	
 	//ui for filtering panel
@@ -104,7 +105,7 @@ public class PairwiseResultsTablePanel extends FlowPanel{
 		provider = new ListDataProvider<>();
 		pager = new SimplePager();
 		pager.setStyleName(RESOURCES.getCSS().pager());
-		resultsTable = new PairwiseResultsTable(filteredTableEntities, provider, pager);
+		resultsTable = new PairwiseResultsTable(filteredTableEntities, provider, pager, this);
 		resultsTable.setStyleName(RESOURCES.getCSS().table());
 		
 		//Add view button column
@@ -376,5 +377,28 @@ public class PairwiseResultsTablePanel extends FlowPanel{
 		filteredTableEntities.clear();
 		setSourceListBox();
 		loadTable();
+	}
+	
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		if(resultsTable != null  && visible == true) {
+			resultsTable.flush();
+		}
+	}
+
+	@Override
+	public void onRowClicked(PairwiseTableEntity entity) {
+		handler.selectInteraction(entity);
+	}
+
+	public void selectRow(PairwiseTableEntity entity, boolean select) {
+		if(resultsTable == null) return;
+		resultsTable.selectRow(entity, select);
+	}
+
+	public void resetSelection() {
+		if(this.isVisible())
+			resultsTable.resetSelection();
 	}
 }
