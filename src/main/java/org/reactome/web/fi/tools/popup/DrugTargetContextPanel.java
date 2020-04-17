@@ -40,6 +40,10 @@ public class DrugTargetContextPanel extends DialogBox{
 
 	private void setTitlePanel(String drug) {
 		FlowPanel fp = new FlowPanel();
+		
+		Image img = new Image(RESOURCES.DTNormal());
+		fp.add(img);
+		
 		InlineLabel title = new InlineLabel(drug);
 		fp.add(title);
 		
@@ -84,6 +88,9 @@ public class DrugTargetContextPanel extends DialogBox{
 		
 		@Source("images/external_link_icon.gif")
 		ImageResource linkOut();
+		
+		@Source("../../client/popups/images/DT_normal.png")
+		ImageResource DTNormal();
 	}
 	
 	@CssResource.ImportedWithPrefix("idg-DrugTargetContextPanel")
