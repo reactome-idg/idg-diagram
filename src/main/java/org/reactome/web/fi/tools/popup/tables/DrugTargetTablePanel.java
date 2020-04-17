@@ -126,6 +126,7 @@ public class DrugTargetTablePanel extends FlowPanel implements Handler{
 	}
 
 	public void resetSelection() {
-		resultsTable.resetSelection();
+		if(this.isVisible())
+			resultsTable.resetSelection();
 	}
 }
