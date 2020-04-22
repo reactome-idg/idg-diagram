@@ -89,7 +89,7 @@ public class NodeInfoPanel extends Composite{
 	private String getDrugTargets(String id) {
 		int result = 0;
 		
-		for(Drug drug : IDGPopupFactory.get().getDrugTargets())
+		for(Drug drug : IDGPopupFactory.get().getDrugs())
 			if(drug.getDrugInteractions().containsKey(id))
 				result ++;
 				

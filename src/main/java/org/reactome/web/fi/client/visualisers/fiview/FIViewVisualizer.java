@@ -202,6 +202,8 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		}
 		cy.clearCytoscapeGraph();
 		showingDrugs = false;
+		presentDrugs.clear();
+		edgeIdToDrugInteraction.clear();
 		cy.addCytoscapeNodes("cy", ((FIViewContent)content).getProteinArray());
 		cy.addCytoscapeEdge("cy", ((FIViewContent)content).getFIArray().toString());
 		
@@ -659,22 +661,23 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		cy.setCytoscapeLayout(type.toString().toLowerCase());
 	}
 
-	@Override
-	public void addDrugs() {
-		if(showingDrugs) return;
-		showingDrugs = true;
-		
+	public void showHideDrugs() {
+		if(showingDrugs)hideDrugs();
+		else showDrugs();
+	}
+	
+	private void showDrugs() {
 		int edgeCount = ((FIViewContent)context.getContent()).getFIArray().size();
-		for(Drug drug : IDGPopupFactory.get().getDrugTargets()) {
+		for(Drug drug : IDGPopupFactory.get().getDrugs()) {
 			JSONArray edgeArray = new JSONArray();
 			for(Map.Entry<String,DrugInteraction> entry : drug.getDrugInteractions().entrySet()) {
-				JSONObject edge = makeFI(edgeCount, entry.getKey(), "DG"+drug.getId(), "solid").isObject();
+				JSONObject edge = cy.makeFI(edgeCount, entry.getKey(), "DG"+drug.getId(), "solid").isObject();
 				edgeIdToDrugInteraction.put(edgeCount, entry.getValue());
 				edgeArray.set(edgeArray.size(), edge);
 				edgeCount++;
 			}
 			if(edgeArray.size() > 0) {
-				JSONObject protein = getProtein("DG"+drug.getId(), drug.getName(), false).isObject();
+				JSONObject protein = cy.getProtein("DG"+drug.getId(), drug.getName(), false).isObject();
 				protein.get("data").isObject().put("drug", new JSONString("true"));
 				
 				if(!presentDrugs.containsKey("DG"+drug.getId())) {
@@ -685,50 +688,20 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 				cy.addCytoscapeEdge("cy", edgeArray.toString());
 			}
 		}
+		
 		cy.setCytoscapeLayout("cose");
+		showingDrugs = true;
 	}
-
-	/**
-	 * Makes a node for only a passed in gene name string
-	 * @param displayName
-	 * @return
-	 */
-	private JSONValue getProtein(String id, String displayName, boolean interactor) {
-		JSONObject result = new JSONObject();
-		result.put("group", new JSONString("nodes"));
-		
-		JSONObject node = new JSONObject();
-		node.put("id", new JSONString(id));
-		node.put("name", new JSONString(displayName));
-		if(interactor == true)
-			node.put("interactor", new JSONString("true"));
-		else
-			node.put("interactor", new JSONString("false"));
-		node.put("color", new JSONString("#FF0000"));
-		result.put("data", node);
-		return result;
-	}
-
-	/**
-	 * Makes a FI edge bassed on a passed in id, target and source
-	 * @param id
-	 * @param source
-	 * @param target
-	 * @return
-	 */
-	private JSONValue makeFI(int id, String source, String target, String relationship) {
-		JSONObject result = new JSONObject();
-		result.put("group", new JSONString("edges"));
-		
-		JSONObject edge = new JSONObject();
-		edge.put("id", new JSONString(id+""));
-		edge.put("source", new JSONString(source));
-		edge.put("target", new JSONString(target));
-		edge.put("direction", new JSONString("-"));
-		edge.put("lineStyle", new JSONString(relationship));
-		
-		result.put("data", edge);
-		return result;
+	
+	private void hideDrugs() {
+		JSONArray idsToRemove = new JSONArray();
+		presentDrugs.values().forEach(x -> {
+			idsToRemove.set(idsToRemove.size(), new JSONString("DG"+x.getId()));
+		});
+		cy.removeCytoscapeNodes(idsToRemove.toString());
+		presentDrugs.clear();
+		edgeIdToDrugInteraction.clear();
+		showingDrugs = false;
 	}
 
 	@Override

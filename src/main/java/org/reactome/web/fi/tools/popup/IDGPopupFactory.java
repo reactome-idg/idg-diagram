@@ -199,7 +199,7 @@ public class IDGPopupFactory{
 		return this.rawInteractors;
 	}
 	
-	public Collection<Drug> getDrugTargets() {
+	public Collection<Drug> getDrugs() {
 		return drugCollection;
 	}
 

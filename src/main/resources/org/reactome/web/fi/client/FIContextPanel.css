@@ -30,6 +30,10 @@
     font-size: medium !important;
 }
 
+.fipopup select:hover{
+	color: #ccc;
+}
+
 .fipopup select:disabled{
 	background-color: transparent;
     color: gray;
@@ -53,9 +57,9 @@
 	background-color: Transparent;
 	font-size: medium;
 	outline: none;
-	border: none;
+	border: 1px solid grey;
+	border-radius: 16px;
 	width: 100%;
-	text-align: left;
  	color: white;
 }
 
@@ -67,14 +71,8 @@
 	color: black;
 }
 
-.option {
-	border-top: 1px solid #cfcfcf;
-	border-bottom: 1px solid #cfcfcf;
-}
-
 .search {
-	font-size: medium;
-	width:100%;
+	font-size:medium;
 	background-color: white;
 	margin:5px 0;
 	border: 1px solid #cfcfcf;

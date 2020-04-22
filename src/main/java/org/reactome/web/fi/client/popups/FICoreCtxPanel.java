@@ -31,7 +31,7 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 	
 	public interface LayoutChangeHandler{
 		void onLayoutChange(FILayoutType type);
-		void addDrugs();
+		void showHideDrugs();
 		void searchProteins(Set<String> searchlist);
 	}
 
@@ -40,6 +40,8 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 	private ListBox layoutSelector;
 	private String currentLayout;
 	private IDGTextBox proteinSearch;
+	private CommonButton overlayDrugs;
+	private boolean showingDrugs;
 	
 	public FICoreCtxPanel(String currentLayout, LayoutChangeHandler handler) {
 		this.currentLayout = currentLayout;
@@ -69,7 +71,6 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 
 	private FlowPanel getProteinSearchBox() {
 		FlowPanel result = new FlowPanel();
-		result.setStyleName(FICONTEXTRESOURCES.getCSS().option());
 		proteinSearch  = new IDGTextBox();
 		proteinSearch.addStyleName(FICONTEXTRESOURCES.getCSS().search());
 		proteinSearch.getElement().setPropertyString("placeholder", "O43521,Q9UJU2,JAG1");
@@ -98,14 +99,13 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 
 	private FlowPanel getShowDrugsButton() {
 		FlowPanel result = new FlowPanel();
-		result.setStyleName(FICONTEXTRESOURCES.getCSS().option());
-		result.add(new CommonButton("Show Drug Targets", FICONTEXTRESOURCES.getCSS().button(), e -> onShowDrugTargetsClicked()));
+		result.add(overlayDrugs = new CommonButton("Show/Hide Drugs", FICONTEXTRESOURCES.getCSS().button(), e -> onShowDrugTargetsClicked()));
 		
 		return result;
 	}
 
 	private void onShowDrugTargetsClicked() {
-		handler.addDrugs();
+		handler.showHideDrugs();
 		this.hide();
 	}
 
@@ -150,9 +150,7 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 		String layoutLabel();
 		
 		String button();
-		
-		String option();
-		
+				
 		String search();
 	}
 }

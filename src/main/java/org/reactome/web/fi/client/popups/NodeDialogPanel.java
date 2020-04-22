@@ -66,7 +66,7 @@ public class NodeDialogPanel extends DialogBox{
 	}
 
 	private boolean showDrugButton() {
-		for(Drug drug : IDGPopupFactory.get().getDrugTargets())
+		for(Drug drug : IDGPopupFactory.get().getDrugs())
 			if(drug.getDrugInteractions().keySet().contains(id))
 				return true;
 				

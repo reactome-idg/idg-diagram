@@ -84,7 +84,7 @@ public class DrugTargetTablePanel extends FlowPanel implements Handler{
 	 */
 	private void fillDrugTargetData(Set<String> diagramNodes) {
 		Map<String, String> uniprotToGeneMap = PairwiseInfoService.getUniprotToGeneMap();
-		Collection<Drug> drugs = IDGPopupFactory.get().getDrugTargets();
+		Collection<Drug> drugs = IDGPopupFactory.get().getDrugs();
 		drugTargetData = new ArrayList<>();
 		drugs.forEach(drug -> {
 			drug.getDrugInteractions().forEach((k,v) -> {
