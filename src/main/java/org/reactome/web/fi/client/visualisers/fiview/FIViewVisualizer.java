@@ -731,9 +731,12 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	}
 
 	@Override
-	public void searchProteins(Set<String> searchlist) {
-		// TODO Auto-generated method stub
-		
+	public void searchProteins(Set<String> searchList) {
+		JSONArray proteins = new JSONArray();
+		searchList.forEach(x ->{
+			proteins.set(proteins.size(), new JSONString(x));
+		});
+		cy.selectNodes(proteins.toString());
 	}
 
 	@Override
