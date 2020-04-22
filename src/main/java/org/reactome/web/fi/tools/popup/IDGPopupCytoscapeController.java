@@ -133,30 +133,9 @@ public class IDGPopupCytoscapeController implements Handler{
 		
 		if(displayedNodes.contains(uniprot))return;
 		
-		JSONValue val = getProtein(uniprot, uniprotToGeneMap.get(uniprot), interactor);
+		JSONValue val = cy.getProtein(uniprot, uniprotToGeneMap.get(uniprot), interactor);
 		displayedNodes.add(uniprot);
 		cy.addCytoscapeNodes(containerId, val.toString());
-	}
-	
-	/**
-	 * Makes a node for only a passed in gene name string
-	 * @param displayName
-	 * @return
-	 */
-	private JSONValue getProtein(String id, String displayName, boolean interactor) {
-		JSONObject result = new JSONObject();
-		result.put("group", new JSONString("nodes"));
-		
-		JSONObject node = new JSONObject();
-		node.put("id", new JSONString(id));
-		node.put("name", new JSONString(displayName));
-		if(interactor == true)
-			node.put("interactor", new JSONString("true"));
-		else
-			node.put("interactor", new JSONString("false"));
-		node.put("color", new JSONString("#FF0000"));
-		result.put("data", node);
-		return result;
 	}
 	
 	/**
@@ -174,7 +153,7 @@ public class IDGPopupCytoscapeController implements Handler{
 		
 		entityToEdgeId.put(tableEntity, edgeCount);
 		
-		JSONValue val = makeFI(edgeCount, 
+		JSONValue val = cy.makeFI(edgeCount, 
 				tableEntity.getSourceId(), tableEntity.getInteractorId(), tableEntity.getPosOrNeg());
 		
 		cy.addCytoscapeEdge(containerId, val.toString());
@@ -190,28 +169,6 @@ public class IDGPopupCytoscapeController implements Handler{
 	}
 	
 	/**
-	 * Makes a FI edge bassed on a passed in id, target and source
-	 * @param id
-	 * @param source
-	 * @param target
-	 * @return
-	 */
-	private JSONValue makeFI(int id, String source, String target, String relationship) {
-		JSONObject result = new JSONObject();
-		result.put("group", new JSONString("edges"));
-		
-		JSONObject edge = new JSONObject();
-		edge.put("id", new JSONString(id+""));
-		edge.put("source", new JSONString(source));
-		edge.put("target", new JSONString(target));
-		edge.put("direction", new JSONString("-"));
-		edge.put("lineStyle", new JSONString(relationship));
-		
-		result.put("data", edge);
-		return result;
-	}
-	
-	/**
 	 * Iterate over interactions in each drug. If diagramNodes contains the interaction uniprot, make and add edge to edgeArray
 	 * If edgeArray > 0 for a drug, make the node for that drug, add it to the cytoscape view, and add all the edges.
 	 * Repeat for all drugs present in the diagram.
@@ -221,40 +178,17 @@ public class IDGPopupCytoscapeController implements Handler{
 		presentDrugs = new HashMap<>();
 		entities.forEach(x -> {
 			if(!presentDrugs.containsKey("DG" + x.getDrugId())) {
-				JSONObject drug = getProtein("DG"+x.getDrugId(), x.getDrugName(), false).isObject();
+				JSONObject drug = cy.getProtein("DG"+x.getDrugId(), x.getDrugName(), false).isObject();
 				drug.get("data").isObject().put("drug", new JSONString("true"));
 				cy.addCytoscapeNodes(containerId, drug.toString());
 				cy.highlightNode("DG"+x.getDrugId(), "#B89AE6");
 				presentDrugs.put("DG"+x.getDrugId(), x);
 			}
-			JSONObject edge = makeFI(edgeCount, x.getUniprot(), "DG"+x.getDrugId(), "solid").isObject();
+			JSONObject edge = cy.makeFI(edgeCount, x.getUniprot(), "DG"+x.getDrugId(), "solid").isObject();
 			edgeIdToDrugTarget.put(edgeCount, x);
 			cy.addCytoscapeEdge(containerId, edge.toString());
 			edgeCount++;
 		});
-//		Collection<Drug> drugs = IDGPopupFactory.get().getDrugTargets();
-//		drugs.forEach(drug -> {
-//			JSONArray edgeArray = new JSONArray();
-//			drug.getDrugInteractions().forEach((k,v) -> {
-//				if(diagramNodes.contains(k)) {
-//					JSONObject edge = makeFI(edgeCount, k, "DG"+drug.getId(), "solid").isObject();
-//					edgeIdToDrugTarget.put(edgeCount, v);
-//					edgeArray.set(edgeArray.size(), edge);
-//					edgeCount++;
-//				}
-//			});
-//			if(edgeArray.size() > 0) {
-//				JSONObject protein = getProtein("DG"+drug.getId(), drug.getName(), false).isObject();
-//				protein.get("data").isObject().put("drug", new JSONString("true"));
-//				
-//				if(!presentDrugs.containsKey("DG"+drug.getId())) {
-//					cy.addCytoscapeNodes(containerId, protein.toString());
-//					cy.highlightNode("DG"+drug.getId(), "#B89AE6");
-//					presentDrugs.put("DG"+drug.getId(), drug);
-//				}
-//				cy.addCytoscapeEdge(containerId, edgeArray.toString());
-//			}
-//		});
 		cy.setCytoscapeLayout("cose");
 	}
 	
