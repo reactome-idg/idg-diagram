@@ -30,6 +30,7 @@ import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.profiles.interactors.InteractorColours;
 import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.data.content.FIViewContent;
+import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.model.drug.Drug;
 import org.reactome.web.fi.data.model.drug.DrugInteraction;
 import org.reactome.web.fi.client.popups.EdgeContextPanel;
@@ -733,7 +734,10 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	@Override
 	public void searchProteins(Set<String> searchList) {
 		JSONArray proteins = new JSONArray();
+		Map<String,String> geneToUniprot = PairwiseInfoService.getGeneToUniprotMap();
 		searchList.forEach(x ->{
+			if(geneToUniprot.containsKey(x.toUpperCase())) 
+				x = geneToUniprot.get(x.toUpperCase());
 			proteins.set(proteins.size(), new JSONString(x));
 		});
 		cy.selectNodes(proteins.toString());
