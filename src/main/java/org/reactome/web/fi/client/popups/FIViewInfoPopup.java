@@ -48,6 +48,16 @@ public class FIViewInfoPopup extends PopupPanel{
 		this.show();
 	}
 	
+	public void setNodeLabel(String id, int x, int y) {
+		HTML html = new HTML(new SafeHtmlBuilder()
+				.appendEscapedLines(id)
+				.toSafeHtml());
+		htmlLabel = html;
+		this.setWidget(htmlLabel);
+		this.setPopupPosition(x+10, y+10);
+		this.show();
+	}
+	
 	public void setEdgeLabel(String source, String target, int x, int y) {
 		HTML html = new HTML(new SafeHtmlBuilder()
 				.appendEscapedLines(source + " - " + target)

@@ -218,6 +218,10 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onNodeHovered(String id, String name, int x, int y) {
+		if(id == name) {
+			infoPopup.setNodeLabel(id, x, y);
+			return;
+		}
 		infoPopup.setNodeLabel(id, name, x, y);
 	}
 
@@ -233,11 +237,13 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	@Override
 	public void onEdgeHovered(String id, int x, int y) {
 		
-		if(this.edgeIdToDrugInteraction.containsKey(Integer.parseInt(id))) {
+		if(this.edgeIdToDrugInteraction.containsKey(Integer.parseInt(id))) 
 			openDrugEdgeHoverPopup(id, x, y);
-			return;
-		}
-		
+		else
+			openProteinEdgeHoveredPopup(id, x, y);
+	}
+
+	private void openProteinEdgeHoveredPopup(String id, int x, int y) {
 		JSONObject fi = ((FIViewContent)context.getContent()).getFIFromMap(id).get("data").isObject();
 		
 		infoPopup.setEdgeLabel(
@@ -315,11 +321,13 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
-		if(this.presentDrugs.containsKey(id)) {
+		if(this.presentDrugs.containsKey(id))
 			openDrugNodeContext(id, x, y);
-			return;
-		}
-		
+		else
+			openProteinContextMenue(id, name, x, y);
+	}
+
+	private void openProteinContextMenue(String id, String name, int x, int y) {
 		NodeDialogPanel nodeDialogPanel;
 		
 		//Send overlay value to context panel if dataOverlay exists
@@ -671,19 +679,19 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		for(Drug drug : IDGPopupFactory.get().getDrugs()) {
 			JSONArray edgeArray = new JSONArray();
 			for(Map.Entry<String,DrugInteraction> entry : drug.getDrugInteractions().entrySet()) {
-				JSONObject edge = cy.makeFI(edgeCount, entry.getKey(), "DG"+drug.getId(), "solid").isObject();
+				JSONObject edge = cy.makeFI(edgeCount, entry.getKey(), drug.getName(), "solid").isObject();
 				edgeIdToDrugInteraction.put(edgeCount, entry.getValue());
 				edgeArray.set(edgeArray.size(), edge);
 				edgeCount++;
 			}
 			if(edgeArray.size() > 0) {
-				JSONObject protein = cy.getProtein("DG"+drug.getId(), drug.getName(), false).isObject();
+				JSONObject protein = cy.getProtein(drug.getName(), drug.getName(), false).isObject();
 				protein.get("data").isObject().put("drug", new JSONString("true"));
 				
-				if(!presentDrugs.containsKey("DG"+drug.getId())) {
+				if(!presentDrugs.containsKey(drug.getName())) {
 					cy.addCytoscapeNodes("cy", protein.toString());
-					cy.highlightNode("DG"+drug.getId(), "#B89AE6");
-					presentDrugs.put("DG"+drug.getId(), drug);
+					cy.highlightNode(drug.getName(), "#B89AE6");
+					presentDrugs.put(drug.getName(), drug);
 				}
 				cy.addCytoscapeEdge("cy", edgeArray.toString());
 			}
