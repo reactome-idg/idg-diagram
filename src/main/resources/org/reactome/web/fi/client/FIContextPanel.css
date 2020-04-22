@@ -51,6 +51,7 @@
 
 .button {
 	background-color: Transparent;
+	font-size: medium;
 	outline: none;
 	border: none;
 	width: 100%;
@@ -72,7 +73,9 @@
 }
 
 .search {
-	background-color: Transparent;
+	font-size: medium;
+	width:100%;
+	background-color: white;
 	margin:5px 0;
 	border: 1px solid #cfcfcf;
 }

@@ -72,7 +72,7 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 		result.setStyleName(FICONTEXTRESOURCES.getCSS().option());
 		proteinSearch  = new IDGTextBox();
 		proteinSearch.addStyleName(FICONTEXTRESOURCES.getCSS().search());
-		proteinSearch.getElement().setPropertyString("placeholder", "Search proteins...");
+		proteinSearch.getElement().setPropertyString("placeholder", "O43521,Q9UJU2,JAG1");
 		proteinSearch.addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
