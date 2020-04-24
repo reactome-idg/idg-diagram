@@ -61,6 +61,7 @@
 	border-radius: 16px;
 	width: 100%;
  	color: white;
+ 	margin: 5px 0;
 }
 
 .button:hover {
@@ -76,4 +77,15 @@
 	background-color: white;
 	margin:5px 0;
 	border: 1px solid #cfcfcf;
+}
+
+.header {
+	margin: 0 auto;
+	text-align: center;
+	font-weight: bolder;
+	border-bottom: 1px solid grey;
+}
+
+.layoutPanel {
+	border-bottom: 1px solid grey;
 }

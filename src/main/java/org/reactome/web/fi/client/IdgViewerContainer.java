@@ -233,7 +233,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	}
 	
 	private void onFISettingsButtonClicked() {
-		fIViewVisualizer.openSettingsPopup();
+		fIViewVisualizer.openSettingsPopup(fiSettingsButton.getAbsoluteLeft(),fiSettingsButton.getAbsoluteTop());
 	}
 
 	private void toggleOverlayPanel() {

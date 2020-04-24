@@ -34,8 +34,8 @@ import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.model.drug.Drug;
 import org.reactome.web.fi.data.model.drug.DrugInteraction;
 import org.reactome.web.fi.client.popups.EdgeContextPanel;
-import org.reactome.web.fi.client.popups.FICoreCtxPanel;
-import org.reactome.web.fi.client.popups.FICoreCtxPanel.LayoutChangeHandler;
+import org.reactome.web.fi.client.popups.FISettingsPanel;
+import org.reactome.web.fi.client.popups.FISettingsPanel.LayoutChangeHandler;
 import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.popups.NodeDialogPanel;
 import org.reactome.web.fi.events.FIViewMessageEvent;
@@ -79,6 +79,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	private EdgeContextPanel edgeContextPanel;
 	private Set<NodeDialogPanel> nodeContextPanelMap;
+	private FISettingsPanel settingsMenu;
 	
 	private GraphObject selected;
 	
@@ -138,7 +139,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 			
 			cytoscapeInitialised = false;
 			
-			//set up popup for info and set location
+			//set up settingsMenu for info and set location
 			infoPopup = new FIViewInfoPopup();
 			infoPopup.hide();
 		}
@@ -211,9 +212,11 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		eventBus.fireEventFromSource(new FIViewMessageEvent(false), this);
 	}
 
-	public void openSettingsPopup() {
-		// TODO Auto-generated method stub
-		
+	public void openSettingsPopup(int x, int y) {
+		if(settingsMenu == null)
+			settingsMenu = new FISettingsPanel(cy.getLayout(),this);
+		settingsMenu.show();
+		settingsMenu.setPopupPosition(x, y);
 	}
 	
 	@Override
@@ -308,9 +311,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onCytoscapeCoreContextEvent(int x, int y) {
-		FICoreCtxPanel popup = new FICoreCtxPanel(cy.getLayout(),this);
-		popup.show();
-		setPopupLocation(x, y, popup);
+		//TODO auto-generated method stub
 	}
 
 	@Override
@@ -673,13 +674,9 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	public void onLayoutChange(FILayoutType type) {
 		cy.setCytoscapeLayout(type.toString().toLowerCase());
 	}
-
-	public void showHideDrugs() {
-		if(showingDrugs)hideDrugs();
-		else showDrugs();
-	}
 	
-	private void showDrugs() {
+	@Override
+	public void showDrugs() {
 		int edgeCount = ((FIViewContent)context.getContent()).getFIArray().size();
 		for(Drug drug : IDGPopupFactory.get().getDrugs()) {
 			JSONArray edgeArray = new JSONArray();
@@ -706,7 +703,8 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		showingDrugs = true;
 	}
 	
-	private void hideDrugs() {
+	@Override
+	public void hideDrugs() {
 		JSONArray idsToRemove = new JSONArray();
 		presentDrugs.values().forEach(x -> {
 			idsToRemove.set(idsToRemove.size(), new JSONString(x.getName()));

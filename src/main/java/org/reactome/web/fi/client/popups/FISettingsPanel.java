@@ -1,7 +1,6 @@
 package org.reactome.web.fi.client.popups;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,8 +16,11 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 
@@ -27,11 +29,12 @@ import com.google.gwt.user.client.ui.ListBox;
  * @author brunsont
  *
  */
-public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
+public class FISettingsPanel extends DialogBox implements ChangeHandler {
 	
 	public interface LayoutChangeHandler{
 		void onLayoutChange(FILayoutType type);
-		void showHideDrugs();
+		void showDrugs();
+		void hideDrugs();
 		void searchProteins(Set<String> searchlist);
 	}
 
@@ -41,9 +44,9 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 	private String currentLayout;
 	private IDGTextBox proteinSearch;
 	private CommonButton overlayDrugs;
-	private boolean showingDrugs;
+	private boolean showingDrugs = false;
 	
-	public FICoreCtxPanel(String currentLayout, LayoutChangeHandler handler) {
+	public FISettingsPanel(String currentLayout, LayoutChangeHandler handler) {
 		this.currentLayout = currentLayout;
 		this.handler = handler;
 		setAutoHideEnabled(true);
@@ -53,20 +56,40 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 		
 		layoutSelector = new ListBox();
 		
-		Label title = new Label("Choose Layout:");
-		title.setStyleName(FICONTEXTRESOURCES.getCSS().layoutLabel());
-		main.add(title);
-		main.add(layoutSelector = new ListBox());
-		layoutSelector.setMultipleSelect(false);
-		setSelections();
-		
+		main.add(getLayoutSelector());		
 		main.add(getShowDrugsButton());
 		main.add(getProteinSearchBox());
 		
+		setSelections();
 		initHandlers();
 		
-		this.add(main);
+		setTitlePanel();
+		setWidget(main);
 		
+	}
+	
+	private void setTitlePanel() {
+		FlowPanel fp = new FlowPanel();
+		InlineLabel title = new InlineLabel("FIView Options");
+		fp.add(title);
+		
+		SafeHtml safe = SafeHtmlUtils.fromTrustedString(fp.toString());
+		getCaption().setHTML(safe);
+		getCaption().asWidget().setStyleName(FICONTEXTRESOURCES.getCSS().header());
+	}
+	
+	private FlowPanel getLayoutSelector() {
+		FlowPanel result = new FlowPanel();
+		result.setStyleName(FICONTEXTRESOURCES.getCSS().layoutPanel());
+		
+		Label title = new Label("Choose Layout:");
+		title.setStyleName(FICONTEXTRESOURCES.getCSS().layoutLabel());
+		result.add(title);
+		
+		result.add(layoutSelector = new ListBox());
+		layoutSelector.setMultipleSelect(false);
+		
+		return result;
 	}
 
 	private FlowPanel getProteinSearchBox() {
@@ -99,14 +122,22 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 
 	private FlowPanel getShowDrugsButton() {
 		FlowPanel result = new FlowPanel();
-		result.add(overlayDrugs = new CommonButton("Show/Hide Drugs", FICONTEXTRESOURCES.getCSS().button(), e -> onShowDrugTargetsClicked()));
+		result.add(overlayDrugs = new CommonButton("Show Drugs", FICONTEXTRESOURCES.getCSS().button(), e -> onShowDrugTargetsClicked()));
 		
 		return result;
 	}
 
 	private void onShowDrugTargetsClicked() {
-		handler.showHideDrugs();
-		this.hide();
+		if(showingDrugs)handler.hideDrugs();
+		else handler.showDrugs();
+		
+		showingDrugs = !showingDrugs;
+		updateButtonText();
+	}
+
+	private void updateButtonText() {
+		if(showingDrugs) overlayDrugs.setText("Remove Drugs");
+		else overlayDrugs.setText("Show Drugs");
 	}
 
 	private void setSelections() {
@@ -141,7 +172,7 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 		ResourceCSS getCSS();
 	}
 	
-	@CssResource.ImportedWithPrefix("idgDiagram-FICoreCtxPanel")
+	@CssResource.ImportedWithPrefix("idgDiagram-FISettingsPanel")
 	public interface ResourceCSS extends CssResource {
 		String CSS = "org/reactome/web/fi/client/FIContextPanel.css";
 		
@@ -152,5 +183,9 @@ public class FICoreCtxPanel extends DialogBox implements ChangeHandler {
 		String button();
 				
 		String search();
+		
+		String header();
+		
+		String layoutPanel();
 	}
 }
