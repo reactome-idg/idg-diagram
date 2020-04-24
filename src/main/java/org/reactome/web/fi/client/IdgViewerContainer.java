@@ -129,14 +129,12 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		this.add(new CytoscapeViewLoadingMessage(eventBus));
 		fiviewButton = new IDGIconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View");
 		diagramButton = new IDGIconButton(IDGRESOURCES.diagramIcon(), IDGRESOURCES.getCSS().diagram(), "Diagram View");
+		diagramButton.setVisible(false);
 		overlayButton = new IDGIconButton(IDGRESOURCES.overlayIcon(), IDGRESOURCES.getCSS().cytoscape(), "Select an Overlay");
 		overlayLauncher = new OverlayLauncherDisplay(eventBus);
 		
 		//adds diagramButton and fiviewButton. sets fiview button as default to show
 		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
-		super.leftTopLauncher.getMainControlPanel().getWidget(
-				super.leftTopLauncher.getMainControlPanel()
-				.getWidgetIndex(diagramButton)).setVisible(false);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
 		super.leftTopLauncher.getMainControlPanel().add(overlayButton);
 		overlayControlLegend = new OverlayControlLegend(eventBus);
@@ -325,38 +323,26 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	}
 	
 	private void showCytoscapeButton() {
-		super.leftTopLauncher.getMainControlPanel().getWidget(
-				super.leftTopLauncher.getMainControlPanel()
-				.getWidgetIndex(fiviewButton)).setVisible(true);
+		fiviewButton.setVisible(true);
 		showOverlayButton();
 	}
 
 	private void showDiagramButton() {
-		super.leftTopLauncher.getMainControlPanel().getWidget(
-				super.leftTopLauncher.getMainControlPanel()
-				.getWidgetIndex(diagramButton)).setVisible(true);
+		diagramButton.setVisible(true);
 		showOverlayButton();
 	}
 	
 	private void showOverlayButton() {
-		super.leftTopLauncher.getMainControlPanel().getWidget(
-				super.leftTopLauncher.getMainControlPanel()
-				.getWidgetIndex(overlayButton)).setVisible(true);
+		overlayButton.setVisible(true);
 	}
 	
 	/**
 	 * hides fiview, diagram, and overlay button. Also hides overlayDialogPanel
 	 */
 	private void hideButtons() {
-		super.leftTopLauncher.getMainControlPanel().getWidget(
-				super.leftTopLauncher.getMainControlPanel()
-				.getWidgetIndex(fiviewButton)).setVisible(false);
-		super.leftTopLauncher.getMainControlPanel().getWidget(
-				super.leftTopLauncher.getMainControlPanel()
-				.getWidgetIndex(diagramButton)).setVisible(false);
-		super.leftTopLauncher.getMainControlPanel().getWidget(
-				super.leftTopLauncher.getMainControlPanel()
-				.getWidgetIndex(overlayButton)).setVisible(false);
+		fiviewButton.setVisible(false);
+		diagramButton.setVisible(false);
+		overlayButton.setVisible(false);
 		overlayLauncher.hide();
 	}
 	
