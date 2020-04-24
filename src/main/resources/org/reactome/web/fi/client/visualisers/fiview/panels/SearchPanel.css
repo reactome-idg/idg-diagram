@@ -1,0 +1,63 @@
+.launchPanel{
+    background-color: rgba(88, 195, 229, 0.8);
+    border: none;
+    border-radius: 16px;
+    max-height: 32px;
+    width: 32px;
+    overflow: hidden !important;
+
+    -webkit-box-shadow: 3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow:    3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Firefox 3.5 - 3.6 */
+    box-shadow:         3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+
+    -webkit-transition: width 0.3s, max-height 0.1s;
+    -moz-transition: width 0.3s, max-height 0.1s;
+    transition: width 0.3s, max-height 0.1s;
+}
+
+.launch {
+    float: left;
+    background-color: #58C3E5;
+    border: none;
+    outline: none;
+    border-radius: 16px;
+    color: white;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.launch>div {
+    margin: 0;
+    position: relative;
+}
+
+.launch span {
+    display: none;
+}
+
+.launch img {
+    display: block;
+    height: 32px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    -webkit-user-drag: none; /* Prevents dragging of images/divs etc */
+}
+
+.launch:hover {
+    background-color: #1E95CF;
+    cursor: pointer !important;
+}
+
+.launch:active:hover {
+    background-color: #066B9E;
+    cursor: pointer !important;
+}
+
+.launch:disabled, .launch:disabled:hover, .launch:disabled:active{
+    background-color: #9a9c9e;
+    cursor: default !important;
+}
