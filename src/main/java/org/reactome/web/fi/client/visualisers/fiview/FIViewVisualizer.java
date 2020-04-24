@@ -208,7 +208,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		cy.addCytoscapeNodes("cy", ((FIViewContent)content).getProteinArray());
 		cy.addCytoscapeEdge("cy", ((FIViewContent)content).getFIArray().toString());
 		
-		cy.setCytoscapeLayout("cose");
+		cy.setCytoscapeLayout("cose"); //sets default layout
 		eventBus.fireEventFromSource(new FIViewMessageEvent(false), this);
 	}
 
@@ -699,7 +699,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 			}
 		}
 		
-		cy.setCytoscapeLayout("cose");
+		cy.setCytoscapeLayout(cy.getLayout());
 		showingDrugs = true;
 	}
 	
