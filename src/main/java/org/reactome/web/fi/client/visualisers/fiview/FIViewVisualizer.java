@@ -704,7 +704,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	private void hideDrugs() {
 		JSONArray idsToRemove = new JSONArray();
 		presentDrugs.values().forEach(x -> {
-			idsToRemove.set(idsToRemove.size(), new JSONString("DG"+x.getId()));
+			idsToRemove.set(idsToRemove.size(), new JSONString(x.getName()));
 		});
 		cy.removeCytoscapeNodes(idsToRemove.toString());
 		presentDrugs.clear();
