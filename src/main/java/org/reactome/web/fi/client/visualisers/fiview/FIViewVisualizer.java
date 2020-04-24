@@ -211,6 +211,11 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		eventBus.fireEventFromSource(new FIViewMessageEvent(false), this);
 	}
 
+	public void openSettingsPopup() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	@Override
 	public void onNodeClicked(String id, String name) {
 		infoPopup.hide();		

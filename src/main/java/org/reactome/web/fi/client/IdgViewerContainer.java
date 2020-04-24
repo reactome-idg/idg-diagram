@@ -79,6 +79,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
+	private IDGIconButton fiSettingsButton;
 	private FIViewVisualizer fIViewVisualizer;
 	private IDGIconButton overlayButton;
 	private OverlayColourLegend overlayColourLegend;
@@ -131,12 +132,15 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		diagramButton = new IDGIconButton(IDGRESOURCES.diagramIcon(), IDGRESOURCES.getCSS().diagram(), "Diagram View");
 		diagramButton.setVisible(false);
 		overlayButton = new IDGIconButton(IDGRESOURCES.overlayIcon(), IDGRESOURCES.getCSS().cytoscape(), "Select an Overlay");
+		fiSettingsButton = new IDGIconButton(IDGRESOURCES.gear(), IDGRESOURCES.getCSS().settings(), "Configure FIView");
+		fiSettingsButton.setVisible(false);
 		overlayLauncher = new OverlayLauncherDisplay(eventBus);
 		
 		//adds diagramButton and fiviewButton. sets fiview button as default to show
 		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
 		super.leftTopLauncher.getMainControlPanel().add(overlayButton);
+		super.leftTopLauncher.getMainControlPanel().add(fiSettingsButton);
 		overlayControlLegend = new OverlayControlLegend(eventBus);
 		super.bottomContainerPanel.add(overlayControlLegend);
 		super.bottomContainerPanel.remove(super.interactorsControl);
@@ -167,12 +171,12 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 				vis.asWidget().setVisible(false);
 			}
 			fIViewVisualizer.asWidget().setVisible(true);
-			showDiagramButton();
+			showFIVizualizerButtons();
 			activeVisualiser = fIViewVisualizer;
 			return;
 		}
 		else if(context.getContent().getType() == Content.Type.DIAGRAM && !CytoscapeViewFlag.isCytoscapeViewFlag()) {
-			showCytoscapeButton();
+			showDiagramButtons();
 			super.setActiveVisualiser(context);
 		}
 		super.setActiveVisualiser(context);
@@ -224,9 +228,14 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	private void bind() {
 		fiviewButton.addClickHandler(e -> cytoscapeButtonPressed());
 		diagramButton.addClickHandler(e -> cytoscapeButtonPressed());
-		overlayButton.addClickHandler(e -> toggleOverlayPanel()); 
+		overlayButton.addClickHandler(e -> toggleOverlayPanel());
+		fiSettingsButton.addClickHandler(e -> onFISettingsButtonClicked());
 	}
 	
+	private void onFISettingsButtonClicked() {
+		fIViewVisualizer.openSettingsPopup();
+	}
+
 	private void toggleOverlayPanel() {
 		overlayLauncher.center();
 		overlayLauncher.show();
@@ -322,13 +331,20 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 
 	}
 	
-	private void showCytoscapeButton() {
+	/**
+	 * Shows buttons to be present on DiagramVisualizer
+	 */
+	private void showDiagramButtons() {
 		fiviewButton.setVisible(true);
 		showOverlayButton();
 	}
 
-	private void showDiagramButton() {
+	/**
+	 * shows buttons to be present on FiViewVisualizer
+	 */
+	private void showFIVizualizerButtons() {
 		diagramButton.setVisible(true);
+		fiSettingsButton.setVisible(true);
 		showOverlayButton();
 	}
 	
@@ -343,6 +359,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		fiviewButton.setVisible(false);
 		diagramButton.setVisible(false);
 		overlayButton.setVisible(false);
+		fiSettingsButton.setVisible(false);
 		overlayLauncher.hide();
 	}
 	
@@ -517,6 +534,9 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
         
         @Source("images/OverlayIcon.png")
         ImageResource overlayIcon();
+        
+        @Source("images/gear.png")
+        ImageResource gear();
     }
 
     /**
@@ -532,5 +552,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
         String cytoscape();
         
         String diagram();
+        
+        String settings();
     }
 }
