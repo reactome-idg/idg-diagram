@@ -1,19 +1,12 @@
 package org.reactome.web.fi.client.popups;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.reactome.web.fi.common.CommonButton;
-import org.reactome.web.fi.common.IDGTextBox;
 import org.reactome.web.fi.model.FILayoutType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -35,14 +28,12 @@ public class FISettingsPanel extends DialogBox implements ChangeHandler {
 		void onLayoutChange(FILayoutType type);
 		void showDrugs();
 		void hideDrugs();
-		void searchProteins(Set<String> searchlist);
 	}
 
 	private LayoutChangeHandler handler;
 	
 	private ListBox layoutSelector;
 	private String currentLayout;
-	private IDGTextBox proteinSearch;
 	private CommonButton overlayDrugs;
 	private boolean showingDrugs = false;
 	
@@ -58,7 +49,6 @@ public class FISettingsPanel extends DialogBox implements ChangeHandler {
 		
 		main.add(getLayoutSelector());		
 		main.add(getShowDrugsButton());
-		main.add(getProteinSearchBox());
 		
 		setSelections();
 		initHandlers();
@@ -90,34 +80,6 @@ public class FISettingsPanel extends DialogBox implements ChangeHandler {
 		layoutSelector.setMultipleSelect(false);
 		
 		return result;
-	}
-
-	private FlowPanel getProteinSearchBox() {
-		FlowPanel result = new FlowPanel();
-		proteinSearch  = new IDGTextBox();
-		proteinSearch.addStyleName(FICONTEXTRESOURCES.getCSS().search());
-		proteinSearch.getElement().setPropertyString("placeholder", "O43521,Q9UJU2,JAG1");
-		proteinSearch.addKeyDownHandler(new KeyDownHandler() {
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-					searchForProteins();
-			}
-		});
-		
-		result.add(proteinSearch);
-		
-		return result;
-	}
-
-	protected void searchForProteins() {
-		String searchString = proteinSearch.getText();
-		Set<String> searchSet = new HashSet<>();
-		if(searchString.contains(","))
-			searchSet.addAll(Arrays.asList(searchString.split(",")));
-		else searchSet.add(searchString);
-		
-		handler.searchProteins(searchSet);
 	}
 
 	private FlowPanel getShowDrugsButton() {
@@ -174,16 +136,14 @@ public class FISettingsPanel extends DialogBox implements ChangeHandler {
 	
 	@CssResource.ImportedWithPrefix("idgDiagram-FISettingsPanel")
 	public interface ResourceCSS extends CssResource {
-		String CSS = "org/reactome/web/fi/client/FIContextPanel.css";
+		String CSS = "org/reactome/web/fi/client/FISettingsPanel.css";
 		
 		String fipopup();
 		
 		String layoutLabel();
 		
 		String button();
-				
-		String search();
-		
+						
 		String header();
 		
 		String layoutPanel();

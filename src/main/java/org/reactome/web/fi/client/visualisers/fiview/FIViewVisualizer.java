@@ -2,7 +2,6 @@ package org.reactome.web.fi.client.visualisers.fiview;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -59,7 +58,6 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -76,8 +74,8 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
-	
 	private Context context;
+	private FIViewVisualizerUtils fiUtils;
 	
 	private EdgeContextPanel edgeContextPanel;
 	private Set<NodeDialogPanel> nodeContextPanelMap;
@@ -107,6 +105,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		super();
 		this.getElement().addClassName("pwp-FIViz");
 		this.eventBus = eventBus;
+		this.fiUtils = new FIViewVisualizerUtils(eventBus);
 		
 		edgeContextPanel = new EdgeContextPanel(eventBus);
 		nodeContextPanelMap = new HashSet<>();
@@ -266,10 +265,11 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		edgeHoveredFlag = true;
 		
 		//Fire GraphObjectSelectedEvent
-		Long dbId= Long.parseLong(sortGraphObject(fi.get("reactomeSources")));
+		Long dbId= Long.parseLong(fiUtils.sortGraphObject(fi.get("reactomeSources")));
 		GraphObject graphObject = context.getContent().getDatabaseObject(dbId);
 		eventBus.fireEventFromSource(new GraphObjectHoveredEvent(graphObject),  this);
 		
+		//Updates continuous overlay legend if needed
 		if(dataOverlay != null && !dataOverlay.isDiscrete())
 			eventBus.fireEventFromSource(new FIViewOverlayEdgeHoveredEvent(getNodeExpression(fi)), this);
 	}
@@ -295,7 +295,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		cytoscapeClickedFlag = true;
 		
 		//Fire GraphObjectSelectedEvent
-		Long dbId= Long.parseLong(sortGraphObject(fi.get("reactomeSources")));
+		Long dbId= Long.parseLong(fiUtils.sortGraphObject(fi.get("reactomeSources")));
 		GraphObject graphObject = context.getContent().getDatabaseObject(dbId);
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
 		
@@ -424,52 +424,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	public void contentRequested() {
 		context = null;
 		cy.clearCytoscapeGraph();
-	}
-	
-	/**
-	 * recieves a set of reactomeSources from an edge hovered or edge clicked event and sorts it.
-	 * Sorting preferences returning the reactomeId of the source with the lowest reactomeId and source type of "Reaction."
-	 * If no reaction exists in a set of sourcesFlowPanel, the lowest reactomeId with source type of "Complex" will be returned.
-	 * If no source type exists on any of the passed in sourcesFlowPanel, it will return the lowest reactomeId present.
-	 * @param reactomeSources
-	 * @return
-	 */
-	private String sortGraphObject(JSONValue reactomeSources) {
-
-		List<JSONObject> objList = new ArrayList<>();
-		
-		JSONArray jsonArray = reactomeSources.isArray();
-		
-		//parse over jsonArray, convert each source to a FIEntityNode, and adds to a FIEntityNode array list
-		if(jsonArray != null) {
-			for(int i=0; i<jsonArray.size(); i++) {
-				JSONObject obj = jsonArray.get(i).isObject();
-				objList.add(obj);
-			}
-		}
-		
-		//return dbId of the single source passed in
-		if(objList.isEmpty()) {
-			JSONObject obj = reactomeSources.isObject();
-			return obj.get("reactomeId").isString().stringValue();
-		}
-			
-		//Sorts sourcesList by dbId
-		Collections.sort(objList, new Comparator<JSONObject>() {
-			@Override
-			public int compare(JSONObject o1, JSONObject o2) {
-				return Long.compare(Long.parseLong(o1.get("reactomeId").isString().stringValue()), Long.parseLong(o2.get("reactomeId").isString().stringValue()));
-			}
-		});
-		
-		//Sends first reaction when iterating over array from low to high DbId
-		for (JSONObject obj : objList) {
-			if (obj.get("sourceType").isString().toString().toUpperCase().contentEquals("REACTION"));
-				return obj.get("reactomeId").isString().stringValue();
-		}
-		
-		//If no obj in objList has a sourceType, send first entry, which will have lowest DbId after sorting above.
-		return objList.get(0).get("reactomeId").isString().stringValue();
 	}
 
 	@Override
@@ -723,18 +677,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		JSONArray proteins = new JSONArray();
 		Map<String,String> geneToUniprot = PairwiseInfoService.getGeneToUniprotMap();
 		event.getSearchItems().forEach(x ->{
-			if(geneToUniprot.containsKey(x.toUpperCase())) 
-				x = geneToUniprot.get(x.toUpperCase());
-			proteins.set(proteins.size(), new JSONString(x));
-		});
-		cy.selectNodes(proteins.toString());
-	}
-	
-	@Override
-	public void searchProteins(Set<String> searchList) {
-		JSONArray proteins = new JSONArray();
-		Map<String,String> geneToUniprot = PairwiseInfoService.getGeneToUniprotMap();
-		searchList.forEach(x ->{
 			if(geneToUniprot.containsKey(x.toUpperCase())) 
 				x = geneToUniprot.get(x.toUpperCase());
 			proteins.set(proteins.size(), new JSONString(x));
