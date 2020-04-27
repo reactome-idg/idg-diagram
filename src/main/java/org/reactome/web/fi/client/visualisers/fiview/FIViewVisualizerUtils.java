@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+
+import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
+import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
+import org.reactome.web.fi.model.DataOverlay;
+import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.json.client.JSONArray;
@@ -67,6 +73,72 @@ public class FIViewVisualizerUtils {
 		
 		//If no obj in objList has a sourceType, send first entry, which will have lowest DbId after sorting above.
 		return objList.get(0).get("reactomeId").isString().stringValue();
+	}
+	
+	/**
+	 * Renders overlay for continuous expression data from TCRD server
+	 * @param dataOverlay
+	 */
+	public void overlayContinuousData(DataOverlay dataOverlay, CytoscapeEntity cy) {
+		ThreeColorGradient gradient = AnalysisColours.get().expressionGradient;
+		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
+			String color = gradient.getColor(k,dataOverlay.getMinValue(),dataOverlay.getMaxValue());
+			cy.highlightNode(v, color);
+		});
+	}
+	
+	/**
+	 * Renders overlay for discrete expression data from TCRD server 
+	 * @param dataOverlay
+	 */
+	public void overlayDiscreteData(DataOverlay dataOverlay, CytoscapeEntity cy) {
+		Map<Double, String> colourMap = OverlayColours.get().getColours();
+		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
+			String color = colourMap.get(new Double(k));
+			cy.highlightNode(v, color);
+		});
+	}
+	
+	/**
+	 * get node color for a given expression
+	 * @param exp
+	 * @param minExp
+	 * @param maxExp
+	 * @return
+	 */
+	public String getExpressionColor(List<Double> exp, Double minExp, Double maxExp, int selectedExpCol) {
+		double value = minExp;
+		if(exp != null)
+			value = exp.get(selectedExpCol);
+		return AnalysisColours.get().expressionGradient.getColor(value, minExp, maxExp);
+	}
+	
+	/**
+	 * get node color for given regulation
+	 * @param exp
+	 * @param minExp
+	 * @return
+	 */
+	public String getRegulationColor(List<Double> exp, Double minExp, int selectedExpCol) {
+		double value = minExp;
+		if(exp != null)
+			value = exp.get(selectedExpCol);
+		return AnalysisColours.get().regulationColorMap.getColor((int)value);
+	}
+	
+	/**
+	 * Gets the expression of the source and target of an FI.
+	 * Removes null values.
+	 * @param fi
+	 * @param dataOverlay
+	 * @return
+	 */
+	public List<Double> getNodeExpression(JSONObject fi, DataOverlay dataOverlay) {
+		List<Double> expression = new ArrayList<>();
+		expression.add(dataOverlay.getIdentifierValueMap().get(fi.get("source").isString().stringValue()));
+		expression.add(dataOverlay.getIdentifierValueMap().get(fi.get("target").isString().stringValue()));
+		expression.removeAll(Collections.singleton(null));
+		return expression;
 	}
 	
 }

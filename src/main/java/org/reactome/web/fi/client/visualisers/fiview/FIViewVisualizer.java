@@ -271,7 +271,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		
 		//Updates continuous overlay legend if needed
 		if(dataOverlay != null && !dataOverlay.isDiscrete())
-			eventBus.fireEventFromSource(new FIViewOverlayEdgeHoveredEvent(getNodeExpression(fi)), this);
+			eventBus.fireEventFromSource(new FIViewOverlayEdgeHoveredEvent(fiUtils.getNodeExpression(fi, dataOverlay)), this);
 	}
 
 	private void openDrugEdgeHoverPopup(String id, int x, int y) {
@@ -300,16 +300,8 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		eventBus.fireEventFromSource(new GraphObjectSelectedEvent(graphObject, false),  this);
 		
 		if(dataOverlay != null && !dataOverlay.isDiscrete()) {
-			eventBus.fireEventFromSource(new FIViewOverlayEdgeSelectedEvent(getNodeExpression(fi)), this);
+			eventBus.fireEventFromSource(new FIViewOverlayEdgeSelectedEvent(fiUtils.getNodeExpression(fi, dataOverlay)), this);
 		}
-	}
-	
-	private List<Double> getNodeExpression(JSONObject fi) {
-		List<Double> expression = new ArrayList<>();
-		expression.add(dataOverlay.getIdentifierValueMap().get(fi.get("source").isString().stringValue()));
-		expression.add(dataOverlay.getIdentifierValueMap().get(fi.get("target").isString().stringValue()));
-		expression.removeAll(Collections.singleton(null));
-		return expression;
 	}
 	
 	@Override
@@ -550,30 +542,14 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	//highlight expression of a node
 	private void drawAnalysisExpressionNode(GraphObject entity, Double minExp, Double maxExp) {
-		String color = getExpressionColor(((GraphPhysicalEntity)entity).getExpression(), minExp, maxExp);
+		String color = fiUtils.getExpressionColor(((GraphPhysicalEntity)entity).getExpression(), minExp, maxExp, selectedExpCol);
 		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color);
 	}
 	
 	//highlight regulated node
 	private void drawAnalysisRegulationNode(GraphObject entity, Double minExp) {
-		String color = getRegulationColor(((GraphPhysicalEntity)entity).getExpression(), minExp);
+		String color = fiUtils.getRegulationColor(((GraphPhysicalEntity)entity).getExpression(), minExp, selectedExpCol);
 		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color);
-	}
-	
-	//get node color for a given expression
-	private String getExpressionColor(List<Double> exp, Double minExp, Double maxExp) {
-		double value = minExp;
-		if(exp != null)
-			value = exp.get(selectedExpCol);
-		return AnalysisColours.get().expressionGradient.getColor(value, minExp, maxExp);
-	}
-	
-	//get node color for given regulation
-	private String getRegulationColor(List<Double> exp, Double minExp) {
-		double value = minExp;
-		if(exp != null)
-			value = exp.get(selectedExpCol);
-		return AnalysisColours.get().regulationColorMap.getColor((int)value);
 	}
 	
 	@Override
@@ -704,33 +680,9 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
         this.dataOverlay.updateIdentifierValueMap();
 		
 		if(dataOverlay.isDiscrete())
-			overlayDiscreteData();
+			fiUtils.overlayDiscreteData(dataOverlay, cy);
 		else if(!dataOverlay.isDiscrete())
-			overlayContinuousData();
-	}
-
-	/**
-	 * Renders overlay for continuous expression data from TCRD server
-	 * @param dataOverlay
-	 */
-	private void overlayContinuousData() {
-		ThreeColorGradient gradient = AnalysisColours.get().expressionGradient;
-		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
-			String color = gradient.getColor(k,dataOverlay.getMinValue(),dataOverlay.getMaxValue());
-			cy.highlightNode(v, color);
-		});
-	}
-
-	/**
-	 * Renders overlay for discrete expression data from TCRD server 
-	 * @param dataOverlay
-	 */
-	private void overlayDiscreteData() {
-		Map<Double, String> colourMap = OverlayColours.get().getColours();
-		dataOverlay.getIdentifierValueMap().forEach((v,k) -> {
-			String color = colourMap.get(new Double(k));
-			cy.highlightNode(v, color);
-		});
+			fiUtils.overlayContinuousData(dataOverlay, cy);
 	}
 	
 	/**
