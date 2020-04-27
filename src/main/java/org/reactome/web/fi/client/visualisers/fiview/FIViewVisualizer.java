@@ -1,7 +1,6 @@
 package org.reactome.web.fi.client.visualisers.fiview;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -27,7 +26,6 @@ import org.reactome.web.diagram.handlers.AnalysisProfileChangedHandler;
 import org.reactome.web.diagram.handlers.ExpressionColumnChangedHandler;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.profiles.interactors.InteractorColours;
-import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.model.drug.Drug;
@@ -46,7 +44,6 @@ import org.reactome.web.fi.handlers.FireGraphObjectSelectedHandler;
 import org.reactome.web.fi.handlers.SearchFINodesHandler;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.FILayoutType;
-import org.reactome.web.fi.overlay.profiles.OverlayColours;
 import org.reactome.web.fi.tools.popup.DrugTargetContextPanel;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
@@ -105,7 +102,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		super();
 		this.getElement().addClassName("pwp-FIViz");
 		this.eventBus = eventBus;
-		this.fiUtils = new FIViewVisualizerUtils(eventBus);
+		this.fiUtils = new FIViewVisualizerUtils();
 		
 		edgeContextPanel = new EdgeContextPanel(eventBus);
 		nodeContextPanelMap = new HashSet<>();

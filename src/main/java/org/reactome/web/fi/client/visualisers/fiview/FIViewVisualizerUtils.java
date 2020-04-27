@@ -11,8 +11,7 @@ import org.reactome.web.diagram.util.gradient.ThreeColorGradient;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.json.client.JSONArray;
+ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 
@@ -22,12 +21,6 @@ import com.google.gwt.json.client.JSONValue;
  *
  */
 public class FIViewVisualizerUtils {
-
-	private EventBus eventBus;
-	
-	public FIViewVisualizerUtils(EventBus eventBus) {
-		this.eventBus = eventBus;
-	}
 	
 	/**
 	 * recieves a set of reactomeSources from an edge hovered or edge clicked event and sorts it.
