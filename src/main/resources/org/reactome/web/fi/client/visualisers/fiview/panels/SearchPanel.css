@@ -61,3 +61,130 @@
     background-color: #9a9c9e;
     cursor: default !important;
 }
+
+.input {
+    display: inline-block;
+    border-radius: 5px !important;
+    position: relative !important;
+    margin: 5px 0 0 4px !important;
+    height: 20px !important;
+    width: 220px !important;
+    border: none !important;
+    background-color: #23688b !important;
+    font-size: 14px !important;
+    opacity: 0.2 !important;
+    color: #23688b !important;
+    padding: 1px 22px 1px 5px !important;
+    outline: none !important;
+
+    transition: opacity 0.3s ease-in-out !important;
+    -moz-transition: opacity 0.3s ease-in-out !important;
+    -webkit-transition: opacity 0.3s ease-in-out !important;
+
+    box-sizing: content-box !important;
+    vertical-align: baseline !important;
+    line-height: normal !important;
+}
+
+.inputActive {
+    opacity: 0.8 !important;
+    margin: 5px 0 0 4px !important;
+    color: #FFF !important;
+}
+
+.inputActive::-webkit-input-placeholder {
+    color: #bcbcbc;
+}
+
+.clearBtn {
+    position: absolute;
+    background-color: transparent;
+    border: none;
+    border-radius: 9px;
+    color: white;
+    margin-left: -18px;
+    margin-top: 9px;
+    padding: 1px 1px 0 1px;
+    outline: none;
+    opacity: 0.6;
+}
+
+.clearBtn span {
+    vertical-align: middle !important;
+    display: inline-block;
+}
+
+.clearBtn img {
+    height: 12px;
+    width: auto;
+
+    vertical-align: top !important;
+
+    user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.clearBtn:hover {
+    cursor: pointer !important;
+    opacity: 0.8;
+}
+
+.clearBtn:active:hover {
+    cursor: pointer !important;
+    opacity: 1;
+}
+
+.executeBtn {
+    position: absolute;
+    background-color: #1e94d0;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    margin-left: 5px;
+    margin-top: 5px;
+    padding: 1px 1px 0 1px;
+    outline: none;
+    opacity: 0.8;
+    width: 22px;
+    height: 22px;
+}
+
+.executeBtn span {
+    vertical-align: middle !important;
+    display: inline-block;
+}
+
+.executeBtn img {
+    height: 12px;
+    width: auto;
+    vertical-align: baseline !important;
+
+    user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.executeBtn:hover {
+    cursor: pointer !important;
+    opacity: 0.9;
+}
+
+.executeBtn:active:hover {
+    cursor: pointer !important;
+    opacity: 1;
+}
+
+.executeBtn:disabled {
+    background-color: darkgray;
+}
+
+.launchPanelExpanded{
+    width: 345px;
+}
