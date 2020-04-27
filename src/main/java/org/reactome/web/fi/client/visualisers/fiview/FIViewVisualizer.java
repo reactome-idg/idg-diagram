@@ -42,7 +42,9 @@ import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.FIViewOverlayEdgeHoveredEvent;
 import org.reactome.web.fi.events.FIViewOverlayEdgeSelectedEvent;
 import org.reactome.web.fi.events.FireGraphObjectSelectedEvent;
+import org.reactome.web.fi.events.SearchFINodesEvent;
 import org.reactome.web.fi.handlers.FireGraphObjectSelectedHandler;
+import org.reactome.web.fi.handlers.SearchFINodesHandler;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.FILayoutType;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
@@ -70,7 +72,7 @@ import com.google.gwt.user.client.ui.DialogBox;
  *
  */
 public class FIViewVisualizer extends AbsolutePanel implements Visualiser, AnalysisProfileChangedHandler,
-	ExpressionColumnChangedHandler, FireGraphObjectSelectedHandler, CytoscapeEntity.Handler, LayoutChangeHandler{
+	ExpressionColumnChangedHandler, FireGraphObjectSelectedHandler, SearchFINodesHandler, CytoscapeEntity.Handler, LayoutChangeHandler{
 	
 	private EventBus eventBus;
 	private CytoscapeEntity cy;
@@ -149,6 +151,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		eventBus.addHandler(AnalysisProfileChangedEvent.TYPE, this);
 		eventBus.addHandler(ExpressionColumnChangedEvent.TYPE, this);
 		eventBus.addHandler(FireGraphObjectSelectedEvent.TYPE, this);
+		eventBus.addHandler(SearchFINodesEvent.TYPE, this);
 	}
 
 	@Override
@@ -715,6 +718,18 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		showingDrugs = false;
 	}
 
+	@Override
+	public void onSearchFINodes(SearchFINodesEvent event) {
+		JSONArray proteins = new JSONArray();
+		Map<String,String> geneToUniprot = PairwiseInfoService.getGeneToUniprotMap();
+		event.getSearchItems().forEach(x ->{
+			if(geneToUniprot.containsKey(x.toUpperCase())) 
+				x = geneToUniprot.get(x.toUpperCase());
+			proteins.set(proteins.size(), new JSONString(x));
+		});
+		cy.selectNodes(proteins.toString());
+	}
+	
 	@Override
 	public void searchProteins(Set<String> searchList) {
 		JSONArray proteins = new JSONArray();

@@ -5,8 +5,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.reactome.web.diagram.common.IconButton;
+import org.reactome.web.fi.events.SearchFINodesEvent;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
@@ -22,7 +26,7 @@ import com.google.gwt.user.client.ui.TextBox;
 public class SearchPanel extends AbsolutePanel{
 
 	private final String OPENING_TEXT = "Search FI nodes";
-	private final int SEARCH_QUERY_MINIMUM_LENGTH = 5;
+	private final int SEARCH_QUERY_MINIMUM_LENGTH = 2;
 	
 	private EventBus eventBus;
 	private boolean isExpanded = false;
@@ -44,6 +48,13 @@ public class SearchPanel extends AbsolutePanel{
 		this.input.setStyleName(RESOURCES.getCSS().input());
 		this.input.getElement().setPropertyString("placeholder", OPENING_TEXT);
 		this.input.getElement().setPropertyBoolean("spellcheck", false);
+		this.input.addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+					executeBtnClicked();
+			}
+		});
 		this.add(input);
 		
 		IconButton clearBtn = new IconButton("", RESOURCES.clear());
@@ -62,11 +73,11 @@ public class SearchPanel extends AbsolutePanel{
 	}
 
 	private void executeBtnClicked() {
-		String query = input.getText().trim();
+		String query = input.getText().replaceAll("\\s", "");
 		if(query.length() < SEARCH_QUERY_MINIMUM_LENGTH) return;
 		
 		Set<String> queryItems = new HashSet<>(Arrays.asList(query.split(",")));
-		//TODO: fire event to search FIView for queryItems
+		eventBus.fireEventFromSource(new SearchFINodesEvent(queryItems), this);
 	}
 
 
