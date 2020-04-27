@@ -28,6 +28,7 @@ import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOver
 import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.DrugTargetRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.PairwiseInteractorRenderer;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualizer;
+import org.reactome.web.fi.client.visualisers.fiview.panels.SearchPanel;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
@@ -79,6 +80,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 
 	private IDGIconButton fiviewButton;
 	private IDGIconButton diagramButton;
+	private SearchPanel fiSearchPanel;
 	private IDGIconButton fiSettingsButton;
 	private FIViewVisualizer fIViewVisualizer;
 	private IDGIconButton overlayButton;
@@ -136,6 +138,8 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		fiSettingsButton.setVisible(false);
 		overlayLauncher = new OverlayLauncherDisplay(eventBus);
 		
+		super.leftTopLauncher.insert(fiSearchPanel = new SearchPanel(eventBus), 1);
+		fiSearchPanel.setVisible(false);
 		//adds diagramButton and fiviewButton. sets fiview button as default to show
 		super.leftTopLauncher.getMainControlPanel().add(diagramButton);
 		super.leftTopLauncher.getMainControlPanel().add(fiviewButton);
@@ -144,8 +148,8 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		overlayControlLegend = new OverlayControlLegend(eventBus);
 		super.bottomContainerPanel.add(overlayControlLegend);
 		super.bottomContainerPanel.remove(super.interactorsControl);
-		this.add(overlayLauncher);		
-				
+		this.add(overlayLauncher);
+		
 		bind();
 		
 		//create custom renderers for rendering over or re-rendering pathway diagrams. 
@@ -335,6 +339,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	 * Shows buttons to be present on DiagramVisualizer
 	 */
 	private void showDiagramButtons() {
+		super.leftTopLauncher.getSearchPanel().setVisible(true);
 		fiviewButton.setVisible(true);
 		showOverlayButton();
 	}
@@ -343,6 +348,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	 * shows buttons to be present on FiViewVisualizer
 	 */
 	private void showFIVizualizerButtons() {
+		fiSearchPanel.setVisible(true);
 		diagramButton.setVisible(true);
 		fiSettingsButton.setVisible(true);
 		showOverlayButton();
@@ -356,6 +362,8 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	 * hides fiview, diagram, and overlay button. Also hides overlayDialogPanel
 	 */
 	private void hideButtons() {
+		super.leftTopLauncher.getSearchPanel().setVisible(false);
+		fiSearchPanel.setVisible(false);
 		fiviewButton.setVisible(false);
 		diagramButton.setVisible(false);
 		overlayButton.setVisible(false);

@@ -1,4 +1,5 @@
 .launchPanel{
+	float:left;
     background-color: rgba(88, 195, 229, 0.8);
     border: none;
     border-radius: 16px;
@@ -186,5 +187,5 @@
 }
 
 .launchPanelExpanded{
-    width: 345px;
+    width: 325px;
 }

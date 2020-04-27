@@ -11,7 +11,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -19,7 +19,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author brunsont
  *
  */
-public class SearchPanel extends FlowPanel{
+public class SearchPanel extends AbsolutePanel{
 
 	private final String OPENING_TEXT = "Search FI nodes";
 	private final int SEARCH_QUERY_MINIMUM_LENGTH = 5;
@@ -30,14 +30,13 @@ public class SearchPanel extends FlowPanel{
 	private TextBox input;
 	
 	public SearchPanel(EventBus eventBus) {
-		setStyleName(RESOURCES.getCSS().launchPanel());
 		this.eventBus = eventBus;
 		
-		initPanel();
+		initPanel();	
 	}
-	
-	
+
 	private void initPanel() {
+		this.setStyleName(RESOURCES.getCSS().launchPanel());
 		IconButton searchBtn = new IconButton(RESOURCES.searchIcon(), RESOURCES.getCSS().launch(),"Search Nodes", e -> expandSearch());
 		this.add(searchBtn);
 		
@@ -60,8 +59,8 @@ public class SearchPanel extends FlowPanel{
 		executeBtn.setTitle("Search");
 		executeBtn.addClickHandler(e -> executeBtnClicked());
 		this.add(executeBtn);
-		
 	}
+
 	private void executeBtnClicked() {
 		String query = input.getText().trim();
 		if(query.length() < SEARCH_QUERY_MINIMUM_LENGTH) return;
@@ -88,16 +87,23 @@ public class SearchPanel extends FlowPanel{
 		else {
 			collapsePanel();
 		}
+		isExpanded = !isExpanded;
 	}
 
 	private void collapsePanel() {
 		removeStyleName(RESOURCES.getCSS().launchPanelExpanded());
+		input.removeStyleName(RESOURCES.getCSS().inputActive());
 	}
 
 
 	private void expandPanel() {
-		// TODO Auto-generated method stub
-		
+		expandPanel(true);
+	}
+
+
+	private void expandPanel(boolean b) {
+		addStyleName(RESOURCES.getCSS().launchPanelExpanded());
+		input.addStyleName(RESOURCES.getCSS().inputActive());
 	}
 
 
@@ -136,6 +142,8 @@ public class SearchPanel extends FlowPanel{
 		String executeBtn();
 		
 		String launchPanelExpanded();
+		
+		String inputActive();
 	}
 	
 }
