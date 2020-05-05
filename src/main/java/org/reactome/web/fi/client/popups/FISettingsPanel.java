@@ -2,13 +2,17 @@ package org.reactome.web.fi.client.popups;
 
 
 import org.reactome.web.fi.common.CommonButton;
+import org.reactome.web.fi.common.IDGIconButton;
 import org.reactome.web.fi.model.FILayoutType;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.TextAlign;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -47,27 +51,34 @@ public class FISettingsPanel extends DialogBox implements ChangeHandler {
 		
 		layoutSelector = new ListBox();
 		
+		main.add(getTitlePanel());
 		main.add(getLayoutSelector());		
 		main.add(getShowDrugsButton());
 		
 		setSelections();
 		initHandlers();
 		
-		setTitlePanel();
 		setWidget(main);
 		
 	}
 	
-	private void setTitlePanel() {
+	private FlowPanel getTitlePanel() {
 		FlowPanel fp = new FlowPanel();
+		fp.setStyleName(FICONTEXTRESOURCES.getCSS().titlePanel());
+		IDGIconButton closeButton = new IDGIconButton(FICONTEXTRESOURCES.gear(), FICONTEXTRESOURCES.getCSS().settings(), "Close Options");
+		closeButton.addClickHandler(e -> closeButtonClicked());
+		fp.add(closeButton);
 		InlineLabel title = new InlineLabel("FIView Options");
+		title.setStyleName(FICONTEXTRESOURCES.getCSS().titleLabel());
 		fp.add(title);
-		
-		SafeHtml safe = SafeHtmlUtils.fromTrustedString(fp.toString());
-		getCaption().setHTML(safe);
-		getCaption().asWidget().setStyleName(FICONTEXTRESOURCES.getCSS().header());
+		return fp;
 	}
 	
+	public void closeButtonClicked() {
+		super.hide();
+		
+	}
+
 	private FlowPanel getLayoutSelector() {
 		FlowPanel result = new FlowPanel();
 		result.setStyleName(FICONTEXTRESOURCES.getCSS().layoutPanel());
@@ -132,6 +143,9 @@ public class FISettingsPanel extends DialogBox implements ChangeHandler {
 	public interface FIContextResources extends ClientBundle {
 		@Source(ResourceCSS.CSS)
 		ResourceCSS getCSS();
+		
+		@Source("../images/gear.png")
+		ImageResource gear();
 	}
 	
 	@CssResource.ImportedWithPrefix("idgDiagram-FISettingsPanel")
@@ -140,12 +154,16 @@ public class FISettingsPanel extends DialogBox implements ChangeHandler {
 		
 		String fipopup();
 		
+		String titlePanel();
+		
+		String titleLabel();
+		
 		String layoutLabel();
 		
 		String button();
-						
-		String header();
-		
+								
 		String layoutPanel();
+		
+		String settings();
 	}
 }

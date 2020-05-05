@@ -9,14 +9,24 @@
     -webkit-box-shadow: 3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
     -moz-box-shadow:    3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Firefox 3.5 - 3.6 */
     box-shadow:         3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
-    padding: 5px;
-    border-radius: 10px;
+    border-radius: 16px;
     border: solid 2px rgb(7, 133, 171);
 
     font-family: Arial Unicode MS, Arial, sans-serif !important;
     font-size: small !important;
 
-    max-width: 320px;
+    max-width: 400px;
+}
+
+.titlePanel {
+	height: 32px;
+	text-align:right;
+}
+
+.titleLabel {
+	padding:5px;
+	font-size: medium;
+	border-bottom: 1px solid grey;
 }
 
 .fipopup select{
@@ -27,7 +37,7 @@
     width: 100%;
     margin: 5px 0;
     outline: none;
-    font-size: medium !important;
+    font-size: small !important;
 }
 
 .fipopup select:hover{
@@ -50,18 +60,19 @@
 }
 
 .layoutLabel{
+	display: block;
     color: rgb(0, 90, 117);
 }
 
 .button {
 	background-color: Transparent;
-	font-size: medium;
+	font-size: small;
 	outline: none;
 	border: 1px solid grey;
 	border-radius: 16px;
-	width: 100%;
+	width: 90%;
  	color: white;
- 	margin: 5px 0;
+ 	margin: 5px;
 }
 
 .button:hover {
@@ -72,13 +83,53 @@
 	color: black;
 }
 
-.header {
-	margin: 0 auto;
-	text-align: center;
-	font-weight: bolder;
+.layoutPanel {
+	margin:0 5px;
+	display: block;
 	border-bottom: 1px solid grey;
 }
 
-.layoutPanel {
-	border-bottom: 1px solid grey;
+.settings {
+	float: left;
+    background-color: #58C3E5;
+    border: none;
+    outline: none;
+    border-radius: 16px;
+    padding: 0;
+    border: 0;
+}
+
+.settings>div {
+    margin: 0;
+    position: relative;
+}
+
+.settings span {
+    display: none;
+}
+
+.settings img {
+    display: block;
+    height: 32px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    -webkit-user-drag: none; /* Prevents dragging of images/divs etc */
+}
+
+.settings:hover {
+    background-color: #1E95CF;
+    cursor: pointer !important;
+}
+
+.settings:active:hover {
+    background-color: #066B9E;
+    cursor: pointer !important;
+}
+
+.settings:disabled, .settings:disabled:hover, .settings:disabled:active{
+    background-color: #9a9c9e;
+    cursor: default !important;
 }
