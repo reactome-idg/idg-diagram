@@ -122,7 +122,7 @@ public class PairwiseFormPanel extends FlowPanel{
 		dataType.addChangeHandler(e -> onDataTypeChanged());
 		result.add(dataType);
 		
-		result.add(new Label("Choose a provenance:"));
+		result.add(new Label("Choose a data source:"));
 		provenanceListBox = new ListBox();
 		provenanceListBox.setStyleName(RESOURCES.getCSS().dataTypeListBox());
 		provenanceListBox.addChangeHandler(e -> onProvenanceListBoxChanged());
@@ -166,7 +166,8 @@ public class PairwiseFormPanel extends FlowPanel{
 			originListBox.addItem("No options to select...");
 			includeOrigin = false;
 		}
-	}
+		
+		checkEnableListBox(originListBox);	}
 
 	/**
 	 * updates bioSources list box
@@ -183,7 +184,17 @@ public class PairwiseFormPanel extends FlowPanel{
 		bioSourcesListBox.clear();
 		for(String item : bioSources)
 			bioSourcesListBox.addItem(item);
+		
+		checkEnableListBox(bioSourcesListBox);
+		
 		onBioSourcesListBoxChanged();
+	}
+	
+	private void checkEnableListBox(ListBox lb) {
+		if(lb.getItemCount() > 1)
+			lb.setEnabled(true);
+		else
+			lb.setEnabled(false);
 	}
 
 	/**
@@ -200,6 +211,9 @@ public class PairwiseFormPanel extends FlowPanel{
 		provenanceListBox.clear();
 		for(String provenance : provenances)
 			provenanceListBox.addItem(provenance);
+		
+		checkEnableListBox(provenanceListBox);
+		
 		onProvenanceListBoxChanged();
 	}
 
