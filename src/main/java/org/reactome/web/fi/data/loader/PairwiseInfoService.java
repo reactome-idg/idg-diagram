@@ -1,7 +1,10 @@
 package org.reactome.web.fi.data.loader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionFactory;
@@ -11,6 +14,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -25,6 +29,11 @@ public class PairwiseInfoService {
 	public interface dataDescHandler{
 		void onDataDescLoaded(PairwiseDescriptionEntities entities);
 		void onDataDescLoadedError(Throwable exception);
+	}
+	
+	public interface peFlagHandler{
+		void onPEFlagsLoaded(List<Long> pes);
+		void onPEFlagsLoadedError(Throwable exception);
 	}
 	
 	private static final String BASE_URL = "/idgpairwise/";
@@ -67,6 +76,39 @@ public class PairwiseInfoService {
 			});
 		} catch(RequestException ex) {
 			handler.onDataDescLoadedError(ex);
+		}
+	}
+	
+	public static void loadPEFlags(Long dbId, String interactorName, peFlagHandler handler) {
+		String url = BASE_URL + "relationships/pathwaysForInteractor/" + dbId + "/" + interactorName;
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
+		requestBuilder.setHeader("Accept", "application/json");
+		try {
+			request = requestBuilder.sendRequest(null, new RequestCallback() {
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					if(response.getStatusCode() != Response.SC_OK) {
+						handler.onPEFlagsLoadedError(new Exception("Interactor Service Error"));
+						return;
+					}
+					JSONValue value = JSONParser.parseStrict(response.getText());
+					JSONArray array = value.isArray();
+					List<Long> pes = new ArrayList<>(); 
+					if(array != null) {
+						for(int i=0; i<array.size(); i++) {
+							pes.add(new Double(array.get(i).isNumber().doubleValue()).longValue());
+						}
+					}
+					handler.onPEFlagsLoaded(pes);
+					
+				}
+				@Override
+				public void onError(Request request, Throwable exception) {
+					handler.onPEFlagsLoadedError(new Exception("Interactor Service Error"));
+				}
+			});
+		} catch(RequestException e) {
+			handler.onPEFlagsLoadedError(new Exception("Interactor Service Error"));
 		}
 	}
 	

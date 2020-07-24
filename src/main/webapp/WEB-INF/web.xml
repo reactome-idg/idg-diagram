@@ -338,6 +338,10 @@
             <param-name>prefixPath</param-name>
             <param-value></param-value>
         </init-param>
+        <init-param>
+            <param-name>proxyProtocol</param-name>
+            <param-value>http</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>ConvertToFIsProxy</servlet-name>
@@ -361,6 +365,10 @@
     		<param-name>proxyPath</param-name>
     		<param-value></param-value>
     	</init-param>
+    	<init-param>
+            <param-name>proxyProtocol</param-name>
+            <param-value>http</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
     	<servlet-name>TCRDProxy</servlet-name>
@@ -382,6 +390,10 @@
         <init-param>
             <param-name>proxyPath</param-name>
             <param-value></param-value>
+        </init-param>
+        <init-param>
+            <param-name>proxyProtocol</param-name>
+            <param-value>http</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

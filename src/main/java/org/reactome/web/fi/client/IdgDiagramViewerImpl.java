@@ -1,11 +1,19 @@
 package org.reactome.web.fi.client;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;
+import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.events.AnalysisResultLoadedEvent;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.diagram.events.ContentRequestedEvent;
+import org.reactome.web.diagram.events.DiagramObjectsFlagRequestedEvent;
+import org.reactome.web.diagram.events.DiagramObjectsFlaggedEvent;
 import org.reactome.web.diagram.events.DiagramProfileChangedEvent;
 import org.reactome.web.diagram.events.EntityDecoratorSelectedEvent;
 import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
@@ -13,6 +21,8 @@ import org.reactome.web.diagram.handlers.EntityDecoratorSelectedHandler;
 import org.reactome.web.diagram.handlers.PairwiseOverlayButtonClickedHandler;
 import org.reactome.web.diagram.profiles.diagram.DiagramColours;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
+import org.reactome.web.fi.data.loader.PairwiseInfoService;
+import org.reactome.web.fi.data.loader.PairwiseInfoService.peFlagHandler;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.DrugTargetsRequestedEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
@@ -72,6 +82,36 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		//resets pairwise number entities to 0 for new diagrams because the correct ones need to be loaded
 		IDGPopupFactory.get().onContentRequested();
 		super.onContentRequested(event);
+	}
+
+	@Override
+	public void onDiagramObjectsFlagRequested(DiagramObjectsFlagRequestedEvent event) {
+		if(event.getIncludeInteractors() == false) {
+			super.onDiagramObjectsFlagRequested(event);
+			return;
+		}
+		PairwiseInfoService.loadPEFlags(context.getContent().getDbId(), event.getTerm(), new peFlagHandler() {
+			@Override
+			public void onPEFlagsLoaded(List<Long> pes) {
+				flagObjects(event.getTerm(), pes);
+			}
+			@Override
+			public void onPEFlagsLoadedError(Throwable exception) {
+				// TODO Auto-generated method stub
+			}
+		});
+	}
+
+	protected void flagObjects(String term, List<Long> pes) {
+		
+		Set<DiagramObject> flaggedObjects = new HashSet<>();
+		context.getContent().getDiagramObjects().forEach(diagramObject -> {
+			if(pes.contains(diagramObject.getReactomeId())) flaggedObjects.add(diagramObject);
+		});
+		
+		if(flaggedObjects.size() == 0) return;
+		
+		eventBus.fireEventFromSource(new DiagramObjectsFlaggedEvent(term, false, flaggedObjects, false), this);
 	}
 
 	@Override

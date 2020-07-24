@@ -109,7 +109,20 @@
 	   	<groupId>org.reactome.web</groupId>
 	   	<artifactId>diagram</artifactId>
 	   	<version>3.6.8-SNAPSHOT</version>
+	   	<exclusions>
+		   	<exclusion>
+		   		<groupId>org.reactome.server.utils</groupId>
+		    	<artifactId>reactome-utils</artifactId>
+		   	</exclusion>
+	   	</exclusions>
     </dependency>
+    
+    <dependency>
+	    <groupId>org.reactome.server.utils</groupId>
+	    <artifactId>reactome-utils</artifactId>
+	    <version>1.0.7</version>
+    </dependency>
+    
     <!-- junit test -->
 	<dependency>
 		<groupId>junit</groupId>
