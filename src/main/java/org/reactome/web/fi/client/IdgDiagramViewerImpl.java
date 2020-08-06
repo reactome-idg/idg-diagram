@@ -102,7 +102,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		});
 	}
 
-	protected void flagObjects(String term, List<Long> pes) {
+	private void flagObjects(String term, List<Long> pes) {
 		
 		Set<DiagramObject> flaggedObjects = new HashSet<>();
 		context.getContent().getDiagramObjects().forEach(diagramObject -> {

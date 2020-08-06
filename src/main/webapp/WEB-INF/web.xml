@@ -84,6 +84,10 @@
             <param-name>proxyFilePath</param-name>
             <param-value>/Users/brunsont/Documents/reactome_web/fireworks/fireworks_layouts</param-value>
         </init-param>
+        <init-param>
+            <param-name>proxyProtocol</param-name>
+            <param-value>http</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>FireworksProxy</servlet-name>
@@ -100,6 +104,10 @@
             <param-value>/Users/brunsont/Documents/reactome_web/diagram/diagram-converter</param-value>
             <!--<param-value>/Users/reactome/Reactome/diagram/slice</param-value>-->
         </init-param>
+        <init-param>
+            <param-name>proxyProtocol</param-name>
+            <param-value>http</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>DiagramJSONProxy</servlet-name>
@@ -114,6 +122,10 @@
         <init-param>
             <param-name>proxyFilePath</param-name>
             <param-value>/Users/brunsont/Documents/reactome_web/diagram/svg</param-value>
+        </init-param>
+        <init-param>
+            <param-name>proxyProtocol</param-name>
+            <param-value>http</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

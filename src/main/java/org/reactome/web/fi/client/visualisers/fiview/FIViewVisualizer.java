@@ -629,7 +629,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 			}
 		}
 		
-		cy.setCytoscapeLayout(cy.getLayout());
+		cy.setCytoscapeLayout(cy.getLayout(), "drug");
 		showingDrugs = true;
 	}
 	
