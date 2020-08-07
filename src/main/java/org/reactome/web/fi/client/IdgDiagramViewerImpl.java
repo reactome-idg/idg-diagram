@@ -13,6 +13,7 @@ import org.reactome.web.diagram.events.AnalysisResultLoadedEvent;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.diagram.events.ContentRequestedEvent;
 import org.reactome.web.diagram.events.DiagramObjectsFlagRequestedEvent;
+import org.reactome.web.diagram.events.DiagramObjectsFlagResetEvent;
 import org.reactome.web.diagram.events.DiagramObjectsFlaggedEvent;
 import org.reactome.web.diagram.events.DiagramProfileChangedEvent;
 import org.reactome.web.diagram.events.EntityDecoratorSelectedEvent;
@@ -35,6 +36,8 @@ import org.reactome.web.fi.handlers.PairwiseCountsRequestedHandler;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 import org.reactome.web.fi.tools.popup.PopupTypes;
 
+import com.google.gwt.core.client.GWT;
+
 /**
  * 
  * @author brunsont
@@ -43,7 +46,7 @@ import org.reactome.web.fi.tools.popup.PopupTypes;
 public class IdgDiagramViewerImpl extends DiagramViewerImpl implements CytoscapeToggledHandler,
 OverlayDataRequestedHandler, PairwiseOverlayButtonClickedHandler, PairwiseCountsRequestedHandler,
 EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
-	
+		
 	public IdgDiagramViewerImpl() {
 		super();
 		eventBus.fireEventFromSource(new DiagramProfileChangedEvent(DiagramColours.ProfileType.PROFILE_01.getDiagramProfile()), this);
