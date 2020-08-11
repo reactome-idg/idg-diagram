@@ -120,7 +120,7 @@ public class IDGPopupCytoscapeController implements Handler{
 			boolean added = addEdge(entity);
 			resetLayout = added == true ? added:resetLayout;
 		}
-		if(resetLayout) cy.setCytoscapeLayout("cose");
+		if(resetLayout && entities.size() > 1) cy.setCytoscapeLayout("cose");
 		loadOverlay();
 	}
 
