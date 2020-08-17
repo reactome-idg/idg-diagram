@@ -80,7 +80,7 @@ public class PairwiseInfoService {
 	}
 	
 	public static void loadPEFlags(Long dbId, String interactorName, peFlagHandler handler) {
-		String url = BASE_URL + "relationships/pathwaysForInteractor/" + dbId + "/" + interactorName;
+		String url = BASE_URL + "relationships/PEsForTermInteractors/" + dbId + "/" + interactorName;
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
 		requestBuilder.setHeader("Accept", "application/json");
 		try {

@@ -89,7 +89,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 
 	@Override
 	public void onDiagramObjectsFlagRequested(DiagramObjectsFlagRequestedEvent event) {
-		if(event.getIncludeInteractors() == false) {
+		if(!event.getIncludeInteractors()) {
 			super.onDiagramObjectsFlagRequested(event);
 			return;
 		}
