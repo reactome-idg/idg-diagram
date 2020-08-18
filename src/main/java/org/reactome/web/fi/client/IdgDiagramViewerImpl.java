@@ -1,5 +1,6 @@
 package org.reactome.web.fi.client;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -93,7 +94,12 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 			super.onDiagramObjectsFlagRequested(event);
 			return;
 		}
-		PairwiseInfoService.loadPEFlags(context.getContent().getDbId(), event.getTerm(), new peFlagHandler() {
+		
+		String[] tokens = event.getTerm().split(",");
+		String term = tokens[0];
+		List<String> dataDescs = Arrays.asList(Arrays.copyOfRange(tokens, 1, tokens.length));
+		
+		PairwiseInfoService.loadPEFlags(context.getContent().getDbId(), term, dataDescs, new peFlagHandler() {
 			@Override
 			public void onPEFlagsLoaded(List<Long> pes) {
 				flagObjects(event.getTerm(), pes);

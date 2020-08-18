@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import org.reactome.web.fi.data.model.FlagPEsPostData;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionFactory;
 
@@ -79,12 +79,16 @@ public class PairwiseInfoService {
 		}
 	}
 	
-	public static void loadPEFlags(Long dbId, String interactorName, peFlagHandler handler) {
-		String url = BASE_URL + "relationships/PEsForTermInteractors/" + dbId + "/" + interactorName;
-		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
+	public static void loadPEFlags(Long dbId, String term, List<String> dataDescs, peFlagHandler handler) {
+		String url = BASE_URL + "relationships/PEsForTermInteractors";
+		
+		FlagPEsPostData post = new FlagPEsPostData(term, dbId, dataDescs);
+		
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
 		requestBuilder.setHeader("Accept", "application/json");
+		requestBuilder.setHeader("content-type", "application/json");
 		try {
-			request = requestBuilder.sendRequest(null, new RequestCallback() {
+			request = requestBuilder.sendRequest(post.toJSONString(), new RequestCallback() {
 				@Override
 				public void onResponseReceived(Request request, Response response) {
 					if(response.getStatusCode() != Response.SC_OK) {
