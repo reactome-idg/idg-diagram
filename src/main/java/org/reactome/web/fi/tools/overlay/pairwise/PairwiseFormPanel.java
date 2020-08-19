@@ -303,7 +303,7 @@ public class PairwiseFormPanel extends FlowPanel{
 	private void resetForm() {
 		Random r = new Random();
 		negColorPicker.setColor(negColorPicker.getColors()[r.nextInt(negColorPicker.getColors().length)]);
-		posColorPicker.setColor(posColorPicker.getColors()[r.nextInt(negColorPicker.getColors().length)]);
+		posColorPicker.setColor(posColorPicker.getColors()[r.nextInt(posColorPicker.getColors().length)]);
 	}
 	
 	/**
