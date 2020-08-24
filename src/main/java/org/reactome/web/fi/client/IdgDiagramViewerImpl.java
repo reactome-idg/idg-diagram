@@ -15,6 +15,7 @@ import org.reactome.web.diagram.events.AnalysisResultLoadedEvent;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.diagram.events.ContentRequestedEvent;
 import org.reactome.web.diagram.events.DiagramObjectsFlagRequestedEvent;
+import org.reactome.web.diagram.events.DiagramObjectsFlagResetEvent;
 import org.reactome.web.diagram.events.DiagramObjectsFlaggedEvent;
 import org.reactome.web.diagram.events.DiagramProfileChangedEvent;
 import org.reactome.web.diagram.events.EntityDecoratorSelectedEvent;
@@ -127,12 +128,15 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 			objects.add(obj);
 		});
 		
-		
+		IDGPopupFactory.get().setCurrentPairwiseProperties(objects);
+
 		
 		eventBus.fireEventFromSource(new RequestPairwiseCountsEvent(objects), this);
 	}
 
 	private void flagObjects(String term, List<Long> pes) {
+		if(pes.size() == 0)
+			eventBus.fireEventFromSource(new DiagramObjectsFlagResetEvent(), this);
 		
 		Set<DiagramObject> flaggedObjects = new HashSet<>();
 		context.getContent().getDiagramObjects().forEach(diagramObject -> {
