@@ -80,7 +80,10 @@ public class PairwiseInfoService {
 	}
 	
 	public static void loadPEFlags(Long dbId, String term, List<String> dataDescs, peFlagHandler handler) {
-		String url = BASE_URL + "relationships/PEsForTermInteractors";
+		String url = BASE_URL;
+		if(!getGeneToUniprotMap().containsValue(term)) //if yes, then load for uniprot
+			url += "relationships/PEsForGeneInteractors";
+		else url += "relationships/PEsForUniprotInteractors"; //else load for gene
 		
 		FlagPEsPostData post = new FlagPEsPostData(term, dbId, dataDescs);
 		
