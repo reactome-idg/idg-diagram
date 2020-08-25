@@ -97,7 +97,8 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 			return;
 		}
 		
-		String[] tokens = event.getTerm().split(",");
+		event.getTerm().replaceAll("%7C", "|");
+		String[] tokens = event.getTerm().split(",");	
 		String term = tokens[0];
 		List<String> dataDescs = Arrays.asList(Arrays.copyOfRange(tokens, 1, tokens.length));
 		
