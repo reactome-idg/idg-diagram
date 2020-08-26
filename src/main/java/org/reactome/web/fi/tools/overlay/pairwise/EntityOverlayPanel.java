@@ -8,6 +8,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.events.HideOverlayLauncherEvent;
 import org.reactome.web.fi.events.PairwiseInteractorsResetEvent;
 import org.reactome.web.fi.events.RequestPairwiseCountsEvent;
+import org.reactome.web.fi.handlers.PairwiseInteractorsResetHandler;
 import org.reactome.web.fi.handlers.RequestPairwiseCountsHandler;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
@@ -29,7 +30,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @author brunsont
  *
  */
-public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.Handler, RequestPairwiseCountsHandler{
+public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.Handler, RequestPairwiseCountsHandler,
+PairwiseInteractorsResetHandler{
 	
 	private EventBus eventBus;
 	
@@ -47,6 +49,7 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 		removeToFilterMap = new HashMap<>();
 		this.getElement().getStyle().setMargin(5, Unit.PX);
 		eventBus.addHandler(RequestPairwiseCountsEvent.TYPE, this);
+		eventBus.addHandler(PairwiseInteractorsResetEvent.TYPE, this);
 		
 		initPanel();
 	}
@@ -151,6 +154,13 @@ public class EntityOverlayPanel extends FlowPanel implements PairwiseFormPanel.H
 			selectedFilters.put(obj.getId(), obj);
 		});
 		updateExistingFilterPanel();
+	}
+	
+	@Override
+	public void onPairwiseInteractorsReset(PairwiseInteractorsResetEvent event) {
+		this.selectedFilters.clear();
+		this.existingFilterPanel.clear();
+		this.removeToFilterMap.clear();
 	}
 	
 	/**

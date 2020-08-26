@@ -56,6 +56,7 @@ import org.reactome.web.fi.handlers.DrugTargetsLoadedHandler;
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
 import org.reactome.web.fi.legends.OverlayColourLegend;
 import org.reactome.web.fi.legends.OverlayControlLegend;
+import org.reactome.web.fi.legends.PairwiseControlLegend;
 import org.reactome.web.fi.messages.CytoscapeViewLoadingMessage;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
@@ -86,6 +87,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	private IDGIconButton overlayButton;
 	private OverlayColourLegend overlayColourLegend;
 	private OverlayControlLegend overlayControlLegend;
+	private PairwiseControlLegend pairwiseControlLegend;
 	private OverlayLauncherDisplay overlayLauncher;
 	
 	private DataOverlay dataOverlay;
@@ -147,6 +149,8 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		super.leftTopLauncher.getMainControlPanel().add(fiSettingsButton);
 		overlayControlLegend = new OverlayControlLegend(eventBus);
 		super.bottomContainerPanel.add(overlayControlLegend);
+		pairwiseControlLegend = new PairwiseControlLegend(eventBus);
+		super.bottomContainerPanel.add(pairwiseControlLegend);
 		super.bottomContainerPanel.remove(super.interactorsControl);
 		this.add(overlayLauncher);
 		

@@ -1,0 +1,7 @@
+.innerPanel{
+	margin: 5px;
+}
+
+.textOverflow {
+	text-overflow: elipsis;
+}
