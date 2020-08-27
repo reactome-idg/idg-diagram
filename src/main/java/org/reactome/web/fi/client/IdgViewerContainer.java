@@ -399,13 +399,10 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		}
 		this.overlayLauncher.hide();
 		this.dataOverlay = event.getDataOverlay();
-		this.overlayColourLegend.setUnit(dataOverlay.getOverlayProperties().getUnit());
 		context.setDialogMap(new HashMap<>());
 		
 		IDGPopupFactory.get().setDataOverlayProperties(event.getDataOverlay().getOverlayProperties());
-
 		
-		//testing new way to set is hit for all data so it works in FIViz without overlaying on diagram first
 		setIsHitValues();
 		
 		if(activeVisualiser instanceof DiagramVisualiser) 

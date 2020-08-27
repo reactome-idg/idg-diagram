@@ -193,6 +193,7 @@ DataOverlayColumnChangedHandler, FIViewOverlayEdgeHoveredHandler, FIViewOverlayE
 			return;
 		
 		this.dataOverlay = event.getDataOverlay();
+		this.setUnit(event.getDataOverlay().getOverlayProperties().getUnit());
 		this.min = event.getDataOverlay().getMinValue();
 		this.max = event.getDataOverlay().getMaxValue();
 		this.topLabel.setText(NumberFormat.getFormat("#.##E0").format(max));
