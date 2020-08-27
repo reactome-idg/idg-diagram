@@ -64,8 +64,9 @@ public class PairwiseDataLoader {
 		
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
 		requestBuilder.setHeader("Accept", "application/json");
+		requestBuilder.setHeader("content-type", "application/json");
 		try {
-			requestBuilder.sendRequest(getPostData(properties), new RequestCallback() {
+			requestBuilder.sendRequest(properties.toJSONString(), new RequestCallback() {
 				@Override
 				public void onResponseReceived(Request request, Response response) {
 					if(response.getStatusCode() != Response.SC_OK) return;

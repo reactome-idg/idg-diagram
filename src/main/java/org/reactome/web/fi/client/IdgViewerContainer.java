@@ -1,6 +1,7 @@
 package org.reactome.web.fi.client;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -225,7 +226,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	}
 
 	private void loadDrugActivities() {
-		eventBus.fireEventFromSource(new DrugTargetsRequestedEvent(collectAllDiagramUniprots()), this);
+		eventBus.fireEventFromSource(new DrugTargetsRequestedEvent(String.join(",",collectAllDiagramUniprots())), this);
 	}
 
 	private DataOverlayProperties getTargetLevelProperties() {
@@ -260,17 +261,16 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 			eventBus.fireEventFromSource(new AnalysisResetEvent(), this);
 				
 		eventBus.fireEventFromSource(new OverlayDataResetEvent(), this);
-		event.getDataOverlayProperties().setUniprots(collectAllDiagramUniprots());
+		event.getDataOverlayProperties().setUniprots(String.join(",", collectAllDiagramUniprots()));
 		event.getDataOverlayProperties().setPathwayStableId(context.getContent().getStableId());
 	    eventBus.fireEventFromSource(new OverlayRequestedEvent(event.getDataOverlayProperties()), this);
 	}
 
 	@Override
 	public void onRequestPairwiseCountsHandeler(RequestPairwiseCountsEvent event) {
-		eventBus.fireEventFromSource(
-				new PairwiseCountsRequestedEvent(
-						new PairwiseOverlayProperties(event.getPairwiseOverlayObjects(), collectAllDiagramUniprots())),
-						this);
+		PairwiseOverlayProperties props = new PairwiseOverlayProperties(event.getPairwiseOverlayObjects(), collectAllDiagramUniprots());
+		
+		eventBus.fireEventFromSource(new PairwiseCountsRequestedEvent(props), this);
 	}
 	
 	@Override
@@ -293,13 +293,13 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	 * Collects uniprots for all participants in a diagram or FIView
 	 * @return
 	 */
-	private String collectAllDiagramUniprots() {
+	private List<String> collectAllDiagramUniprots() {
 		Set<String> identifiers = new HashSet<>();
 		
 		//get identifiers from identifierMap if active visualizer is FIViewVisualizer
 		if(activeVisualiser instanceof FIViewVisualizer) {
 			identifiers = context.getContent().getIdentifierMap().keySet();
-			return String.join(",", identifiers);
+			return new ArrayList<String>(identifiers);
 		}
 
 		//if activeVisualiser is DiagramVisualiser
@@ -330,7 +330,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 				}
 			}
 		}
-		return String.join(",", identifiers);
+		return new ArrayList<String>(identifiers);
 	}
 	
 	private void cytoscapeButtonPressed() {

@@ -1,6 +1,7 @@
 package org.reactome.web.fi.tools.popup.tables;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -248,7 +249,8 @@ public class PairwiseResultsTablePanel extends FlowPanel implements Handler{
 	
 	private void loadTable() {
 		PairwiseDataLoader loader = new PairwiseDataLoader();
-		PairwiseOverlayProperties props = new PairwiseOverlayProperties(pairwiseOverlayProperties, String.join(",", diagramNodes));
+		PairwiseOverlayProperties props = new PairwiseOverlayProperties(pairwiseOverlayProperties, new ArrayList<>(diagramNodes));
+		
 		loader.loadPairwiseData(props, false, new PairwiseDataLoader.Handler() {
 			@Override
 			public void onPairwiseLoaderError(Throwable exception) {

@@ -38,6 +38,7 @@ import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 import org.reactome.web.fi.handlers.DrugTargetsRequestedHandler;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
 import org.reactome.web.fi.handlers.PairwiseCountsRequestedHandler;
+import org.reactome.web.fi.tools.popup.IDGPopup;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 import org.reactome.web.fi.tools.popup.PopupTypes;
 
@@ -90,6 +91,14 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		super.onContentRequested(event);
 	}
 
+	
+	
+	@Override
+	public void onDiagramObjectsFlagReset(DiagramObjectsFlagResetEvent event) {
+		IDGPopupFactory.get().setFlagTerm(null); //remove this so any pairwise interactors aren't filtered
+		super.onDiagramObjectsFlagReset(event);
+	}
+
 	@Override
 	public void onDiagramObjectsFlagRequested(DiagramObjectsFlagRequestedEvent event) {
 		if(!event.getIncludeInteractors()) {
@@ -102,6 +111,8 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		String term = tokens[0];
 		List<String> dataDescs = Arrays.asList(Arrays.copyOfRange(tokens, 1, tokens.length));
 		
+		IDGPopupFactory.get().setFlagTerm(term);
+		
 		PairwiseInfoService.loadPEFlags(context.getContent().getDbId(), term, dataDescs, new peFlagHandler() {
 			@Override
 			public void onPEFlagsLoaded(List<Long> pes) {
@@ -113,26 +124,6 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 			}
 		});
 		
-		loadPairwiseOverlay(dataDescs);
-	}
-
-	private void loadPairwiseOverlay(List<String> dataDescs) {
-		ColorPicker colors = new ColorPicker(); //make an instance to get possible colors
-		Random r = new Random(); //just choosing colors at random
-		List<PairwiseOverlayObject> objects = new ArrayList<>(); //objects to be sent to service for counts
-		
-		//iterate over dataDescs to make PairwiseOverlayObjects with random colors
-		dataDescs.forEach(d -> {
-			PairwiseOverlayObject obj = new PairwiseOverlayObject(d, 
-											colors.getColors()[r.nextInt(colors.getColors().length)],
-											colors.getColors()[r.nextInt(colors.getColors().length)]);
-			objects.add(obj);
-		});
-		
-		IDGPopupFactory.get().setCurrentPairwiseProperties(objects);
-
-		
-		eventBus.fireEventFromSource(new RequestPairwiseCountsEvent(objects), this);
 	}
 
 	private void flagObjects(String term, List<Long> pes) {

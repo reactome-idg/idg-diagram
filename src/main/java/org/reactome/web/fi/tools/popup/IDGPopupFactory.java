@@ -42,6 +42,8 @@ public class IDGPopupFactory{
 
 	private Map<String, Integer> geneToTotalMap;
 	
+	private String flagTerm;
+	
 	/**
 	 * On initialization, need to load TDark set and UniprotToGeneMap
 	 */
@@ -249,7 +251,14 @@ public class IDGPopupFactory{
 		popupMap.values().forEach(x -> {
 			x.setVisible(false);
 		});
-		popupMap.clear();
-		
+		popupMap.clear();	
+	}
+	
+	public String getFlagTerm() {
+		return this.flagTerm;
+	}
+	
+	public void setFlagTerm(String flagTerm) {
+		this.flagTerm = flagTerm;
 	}
 }
