@@ -171,14 +171,19 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 		if(dataOverlay == null || !dataOverlay.isDiscrete() || dataOverlay.getIdentifierValueMap()==null)
 			return;
 		
+		List<String> flagInteractors = IDGPopupFactory.get().getFlagInteractors();
 		List<GraphPhysicalEntity> data = event.getTable().getDataProvider().getList();
 		for(int i=0; i<data.size(); i++) {
 			GraphPhysicalEntity entity = data.get(i);
-			int index = entity.getIdentifier().length();
-			if(entity.getIdentifier().contains("-"))
-				index = entity.getIdentifier().indexOf("-");
+			
+			String identifier = entity.getIdentifier();
+			if(identifier.contains("-"))
+				identifier = identifier.substring(0, identifier.indexOf("-"));
 			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(
-					colourMap.get(dataOverlay.getIdentifierValueMap().get(entity.getIdentifier().substring(0, index))));
+					colourMap.get(dataOverlay.getIdentifierValueMap().get(identifier)));
+			
+			if(flagInteractors != null && flagInteractors.contains(identifier))
+				event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor("#FF69B4");
 		}
 	}
 

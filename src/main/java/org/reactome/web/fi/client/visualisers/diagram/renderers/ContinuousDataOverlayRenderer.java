@@ -1,6 +1,7 @@
 package org.reactome.web.fi.client.visualisers.diagram.renderers;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -152,5 +153,18 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 			return;
 		
 		event.getTable().addExpressionColumns(dataOverlay.getTissueTypes(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), dataOverlay.getColumn());
+		
+		List<String> flagInteractors = IDGPopupFactory.get().getFlagInteractors();
+		if(flagInteractors == null) return;
+		List<GraphPhysicalEntity> data = event.getTable().getDataProvider().getList();
+		for(int i=0; i<data.size(); i++) {
+			GraphPhysicalEntity entity = data.get(i);
+			String identifier = entity.getIdentifier();
+			if(identifier.contains("-"))
+				identifier = identifier.substring(0, identifier.indexOf("-"));
+			if(flagInteractors.contains(identifier))
+				event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor("#FF69B4");
+		}
+		
 	}
 }

@@ -43,6 +43,7 @@ public class IDGPopupFactory{
 	private Map<String, Integer> geneToTotalMap;
 	
 	private String flagTerm;
+	private List<String> flagInteractors;
 	
 	/**
 	 * On initialization, need to load TDark set and UniprotToGeneMap
@@ -260,5 +261,13 @@ public class IDGPopupFactory{
 	
 	public void setFlagTerm(String flagTerm) {
 		this.flagTerm = flagTerm;
+	}
+	
+	public List<String> getFlagInteractors(){
+		return this.flagInteractors;
+	}
+	
+	public void setFlagInteractors(List<String> flagInteractors) {
+		this.flagInteractors = flagInteractors;
 	}
 }

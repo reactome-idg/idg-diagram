@@ -32,7 +32,7 @@ public class PairwiseInfoService {
 	}
 	
 	public interface peFlagHandler{
-		void onPEFlagsLoaded(List<Long> pes);
+		void onPEFlagsLoaded(List<Long> pes, List<String> flagInteractors);
 		void onPEFlagsLoadedError(Throwable exception);
 	}
 	
@@ -99,14 +99,22 @@ public class PairwiseInfoService {
 						return;
 					}
 					JSONValue value = JSONParser.parseStrict(response.getText());
-					JSONArray array = value.isArray();
+					JSONObject rtnObj = value.isObject();
+					JSONArray peArray = rtnObj.get("peIds").isArray();
 					List<Long> pes = new ArrayList<>(); 
-					if(array != null) {
-						for(int i=0; i<array.size(); i++) {
-							pes.add(new Double(array.get(i).isNumber().doubleValue()).longValue());
+					if(peArray != null) {
+						for(int i=0; i<peArray.size(); i++) {
+							pes.add(new Double(peArray.get(i).isNumber().doubleValue()).longValue());
 						}
 					}
-					handler.onPEFlagsLoaded(pes);
+					Map<String, String> geneToUniprot = getGeneToUniprotMap();
+					List<String> termInteractors = new ArrayList<>();
+					JSONArray termInteractorsArray = rtnObj.get("interactors").isArray();
+						if(termInteractorsArray != null) {
+							for(int i=0; i<termInteractorsArray.size(); i++)
+								termInteractors.add(geneToUniprot.get(termInteractorsArray.get(i).isString().stringValue()));
+						}
+					handler.onPEFlagsLoaded(pes, termInteractors);
 					
 				}
 				@Override

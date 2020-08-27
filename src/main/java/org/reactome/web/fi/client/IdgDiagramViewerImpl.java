@@ -96,6 +96,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	@Override
 	public void onDiagramObjectsFlagReset(DiagramObjectsFlagResetEvent event) {
 		IDGPopupFactory.get().setFlagTerm(null); //remove this so any pairwise interactors aren't filtered
+		IDGPopupFactory.get().setFlagInteractors(null);
 		super.onDiagramObjectsFlagReset(event);
 	}
 
@@ -115,8 +116,9 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		
 		PairwiseInfoService.loadPEFlags(context.getContent().getDbId(), term, dataDescs, new peFlagHandler() {
 			@Override
-			public void onPEFlagsLoaded(List<Long> pes) {
+			public void onPEFlagsLoaded(List<Long> pes, List<String> flagInteractors) {
 				flagObjects(event.getTerm(), pes);
+				IDGPopupFactory.get().setFlagInteractors(flagInteractors);
 			}
 			@Override
 			public void onPEFlagsLoadedError(Throwable exception) {
