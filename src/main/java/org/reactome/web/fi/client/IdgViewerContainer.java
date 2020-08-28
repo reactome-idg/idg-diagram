@@ -20,6 +20,7 @@ import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.data.layout.Node;
 import org.reactome.web.diagram.events.AnalysisResetEvent;
+import org.reactome.web.diagram.events.DiagramObjectsFlaggedEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
 import org.reactome.web.diagram.util.MapSet;
@@ -248,6 +249,26 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	private void toggleOverlayPanel() {
 		overlayLauncher.center();
 		overlayLauncher.show();
+	}
+	
+	public void flagObjects(String term, List<Long>pes) {
+		if(this.activeVisualiser instanceof DiagramVisualiser) {
+			flagDiagramObjects(term, pes);
+		}
+		else if(this.activeVisualiser instanceof FIViewVisualizer)
+			fIViewVisualizer.flagNodes(term);
+			
+	}
+
+	private void flagDiagramObjects(String term, List<Long> pes) {
+		Set<DiagramObject> flaggedObjects = new HashSet<>();
+		context.getContent().getDiagramObjects().forEach(diagramObject -> {
+			if(pes.contains(diagramObject.getReactomeId())) flaggedObjects.add(diagramObject);
+		});
+		
+		if(flaggedObjects.size() == 0) return;
+		
+		eventBus.fireEventFromSource(new DiagramObjectsFlaggedEvent(term, false, flaggedObjects, false), this);
 	}
 
 	@Override

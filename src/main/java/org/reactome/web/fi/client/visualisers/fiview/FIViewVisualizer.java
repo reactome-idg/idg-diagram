@@ -45,6 +45,7 @@ import org.reactome.web.fi.handlers.SearchFINodesHandler;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.FILayoutType;
 import org.reactome.web.fi.tools.popup.DrugTargetContextPanel;
+import org.reactome.web.fi.tools.popup.IDGPopup;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -582,6 +583,13 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		this.cyView.setHeight(height + "px");
 		this.viewportWidth = width;
 		this.viewportHeight = height;
+	}
+	
+	public void flagNodes(String term) {
+		Map<String,String> geneToUniprotMap = PairwiseInfoService.getGeneToUniprotMap();
+		IDGPopupFactory.get().getFlagInteractors().forEach(e -> {
+			cy.addNodeClass("name", geneToUniprotMap.get(e), "flagged");
+		});
 	}
 
 	@Override

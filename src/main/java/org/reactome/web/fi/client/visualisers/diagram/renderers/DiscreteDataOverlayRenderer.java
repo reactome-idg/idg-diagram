@@ -34,6 +34,7 @@ import org.reactome.web.fi.overlay.profiles.IDGExpressionGradient;
 import org.reactome.web.fi.overlay.profiles.OverlayColours;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
 
 /**
@@ -183,7 +184,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 					colourMap.get(dataOverlay.getIdentifierValueMap().get(identifier)));
 			
 			if(flagInteractors != null && flagInteractors.contains(identifier))
-				event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor("#FF69B4");
+				event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor("#FF00FF"); //TODO: try setting border instead
 		}
 	}
 

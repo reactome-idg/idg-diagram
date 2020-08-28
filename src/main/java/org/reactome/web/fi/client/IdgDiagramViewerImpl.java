@@ -102,6 +102,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 
 	@Override
 	public void onDiagramObjectsFlagRequested(DiagramObjectsFlagRequestedEvent event) {
+		if(context.getFlagTerm() == event.getTerm()) return;
 		if(!event.getIncludeInteractors()) {
 			super.onDiagramObjectsFlagRequested(event);
 			return;
@@ -112,6 +113,8 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		String term = tokens[0];
 		List<String> dataDescs = Arrays.asList(Arrays.copyOfRange(tokens, 1, tokens.length));
 		
+		context.setFlagTerm(term);
+		this.includeInteractors = event.getIncludeInteractors();
 		IDGPopupFactory.get().setFlagTerm(term);
 		
 		PairwiseInfoService.loadPEFlags(context.getContent().getDbId(), term, dataDescs, new peFlagHandler() {
@@ -132,15 +135,9 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		if(pes.size() == 0)
 			eventBus.fireEventFromSource(new DiagramObjectsFlagResetEvent(), this);
 		
-		Set<DiagramObject> flaggedObjects = new HashSet<>();
-		context.getContent().getDiagramObjects().forEach(diagramObject -> {
-			if(pes.contains(diagramObject.getReactomeId())) flaggedObjects.add(diagramObject);
-		});
+		((IdgViewerContainer)viewerContainer).flagObjects(term, pes);
 		
-		if(flaggedObjects.size() == 0) return;
-		
-		eventBus.fireEventFromSource(new DiagramObjectsFlaggedEvent(term, false, flaggedObjects, false), this);
-	}
+		}
 
 	@Override
 	public void onCytoscapeToggled(CytoscapeToggledEvent event) {
