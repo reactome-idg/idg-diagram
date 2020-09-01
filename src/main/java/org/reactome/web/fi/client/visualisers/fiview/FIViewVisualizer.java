@@ -19,6 +19,7 @@ import org.reactome.web.diagram.data.interactors.common.OverlayResource;
 import org.reactome.web.diagram.data.interactors.model.DiagramInteractor;
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.events.AnalysisProfileChangedEvent;
+import org.reactome.web.diagram.events.DiagramObjectsFlaggedEvent;
 import org.reactome.web.diagram.events.ExpressionColumnChangedEvent;
 import org.reactome.web.diagram.events.GraphObjectHoveredEvent;
 import org.reactome.web.diagram.events.GraphObjectSelectedEvent;
@@ -35,6 +36,7 @@ import org.reactome.web.fi.client.popups.FISettingsPanel;
 import org.reactome.web.fi.client.popups.FISettingsPanel.LayoutChangeHandler;
 import org.reactome.web.fi.client.popups.FIViewInfoPopup;
 import org.reactome.web.fi.client.popups.NodeDialogPanel;
+import org.reactome.web.fi.events.FIDiagramObjectsFlaggedEvent;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.events.FIViewOverlayEdgeHoveredEvent;
 import org.reactome.web.fi.events.FIViewOverlayEdgeSelectedEvent;
@@ -45,7 +47,6 @@ import org.reactome.web.fi.handlers.SearchFINodesHandler;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.FILayoutType;
 import org.reactome.web.fi.tools.popup.DrugTargetContextPanel;
-import org.reactome.web.fi.tools.popup.IDGPopup;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -586,21 +587,21 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	}
 	
 	public void flagNodes(String term) {
-		Map<String,String> geneToUniprotMap = PairwiseInfoService.getGeneToUniprotMap();
-		IDGPopupFactory.get().getFlagInteractors().forEach(e -> {
-			cy.addNodeClass("name", geneToUniprotMap.get(e), "flagged");
+		List<String> flagInteractors = IDGPopupFactory.get().getFlagInteractors();
+		flagInteractors.forEach(e -> {
+			cy.flagNode(e, "#FF00FF");
 		});
+		eventBus.fireEventFromSource(new FIDiagramObjectsFlaggedEvent(term, false, flagInteractors.size(), false), this);
 	}
 
 	@Override
 	public void flagItems(Set<DiagramObject> flaggedItems, Boolean includeInteractors) {
-		resetFlag();
-		for(DiagramObject diagramObject : flaggedItems) {
-			if(diagramObject.getIsDisease())
-				continue;
-			if(diagramObject.getSchemaClass() == "EntityWithAccessionedSequence")
-				cy.addNodeClass("name", diagramObject.getDisplayName(), "flagged");
-		}
+		if(includeInteractors == true) return; //dont do this if handling interactors from pariwiseService
+		
+		String flag = this.context.getFlagTerm();
+		if(PairwiseInfoService.getGeneToUniprotMap().containsKey(flag))
+			flag = PairwiseInfoService.getGeneToUniprotMap().get(flag);
+		cy.flagNode(flag, "#FF00FF");
 	}
 	
 	@Override
@@ -667,7 +668,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 
 	@Override
 	public void resetFlag() {
-		cy.removeNodeClass("flagged");
+		cy.removeNodeClass("flag");
 	}
 	
 	/**

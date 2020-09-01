@@ -20,6 +20,14 @@
     }
 },
 {
+    "selector": "node.flag",
+    "style": {
+        "border-color": "data(flagColor)",
+        "border-width": "1",
+        "border-opacity": "1"
+    }
+},
+{
   "selector": "node:selected",
   "style": {
     "border-width": "6px",

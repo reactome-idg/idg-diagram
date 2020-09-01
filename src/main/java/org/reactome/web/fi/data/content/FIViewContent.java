@@ -96,7 +96,7 @@ public class FIViewContent extends GenericContent{
 	    		//Get info for protein node and Fi edge
 	    		if(firstProtein != null && secondProtein !=null && annotation !=null && reactomeSources != null) {
 	    			//get info for protein node
-		    		String shortNameOne  = firstProtein.get("shortName").isString().stringValue();
+		    		String shortNameOne = firstProtein.get("shortName").isString().stringValue();
 		    		String accessionOne = firstProtein.get("primaryAccession").isString().stringValue();
 		    		String shortNameTwo = secondProtein.get("shortName").isString().stringValue();
 	    			String accessionTwo = secondProtein.get("primaryAccession").isString().stringValue();
@@ -110,7 +110,10 @@ public class FIViewContent extends GenericContent{
 	    				annotationDirection = "none";
 	    			
 	    			//send interaction to be added to cytoscape.js network
-	    				makeFI(shortNameOne, accessionOne, shortNameTwo, accessionTwo, annotationDirection, reactomeSources);
+	    			makeFI(shortNameOne, accessionOne, shortNameTwo, accessionTwo, annotationDirection, reactomeSources);
+	    			
+	    			//create graph object from reactomeSources and add to cache
+	    			convertSourcesToGraphObjects(reactomeSources);
 
 	    		}
 	    	}
@@ -178,9 +181,6 @@ public class FIViewContent extends GenericContent{
 		//add each edge to fi array and put on map
 		fIMap.put(fIArray.size() + "", interaction);
 		fIArray.set(fIArray.size(), interaction);
-		
-		//create graph object from reactomeSources and add to cache
-		convertSourcesToGraphObjects(reactomeSources);
 	}
 	
 	/**

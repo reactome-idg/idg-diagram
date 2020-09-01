@@ -23,6 +23,7 @@ import org.reactome.web.diagram.events.AnalysisResetEvent;
 import org.reactome.web.diagram.events.DiagramObjectsFlaggedEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
+import org.reactome.web.diagram.legends.FlaggedItemsControl;
 import org.reactome.web.diagram.util.MapSet;
 import org.reactome.web.fi.client.visualisers.OverlayDataHandler;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.ContinuousDataOverlayRenderer;
@@ -56,6 +57,7 @@ import org.reactome.web.fi.handlers.RequestPairwiseCountsHandler;
 import org.reactome.web.fi.handlers.DataOverlayColumnChangedHandler;
 import org.reactome.web.fi.handlers.DrugTargetsLoadedHandler;
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
+import org.reactome.web.fi.legends.IDGFlaggedItemsControl;
 import org.reactome.web.fi.legends.OverlayColourLegend;
 import org.reactome.web.fi.legends.OverlayControlLegend;
 import org.reactome.web.fi.legends.PairwiseControlLegend;
@@ -155,6 +157,13 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		super.bottomContainerPanel.add(pairwiseControlLegend);
 		super.bottomContainerPanel.remove(super.interactorsControl);
 		this.add(overlayLauncher);
+		
+		//replace FlaggedItemsControl with IDG specific one
+		for(int i=0; i<bottomContainerPanel.getWidgetCount(); i++) {
+			if(bottomContainerPanel.getWidget(i) instanceof FlaggedItemsControl)
+				bottomContainerPanel.remove(i);
+		}
+		bottomContainerPanel.add(new IDGFlaggedItemsControl(eventBus));
 		
 		bind();
 		
@@ -507,7 +516,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 			}
 		});
 	}
-
+	
 	@Override
 	public void onDataOverlayColumnChanged(DataOverlayColumnChangedEvent event) {
 		this.dataOverlay.setColumn(event.getColumn());
@@ -535,6 +544,10 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	public void onResize() {
 		super.onResize();
 		fIViewVisualizer.setSize(this.getOffsetWidth(), this.getOffsetHeight());
+	}
+	
+	public Visualiser getActiveVisualizer() {
+		return this.activeVisualiser;
 	}
 	
 	/**

@@ -1,44 +1,40 @@
 package org.reactome.web.fi.client;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.Random;
 
 import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;
-import org.reactome.web.diagram.data.layout.DiagramObject;
+import org.reactome.web.diagram.client.visualisers.Visualiser;
+import org.reactome.web.diagram.client.visualisers.diagram.DiagramVisualiser;
+import org.reactome.web.diagram.client.visualisers.ehld.SVGVisualiser;
 import org.reactome.web.diagram.data.loader.LoaderManager;
 import org.reactome.web.diagram.events.AnalysisResultLoadedEvent;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.diagram.events.ContentRequestedEvent;
 import org.reactome.web.diagram.events.DiagramObjectsFlagRequestedEvent;
 import org.reactome.web.diagram.events.DiagramObjectsFlagResetEvent;
-import org.reactome.web.diagram.events.DiagramObjectsFlaggedEvent;
 import org.reactome.web.diagram.events.DiagramProfileChangedEvent;
 import org.reactome.web.diagram.events.EntityDecoratorSelectedEvent;
 import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
 import org.reactome.web.diagram.handlers.EntityDecoratorSelectedHandler;
 import org.reactome.web.diagram.handlers.PairwiseOverlayButtonClickedHandler;
 import org.reactome.web.diagram.profiles.diagram.DiagramColours;
-import org.reactome.web.fi.common.colorPicker.ColorPicker;
+import org.reactome.web.diagram.search.results.data.model.Occurrences;
+import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualizer;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.PairwiseInfoService.peFlagHandler;
-import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.DrugTargetsRequestedEvent;
+import org.reactome.web.fi.events.FIDiagramObjectsFlaggedEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
 import org.reactome.web.fi.events.PairwiseCountsRequestedEvent;
-import org.reactome.web.fi.events.RequestPairwiseCountsEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 import org.reactome.web.fi.handlers.DrugTargetsRequestedHandler;
 import org.reactome.web.fi.handlers.OverlayDataRequestedHandler;
 import org.reactome.web.fi.handlers.PairwiseCountsRequestedHandler;
-import org.reactome.web.fi.tools.popup.IDGPopup;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 import org.reactome.web.fi.tools.popup.PopupTypes;
 
@@ -120,8 +116,8 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		PairwiseInfoService.loadPEFlags(context.getContent().getDbId(), term, dataDescs, new peFlagHandler() {
 			@Override
 			public void onPEFlagsLoaded(List<Long> pes, List<String> flagInteractors) {
-				flagObjects(event.getTerm(), pes);
 				IDGPopupFactory.get().setFlagInteractors(flagInteractors);
+				flagObjects(event.getTerm(), pes);
 			}
 			@Override
 			public void onPEFlagsLoadedError(Throwable exception) {
@@ -129,6 +125,18 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 			}
 		});
 		
+	}
+
+	/**
+	 * Want to fire FI version of event if FI visualiser
+	 */
+	@Override
+	public void flaggedElementsLoaded(String term, Occurrences toFlag, boolean notify) {
+		Visualiser viz = ((IdgViewerContainer)viewerContainer).getActiveVisualizer();
+		if(viz instanceof DiagramVisualiser || viz instanceof SVGVisualiser)
+			super.flaggedElementsLoaded(term, toFlag, notify);
+		else if(viz instanceof FIViewVisualizer)
+			eventBus.fireEventFromSource(new FIDiagramObjectsFlaggedEvent(term, false, 1, false), this);
 	}
 
 	private void flagObjects(String term, List<Long> pes) {
