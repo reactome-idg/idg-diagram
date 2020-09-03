@@ -586,17 +586,19 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		this.viewportHeight = height;
 	}
 	
-	public void flagNodes(String term) {
+	public void flagNodesWithInteractors() {
 		List<String> flagInteractors = IDGPopupFactory.get().getFlagInteractors();
 		flagInteractors.forEach(e -> {
 			cy.flagNode(e, "#FF00FF");
 		});
-		eventBus.fireEventFromSource(new FIDiagramObjectsFlaggedEvent(term, false, flagInteractors.size(), false), this);
 	}
 
 	@Override
 	public void flagItems(Set<DiagramObject> flaggedItems, Boolean includeInteractors) {
-		if(includeInteractors == true) return; //dont do this if handling interactors from pariwiseService
+		if(includeInteractors == true) {
+			flagNodesWithInteractors(); //dont do this if handling interactors from pariwiseService
+			return;
+		} 
 		
 		String flag = this.context.getFlagTerm();
 		if(PairwiseInfoService.getGeneToUniprotMap().containsKey(flag))

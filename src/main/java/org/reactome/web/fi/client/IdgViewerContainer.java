@@ -41,6 +41,7 @@ import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.events.DrugTargetsLoadedEvent;
 import org.reactome.web.fi.events.DrugTargetsRequestedEvent;
+import org.reactome.web.fi.events.FIDiagramObjectsFlaggedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
 import org.reactome.web.fi.events.PairwiseCountsRequestedEvent;
@@ -260,16 +261,26 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		overlayLauncher.show();
 	}
 	
-	public void flagObjects(String term, List<Long>pes) {
+	public void flagObjects(String term, List<Long>pes, boolean includeInteractors) {
 		if(this.activeVisualiser instanceof DiagramVisualiser) {
-			flagDiagramObjects(term, pes);
+			flagDiagramObjects(term, pes, includeInteractors);
 		}
 		else if(this.activeVisualiser instanceof FIViewVisualizer)
-			fIViewVisualizer.flagNodes(term);
-			
+			flagFIObjects(term, includeInteractors);
 	}
 
-	private void flagDiagramObjects(String term, List<Long> pes) {
+	private void flagFIObjects(String term, boolean includeInteractors) {
+		List<String> nodesToHighlight = new ArrayList<>();
+		List<String> interactors = IDGPopupFactory.get().getFlagInteractors();
+		Set<String> uniprots = this.context.getContent().getIdentifierMap().keySet(); 
+		uniprots.forEach(uniprot -> {
+			if(interactors.contains(uniprot))
+				nodesToHighlight.add(uniprot);
+		});
+		eventBus.fireEventFromSource(new FIDiagramObjectsFlaggedEvent(term, includeInteractors, nodesToHighlight, false), this);
+	}
+	
+	private void flagDiagramObjects(String term, List<Long> pes, boolean includeInteractors) {
 		Set<DiagramObject> flaggedObjects = new HashSet<>();
 		context.getContent().getDiagramObjects().forEach(diagramObject -> {
 			if(pes.contains(diagramObject.getReactomeId())) flaggedObjects.add(diagramObject);
@@ -277,7 +288,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		
 		if(flaggedObjects.size() == 0) return;
 		
-		eventBus.fireEventFromSource(new DiagramObjectsFlaggedEvent(term, false, flaggedObjects, false), this);
+		eventBus.fireEventFromSource(new DiagramObjectsFlaggedEvent(term, includeInteractors, flaggedObjects, false), this);
 	}
 
 	@Override

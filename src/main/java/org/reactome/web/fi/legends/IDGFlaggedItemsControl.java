@@ -1,5 +1,6 @@
 package org.reactome.web.fi.legends;
 
+import java.util.List;
 import java.util.Set;
 
 import org.reactome.web.diagram.data.layout.DiagramObject;
@@ -26,12 +27,14 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl{
 		String msg;
 		
 		if(event instanceof FIDiagramObjectsFlaggedEvent) {
-			int num = ((FIDiagramObjectsFlaggedEvent)event).getEntityNumber();
+			List<String> proteinsToFlag = ((FIDiagramObjectsFlaggedEvent)event).getProteinsToFlag();
+			int num = proteinsToFlag != null ? proteinsToFlag.size() : 1;
 			msg = " - " + num + (num == 1 ? " protein" : " proteins") + " flagged";
 		}
 		else {
 			Set<DiagramObject> flaggedItems =  event.getFlaggedItems();
-	        msg = " - " + flaggedItems.size() + (flaggedItems.size() == 1 ? " entity" : " entities") + " flagged";
+			int num = flaggedItems != null ? flaggedItems.size() : 1;
+	        msg = " - " + num + (num == 1 ? " entity" : " entities") + " flagged";
 		}
 		
 		super.msgLabel.setText(term + msg);

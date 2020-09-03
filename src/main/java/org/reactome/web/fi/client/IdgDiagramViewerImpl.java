@@ -1,6 +1,7 @@
 package org.reactome.web.fi.client;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.reactome.web.diagram.client.DiagramViewerImpl;
@@ -90,6 +91,15 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	
 	
 	@Override
+	protected void fireDiagramObjectsFlaggedEvent(String identifier, boolean includeInteractors) {
+		if(!includeInteractors) {
+			super.fireDiagramObjectsFlaggedEvent(identifier, includeInteractors);
+			return;
+		}
+        eventBus.fireEventFromSource(new DiagramObjectsFlagRequestedEvent(identifier, includeInteractors), this);
+	}
+
+	@Override
 	public void onDiagramObjectsFlagReset(DiagramObjectsFlagResetEvent event) {
 		IDGPopupFactory.get().setFlagTerm(null); //remove this so any pairwise interactors aren't filtered
 		IDGPopupFactory.get().setFlagInteractors(null);
@@ -121,7 +131,8 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 			}
 			@Override
 			public void onPEFlagsLoadedError(Throwable exception) {
-				// TODO Auto-generated method stub
+				context.setFlagTerm(null);
+				eventBus.fireEventFromSource(new DiagramObjectsFlagResetEvent(), this);
 			}
 		});
 		
@@ -136,14 +147,14 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		if(viz instanceof DiagramVisualiser || viz instanceof SVGVisualiser)
 			super.flaggedElementsLoaded(term, toFlag, notify);
 		else if(viz instanceof FIViewVisualizer)
-			eventBus.fireEventFromSource(new FIDiagramObjectsFlaggedEvent(term, false, 1, false), this);
+			eventBus.fireEventFromSource(new FIDiagramObjectsFlaggedEvent(term, this.includeInteractors, Collections.singletonList(term), false), this);
 	}
 
 	private void flagObjects(String term, List<Long> pes) {
 		if(pes.size() == 0)
 			eventBus.fireEventFromSource(new DiagramObjectsFlagResetEvent(), this);
 		
-		((IdgViewerContainer)viewerContainer).flagObjects(term, pes);
+		((IdgViewerContainer)viewerContainer).flagObjects(term, pes, this.includeInteractors);
 		
 		}
 

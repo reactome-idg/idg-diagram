@@ -1,24 +1,24 @@
 package org.reactome.web.fi.events;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.reactome.web.diagram.events.DiagramObjectsFlaggedEvent;
 
 public class FIDiagramObjectsFlaggedEvent extends DiagramObjectsFlaggedEvent{
 
-	private int entityNumber;
+	private List<String> proteinsToFlag;
 	
-	public FIDiagramObjectsFlaggedEvent(String term, Boolean includeInteractors, int entityNumber, boolean notify) {
+	public FIDiagramObjectsFlaggedEvent(String term, Boolean includeInteractors, List<String> proteinsToFlag, boolean notify) {
 		super(term, includeInteractors, new HashSet<>(), notify);
-		this.entityNumber = entityNumber;
+		this.proteinsToFlag = proteinsToFlag;
 	}
 
-	public int getEntityNumber() {
-		return entityNumber;
+	public List<String> getProteinsToFlag() {
+		return proteinsToFlag;
 	}
 
-	public void setEntityNumber(int entityNumber) {
-		this.entityNumber = entityNumber;
+	public void setProteinsToFlag(List<String> proteinsToFlag) {
+		this.proteinsToFlag = proteinsToFlag;
 	}
-	
 }
