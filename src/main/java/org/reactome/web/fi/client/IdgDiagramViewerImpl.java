@@ -88,15 +88,14 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		super.onContentRequested(event);
 	}
 
-	
-	
 	@Override
-	protected void fireDiagramObjectsFlaggedEvent(String identifier, boolean includeInteractors) {
-		if(!includeInteractors) {
-			super.fireDiagramObjectsFlaggedEvent(identifier, includeInteractors);
-			return;
-		}
-        eventBus.fireEventFromSource(new DiagramObjectsFlagRequestedEvent(identifier, includeInteractors), this);
+	public void flagItems(String identifier, Boolean includeInteractors) {
+		if (context != null && identifier != null) {
+            if(!identifier.equalsIgnoreCase(context.getFlagTerm()) || !this.includeInteractors.equals(includeInteractors)) {
+                eventBus.fireEventFromSource(new DiagramObjectsFlagRequestedEvent(identifier, includeInteractors), this);
+            }
+            else eventBus.fireEventFromSource(new DiagramObjectsFlagRequestedEvent(identifier, includeInteractors), this);
+        }
 	}
 
 	@Override
