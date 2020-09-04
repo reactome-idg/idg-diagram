@@ -36,6 +36,7 @@ import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
+import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
@@ -316,6 +317,8 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	
 	@Override
 	public void onPairwiseInteractorsReset(PairwiseInteractorsResetEvent event) {
+		IDGPopupFactory.get().closeAllPopups();
+		IDGPopupFactory.get().setCurrentPairwiseProperties(new ArrayList<PairwiseOverlayObject>());
 		IDGPopupFactory.get().setPairwiseNumberEntities(new ArrayList<>());
 		IDGPopupFactory.get().setGeneToTotalMap(new HashMap<>());
 		

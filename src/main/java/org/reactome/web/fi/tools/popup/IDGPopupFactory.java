@@ -106,6 +106,10 @@ public class IDGPopupFactory{
 			popupMap.get(uniprot).addType(type);
 	}
 	
+	public void closeAllPopups() {
+		popupMap.values().forEach(popup -> popup.hide());
+	}
+	
 	public int getNumberOfPopups() {
 		return popupMap.keySet().size()+1;
 	}

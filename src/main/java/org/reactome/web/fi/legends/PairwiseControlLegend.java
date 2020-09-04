@@ -8,6 +8,7 @@ import org.reactome.web.diagram.legends.LegendPanel;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayObject;
 import org.reactome.web.fi.events.PairwiseInteractorsResetEvent;
 import org.reactome.web.fi.events.PairwiseNumbersLoadedEvent;
+import org.reactome.web.fi.handlers.PairwiseInteractorsResetHandler;
 import org.reactome.web.fi.handlers.PairwiseNumbersLoadedHandler;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
@@ -19,7 +20,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 
-public class PairwiseControlLegend extends LegendPanel implements PairwiseNumbersLoadedHandler{
+public class PairwiseControlLegend extends LegendPanel implements PairwiseNumbersLoadedHandler, PairwiseInteractorsResetHandler{
 
 	private FlowPanel innerPanel;
 	private PwpButton closeBtn;
@@ -29,6 +30,7 @@ public class PairwiseControlLegend extends LegendPanel implements PairwiseNumber
 		LegendPanelCSS css = RESOURCES.getCSS();
 		
 		eventBus.addHandler(PairwiseNumbersLoadedEvent.TYPE, this);
+		eventBus.addHandler(PairwiseInteractorsResetEvent.TYPE, this);
 		
 		initPanel(css);
 	}
@@ -64,9 +66,14 @@ public class PairwiseControlLegend extends LegendPanel implements PairwiseNumber
 	}
 	
 	private void closeButtonHandler() {
-		IDGPopupFactory.get().setCurrentPairwiseProperties(new ArrayList<PairwiseOverlayObject>());
 		eventBus.fireEventFromSource(new PairwiseInteractorsResetEvent(), this);
 		this.setVisible(false);
+	}
+	
+	@Override
+	public void onPairwiseInteractorsReset(PairwiseInteractorsResetEvent event) {
+		this.setVisible(false);
+
 	}
 
 	public static Resources IDGRESOURCES;
