@@ -4,6 +4,7 @@ import org.reactome.web.diagram.messages.MessagesPanel;
 import org.reactome.web.fi.events.FIViewMessageEvent;
 import org.reactome.web.fi.handlers.FIViewMessageHandler;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -18,8 +19,8 @@ public class CytoscapeViewLoadingMessage extends MessagesPanel implements FIView
 		addStyleName(css.loadingMessage());
 		
 		this.setVisible(false);
-		
-		InlineLabel lbl = new InlineLabel("Loading FIs...");
+		this.getElement().getStyle().setWidth(320, Unit.PX);
+		InlineLabel lbl = new InlineLabel("Converting to Functional Interactions...");
 		
 		FlowPanel fp = new FlowPanel();
 		fp.add(new Image(RESOURCES.loader()));
