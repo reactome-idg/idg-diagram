@@ -1,5 +1,10 @@
 package org.reactome.web.fi.legends;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +24,8 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl{
 	public IDGFlaggedItemsControl(EventBus eventBus) {
 		super(eventBus);
 		
+		super.selector.removeFromParent();
+		
 		//Remove default style and make the msgLabel wider
 		//Required because the default width is tagged with !important
 		this.msgLabel.removeStyleName(msgLabel.getStyleName());
@@ -31,8 +38,12 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl{
 	@Override
 	public void onDiagramObjectsFlagged(DiagramObjectsFlaggedEvent event) {
 		super.term = event.getTerm();
-		if(super.term.contains(","))
+		Set<String> descs = new HashSet<>();
+		if(super.term.contains(",")) {
+			descs = new HashSet<>(Arrays.asList(term.split(",")));
 			term = term.substring(0, term.indexOf(","));
+			descs.remove(term);
+		}
 		
 		super.includeInteractors = event.getIncludeInteractors();
 		
@@ -52,9 +63,13 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl{
 		}
 		
 		super.msgLabel.setText(term + msg);
+		
+		if(descs.size() > 0) {
+			msgLabel.setTitle(String.join("\n", descs));
+		}
+		
 		super.loadingIcon.setVisible(false);
 		super.interactorsLabel.setVisible(false);
-		super.selector.setVisible(false);
 		setVisible(true);
 	}
 	
