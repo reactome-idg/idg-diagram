@@ -52,14 +52,14 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl{
 		if(event instanceof FIDiagramObjectsFlaggedEvent) {
 			List<String> proteinsToFlag = ((FIDiagramObjectsFlaggedEvent)event).getProteinsToFlag();
 			int num = proteinsToFlag != null ? proteinsToFlag.size() : 1;
-			msg = " - " + (event.getIncludeInteractors() == true ? " interacting " : "") + num + (num == 1 ? " protein" : " proteins") + " flagged";
+			msg = " - " + num + (event.getIncludeInteractors() == true ? " interacting " : "") + (num == 1 ? " protein" : " proteins") + " flagged";
 		}
 		else {
 			//There is a case where the DiagramObjectsFlaggedEvent gets fired with a null value for getFlaggedItems();
 			//Happens when DiagramViewerImpl runs flaggedElementsLoaded with falsey includeInteractors while the view is FIViewVisualizer
 			Set<DiagramObject> flaggedItems =  event.getFlaggedItems();
 			int num = flaggedItems != null ? flaggedItems.size() : 1;
-	        msg = " - " + (event.getIncludeInteractors() == true ? " interacting " : "") + num + (num == 1 ? " entity" : " entities") + " flagged";
+	        msg = " - " + num + (event.getIncludeInteractors() == true ? " interacting " : "") + (num == 1 ? " entity" : " entities") + " flagged";
 		}
 		
 		super.msgLabel.setText(term + msg);
