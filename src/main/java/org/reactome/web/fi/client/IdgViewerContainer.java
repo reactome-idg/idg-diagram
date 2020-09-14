@@ -59,6 +59,7 @@ import org.reactome.web.fi.handlers.RequestPairwiseCountsHandler;
 import org.reactome.web.fi.handlers.DataOverlayColumnChangedHandler;
 import org.reactome.web.fi.handlers.DrugTargetsLoadedHandler;
 import org.reactome.web.fi.handlers.MakeOverlayRequestHandler;
+import org.reactome.web.fi.legends.FlaggedInteractorSetLegend;
 import org.reactome.web.fi.legends.IDGFlaggedItemsControl;
 import org.reactome.web.fi.legends.OverlayColourLegend;
 import org.reactome.web.fi.legends.OverlayControlLegend;
@@ -165,6 +166,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 			if(bottomContainerPanel.getWidget(i) instanceof FlaggedItemsControl)
 				bottomContainerPanel.remove(i);
 		}
+		bottomContainerPanel.add(new FlaggedInteractorSetLegend(eventBus));
 		bottomContainerPanel.add(new IDGFlaggedItemsControl(eventBus));
 		
 		bind();

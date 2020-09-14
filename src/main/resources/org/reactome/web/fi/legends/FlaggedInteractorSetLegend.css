@@ -1,0 +1,42 @@
+.panel {
+    background-color: rgba(240, 240, 240, 0.9);
+    border: 1px solid lightgray;
+    border-radius: 15px;
+    position: relative;
+    
+    padding: 5px;
+    
+    width: 374px;
+    margin-left:-192px;
+    left:50%;
+    
+    border-radius: 5px;
+    margin-bottom: 10px;
+
+    -webkit-box-shadow: 3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow:    3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Firefox 3.5 - 3.6 */
+    box-shadow:         3px 3px 5px 0 rgba(50, 50, 50, 0.75); /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+
+    /* Used to animate the positioning of the flaggedItems panel */
+    -webkit-transition: bottom 0.3s ease-in-out;
+    -moz-transition: bottom 0.3s ease-in-out;
+    -o-transition: bottom 0.3s ease-in-out;
+    transition: bottom 0.3s ease-in-out;
+}
+
+.descLabel {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.increaseTransparency {
+	background-color: rgba(240,240,240,.25);
+	color: rgba(0,0,0,.25);
+	border: 1px solid transparent;
+	
+	-webkit-box-shadow: 3px 3px 5px 0 rgba(50, 50, 50, 0.25); /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow:    3px 3px 5px 0 rgba(50, 50, 50, 0.25); /* Firefox 3.5 - 3.6 */
+    box-shadow:         3px 3px 5px 0 rgba(50, 50, 50, 0.25); /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+	
+}

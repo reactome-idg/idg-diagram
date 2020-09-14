@@ -1,9 +1,6 @@
 package org.reactome.web.fi.legends;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,9 +15,10 @@ import com.google.gwt.dom.client.Style.TextOverflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.WhiteSpace;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.Label;
 
 public class IDGFlaggedItemsControl  extends FlaggedItemsControl{
-
+	
 	public IDGFlaggedItemsControl(EventBus eventBus) {
 		super(eventBus);
 		
