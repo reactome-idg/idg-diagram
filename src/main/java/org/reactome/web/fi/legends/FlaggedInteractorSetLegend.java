@@ -41,6 +41,8 @@ DiagramObjectsFlagResetHandler, HasMouseOverHandlers, HasMouseOutHandlers{
 		this.add(dataDescContainer);
 		
 		initHandlers();
+		
+		this.setVisible(false);
 	}
 	
 	@Override
