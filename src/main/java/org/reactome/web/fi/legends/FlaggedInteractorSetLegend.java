@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Label;
 public class FlaggedInteractorSetLegend extends AbsolutePanel implements DiagramObjectsFlaggedHandler,
 DiagramObjectsFlagResetHandler, HasMouseOverHandlers, HasMouseOutHandlers{
 
-	private EventBus eventBus;
+	protected EventBus eventBus;
 	
 	protected FlowPanel dataDescContainer;
 	
