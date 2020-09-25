@@ -2,8 +2,8 @@ package org.reactome.web.fi.client.popups;
 
 
 import org.reactome.web.diagram.common.PwpButton;
-import org.reactome.web.diagram.events.PairwiseOverlayButtonClickedEvent;
 import org.reactome.web.fi.data.model.drug.Drug;
+import org.reactome.web.fi.events.PairwiseOverlayButtonClickedEvent;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 

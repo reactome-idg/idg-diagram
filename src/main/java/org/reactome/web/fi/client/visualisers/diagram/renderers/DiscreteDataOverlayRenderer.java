@@ -12,8 +12,8 @@ import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
-import org.reactome.web.diagram.events.RenderOtherContextDialogInfoEvent;
-import org.reactome.web.diagram.handlers.RenderOtherContextDialogInfoHandler;
+import org.reactome.web.diagram.events.ProteinsTableUpdatedEvent;
+import org.reactome.web.diagram.handlers.ProteinsTableUpdatedHandler;
 import org.reactome.web.diagram.profiles.analysis.AnalysisColours;
 import org.reactome.web.diagram.renderers.common.OverlayContext;
 import org.reactome.web.diagram.renderers.helper.ItemsDistribution;
@@ -42,7 +42,7 @@ import com.google.gwt.event.shared.EventBus;
  * @author brunsont
  *
  */
-public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOtherContextDialogInfoHandler, OverlayDataResetHandler {
+public class DiscreteDataOverlayRenderer implements OverlayRenderer, ProteinsTableUpdatedHandler, OverlayDataResetHandler {
 
 	private EventBus eventBus;
 	private AdvancedContext2d overlay;
@@ -59,7 +59,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 		this.eventBus = eventBus;
 		this.decoratorRenderer = idgDecoratorRenderer;
 		this.drugTargetRenderer = drugTargetRenderer;
-		eventBus.addHandler(RenderOtherContextDialogInfoEvent.TYPE, this);
+		eventBus.addHandler(ProteinsTableUpdatedEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
 	}
 	
@@ -168,7 +168,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, RenderOther
 	}
 
 	@Override
-	public void onRenderOtherContextDialogInfo(RenderOtherContextDialogInfoEvent event) {
+	public void onRenderOtherContextDialogInfo(ProteinsTableUpdatedEvent event) {
 		if(dataOverlay == null || !dataOverlay.isDiscrete() || dataOverlay.getIdentifierValueMap()==null)
 			return;
 		

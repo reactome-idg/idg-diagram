@@ -12,8 +12,8 @@ import org.reactome.web.diagram.data.graph.model.GraphPhysicalEntity;
 import org.reactome.web.diagram.data.graph.model.GraphProteinDrug;
 import org.reactome.web.diagram.data.layout.Coordinate;
 import org.reactome.web.diagram.data.layout.DiagramObject;
-import org.reactome.web.diagram.events.RenderOtherContextDialogInfoEvent;
-import org.reactome.web.diagram.handlers.RenderOtherContextDialogInfoHandler;
+import org.reactome.web.diagram.events.ProteinsTableUpdatedEvent;
+import org.reactome.web.diagram.handlers.ProteinsTableUpdatedHandler;
 import org.reactome.web.diagram.renderers.common.OverlayContext;
 import org.reactome.web.diagram.renderers.helper.ItemsDistribution;
 import org.reactome.web.diagram.renderers.helper.RenderType;
@@ -32,7 +32,7 @@ import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 
 import com.google.gwt.event.shared.EventBus;
 
-public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOtherContextDialogInfoHandler, 
+public class ContinuousDataOverlayRenderer implements OverlayRenderer, ProteinsTableUpdatedHandler, 
 	OverlayDataResetHandler{
 
 	private EventBus eventBus;
@@ -49,7 +49,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 		this.eventBus = eventBus;
 		this.decoratorRenderer = idgDecoratorRenderer;
 		this.drugTargetRenderer = drugTargetRenderer;
-		eventBus.addHandler(RenderOtherContextDialogInfoEvent.TYPE, this);
+		eventBus.addHandler(ProteinsTableUpdatedEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
 	}
 	
@@ -148,7 +148,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, RenderOth
 	 * Used to re-color and add expression columns to diagram context popups
 	 */
 	@Override
-	public void onRenderOtherContextDialogInfo(RenderOtherContextDialogInfoEvent event) {
+	public void onRenderOtherContextDialogInfo(ProteinsTableUpdatedEvent event) {
 		if(dataOverlay == null || dataOverlay.isDiscrete() || dataOverlay.getIdentifierValueMap() == null)
 			return;
 		
