@@ -21,6 +21,7 @@ import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.data.layout.Node;
 import org.reactome.web.diagram.events.AnalysisResetEvent;
 import org.reactome.web.diagram.events.DiagramObjectsFlaggedEvent;
+import org.reactome.web.diagram.events.ExpressionColumnChangedEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
 import org.reactome.web.diagram.legends.FlaggedItemsControl;
@@ -434,7 +435,6 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 									   event.getOverlay(),
 									   context, 
 									   event.getRendererManager(), 
-									   this.dataOverlay,
 									   event.getOverlayContext());
 	}
 	
@@ -445,8 +445,6 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		}
 		this.overlayLauncher.hide();
 		this.dataOverlay = event.getDataOverlay();
-		context.setDialogMap(new HashMap<>());
-		
 		IDGPopupFactory.get().setDataOverlayProperties(event.getDataOverlay().getOverlayProperties());
 		
 		setIsHitValues();
@@ -455,6 +453,12 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualizer)
 			((FIViewVisualizer)activeVisualiser).overlayNodes(dataOverlay);
+		
+		if(context.getDialogMap() != null)
+			context.getDialogMap().values().forEach(dialog -> {
+				dialog.redraw();
+				});		
+
 	}
 	
 	/**
@@ -505,7 +509,10 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
 		this.dataOverlay = null;
 		clearAnalysisOverlay();
-		context.setDialogMap(new HashMap<>());
+		
+		if(context.getDialogMap() != null)
+			context.getDialogMap().values().forEach(dialog -> dialog.redraw());
+		
 		if(activeVisualiser instanceof DiagramVisualiser)
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualizer)
@@ -537,7 +544,6 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	public void onDataOverlayColumnChanged(DataOverlayColumnChangedEvent event) {
 		this.dataOverlay.setColumn(event.getColumn());
 		IDGPopupFactory.get().setOverlayColumn(event.getColumn());
-		context.setDialogMap(new HashMap<>());
 		if(activeVisualiser instanceof DiagramVisualiser) 
 			activeVisualiser.loadAnalysis();
 		else if(activeVisualiser instanceof FIViewVisualizer)

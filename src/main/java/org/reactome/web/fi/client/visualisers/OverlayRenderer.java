@@ -19,6 +19,5 @@ public interface OverlayRenderer {
 						 AdvancedContext2d overlay, 
 						 Context context, 
 						 RendererManager rendererManager,
-						 DataOverlay dataOverlay,
 						 OverlayContext overlayContext);
 }

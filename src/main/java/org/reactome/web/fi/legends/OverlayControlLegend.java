@@ -1,6 +1,7 @@
 package org.reactome.web.fi.legends;
 
 import org.reactome.web.diagram.common.PwpButton;
+import org.reactome.web.diagram.events.ExpressionColumnChangedEvent;
 import org.reactome.web.diagram.legends.LegendPanel;
 import org.reactome.web.fi.events.DataOverlayColumnChangedEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
@@ -121,11 +122,11 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 	private void forwardButtonHandler() {
 		if(this.dataOverlay.getColumn()+1 == this.dataOverlay.getTissueTypes().size()) {
 			this.dataOverlay.setColumn(0);
-			eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(0), this);
+			fireColumnChangedEvents(this.dataOverlay.getColumn());
 		}
 		else {
 			this.dataOverlay.setColumn(this.dataOverlay.getColumn()+1);
-			eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(this.dataOverlay.getColumn()), this);
+			fireColumnChangedEvents(this.dataOverlay.getColumn());
 		}
 		updateUI();
 	}
@@ -136,13 +137,18 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 	private void backButtonHandler() {
 		if(this.dataOverlay.getColumn() == 0){
 			this.dataOverlay.setColumn(this.dataOverlay.getTissueTypes().size()-1);
-			eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(this.dataOverlay.getColumn()), this);
+			fireColumnChangedEvents(this.dataOverlay.getColumn());
 		}
 		else {
 			this.dataOverlay.setColumn(this.dataOverlay.getColumn()-1);
-			eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(this.dataOverlay.getColumn()), this);
+			fireColumnChangedEvents(this.dataOverlay.getColumn());
 		}
 		updateUI();
+	}
+	
+	private void fireColumnChangedEvents(int column) {
+		eventBus.fireEventFromSource(new DataOverlayColumnChangedEvent(column), this);
+		eventBus.fireEventFromSource(new ExpressionColumnChangedEvent(column), this);
 	}
 
 	private void initHandlers() {

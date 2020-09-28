@@ -25,7 +25,9 @@ import org.reactome.web.fi.client.visualisers.OverlayRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.DrugTargetRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.PairwiseInteractorRenderer;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
+import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
+import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
@@ -33,7 +35,7 @@ import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 import com.google.gwt.event.shared.EventBus;
 
 public class ContinuousDataOverlayRenderer implements OverlayRenderer, ProteinsTableUpdatedHandler, 
-	OverlayDataResetHandler{
+	OverlayDataResetHandler, OverlayDataLoadedHandler{
 
 	private EventBus eventBus;
 	private AdvancedContext2d overlay;
@@ -51,11 +53,12 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, ProteinsT
 		this.drugTargetRenderer = drugTargetRenderer;
 		eventBus.addHandler(ProteinsTableUpdatedEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
+		eventBus.addHandler(OverlayDataLoadedEvent.TYPE, this);
 	}
 	
 	@Override
 	public void doRender(Collection<DiagramObject> items, AdvancedContext2d overlay, Context context,
-			RendererManager rendererManager, DataOverlay dataOverlay, OverlayContext overlayContext) {
+			RendererManager rendererManager, OverlayContext overlayContext) {
 		
 		//this render is for continuous data only
 		if(dataOverlay.isDiscrete() || dataOverlay.getUniprotToEntitiesMap() == null)
@@ -66,7 +69,6 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, ProteinsT
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
         this.originalOverlayContext = overlayContext;
-        this.dataOverlay = dataOverlay;
         this.dataOverlay.updateIdentifierValueMap(); //reset map to just entities in a specific tissue if tissueTypes isnt null
         ItemsDistribution itemsDistribution = new ItemsDistribution(items, AnalysisType.NONE);
         renderContinuousProteinData(itemsDistribution.getItems("Protein"));
@@ -144,6 +146,12 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, ProteinsT
 		this.dataOverlay = null;
 	}
 
+	@Override
+	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
+		this.dataOverlay = event.getDataOverlay();
+		this.dataOverlay.updateIdentifierValueMap();
+	}
+	
 	/**
 	 * Used to re-color and add expression columns to diagram context popups
 	 */
@@ -152,6 +160,7 @@ public class ContinuousDataOverlayRenderer implements OverlayRenderer, ProteinsT
 		if(dataOverlay == null || dataOverlay.isDiscrete() || dataOverlay.getIdentifierValueMap() == null)
 			return;
 		
+		event.getTable().removeExpressionColumns();
 		event.getTable().addExpressionColumns(dataOverlay.getTissueTypes(), dataOverlay.getMinValue(), dataOverlay.getMaxValue(), dataOverlay.getColumn());
 		
 		List<String> flagInteractors = IDGPopupFactory.get().getFlagInteractors();

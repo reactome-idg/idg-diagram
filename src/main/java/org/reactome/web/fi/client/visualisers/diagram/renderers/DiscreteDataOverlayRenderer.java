@@ -27,7 +27,9 @@ import org.reactome.web.fi.client.visualisers.OverlayRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.DrugTargetRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.PairwiseInteractorRenderer;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
+import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
+import org.reactome.web.fi.handlers.OverlayDataLoadedHandler;
 import org.reactome.web.fi.handlers.OverlayDataResetHandler;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.overlay.profiles.IDGExpressionGradient;
@@ -42,7 +44,7 @@ import com.google.gwt.event.shared.EventBus;
  * @author brunsont
  *
  */
-public class DiscreteDataOverlayRenderer implements OverlayRenderer, ProteinsTableUpdatedHandler, OverlayDataResetHandler {
+public class DiscreteDataOverlayRenderer implements OverlayRenderer, ProteinsTableUpdatedHandler, OverlayDataResetHandler, OverlayDataLoadedHandler {
 
 	private EventBus eventBus;
 	private AdvancedContext2d overlay;
@@ -59,8 +61,10 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, ProteinsTab
 		this.eventBus = eventBus;
 		this.decoratorRenderer = idgDecoratorRenderer;
 		this.drugTargetRenderer = drugTargetRenderer;
+        this.colourMap = OverlayColours.get().getColours();
 		eventBus.addHandler(ProteinsTableUpdatedEvent.TYPE, this);
 		eventBus.addHandler(OverlayDataResetEvent.TYPE, this);
+		eventBus.addHandler(OverlayDataLoadedEvent.TYPE, this);
 	}
 	
 	@Override
@@ -68,7 +72,6 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, ProteinsTab
 						 AdvancedContext2d overlay, 
 						 Context context,
 						 RendererManager rendererManager, 
-						 DataOverlay dataOverlay,
 						 OverlayContext overlayContext) {
 		
 		//this renderer is for discrete data
@@ -80,11 +83,8 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, ProteinsTab
 		this.factor = context.getDiagramStatus().getFactor();
         this.offset = context.getDiagramStatus().getOffset();
 
-        this.colourMap = OverlayColours.get().getColours();
         this.originalOverlay = overlayContext;
-        
-        this.dataOverlay = dataOverlay;
-        
+               
         //reset map to just entities in a specific tissue if tissueTypes isn't null
         this.dataOverlay.updateIdentifierValueMap();
         
@@ -171,7 +171,7 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, ProteinsTab
 	public void onRenderOtherContextDialogInfo(ProteinsTableUpdatedEvent event) {
 		if(dataOverlay == null || !dataOverlay.isDiscrete() || dataOverlay.getIdentifierValueMap()==null)
 			return;
-		
+				
 		List<String> flagInteractors = IDGPopupFactory.get().getFlagInteractors();
 		List<GraphPhysicalEntity> data = event.getTable().getDataProvider().getList();
 		for(int i=0; i<data.size(); i++) {
@@ -180,8 +180,8 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, ProteinsTab
 			String identifier = entity.getIdentifier();
 			if(identifier.contains("-"))
 				identifier = identifier.substring(0, identifier.indexOf("-"));
-			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(
-					colourMap.get(dataOverlay.getIdentifierValueMap().get(identifier)));
+			String color = colourMap.get(dataOverlay.getIdentifierValueMap().get(identifier));
+			event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor(color);
 			
 			if(flagInteractors != null && flagInteractors.contains(identifier))
 				event.getTable().getRowElement(i).getCells().getItem(0).getStyle().setBackgroundColor("#FF00FF"); //TODO: try setting border instead
@@ -190,13 +190,18 @@ public class DiscreteDataOverlayRenderer implements OverlayRenderer, ProteinsTab
 
 	@Override
 	public void onOverlayDataReset(OverlayDataResetEvent event) {
-		this.colourMap = null;
 		this.overlay = null;
 		this.factor = null;
 		this.offset = null;
 		this.rendererManager = null;
 		this.originalOverlay = null;
 		this.dataOverlay = null;
+	}
+	
+	@Override
+	public void onOverlayDataLoaded(OverlayDataLoadedEvent event) {
+		this.dataOverlay = event.getDataOverlay();
+		this.dataOverlay.updateIdentifierValueMap();
 	}
 
 }
