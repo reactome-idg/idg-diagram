@@ -17,7 +17,7 @@ public class TargetGeneColumn  extends Column<DrugTargetResult, String>{
 	}
 
 	/**
-	 * Display gene name or uniprote if gene name is null
+	 * Display term name or uniprot if gene name is null
 	 */
 	@Override
 	public String getValue(DrugTargetResult object) {
