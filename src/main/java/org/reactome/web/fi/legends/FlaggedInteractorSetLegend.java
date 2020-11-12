@@ -76,7 +76,7 @@ DiagramObjectsFlagResetHandler, HasMouseOverHandlers, HasMouseOutHandlers{
 			descs = new HashSet<>(Arrays.asList(flagTerm.split(",")));
 			descs.remove(flagTerm.substring(0, flagTerm.indexOf(",")));
 		}
-		if(descs.size() == 0) return;
+		if(descs.size() == 0) descs.add("Combined Score");
 		
 		
 		dataDescContainer.clear();
