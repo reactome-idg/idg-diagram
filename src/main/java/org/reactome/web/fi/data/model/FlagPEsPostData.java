@@ -14,7 +14,7 @@ import com.google.gwt.json.client.JSONString;
  */
 public class FlagPEsPostData {
 
-	String gene;
+	String term;
 	Long dbId; //dbid of pathway
 	List<String> dataDescs;
 	
@@ -22,19 +22,19 @@ public class FlagPEsPostData {
 		
 	}
 
-	public FlagPEsPostData(String gene, Long dbId, List<String> dataDescs) {
+	public FlagPEsPostData(String term, Long dbId, List<String> dataDescs) {
 		super();
-		this.gene = gene;
+		this.term = term;
 		this.dbId = dbId;
 		this.dataDescs = dataDescs;
 	}
 
-	public String getGene() {
-		return gene;
+	public String getTerm() {
+		return term;
 	}
 
-	public void setGene(String gene) {
-		this.gene = gene;
+	public void setTerm(String term) {
+		this.term = term;
 	}
 
 	public Long getDbId() {
@@ -56,7 +56,7 @@ public class FlagPEsPostData {
 	public String toJSONString() {
 		JSONObject rtn = new JSONObject();
 		
-		rtn.put("gene", new JSONString(this.gene));
+		rtn.put("term", new JSONString(this.term));
 		rtn.put("dbId", new JSONNumber(this.dbId));
 		
 		JSONArray descArray = new JSONArray();
