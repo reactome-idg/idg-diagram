@@ -551,9 +551,17 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		cy.highlightNode(((GraphPhysicalEntity)entity).getIdentifier(), color);
 	}
 	
+	/**
+	 * Expression column can be changed on analysis or data overlay. Should only have one active at a time.
+	 */
 	@Override
 	public void expressionColumnChanged() {
-		loadAnalysis();
+		if(dataOverlay != null) {
+			recolorNodes();
+		}
+		else if(context.getAnalysisStatus() != null) {
+			loadAnalysis();
+		}
 	}
 
 	@Override
@@ -687,6 +695,10 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		}
         this.dataOverlay.updateIdentifierValueMap();
 		
+		recolorNodes();
+	}
+
+	private void recolorNodes() {
 		if(dataOverlay.isDiscrete())
 			fiUtils.overlayDiscreteData(dataOverlay, cy);
 		else if(!dataOverlay.isDiscrete())
