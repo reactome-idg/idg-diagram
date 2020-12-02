@@ -55,7 +55,9 @@
 {
 	"selector": "edge.highlighted",
 	"style": {
-		"line-color": "#FF0000"
+		"line-color": "#FF0000",
+		"source-arrow-color":"#FF0000",
+		"target-arrow-color": "#FF0000"
 	}
 },
 {
@@ -140,6 +142,12 @@
     	"source-arrow-shape": "tee",
    		"source-arrow-color": "#FF0000"
   }
+},
+{
+    "selector": "edge[direction=\"|-\"].hovered",
+    "style": {
+        "source-arrow-color": "#0000FF"
+    }
 },
 {
 	"selector": "edge[direction=\"|->\"]",
