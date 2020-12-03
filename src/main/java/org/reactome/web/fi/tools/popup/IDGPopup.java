@@ -48,6 +48,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class IDGPopup extends DialogBox implements PairwiseTableHandler, CytoscapePanelHandler, DrugTargetTableHandler{
 
 	private String popupId;
+	private String displayName;
 	private List<PopupTypes> types;
 	private IDGPopupCytoscapeController cyController;
 	private Set<String> diagramNodes;
@@ -68,11 +69,13 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler, Cytosca
 	
 	public IDGPopup(GraphObject graphObject, PopupTypes type, int zIndex) {
 		setDiagramNodes(graphObject);
+		this.displayName = graphObject.getDisplayName();
 		createPopup(graphObject.getStId(), type, zIndex);
 	}
 	
 	public IDGPopup(String uniprot, String geneName, PopupTypes type, int zIndex) {
 		setDiagramNodes(uniprot);
+		this.displayName = geneName;
 		createPopup(uniprot, type, zIndex);
 	}
 	
@@ -220,7 +223,7 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler, Cytosca
 
 	private void setTitlePanel() {
 		FlowPanel fp = new FlowPanel();
-		InlineLabel title = new InlineLabel("Pairwise popup: " + popupId);
+		InlineLabel title = new InlineLabel("Pairwise popup: " + this.displayName);
 		fp.add(title);
 		
 		SafeHtml safe = SafeHtmlUtils.fromTrustedString(fp.toString());
