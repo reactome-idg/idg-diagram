@@ -3,6 +3,8 @@ package org.reactome.web.fi.client;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.reactome.web.diagram.client.DiagramViewerImpl;
 import org.reactome.web.diagram.client.ViewerContainer;
@@ -24,6 +26,7 @@ import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualizer;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.loader.PairwiseInfoService.peFlagHandler;
+import org.reactome.web.fi.data.manager.StateTokenHelper;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.DrugTargetsRequestedEvent;
 import org.reactome.web.fi.events.FIDiagramObjectsFlaggedEvent;
@@ -39,6 +42,8 @@ import org.reactome.web.fi.handlers.PairwiseOverlayButtonClickedHandler;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 import org.reactome.web.fi.tools.popup.PopupTypes;
 
+import com.google.gwt.user.client.History;
+
 /**
  * 
  * @author brunsont
@@ -47,9 +52,12 @@ import org.reactome.web.fi.tools.popup.PopupTypes;
 public class IdgDiagramViewerImpl extends DiagramViewerImpl implements CytoscapeToggledHandler,
 OverlayDataRequestedHandler, PairwiseOverlayButtonClickedHandler, PairwiseCountsRequestedHandler,
 EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
-		
+	
+	private StateTokenHelper stHelper;
+	
 	public IdgDiagramViewerImpl() {
 		super();
+		stHelper = new StateTokenHelper();
 		eventBus.fireEventFromSource(new DiagramProfileChangedEvent(DiagramColours.ProfileType.PROFILE_01.getDiagramProfile()), this);
 		eventBus.addHandler(CytoscapeToggledEvent.TYPE, this);
 		eventBus.addHandler(OverlayRequestedEvent.TYPE, this);
@@ -94,7 +102,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
             if(!identifier.equalsIgnoreCase(context.getFlagTerm()) || !this.includeInteractors.equals(includeInteractors)) {
                 eventBus.fireEventFromSource(new DiagramObjectsFlagRequestedEvent(identifier, includeInteractors), this);
             }
-            else eventBus.fireEventFromSource(new DiagramObjectsFlagRequestedEvent(identifier, includeInteractors), this);
+            else eventBus.fireEventFromSource(new DiagramObjectsFlagRequestedEvent(identifier, includeInteractors), this); //TODO: why is this the same?
         }
 	}
 
@@ -103,6 +111,10 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		IDGPopupFactory.get().setFlagTerm(null); //remove this so any pairwise interactors aren't filtered
 		IDGPopupFactory.get().setFlagInteractors(null);
 		super.onDiagramObjectsFlagReset(event);
+		Map<String, String> tokenMap = stHelper.buildTokenMap(History.getToken());
+		tokenMap.remove("DSKEYS");
+		tokenMap.remove("SIGCUTOFF");
+		History.newItem(stHelper.buildToken(tokenMap));
 	}
 
 	@Override
@@ -113,16 +125,19 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 			return;
 		}
 		
-		event.getTerm().replaceAll("%7C", "|");
-		String[] tokens = event.getTerm().split(",");	
-		String term = tokens[0];
-		List<String> dataDescs = Arrays.asList(Arrays.copyOfRange(tokens, 1, tokens.length));
+		Map<String, String> tokenMap = stHelper.buildTokenMap(History.getToken());
 		
-		context.setFlagTerm(term);
+		//get dataDescription keys from "DSKEYS"
+		List<Integer> dataDescKeys = Arrays.stream(tokenMap.get("DSKEYS").split(",")).map(num -> Integer.parseInt(num)).collect(Collectors.toList());
+		
+		//if SIGCUTOFF is not on map, add to prd, otherwise will be null
+		Double prd = tokenMap.get("SIGCUTOFF") != null ? Double.parseDouble(tokenMap.get("SIGCUTOFF")):null;
+				
+		context.setFlagTerm(event.getTerm());
 		this.includeInteractors = event.getIncludeInteractors();
-		IDGPopupFactory.get().setFlagTerm(term);
+		IDGPopupFactory.get().setFlagTerm(event.getTerm());
 		
-		PairwiseInfoService.loadPEFlags(context.getContent().getDbId(), term, dataDescs, new peFlagHandler() {
+		PairwiseInfoService.loadPEFlags(context.getContent().getDbId(), event.getTerm(), dataDescKeys, prd, new peFlagHandler() {
 			@Override
 			public void onPEFlagsLoaded(List<Long> pes, List<String> flagInteractors) {
 				IDGPopupFactory.get().setFlagInteractors(flagInteractors);
@@ -150,9 +165,9 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	}
 
 	private void flagObjects(String term, List<Long> pes) {
-		if(pes.size() == 0)
-			eventBus.fireEventFromSource(new DiagramObjectsFlagResetEvent(), this);
-		
+//		if(pes.size() == 0)
+////			fireEvent(new DiagramObjectsFlagResetEvent());
+//			return;
 		((IdgViewerContainer)viewerContainer).flagObjects(term, pes, this.includeInteractors);
 		
 		}

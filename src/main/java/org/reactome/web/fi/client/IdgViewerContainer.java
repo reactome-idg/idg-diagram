@@ -290,7 +290,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 			if(pes.contains(diagramObject.getReactomeId())) flaggedObjects.add(diagramObject);
 		});
 		
-		if(flaggedObjects.size() == 0) return;
+//		if(flaggedObjects.size() == 0) return;
 		
 		eventBus.fireEventFromSource(new DiagramObjectsFlaggedEvent(term, includeInteractors, flaggedObjects, false), this);
 	}

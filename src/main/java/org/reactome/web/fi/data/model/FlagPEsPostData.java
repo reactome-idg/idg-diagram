@@ -16,17 +16,19 @@ public class FlagPEsPostData {
 
 	String term;
 	Long dbId; //dbid of pathway
-	List<String> dataDescs;
+	List<Integer> dataDescKeys;
+	Double prd;
 	
 	public FlagPEsPostData() {
 		
 	}
 
-	public FlagPEsPostData(String term, Long dbId, List<String> dataDescs) {
+	public FlagPEsPostData(String term, Long dbId, List<Integer> dataDescKeys, Double prd) {
 		super();
 		this.term = term;
 		this.dbId = dbId;
-		this.dataDescs = dataDescs;
+		this.dataDescKeys = dataDescKeys;
+		this.prd = prd;
 	}
 
 	public String getTerm() {
@@ -44,15 +46,23 @@ public class FlagPEsPostData {
 	public void setDbId(Long dbId) {
 		this.dbId = dbId;
 	}
-
-	public List<String> getDataDescs() {
-		return dataDescs;
-	}
-
-	public void setDataDescs(List<String> dataDescs) {
-		this.dataDescs = dataDescs;
-	}
 	
+	public List<Integer> getDataDescKeys() {
+		return dataDescKeys;
+	}
+
+	public void setDataDescKeys(List<Integer> dataDescKeys) {
+		this.dataDescKeys = dataDescKeys;
+	}
+
+	public Double getPrd() {
+		return prd;
+	}
+
+	public void setPrd(Double prd) {
+		this.prd = prd;
+	}
+
 	public String toJSONString() {
 		JSONObject rtn = new JSONObject();
 		
@@ -60,11 +70,13 @@ public class FlagPEsPostData {
 		rtn.put("dbId", new JSONNumber(this.dbId));
 		
 		JSONArray descArray = new JSONArray();
-		this.dataDescs.forEach(d -> {
-			descArray.set(descArray.size(), new JSONString(d));
+		dataDescKeys.forEach(d -> {
+			descArray.set(descArray.size(), new JSONNumber(d));
 		});
-		rtn.put("dataDescs", descArray);
+		rtn.put("dataDescKeys", descArray);
 		
+		if(prd != null)
+			rtn.put("prd", new JSONNumber(prd));
 		
 		return rtn.toString();
 	}

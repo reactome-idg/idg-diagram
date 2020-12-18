@@ -79,10 +79,10 @@ public class PairwiseInfoService {
 		}
 	}
 	
-	public static void loadPEFlags(Long dbId, String term, List<String> dataDescs, peFlagHandler handler) {
+	public static void loadPEFlags(Long dbId, String term, List<Integer> dataDescKeys, Double prd, peFlagHandler handler) {
 		String url = BASE_URL + "relationships/PEsForTermInteractors";
 		
-		FlagPEsPostData post = new FlagPEsPostData(term, dbId, dataDescs);
+		FlagPEsPostData post = new FlagPEsPostData(term, dbId, dataDescKeys, prd);
 		
 		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
 		requestBuilder.setHeader("Accept", "application/json");
