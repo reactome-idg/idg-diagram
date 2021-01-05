@@ -32,7 +32,7 @@ public class PairwiseInfoService {
 	}
 	
 	public interface peFlagHandler{
-		void onPEFlagsLoaded(List<Long> pes, List<String> flagInteractors);
+		void onPEFlagsLoaded(List<Long> pes, List<String> flagInteractors, List<String> dataDescs);
 		void onPEFlagsLoadedError(Throwable exception);
 	}
 	
@@ -111,7 +111,15 @@ public class PairwiseInfoService {
 							for(int i=0; i<termInteractorsArray.size(); i++)
 								termInteractors.add(geneToUniprot.get(termInteractorsArray.get(i).isString().stringValue()));
 						}
-					handler.onPEFlagsLoaded(pes, termInteractors);
+					List<String> dataDescs = new ArrayList<>();
+					JSONArray dataDescsArray = rtnObj.get("dataDescs").isArray();
+					if(dataDescsArray != null) {
+						for(int i=0; i<dataDescsArray.size(); i++) {
+							dataDescs.add(dataDescsArray.get(i).isString().stringValue());
+						}
+					}
+				
+					handler.onPEFlagsLoaded(pes, termInteractors, dataDescs);
 					
 				}
 				@Override

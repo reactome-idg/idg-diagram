@@ -1,23 +1,37 @@
 package org.reactome.web.fi.legends;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.events.DiagramObjectsFlaggedEvent;
 import org.reactome.web.diagram.legends.FlaggedItemsControl;
+import org.reactome.web.fi.data.manager.StateTokenHelper;
 import org.reactome.web.fi.events.FIDiagramObjectsFlaggedEvent;
+import org.reactome.web.fi.events.SetFIFlagDataDescsEvent;
+import org.reactome.web.fi.handlers.SetFIFlagDataDescsHandler;
 
-import com.google.gwt.dom.client.Style.Overflow;
-import com.google.gwt.dom.client.Style.TextOverflow;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.dom.client.Style.WhiteSpace;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.ui.TextBox;
 
-public class IDGFlaggedItemsControl  extends FlaggedItemsControl{
+/**
+ * 
+ * @author brunsont
+ *
+ */
+public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetFIFlagDataDescsHandler{
+	
+	private List<String> dataDescs;
+	private TextBox prdInput;
+	
 	
 	public IDGFlaggedItemsControl(EventBus eventBus) {
 		super(eventBus);
@@ -27,21 +41,48 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl{
 		//Remove default style and make the msgLabel wider
 		//Required because the default width is tagged with !important
 		this.msgLabel.removeStyleName(msgLabel.getStyleName());
-		this.msgLabel.getElement().getStyle().setWidth(250, Unit.PX);
-		this.msgLabel.getElement().getStyle().setOverflow(Overflow.HIDDEN);
-		this.msgLabel.getElement().getStyle().setWhiteSpace(WhiteSpace.NOWRAP);
-		this.msgLabel.getElement().getStyle().setTextOverflow(TextOverflow.ELLIPSIS);
+		this.msgLabel.addStyleName(IDGRESOURCES.getCSS().idgFlaggedItemsLabel());
+		
+		prdInput = new TextBox();
+		
+		//setting attributes on TextBox to make it function better
+		prdInput.getElement().setAttribute("type", "number");
+		prdInput.getElement().setAttribute("min", "0");
+		prdInput.getElement().setAttribute("max", "1");
+		prdInput.getElement().setAttribute("step", "0.1");
+		
+		prdInput.setStyleName(IDGRESOURCES.getCSS().prdInput());
+		prdInput.addKeyDownHandler(new KeyDownHandler() {
+
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					updatePRD();
+				}
+			}
+		});
+		
+		prdInput.setValue("0.9"); //set defaul PRD value to 0.9
+		super.add(prdInput);
+		prdInput.setVisible(false);
+		
+		eventBus.addHandler(SetFIFlagDataDescsEvent.TYPE, this);
+	}
+
+	/**
+	 * update SIGCUTOFF token to new value and set new history token to cause update
+	 * 
+	 */
+	private void updatePRD() {
+		StateTokenHelper helper = new StateTokenHelper();
+		Map<String, String> tokenMap = helper.buildTokenMap(History.getToken());
+		tokenMap.put("SIGCUTOFF", prdInput.getValue()+"");
+		History.newItem(helper.buildToken(tokenMap));
 	}
 
 	@Override
 	public void onDiagramObjectsFlagged(DiagramObjectsFlaggedEvent event) {
 		super.term = event.getTerm();
-		Set<String> descs = new HashSet<>();
-		if(super.term.contains(",")) {
-			descs = new HashSet<>(Arrays.asList(term.split(",")));
-			term = term.substring(0, term.indexOf(","));
-			descs.remove(term);
-		}
 		
 		super.includeInteractors = event.getIncludeInteractors();
 		
@@ -49,7 +90,7 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl{
 		
 		if(event instanceof FIDiagramObjectsFlaggedEvent) {
 			List<String> proteinsToFlag = ((FIDiagramObjectsFlaggedEvent)event).getProteinsToFlag();
-			int num = proteinsToFlag != null ? proteinsToFlag.size() : 1;
+			int num = proteinsToFlag != null ? proteinsToFlag.size() : 0;
 			msg = " - " + num + (event.getIncludeInteractors() == true ? " interacting " : "") + (num == 1 ? " protein" : " proteins") + " flagged";
 		}
 		else {
@@ -62,15 +103,42 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl{
 		
 		super.msgLabel.setText(term + msg);
 		
-		if(descs.size() > 0) {
-			msgLabel.setTitle(String.join("\n", descs));
+		if(dataDescs != null  && dataDescs.size() > 0) {
+			msgLabel.setTitle(String.join("\n", dataDescs));
 		}
 		
 		super.loadingIcon.setVisible(false);
 		super.interactorsLabel.setVisible(false);
 		setVisible(true);
 	}
+
+	@Override
+	public void onSetFIFlagDataDescs(SetFIFlagDataDescsEvent event) {
+		this.dataDescs = event.getDataDescs();
+		if(dataDescs.contains("Combined Score")) {
+			prdInput.setVisible(true);
+			StateTokenHelper helper = new StateTokenHelper();
+			prdInput.setValue(helper.buildTokenMap(History.getToken()).get("SIGCUTOFF"));
+		}
+	}
 	
+	public static IDGResources IDGRESOURCES;
+	static {
+		IDGRESOURCES = GWT.create(IDGResources.class);
+		IDGRESOURCES.getCSS().ensureInjected();
+	}
 	
+	public interface IDGResources extends ClientBundle {
+		@Source (IDGResourceCSS.CSS)
+		IDGResourceCSS getCSS();
+	}
 	
+	@CssResource.ImportedWithPrefix("idgDiagram-FlaggedInteractorControl")
+	public interface IDGResourceCSS extends CssResource {
+		String CSS = "org/reactome/web/fi/legends/IDGFlaggedItemsControl.css";
+		
+		String idgFlaggedItemsLabel();
+		
+		String prdInput();
+	}
 }

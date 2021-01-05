@@ -1,13 +1,13 @@
 package org.reactome.web.fi.legends;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.reactome.web.diagram.events.DiagramObjectsFlagResetEvent;
 import org.reactome.web.diagram.events.DiagramObjectsFlaggedEvent;
 import org.reactome.web.diagram.handlers.DiagramObjectsFlagResetHandler;
 import org.reactome.web.diagram.handlers.DiagramObjectsFlaggedHandler;
+import org.reactome.web.fi.events.SetFIFlagDataDescsEvent;
+import org.reactome.web.fi.handlers.SetFIFlagDataDescsHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
@@ -24,10 +24,17 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
-public class FlaggedInteractorSetLegend extends AbsolutePanel implements DiagramObjectsFlaggedHandler,
+/**
+ * 
+ * @author brunsont
+ *
+ */
+public class FlaggedInteractorSetLegend extends AbsolutePanel implements DiagramObjectsFlaggedHandler, SetFIFlagDataDescsHandler,
 DiagramObjectsFlagResetHandler, HasMouseOverHandlers, HasMouseOutHandlers{
 
 	protected EventBus eventBus;
+	
+	private List<String> dataDescs;
 	
 	protected FlowPanel dataDescContainer;
 	
@@ -58,6 +65,7 @@ DiagramObjectsFlagResetHandler, HasMouseOverHandlers, HasMouseOutHandlers{
 	private void initHandlers() {
 		eventBus.addHandler(DiagramObjectsFlaggedEvent.TYPE, this);
 		eventBus.addHandler(DiagramObjectsFlagResetEvent.TYPE, this);
+		eventBus.addHandler(SetFIFlagDataDescsEvent.TYPE, this);
 		this.addMouseOverHandler(e -> {
 			this.removeStyleName(RESOURCES.getCSS().increaseTransparency());
 		});
@@ -68,19 +76,10 @@ DiagramObjectsFlagResetHandler, HasMouseOverHandlers, HasMouseOutHandlers{
 	
 	@Override
 	public void onDiagramObjectsFlagged(DiagramObjectsFlaggedEvent event) {
-		String flagTerm = event.getTerm();
 		if(!event.getIncludeInteractors()) return;
 		
-		Set<String> descs = new HashSet<>();
-		if(flagTerm.contains(",")) {
-			descs = new HashSet<>(Arrays.asList(flagTerm.split(",")));
-			descs.remove(flagTerm.substring(0, flagTerm.indexOf(",")));
-		}
-		if(descs.size() == 0) descs.add("Combined Score");
-		
-		
 		dataDescContainer.clear();
-		descs.forEach(e -> {
+		dataDescs.forEach(e -> {
 			Label lbl = new Label(e);
 			lbl.setStyleName(RESOURCES.getCSS().descLabel());
 			dataDescContainer.add(new Label(e));
@@ -92,6 +91,11 @@ DiagramObjectsFlagResetHandler, HasMouseOverHandlers, HasMouseOutHandlers{
 	public void onDiagramObjectsFlagReset(DiagramObjectsFlagResetEvent event) {
 		this.dataDescContainer.clear();
 		this.setVisible(false);
+	}
+	
+	@Override
+	public void onSetFIFlagDataDescs(SetFIFlagDataDescsEvent event) {
+		this.dataDescs = event.getDataDescs();
 	}
 
 	public static Resources RESOURCES;

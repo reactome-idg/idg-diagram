@@ -21,4 +21,5 @@ public class FIDiagramObjectsFlaggedEvent extends DiagramObjectsFlaggedEvent{
 	public void setProteinsToFlag(List<String> proteinsToFlag) {
 		this.proteinsToFlag = proteinsToFlag;
 	}
+
 }

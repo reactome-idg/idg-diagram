@@ -1,0 +1,17 @@
+.idgFlaggedItemsLabel {
+	width: 210px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.prdInput {
+	vertical-align: text-bottom;
+    border: none;
+    margin: 5px 0 0 5px;
+    outline: none;
+    font-size: 12px;
+    width: 73px;
+    height: unset;
+    background-color: white;
+}

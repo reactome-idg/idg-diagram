@@ -33,6 +33,7 @@ import org.reactome.web.fi.events.FIDiagramObjectsFlaggedEvent;
 import org.reactome.web.fi.events.OverlayRequestedEvent;
 import org.reactome.web.fi.events.PairwiseCountsRequestedEvent;
 import org.reactome.web.fi.events.PairwiseOverlayButtonClickedEvent;
+import org.reactome.web.fi.events.SetFIFlagDataDescsEvent;
 import org.reactome.web.fi.events.OverlayDataResetEvent;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 import org.reactome.web.fi.handlers.DrugTargetsRequestedHandler;
@@ -139,9 +140,9 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		
 		PairwiseInfoService.loadPEFlags(context.getContent().getDbId(), event.getTerm(), dataDescKeys, prd, new peFlagHandler() {
 			@Override
-			public void onPEFlagsLoaded(List<Long> pes, List<String> flagInteractors) {
+			public void onPEFlagsLoaded(List<Long> pes, List<String> flagInteractors, List<String> dataDescs) {
 				IDGPopupFactory.get().setFlagInteractors(flagInteractors);
-				flagObjects(event.getTerm(), pes);
+				flagObjects(event.getTerm(), pes, dataDescs);
 			}
 			@Override
 			public void onPEFlagsLoadedError(Throwable exception) {
@@ -153,7 +154,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	}
 
 	/**
-	 * Want to fire FI version of event if FI visualiser
+	 * Want to fire FI version of event if FI visualizer
 	 */
 	@Override
 	public void flaggedElementsLoaded(String term, Occurrences toFlag, boolean notify) {
@@ -161,16 +162,13 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		if(viz instanceof DiagramVisualiser || viz instanceof SVGVisualiser)
 			super.flaggedElementsLoaded(term, toFlag, notify);
 		else if(viz instanceof FIViewVisualizer)
-			eventBus.fireEventFromSource(new FIDiagramObjectsFlaggedEvent(term, this.includeInteractors, Collections.singletonList(term), false), this);
+			eventBus.fireEventFromSource(new FIDiagramObjectsFlaggedEvent(term, this.includeInteractors, Collections.singletonList(term), notify), this);
 	}
 
-	private void flagObjects(String term, List<Long> pes) {
-//		if(pes.size() == 0)
-////			fireEvent(new DiagramObjectsFlagResetEvent());
-//			return;
-		((IdgViewerContainer)viewerContainer).flagObjects(term, pes, this.includeInteractors);
-		
-		}
+	private void flagObjects(String term, List<Long> pes, List<String> dataDescs) {
+		eventBus.fireEventFromSource(new SetFIFlagDataDescsEvent(dataDescs), this);
+		((IdgViewerContainer)viewerContainer).flagObjects(term, pes, this.includeInteractors);	
+	}
 
 	@Override
 	public void onCytoscapeToggled(CytoscapeToggledEvent event) {
