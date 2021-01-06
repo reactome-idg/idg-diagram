@@ -47,7 +47,7 @@ public class PairwiseOverlayProperties {
 		this.pairwiseOverlayObjects.forEach(obj -> descs.set(descs.size(), new JSONString(obj.getId())));
 		
 		rtn.put("genes", geneArray);
-		rtn.put("dataDescKeys", descs);
+		rtn.put("dataDescs", descs);	
 		
 		return rtn.toString();
 	}

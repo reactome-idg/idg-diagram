@@ -115,11 +115,12 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 	@Override
 	public void onSetFIFlagDataDescs(SetFIFlagDataDescsEvent event) {
 		this.dataDescs = event.getDataDescs();
-		if(dataDescs.contains("Combined Score")) {
+		if(dataDescs.contains("combined_score")) {
 			prdInput.setVisible(true);
 			StateTokenHelper helper = new StateTokenHelper();
 			prdInput.setValue(helper.buildTokenMap(History.getToken()).get("SIGCUTOFF"));
 		}
+		else prdInput.setVisible(false);
 	}
 	
 	public static IDGResources IDGRESOURCES;
