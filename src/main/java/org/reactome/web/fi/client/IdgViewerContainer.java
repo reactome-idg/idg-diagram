@@ -1,7 +1,6 @@
 package org.reactome.web.fi.client;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +20,6 @@ import org.reactome.web.diagram.data.layout.DiagramObject;
 import org.reactome.web.diagram.data.layout.Node;
 import org.reactome.web.diagram.events.AnalysisResetEvent;
 import org.reactome.web.diagram.events.DiagramObjectsFlaggedEvent;
-import org.reactome.web.diagram.events.ExpressionColumnChangedEvent;
 import org.reactome.web.diagram.events.RenderOtherDataEvent;
 import org.reactome.web.diagram.handlers.RenderOtherDataHandler;
 import org.reactome.web.diagram.legends.FlaggedItemsControl;
@@ -210,7 +208,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		fIViewVisualizer.clearNodeContextMap();
 		context.setDialogMap(new HashMap<>());
 	}
-
+	
 	@Override
 	public void contentLoaded(Context context) {
 		super.contentLoaded(context);
@@ -434,6 +432,9 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 									   context, 
 									   event.getRendererManager(), 
 									   event.getOverlayContext());
+		if(activeVisualiser instanceof DiagramVisualiser) {
+			((DiagramVisualiser)activeVisualiser).forceDraw();
+		}
 	}
 	
 	@Override
@@ -556,8 +557,10 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	
 	@Override
 	public void onDrugTargetsLoaded(DrugTargetsLoadedEvent event) {
-		if(activeVisualiser instanceof DiagramVisualiser) 
+		if(activeVisualiser instanceof DiagramVisualiser) {
 			drugTargetRenderer.onDrugTargetsLoaded(event);
+			((DiagramVisualiser)activeVisualiser).forceDraw();
+		}
 	}
 	
 	@Override
