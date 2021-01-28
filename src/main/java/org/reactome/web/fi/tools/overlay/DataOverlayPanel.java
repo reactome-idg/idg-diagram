@@ -82,7 +82,7 @@ public class DataOverlayPanel  extends FlowPanel{
 		selectionPanel = new FlowPanel();
 		selectionPanel.addStyleName(RESOURCES.getCSS().expressionSubmission());
 		selectionPanel.addStyleName(RESOURCES.getCSS().expressionMainSubmitter());
-		selectionPanel.add(new InlineLabel("Select expression type:"));
+		selectionPanel.add(new InlineLabel("Select Expression Type:"));
 		selectionPanel.add(eTypeSelector = new ListBox());
 		eTypeSelector.addChangeHandler(e -> eTypeChangedHandler());
 		eTypeSelector.setMultipleSelect(false);
