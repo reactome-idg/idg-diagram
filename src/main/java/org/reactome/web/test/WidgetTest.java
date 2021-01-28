@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class WidgetTest implements EntryPoint{
 
     private final DiagramViewer diagram;
-    private static String currentPathway = "R-HSA-8878159";//R-HSA-109582";
+    private static String currentPathway = "R-HSA-8878159";//"R-HSA-6798695";
 //    private static String currentPathway = "R-HSA-5693567"; //Big one with plenty of overlap
     private static String currentAnalysis = "MjAxNjA5MzAwNTU3MjdfMg%3D%3D";
 

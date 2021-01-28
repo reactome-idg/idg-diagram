@@ -22,6 +22,7 @@ import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseNumberEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseOverlayProperties;
 import org.reactome.web.fi.events.DrugTargetsLoadedEvent;
 import org.reactome.web.fi.events.FIViewMessageEvent;
+import org.reactome.web.fi.events.NoFIsAvailableEvent;
 import org.reactome.web.fi.events.OverlayDataLoadedEvent;
 import org.reactome.web.fi.events.PairwiseNumbersLoadedEvent;
 import org.reactome.web.fi.model.DataOverlay;
@@ -100,8 +101,10 @@ TCRDDataLoader.Handler{
 
 		//ensure json string recieved from corews server is not null
 		//if null, set CytoscapeViewFlag to false and load the normal diagram view
-		if(fIJsonPathway == "null"){
+		if(fIJsonPathway == "null" || fIJsonPathway == null){
 			CytoscapeViewFlag.ensureCytoscapeViewFlagFalse();
+			eventBus.fireEventFromSource(new FIViewMessageEvent(false), this);
+			eventBus.fireEventFromSource(new NoFIsAvailableEvent(), this);
 			load(stId);
 			return;
 		}
@@ -126,6 +129,7 @@ TCRDDataLoader.Handler{
 	
 	@Override 
 	public void onDataOverlayLoaded(DataOverlay dataOverlay) {
+		if(dataOverlay == null) return;
 		eventBus.fireEventFromSource(new OverlayDataLoadedEvent(dataOverlay), this);
 	}
 	

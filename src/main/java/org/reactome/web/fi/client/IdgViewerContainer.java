@@ -64,6 +64,7 @@ import org.reactome.web.fi.legends.OverlayColourLegend;
 import org.reactome.web.fi.legends.OverlayControlLegend;
 import org.reactome.web.fi.legends.PairwiseControlLegend;
 import org.reactome.web.fi.messages.CytoscapeViewLoadingMessage;
+import org.reactome.web.fi.messages.NoFIsAvailableMessage;
 import org.reactome.web.fi.model.DataOverlay;
 import org.reactome.web.fi.model.DataOverlayEntity;
 import org.reactome.web.fi.tools.overlay.OverlayLauncherDisplay;
@@ -138,6 +139,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		super.rightContainerPanel.add(overlayColourLegend);
 		
 		this.add(new CytoscapeViewLoadingMessage(eventBus));
+		this.add(new NoFIsAvailableMessage(eventBus));
 		fiviewButton = new IDGIconButton(IDGRESOURCES.cytoscapeIcon(), IDGRESOURCES.getCSS().cytoscape(), "Cytoscape View");
 		diagramButton = new IDGIconButton(IDGRESOURCES.diagramIcon(), IDGRESOURCES.getCSS().diagram(), "Diagram View");
 		diagramButton.setVisible(false);
