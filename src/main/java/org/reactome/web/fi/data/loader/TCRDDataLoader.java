@@ -177,34 +177,38 @@ public class TCRDDataLoader implements RequestCallback{
 	}
 
 	/**
-	 * Returns map of uniprot to list of drug target entities with that uniprot
+	 * Returns a list of Drugs containing their interactions
 	 * @param entities
 	 * @return
 	 */
 	protected Collection<Drug> processDrugTargets(List<DrugTargetEntity> entities) {
-		Map<String, Drug> drugNameToDrugs = new HashMap<>();		
+		Map<Integer, Drug> idToDrug = new HashMap<>();		
 		
-		int counter = 0;
-		for(DrugTargetEntity entity: entities) {
+		entities.forEach(entity -> {
 			String uniprot = entity.getTarget().getProtein().getUniprot();
-			if(!drugNameToDrugs.containsKey(entity.getDrug())) {
-				Drug drug = new Drug(counter++, entity.getDrug(), entity.getCompoundChEMBLId());
-				drugNameToDrugs.put(drug.getName(), drug);
-			}
-			DrugInteraction interaction = new DrugInteraction(
-											  entity.getActionType(),
-											  entity.getActivityType(),
-											  entity.getActivityValue());
 			
-			Drug addTo = drugNameToDrugs.get(entity.getDrug());
-			if(addTo.getDrugInteractions().containsKey(uniprot) && addTo.getDrugInteractions().get(uniprot).getActivityValue() != null
-			    && addTo.getDrugInteractions().get(uniprot).getActivityValue().floatValue() < entity.getActivityValue().floatValue())
-					continue;
-			drugNameToDrugs.get(entity.getDrug()).getDrugInteractions().put(uniprot, interaction);
+			//if drug not on map, create drug
+			if(!idToDrug.containsKey(entity.getId().intValue())) {
+				Drug drug = new Drug(entity.getId().intValue(), entity.getDrug(), entity.getCompoundChEMBLId());
+				idToDrug.put(drug.getId(), drug);
+			}
 
-		}
+			//get drug and see if it contains this interaction. Add if not on line 205
+			Drug addTo = idToDrug.get(entity.getId().intValue());
+			DrugInteraction interaction = addTo.getDrugInteractions().get(uniprot);
+			
+			//if drug interaction is not null, and has an activity value less than that of the current entity, continue
+			if(interaction != null && interaction.getActivityValue() != null
+			    && interaction.getActivityValue().floatValue() < entity.getActivityValue().floatValue())
+					return;
+			
+			addTo.getDrugInteractions().put(uniprot, new DrugInteraction(entity.getActionType(),
+																		 entity.getActivityType(),
+																		 entity.getActivityValue()));
+
+		});
 		
-		return drugNameToDrugs.values();
+		return idToDrug.values();
 	}
 
 	/**

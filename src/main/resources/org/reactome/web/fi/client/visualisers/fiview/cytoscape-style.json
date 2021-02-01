@@ -194,7 +194,8 @@
 {
     "selector": "node[drug=\"true\"]",
     "style": {
-        "shape": "hexagon"
+        "shape": "hexagon",
+        "background-color": "#B89AE6"
     }
 },
 {

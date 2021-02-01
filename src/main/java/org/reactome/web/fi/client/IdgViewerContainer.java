@@ -563,6 +563,9 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 			drugTargetRenderer.onDrugTargetsLoaded(event);
 			((DiagramVisualiser)activeVisualiser).forceDraw();
 		}
+		if(activeVisualiser instanceof FIViewVisualizer) {
+			((FIViewVisualizer)activeVisualiser).setDrugInteractions(event.getDrugTargets());
+		}
 	}
 	
 	@Override

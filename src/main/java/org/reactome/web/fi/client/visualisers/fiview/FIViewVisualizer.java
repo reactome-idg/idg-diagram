@@ -1,6 +1,7 @@
 package org.reactome.web.fi.client.visualisers.fiview;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -94,9 +95,9 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	private SimplePanel cyView;
 	private DataOverlay dataOverlay;
 	
+	private Map<Integer, Drug> availableDrugs;
 	private boolean showingDrugs = false;
-	private Map<String, Drug> presentDrugs;
-	Map<Integer, DrugInteraction> edgeIdToDrugInteraction;
+	private Map<Integer, DrugInteraction> edgeIdToDrugInteraction;
     
 	public FIViewVisualizer(EventBus eventBus) {
 		super();
@@ -108,7 +109,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		nodeContextPanelMap = new HashSet<>();
 		cyView =  new SimplePanel();
 		
-		presentDrugs = new HashMap<>();
+		availableDrugs = new HashMap<>();
 		edgeIdToDrugInteraction = new HashMap<>();
 		
 		initHandlers();
@@ -202,7 +203,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		}
 		cy.clearCytoscapeGraph();
 		showingDrugs = false;
-		presentDrugs.clear();
+		availableDrugs.clear();
 		edgeIdToDrugInteraction.clear();
 		cy.addCytoscapeNodes("cy", ((FIViewContent)content).getProteinArray());
 		cy.addCytoscapeEdge("cy", ((FIViewContent)content).getFIArray().toString());
@@ -275,7 +276,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		DrugInteraction interaction = this.edgeIdToDrugInteraction.get(Integer.parseInt(id));
 		String description = "Action Type: " + interaction.getActionType() + "\n" +
 					  "Activity Type: " + interaction.getActivityType() + "\n" +
-					  "Activity Value: " + NumberFormat.getFormat("#.##E0").format(interaction.getActivityValue());
+					  "Activity Value: " + (interaction.getActivityValue() != null ? NumberFormat.getFormat("#.##E0").format(interaction.getActivityValue()):"N/A");
 		infoPopup.setEdgeLabel(description, x, y);
 	}
 
@@ -319,7 +320,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
-		if(this.presentDrugs.containsKey(id))
+		if(this.availableDrugs.containsKey(Integer.parseInt(id.substring(1))))
 			openDrugNodeContext(id, x, y);
 		else
 			openProteinContextMenue(id, name, x, y);
@@ -337,7 +338,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	}
 	
 	private void openDrugNodeContext(String id, int x, int y) {
-		DrugTargetContextPanel popup = new DrugTargetContextPanel(presentDrugs.get(id));
+		DrugTargetContextPanel popup = new DrugTargetContextPanel(availableDrugs.get(Integer.parseInt(id.substring(1))));
 		popup.setPopupPosition(x+5, y+5);
 		popup.show();
 	}
@@ -402,6 +403,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		this.context = null;
 		clearNodeContextMap();
 		cytoscapeInitialised = false;
+		showingDrugs = false;
 	}
 	
 	@Override
@@ -622,42 +624,48 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		cy.setCytoscapeLayout(type.toString().toLowerCase());
 	}
 	
+	public void setDrugInteractions(Collection<Drug> drugs) {
+		availableDrugs.clear();
+		drugs.forEach(drug -> {
+			availableDrugs.put(drug.getId(), drug);
+		});
+	} 
+	
 	@Override
 	public void showDrugs() {
-		int edgeCount = ((FIViewContent)context.getContent()).getFIArray().size();
-		for(Drug drug : IDGPopupFactory.get().getDrugs()) {
-			JSONArray edgeArray = new JSONArray();
-			for(Map.Entry<String,DrugInteraction> entry : drug.getDrugInteractions().entrySet()) {
-				JSONObject edge = cy.makeFI(edgeCount, entry.getKey(), drug.getName(), "solid").isObject();
-				edgeIdToDrugInteraction.put(edgeCount, entry.getValue());
-				edgeArray.set(edgeArray.size(), edge);
+		int edgeCount = ((FIViewContent)context.getContent()).getFIArray().size() + 1; //offset by one to leave space between the normal set of edges and the set of drugs
+		List<String> addedDrugs = new ArrayList<>();
+		for(Drug drug : availableDrugs.values()) {
+			
+			//create drug and add if it hasnt already been added
+			if(!addedDrugs.contains("d"+drug.getId())) {
+				JSONObject drugNode = cy.getProtein("d"+drug.getId(), drug.getName(), false).isObject();
+				drugNode.get("data").isObject().put("drug", new JSONString("true"));
+				cy.addCytoscapeEdge("cy", drugNode.toString());
+				addedDrugs.add("d"+drug.getId());
+			}
+			
+			//create edge for each drug interaction
+			for(Map.Entry<String,DrugInteraction> entry : drug.getDrugInteractions().entrySet()){
+				String uniprot = entry.getKey();
+				DrugInteraction interaction = entry.getValue();
+				JSONObject edge = cy.makeFI(edgeCount, "d"+drug.getId(), uniprot, "solid").isObject();
+				edgeIdToDrugInteraction.put(edgeCount, interaction);
+				cy.addCytoscapeEdge("cy", edge.toString());
 				edgeCount++;
 			}
-			if(edgeArray.size() > 0) {
-				JSONObject protein = cy.getProtein(drug.getName(), drug.getName(), false).isObject();
-				protein.get("data").isObject().put("drug", new JSONString("true"));
-				
-				if(!presentDrugs.containsKey(drug.getName())) {
-					cy.addCytoscapeNodes("cy", protein.toString());
-					cy.highlightNode(drug.getName(), "#B89AE6");
-					presentDrugs.put(drug.getName(), drug);
-				}
-				cy.addCytoscapeEdge("cy", edgeArray.toString());
-			}
 		}
-		
-		cy.setCytoscapeLayout("grid", "drug");
+		cy.setCytoscapeLayout("circle", "drug");
 		showingDrugs = true;
 	}
 	
 	@Override
 	public void hideDrugs() {
 		JSONArray idsToRemove = new JSONArray();
-		presentDrugs.values().forEach(x -> {
-			idsToRemove.set(idsToRemove.size(), new JSONString(x.getName()));
+		availableDrugs.values().forEach(x -> {
+			idsToRemove.set(idsToRemove.size(), new JSONString("d"+x.getId()));
 		});
 		cy.removeCytoscapeNodes(idsToRemove.toString());
-		presentDrugs.clear();
 		edgeIdToDrugInteraction.clear();
 		showingDrugs = false;
 	}
