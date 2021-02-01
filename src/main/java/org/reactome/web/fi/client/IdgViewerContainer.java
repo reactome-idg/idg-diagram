@@ -268,6 +268,7 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 	public void flagObjects(String term, List<Long>pes, boolean includeInteractors) {
 		if(this.activeVisualiser instanceof DiagramVisualiser) {
 			flagDiagramObjects(term, pes, includeInteractors);
+			((DiagramVisualiser)activeVisualiser).forceDraw();
 		}
 		else if(this.activeVisualiser instanceof FIViewVisualizer)
 			flagFIObjects(term, includeInteractors);
@@ -434,9 +435,6 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 									   context, 
 									   event.getRendererManager(), 
 									   event.getOverlayContext());
-		if(activeVisualiser instanceof DiagramVisualiser) {
-			((DiagramVisualiser)activeVisualiser).forceDraw();
-		}
 	}
 	
 	@Override
