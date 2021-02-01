@@ -115,6 +115,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		Map<String, String> tokenMap = stHelper.buildTokenMap(History.getToken());
 		tokenMap.remove("DSKEYS");
 		tokenMap.remove("SIGCUTOFF");
+		tokenMap.remove("FLGFDR");
 		History.newItem(stHelper.buildToken(tokenMap));
 	}
 
