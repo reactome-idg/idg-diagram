@@ -10,6 +10,7 @@ import java.util.Set;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.client.visualisers.diagram.DiagramVisualiser;
+import org.reactome.web.diagram.client.visualisers.ehld.SVGVisualiser;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.content.Content;
 import org.reactome.web.diagram.data.graph.model.GraphEntityWithAccessionedSequence;
@@ -269,6 +270,9 @@ RequestPairwiseCountsHandler, PairwiseInteractorsResetHandler, PairwiseNumbersLo
 		if(this.activeVisualiser instanceof DiagramVisualiser) {
 			flagDiagramObjects(term, pes, includeInteractors);
 			((DiagramVisualiser)activeVisualiser).forceDraw();
+		}
+		else if(this.activeVisualiser instanceof SVGVisualiser) {
+			flagDiagramObjects(term, pes, includeInteractors);
 		}
 		else if(this.activeVisualiser instanceof FIViewVisualizer)
 			flagFIObjects(term, includeInteractors);
