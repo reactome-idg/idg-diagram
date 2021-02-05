@@ -108,7 +108,7 @@
     <dependency>
 	   	<groupId>org.reactome.web</groupId>
 	   	<artifactId>diagram</artifactId>
-	   	<version>3.6.10</version>
+	   	<version>3.7.0</version>
 	   	<exclusions>
 		   	<exclusion>
 		   		<groupId>org.reactome.server.utils</groupId>
