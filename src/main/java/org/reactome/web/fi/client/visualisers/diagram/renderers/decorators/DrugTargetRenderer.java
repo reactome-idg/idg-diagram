@@ -116,6 +116,7 @@ public class DrugTargetRenderer{
 		Map<String, String> geneToUniprotMap = PairwiseInfoService.getGeneToUniprotMap();
 		
 		GraphPhysicalEntity entity = obj.getGraphObject();
+		if(entity == null) return 0; //sometimes DiagramObject doesn't have an associated graphObject so return 0
 		for(GraphPhysicalEntity pe : entity.getParticipants()) {
 			String identifier = pe.getIdentifier();
 			if(identifier == null) continue;
