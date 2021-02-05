@@ -15,9 +15,11 @@ public class SetFIFlagDataDescsEvent extends GwtEvent<SetFIFlagDataDescsHandler>
 	public static Type<SetFIFlagDataDescsHandler> TYPE = new Type<>();
 	
 	private List<String> dataDescs;
+	private boolean containsEncapsulatedPathways;
 	
-	public SetFIFlagDataDescsEvent(List<String> dataDescs) {
+	public SetFIFlagDataDescsEvent(List<String> dataDescs, boolean containsEncapsulatedPathways) {
 		this.dataDescs = dataDescs;
+		this.containsEncapsulatedPathways = containsEncapsulatedPathways;
 	}
 	
 	@Override
@@ -32,6 +34,10 @@ public class SetFIFlagDataDescsEvent extends GwtEvent<SetFIFlagDataDescsHandler>
 	
 	public List<String> getDataDescs() {
 		return this.dataDescs;
+	}
+	
+	public boolean containsEncapsulatedPathways() {
+		return this.containsEncapsulatedPathways;
 	}
 	
 	@Override

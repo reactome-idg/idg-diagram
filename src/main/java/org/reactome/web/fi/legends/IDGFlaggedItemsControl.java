@@ -13,6 +13,8 @@ import org.reactome.web.fi.events.SetFIFlagDataDescsEvent;
 import org.reactome.web.fi.handlers.SetFIFlagDataDescsHandler;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Float;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -20,6 +22,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -30,18 +34,25 @@ import com.google.gwt.user.client.ui.TextBox;
 public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetFIFlagDataDescsHandler{
 	
 	private List<String> dataDescs;
+	private FlowPanel prdPanel;
 	private TextBox prdInput;
 	
+	private FlowPanel fdrPanel;
+	private TextBox fdrInput;
 	
 	public IDGFlaggedItemsControl(EventBus eventBus) {
 		super(eventBus);
 		
-		super.selector.removeFromParent();
+		super.selector.removeFromParent();		
+		this.getElement().getStyle().setHeight(56, Unit.PX);
 		
 		//Remove default style and make the msgLabel wider
 		//Required because the default width is tagged with !important
 		this.msgLabel.removeStyleName(msgLabel.getStyleName());
 		this.msgLabel.addStyleName(IDGRESOURCES.getCSS().idgFlaggedItemsLabel());
+		
+		FlowPanel panel = new FlowPanel();
+		panel.getElement().getStyle().setFloat(Float.LEFT);
 		
 		prdInput = new TextBox();
 		
@@ -49,7 +60,6 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		prdInput.getElement().setAttribute("type", "number");
 		prdInput.getElement().setAttribute("min", "0");
 		prdInput.getElement().setAttribute("max", "1");
-		prdInput.getElement().setAttribute("step", "0.1");
 		
 		prdInput.setStyleName(IDGRESOURCES.getCSS().prdInput());
 		prdInput.addKeyDownHandler(new KeyDownHandler() {
@@ -63,8 +73,42 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		});
 		
 		prdInput.setValue("0.9"); //set defaul PRD value to 0.9
-		super.add(prdInput);
-		prdInput.setVisible(false);
+		InlineLabel prdLbl = new InlineLabel("FI Score ≥");
+		prdLbl.getElement().getStyle().setFloat(Float.NONE);
+		prdPanel =new FlowPanel();
+		prdPanel.getElement().getStyle().setFloat(Float.LEFT);
+		prdPanel.add(prdLbl);
+		prdPanel.add(prdInput);
+		panel.add(prdPanel);
+		prdPanel.setVisible(true);
+		
+		fdrInput= new TextBox();
+		
+		//seting attributes on TexBox to make it function better
+		fdrInput.getElement().setAttribute("type", "number");
+		fdrInput.getElement().setAttribute("min", "0");
+		fdrInput.getElement().setAttribute("max", "1");
+		fdrInput.setStyleName(IDGRESOURCES.getCSS().prdInput());
+		fdrInput.addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					updateFDR();
+				}
+			}
+		});
+		
+		fdrInput.setValue("0.05");
+		InlineLabel fdrLbl = new InlineLabel("fdr ≤");
+		fdrLbl.getElement().getStyle().setFloat(Float.NONE);
+		fdrPanel = new FlowPanel();
+		fdrPanel.getElement().getStyle().setFloat(Float.LEFT);
+		fdrPanel.add(fdrLbl);
+		fdrPanel.add(fdrInput);
+		panel.add(fdrPanel);
+		fdrPanel.setVisible(false);
+		
+		super.add(panel);
 		
 		eventBus.addHandler(SetFIFlagDataDescsEvent.TYPE, this);
 	}
@@ -77,6 +121,16 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		StateTokenHelper helper = new StateTokenHelper();
 		Map<String, String> tokenMap = helper.buildTokenMap(History.getToken());
 		tokenMap.put("SIGCUTOFF", prdInput.getValue()+"");
+		History.newItem(helper.buildToken(tokenMap));
+	}
+	
+	/**
+	 * Update FLGFDR token and set new history token
+	 */
+	private void updateFDR() {
+		StateTokenHelper helper = new StateTokenHelper();
+		Map<String, String> tokenMap = helper.buildTokenMap(History.getToken());
+		tokenMap.put("FLGFDR", fdrInput.getValue()+"");
 		History.newItem(helper.buildToken(tokenMap));
 	}
 
@@ -116,12 +170,17 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 	public void onSetFIFlagDataDescs(SetFIFlagDataDescsEvent event) {
 		this.dataDescs = event.getDataDescs();
 		if(dataDescs.contains("combined_score")) {
-			prdInput.setVisible(true);
+			prdPanel.setVisible(true);
 			StateTokenHelper helper = new StateTokenHelper();
 			prdInput.setValue(helper.buildTokenMap(History.getToken()).get("SIGCUTOFF"));
 		}
-		else prdInput.setVisible(false);
+		else prdPanel.setVisible(false);
+		
+		if(event.containsEncapsulatedPathways()) fdrPanel.setVisible(true);
+		else fdrPanel.setVisible(false);
 	}
+	
+	
 	
 	public static IDGResources IDGRESOURCES;
 	static {

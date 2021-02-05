@@ -66,7 +66,7 @@ public class PairwiseFormPanel extends FlowPanel{
 	 * loads pairwiseDesc data to populate form. Then causes form panel to initialize
 	 */
 	private void loadDataDesc() {
-		PairwiseInfoService.loadDataDesc(new PairwiseInfoService.dataDescHandler() {
+		PairwiseInfoService.loadDataDesc(new PairwiseInfoService.DataDescHandler() {
 			@Override
 			public void onDataDescLoadedError(Throwable exception) {
 				exception.printStackTrace();

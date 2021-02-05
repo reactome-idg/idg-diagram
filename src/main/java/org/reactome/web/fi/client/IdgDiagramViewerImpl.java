@@ -1,5 +1,6 @@
 package org.reactome.web.fi.client;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,8 +26,10 @@ import org.reactome.web.diagram.search.results.data.model.Occurrences;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualizer;
 import org.reactome.web.fi.data.loader.IDGLoaderManager;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
-import org.reactome.web.fi.data.loader.PairwiseInfoService.peFlagHandler;
+import org.reactome.web.fi.data.loader.PairwiseInfoService.PEFlagHandler;
+import org.reactome.web.fi.data.loader.PairwiseInfoService.PathwayEnrichmentHandler;
 import org.reactome.web.fi.data.manager.StateTokenHelper;
+import org.reactome.web.fi.data.model.PathwayEnrichmentResult;
 import org.reactome.web.fi.events.CytoscapeToggledEvent;
 import org.reactome.web.fi.events.DrugTargetsRequestedEvent;
 import org.reactome.web.fi.events.FIDiagramObjectsFlaggedEvent;
@@ -43,6 +46,7 @@ import org.reactome.web.fi.handlers.PairwiseOverlayButtonClickedHandler;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 import org.reactome.web.fi.tools.popup.PopupTypes;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.History;
 
 /**
@@ -56,9 +60,21 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	
 	private StateTokenHelper stHelper;
 	
+	private List<Long> flaggedPhysicalEntities;
+	private List<PathwayEnrichmentResult> flaggedPathways;	
+	private List<Integer> dataDescKeys;
+	private String flagTerm;
+	private Double prd;
+	private Double flagFDR;
+	
 	public IdgDiagramViewerImpl() {
 		super();
 		stHelper = new StateTokenHelper();
+		
+		flaggedPhysicalEntities = new ArrayList<>();
+		flaggedPathways = new ArrayList<>();
+		dataDescKeys = new ArrayList<>();
+		
 		eventBus.fireEventFromSource(new DiagramProfileChangedEvent(DiagramColours.ProfileType.PROFILE_01.getDiagramProfile()), this);
 		eventBus.addHandler(CytoscapeToggledEvent.TYPE, this);
 		eventBus.addHandler(OverlayRequestedEvent.TYPE, this);
@@ -86,7 +102,6 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 
 	@Override
 	public void onContentLoaded(ContentLoadedEvent event) {
-		// TODO Auto-generated method stub
 		super.onContentLoaded(event);
 	}
 
@@ -94,6 +109,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	public void onContentRequested(ContentRequestedEvent event) {
 		//resets pairwise number entities to 0 for new diagrams because the correct ones need to be loaded
 		IDGPopupFactory.get().onContentRequested();
+		clearFlagging();
 		super.onContentRequested(event);
 	}
 
@@ -111,12 +127,22 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	public void onDiagramObjectsFlagReset(DiagramObjectsFlagResetEvent event) {
 		IDGPopupFactory.get().setFlagTerm(null); //remove this so any pairwise interactors aren't filtered
 		IDGPopupFactory.get().setFlagInteractors(null);
+		clearFlagging();
 		super.onDiagramObjectsFlagReset(event);
 		Map<String, String> tokenMap = stHelper.buildTokenMap(History.getToken());
 		tokenMap.remove("DSKEYS");
 		tokenMap.remove("SIGCUTOFF");
 		tokenMap.remove("FLGFDR");
 		History.newItem(stHelper.buildToken(tokenMap));
+	}
+	
+	private void clearFlagging() {
+		flagTerm = null;
+		prd = null;
+		flagFDR = 0.05;
+		dataDescKeys.clear();
+		flaggedPathways.clear();
+		flaggedPhysicalEntities.clear();
 	}
 
 	@Override
@@ -128,30 +154,60 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		}
 		
 		Map<String, String> tokenMap = stHelper.buildTokenMap(History.getToken());
-		
+		if(!doFlag(tokenMap)) { 
+			updateFdr(tokenMap);
+			return;
+		}
 		//get dataDescription keys from "DSKEYS"
-		List<Integer> dataDescKeys = Arrays.stream(tokenMap.get("DSKEYS").split(",")).map(num -> Integer.parseInt(num)).collect(Collectors.toList());
+		dataDescKeys = Arrays.stream(tokenMap.get("DSKEYS").split(",")).map(num -> Integer.parseInt(num)).collect(Collectors.toList());
 		
 		//if SIGCUTOFF is not on map, add to prd, otherwise will be null
-		Double prd = tokenMap.get("SIGCUTOFF") != null ? Double.parseDouble(tokenMap.get("SIGCUTOFF")):null;
-				
-		context.setFlagTerm(event.getTerm());
+		prd = tokenMap.get("SIGCUTOFF") != null ? Double.parseDouble(tokenMap.get("SIGCUTOFF")):null;
+		flagFDR = tokenMap.get("FLGFDR") != null ? Double.parseDouble(tokenMap.get("FLGFDR")):0.05d;
+		flagTerm = event.getTerm();
+		
+		context.setFlagTerm(flagTerm);
 		this.includeInteractors = event.getIncludeInteractors();
 		IDGPopupFactory.get().setFlagTerm(event.getTerm());
 		
-		PairwiseInfoService.loadPEFlags(context.getContent().getDbId(), event.getTerm(), dataDescKeys, prd, new peFlagHandler() {
+		PairwiseInfoService.loadPEFlags(context.getContent().getDbId(), event.getTerm(), dataDescKeys, prd, new PEFlagHandler() {
 			@Override
 			public void onPEFlagsLoaded(List<Long> pes, List<String> flagInteractors, List<String> dataDescs) {
 				IDGPopupFactory.get().setFlagInteractors(flagInteractors);
-				flagObjects(event.getTerm(), pes, dataDescs);
+				flaggedPhysicalEntities.addAll(pes);
+				eventBus.fireEventFromSource(new SetFIFlagDataDescsEvent(dataDescs, context.getContent().containsEncapsulatedPathways()), this); //sets up flagged items control/legend with correct information
+				//if pathway contains encapsulated pathways, need to load hit pathways too
+				if(context.getContent().containsEncapsulatedPathways()) {
+					requestPathwayFlags(event.getTerm(), dataDescKeys, prd);
+					return;
+				}
+				flagObjects();
 			}
 			@Override
 			public void onPEFlagsLoadedError(Throwable exception) {
-				context.setFlagTerm(null);
-				eventBus.fireEventFromSource(new DiagramObjectsFlagResetEvent(), this);
+				flaggedPhysicalEntities.clear();
+				flagObjects();
 			}
 		});
 		
+	}
+	
+	private void requestPathwayFlags(String term, List<Integer> dataDescKeys, Double prd) {
+		PairwiseInfoService.findPathwaysToFlag(term, dataDescKeys, prd, new PathwayEnrichmentHandler() {
+
+			@Override
+			public void onPathwaysToFlag(List<PathwayEnrichmentResult> stIds) {
+				flaggedPathways = stIds;
+				flagObjects();
+			}
+
+			//do nothing. still want to flag PEs
+			@Override
+			public void onPathwaysToFlagError() {
+				flaggedPathways.clear();
+				flagObjects();
+			}
+		});
 	}
 
 	/**
@@ -166,9 +222,26 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 			eventBus.fireEventFromSource(new FIDiagramObjectsFlaggedEvent(term, this.includeInteractors, Collections.singletonList(term), notify), this);
 	}
 
-	private void flagObjects(String term, List<Long> pes, List<String> dataDescs) {
-		eventBus.fireEventFromSource(new SetFIFlagDataDescsEvent(dataDescs), this);
-		((IdgViewerContainer)viewerContainer).flagObjects(term, pes, this.includeInteractors);	
+	private void flagObjects() {
+		List<Long> pes = new ArrayList<>();
+		pes.addAll(this.flaggedPhysicalEntities); //want to flagg all PEs
+		
+		//if there are flagged encapsualted pathways, want to flag these as well. Must filter by fdr
+		List<Long> dbIds = this.flaggedPathways.stream().filter(pw -> pw.getFdr() < this.flagFDR)
+												.map(pw -> Long.parseLong(pw.getStId().split("R-HSA-")[1]))
+												.collect(Collectors.toList());
+		
+		pes.addAll(dbIds);
+		
+		
+		((IdgViewerContainer)viewerContainer).flagObjects(flagTerm, pes, this.includeInteractors);	
+	}
+	
+	private void updateFdr(Map<String, String> tokenMap) {
+		if(tokenMap.containsKey("FLGFDR")) {
+			this.flagFDR = Double.parseDouble(tokenMap.get("FLGFDR"));
+			flagObjects();
+		}
 	}
 
 	@Override
@@ -205,5 +278,19 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 	public void onEntityDecoratorSelected(EntityDecoratorSelectedEvent event) {
 		if(event.getSummaryItem() == null) return;
 		IDGPopupFactory.get().openPopup(event.getGraphObject(), PopupTypes.fromString(event.getSummaryItem().getType()));
+	}
+	
+	private boolean doFlag(Map<String,String> tokenMap) {
+		List<Integer> newDataDescKeys = Arrays.stream(tokenMap.get("DSKEYS").split(","))
+				 .map(num -> Integer.parseInt(num))
+				 .collect(Collectors.toList());
+		Collections.sort(newDataDescKeys);
+		
+		if(!tokenMap.get("FLG").equals(flagTerm)
+				|| (tokenMap.containsKey("SIGCUTOFF") && prd != Double.parseDouble(tokenMap.get("SIGCUTOFF"))) 
+				|| !this.dataDescKeys.equals(newDataDescKeys)){
+			return true;
+		}
+		return false;
 	}
 }

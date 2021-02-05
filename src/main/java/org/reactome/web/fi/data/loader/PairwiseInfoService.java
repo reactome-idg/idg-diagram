@@ -2,10 +2,14 @@ package org.reactome.web.fi.data.loader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.reactome.web.fi.data.model.EnrichedPathwaysPostData;
 import org.reactome.web.fi.data.model.FlagPEsPostData;
+import org.reactome.web.fi.data.model.PathwayEnrichmentResult;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionEntities;
 import org.reactome.web.fi.data.overlay.model.pairwise.PairwiseDescriptionFactory;
 
@@ -26,14 +30,19 @@ import com.google.gwt.json.client.JSONValue;
  */
 public class PairwiseInfoService {
 
-	public interface dataDescHandler{
+	public interface DataDescHandler{
 		void onDataDescLoaded(PairwiseDescriptionEntities entities);
 		void onDataDescLoadedError(Throwable exception);
 	}
 	
-	public interface peFlagHandler{
+	public interface PEFlagHandler{
 		void onPEFlagsLoaded(List<Long> pes, List<String> flagInteractors, List<String> dataDescs);
 		void onPEFlagsLoadedError(Throwable exception);
+	}
+	
+	public interface PathwayEnrichmentHandler {
+		void onPathwaysToFlag(List<PathwayEnrichmentResult> stIds);
+		void onPathwaysToFlagError();
 	}
 	
 	private static final String BASE_URL = "/idgpairwise/";
@@ -46,7 +55,7 @@ public class PairwiseInfoService {
 	 * Loads the types of pairwise overlay loadable
 	 * @param handler
 	 */
-	public static void loadDataDesc(dataDescHandler handler) {
+	public static void loadDataDesc(DataDescHandler handler) {
 		if(request != null && request.isPending())
 			request.cancel();
 		
@@ -79,7 +88,7 @@ public class PairwiseInfoService {
 		}
 	}
 	
-	public static void loadPEFlags(Long dbId, String term, List<Integer> dataDescKeys, Double prd, peFlagHandler handler) {
+	public static void loadPEFlags(Long dbId, String term, List<Integer> dataDescKeys, Double prd, PEFlagHandler handler) {
 		String url = BASE_URL + "relationships/PEsForTermInteractors";
 		
 		FlagPEsPostData post = new FlagPEsPostData(term, dbId, dataDescKeys, prd);
@@ -130,6 +139,52 @@ public class PairwiseInfoService {
 		} catch(RequestException e) {
 			handler.onPEFlagsLoadedError(new Exception("Interactor Service Error"));
 		}
+	}
+	
+	public static void findPathwaysToFlag(String term, List<Integer> dataDescKeys, Double prd, PathwayEnrichmentHandler handler) {
+		String url = BASE_URL + "relationships/enrichedSecondaryPathwaysForTerm";
+		EnrichedPathwaysPostData post = new EnrichedPathwaysPostData(term, dataDescKeys, prd);
+		
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, url);
+		requestBuilder.setHeader("Accept", "application/json");
+		requestBuilder.setHeader("content-type", "application/json");
+		try {
+			requestBuilder.sendRequest(post.toJSON(), new RequestCallback() {
+
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					if(response.getStatusCode() != Response.SC_OK) {
+						handler.onPathwaysToFlagError();
+						return;
+					}
+					handler.onPathwaysToFlag(parsePathwayStIds(response.getText()));
+				}
+				
+				@Override
+				public void onError(Request request, Throwable exception) {
+					handler.onPathwaysToFlagError();
+				}
+			});
+		} catch(RequestException ex) {
+			handler.onPathwaysToFlagError();
+		}
+	}
+	
+	private static List<PathwayEnrichmentResult> parsePathwayStIds(String text) {
+		List<PathwayEnrichmentResult> rtn = new ArrayList<>();
+		
+		JSONArray val = JSONParser.parseStrict(text).isArray();
+		if(val == null) return new ArrayList<>();
+		
+		for(int i=0; i<val.size(); i++) {
+			JSONObject pathway = val.get(i).isObject();
+			rtn.add(new PathwayEnrichmentResult(pathway.get("stId").isString().stringValue(),
+					   							pathway.get("name").isString().stringValue(),
+					   							pathway.get("fdr").isNumber().doubleValue(),
+					   							pathway.get("pVal").isNumber().doubleValue()));
+		}
+		
+		return rtn;
 	}
 	
 	public static void loadUniprotToGeneMap() {
