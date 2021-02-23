@@ -34,6 +34,7 @@ import com.google.gwt.user.client.ui.TextBox;
 public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetFIFlagDataDescsHandler{
 	
 	private List<String> dataDescs;
+	private FlowPanel controlPanel;
 	private FlowPanel prdPanel;
 	private TextBox prdInput;
 	
@@ -51,8 +52,8 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		this.msgLabel.removeStyleName(msgLabel.getStyleName());
 		this.msgLabel.addStyleName(IDGRESOURCES.getCSS().idgFlaggedItemsLabel());
 		
-		FlowPanel panel = new FlowPanel();
-		panel.getElement().getStyle().setFloat(Float.LEFT);
+		controlPanel = new FlowPanel();
+		controlPanel.getElement().getStyle().setFloat(Float.LEFT);
 		
 		prdInput = new TextBox();
 		
@@ -79,7 +80,7 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		prdPanel.getElement().getStyle().setFloat(Float.LEFT);
 		prdPanel.add(prdLbl);
 		prdPanel.add(prdInput);
-		panel.add(prdPanel);
+		controlPanel.add(prdPanel);
 		prdPanel.setVisible(true);
 		
 		fdrInput= new TextBox();
@@ -105,10 +106,10 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		fdrPanel.getElement().getStyle().setFloat(Float.LEFT);
 		fdrPanel.add(fdrLbl);
 		fdrPanel.add(fdrInput);
-		panel.add(fdrPanel);
+		controlPanel.add(fdrPanel);
 		fdrPanel.setVisible(false);
 		
-		super.add(panel);
+		super.add(controlPanel);
 		
 		eventBus.addHandler(SetFIFlagDataDescsEvent.TYPE, this);
 	}
@@ -141,6 +142,10 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		super.includeInteractors = event.getIncludeInteractors();
 		
 		String msg;
+		
+		//controlPanel should not be visible if there are no interactors
+		if(event.getIncludeInteractors()) controlPanel.setVisible(true);
+		else controlPanel.setVisible(false);
 		
 		if(event instanceof FIDiagramObjectsFlaggedEvent) {
 			List<String> proteinsToFlag = ((FIDiagramObjectsFlaggedEvent)event).getProteinsToFlag();
