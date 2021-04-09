@@ -182,19 +182,19 @@ public class TCRDDataLoader implements RequestCallback{
 	 * @return
 	 */
 	protected Collection<Drug> processDrugTargets(List<DrugTargetEntity> entities) {
-		Map<Integer, Drug> idToDrug = new HashMap<>();		
+		Map<String, Drug> idToDrug = new HashMap<>();		
 		
 		entities.forEach(entity -> {
 			String uniprot = entity.getTarget().getProtein().getUniprot();
 			
 			//if drug not on map, create drug
-			if(!idToDrug.containsKey(entity.getId().intValue())) {
+			if(!idToDrug.containsKey(entity.getDrug())) {
 				Drug drug = new Drug(entity.getId().intValue(), entity.getDrug(), entity.getCompoundChEMBLId());
-				idToDrug.put(drug.getId(), drug);
+				idToDrug.put(drug.getName(), drug);
 			}
 
 			//get drug and see if it contains this interaction. Add if not on line 205
-			Drug addTo = idToDrug.get(entity.getId().intValue());
+			Drug addTo = idToDrug.get(entity.getDrug());
 			DrugInteraction interaction = addTo.getDrugInteractions().get(uniprot);
 			
 			//if drug interaction is not null, and has an activity value less than that of the current entity, continue
