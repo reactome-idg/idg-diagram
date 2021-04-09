@@ -39,7 +39,7 @@ public class StateTokenHelper {
 			
 			String[] keyVal = ts.split("=");
 			if(keyVal.length > 1)
-				tokenMap.put(keyVal[0], keyVal[1]); //for key-val pair with =
+				tokenMap.put(keyVal[0].toUpperCase(), keyVal[1]); //for key-val pair with =
 			else
 				tokenMap.put(keyVal[0], keyVal[0]); //key mapped to itself for singleton
 		}
