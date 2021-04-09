@@ -61,6 +61,7 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		prdInput.getElement().setAttribute("type", "number");
 		prdInput.getElement().setAttribute("min", "0");
 		prdInput.getElement().setAttribute("max", "1");
+		prdInput.getElement().setAttribute("step", "0.1");
 		
 		prdInput.setStyleName(IDGRESOURCES.getCSS().prdInput());
 		prdInput.addKeyDownHandler(new KeyDownHandler() {
@@ -89,6 +90,8 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		fdrInput.getElement().setAttribute("type", "number");
 		fdrInput.getElement().setAttribute("min", "0");
 		fdrInput.getElement().setAttribute("max", "1");
+		fdrInput.getElement().setAttribute("step", "0.1");
+		
 		fdrInput.setStyleName(IDGRESOURCES.getCSS().prdInput());
 		fdrInput.addKeyDownHandler(new KeyDownHandler() {
 			@Override
@@ -144,8 +147,14 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		String msg;
 		
 		//controlPanel should not be visible if there are no interactors
-		if(event.getIncludeInteractors()) controlPanel.setVisible(true);
-		else controlPanel.setVisible(false);
+		if(event.getIncludeInteractors()) {
+			this.getElement().getStyle().setHeight(56, Unit.PX);
+			controlPanel.setVisible(true);
+		}
+		else {
+			this.getElement().getStyle().setHeight(28, Unit.PX);
+			controlPanel.setVisible(false);
+		}
 		
 		if(event instanceof FIDiagramObjectsFlaggedEvent) {
 			List<String> proteinsToFlag = ((FIDiagramObjectsFlaggedEvent)event).getProteinsToFlag();

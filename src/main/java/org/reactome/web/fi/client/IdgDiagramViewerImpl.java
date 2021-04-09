@@ -156,6 +156,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 		Map<String, String> tokenMap = stHelper.buildTokenMap(History.getToken());
 		if(!doFlag(tokenMap)) { 
 			updateFdr(tokenMap);
+			flagObjects();
 			return;
 		}
 		//get dataDescription keys from "DSKEYS"
@@ -175,7 +176,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 			public void onPEFlagsLoaded(List<Long> pes, List<String> flagInteractors, List<String> dataDescs) {
 				IDGPopupFactory.get().setFlagInteractors(flagInteractors);
 				flaggedPhysicalEntities.addAll(pes);
-				eventBus.fireEventFromSource(new SetFIFlagDataDescsEvent(dataDescs, context.getContent().containsEncapsulatedPathways()), this); //sets up flagged items control/legend with correct information
+				eventBus.fireEventFromSource(new SetFIFlagDataDescsEvent(dataDescs, (context != null ? context.getContent().containsEncapsulatedPathways():false)), this); //sets up flagged items control/legend with correct information
 				//if pathway contains encapsulated pathways, need to load hit pathways too
 				if(context.getContent().containsEncapsulatedPathways()) {
 					requestPathwayFlags(event.getTerm(), dataDescKeys, prd);
