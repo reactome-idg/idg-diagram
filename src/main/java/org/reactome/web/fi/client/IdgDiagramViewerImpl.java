@@ -175,7 +175,7 @@ EntityDecoratorSelectedHandler, DrugTargetsRequestedHandler{
 			@Override
 			public void onPEFlagsLoaded(List<Long> pes, List<String> flagInteractors, List<String> dataDescs) {
 				IDGPopupFactory.get().setFlagInteractors(flagInteractors);
-				flaggedPhysicalEntities.addAll(pes);
+				flaggedPhysicalEntities = pes;
 				eventBus.fireEventFromSource(new SetFIFlagDataDescsEvent(dataDescs, (context != null ? context.getContent().containsEncapsulatedPathways():false)), this); //sets up flagged items control/legend with correct information
 				//if pathway contains encapsulated pathways, need to load hit pathways too
 				if(context.getContent().containsEncapsulatedPathways()) {
