@@ -41,6 +41,8 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 	private FlowPanel fdrPanel;
 	private TextBox fdrInput;
 	
+	private boolean containsEncapsulatedPathways;
+	
 	public IDGFlaggedItemsControl(EventBus eventBus) {
 		super(eventBus);
 		
@@ -51,6 +53,7 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		//Required because the default width is tagged with !important
 		this.msgLabel.removeStyleName(msgLabel.getStyleName());
 		this.msgLabel.addStyleName(IDGRESOURCES.getCSS().idgFlaggedItemsLabel());
+		this.msgLabel.getElement().getStyle().setWidth(350, Unit.PX);
 		
 		controlPanel = new FlowPanel();
 		controlPanel.getElement().getStyle().setFloat(Float.LEFT);
@@ -166,7 +169,7 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 			//Happens when DiagramViewerImpl runs flaggedElementsLoaded with falsey includeInteractors while the view is FIViewVisualizer
 			Set<DiagramObject> flaggedItems =  event.getFlaggedItems();
 			int num = flaggedItems != null ? flaggedItems.size() : 1;
-	        msg = " - " + num + (event.getIncludeInteractors() == true ? " interacting " : "") + (num == 1 ? " entity" : " entities") + " flagged";
+	        msg = " - " + num + (event.getIncludeInteractors() == true ? " interacting " : "") + (num == 1 ? " entity" : " entities") + (this.containsEncapsulatedPathways == true ? "/pathways":"" ) + " flagged";
 		}
 		
 		super.msgLabel.setText(term + msg);
@@ -189,6 +192,8 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 			prdInput.setValue(helper.buildTokenMap(History.getToken()).get("SIGCUTOFF"));
 		}
 		else prdPanel.setVisible(false);
+		
+		this.containsEncapsulatedPathways = event.containsEncapsulatedPathways();
 		
 		if(event.containsEncapsulatedPathways()) fdrPanel.setVisible(true);
 		else fdrPanel.setVisible(false);
