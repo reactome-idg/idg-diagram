@@ -118,7 +118,5 @@ public class IDGFlaggingPanel extends AbsolutePanel implements HasMouseOverHandl
 		String CSS = "org/reactome/web/fi/legends/IDGFlaggingPanel.css";
 		
 		String flaggingPanel();
-		
-		String increaseTransparency();
 	}
 }
