@@ -115,6 +115,8 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		controlPanel.add(fdrPanel);
 		fdrPanel.setVisible(false);
 		
+		controlPanel.setVisible(false);
+		this.getElement().getStyle().setHeight(28, Unit.PX);
 		super.add(controlPanel);
 		
 		eventBus.addHandler(SetFIFlagDataDescsEvent.TYPE, this);

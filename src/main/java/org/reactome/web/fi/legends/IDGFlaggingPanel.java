@@ -11,6 +11,7 @@ import org.reactome.web.diagram.handlers.DiagramObjectsFlagResetHandler;
 import org.reactome.web.diagram.handlers.DiagramObjectsFlaggedHandler;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -30,6 +31,7 @@ public class IDGFlaggingPanel extends AbsolutePanel implements HasMouseOverHandl
 	
 	
 	List<AbsolutePanel> panels;
+	private boolean interactorsIncluded;
 	
 	public IDGFlaggingPanel(EventBus eventBus) {
 		
@@ -67,7 +69,7 @@ public class IDGFlaggingPanel extends AbsolutePanel implements HasMouseOverHandl
 		this.add(control);
 		
 		this.addMouseOverHandler(e -> {
-			legend.setVisible(true);
+			if(interactorsIncluded)legend.setVisible(true);
 			control.setVisible(true);
 		});
 		this.addMouseOutHandler(e -> {
@@ -79,6 +81,11 @@ public class IDGFlaggingPanel extends AbsolutePanel implements HasMouseOverHandl
 	@Override
 	public void onDiagramObjectsFlagRequested(DiagramObjectsFlagRequestedEvent event) {
 		this.setVisible(true);
+		interactorsIncluded = event.getIncludeInteractors();
+		
+		//set correct height for panel
+		if(!interactorsIncluded)this.getElement().getStyle().setHeight(40, Unit.PX);
+		else this.getElement().getStyle().setHeight(110, Unit.PX);
 	}
 	
 	@Override
