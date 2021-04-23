@@ -53,7 +53,7 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		//Required because the default width is tagged with !important
 		this.msgLabel.removeStyleName(msgLabel.getStyleName());
 		this.msgLabel.addStyleName(IDGRESOURCES.getCSS().idgFlaggedItemsLabel());
-		this.msgLabel.getElement().getStyle().setWidth(350, Unit.PX);
+		this.msgLabel.getElement().getStyle().setWidth(300, Unit.PX);
 		
 		controlPanel = new FlowPanel();
 		controlPanel.getElement().getStyle().setFloat(Float.LEFT);

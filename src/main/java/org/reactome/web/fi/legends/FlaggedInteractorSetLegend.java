@@ -42,7 +42,7 @@ DiagramObjectsFlagResetHandler, HasMouseOverHandlers, HasMouseOutHandlers{
 		this.eventBus = eventBus;
 		
 		this.setStyleName(RESOURCES.getCSS().panel());
-		this.addStyleName(RESOURCES.getCSS().increaseTransparency());
+//		this.addStyleName(RESOURCES.getCSS().increaseTransparency());
 		
 		this.dataDescContainer = new FlowPanel();
 		this.add(dataDescContainer);
@@ -66,12 +66,12 @@ DiagramObjectsFlagResetHandler, HasMouseOverHandlers, HasMouseOutHandlers{
 		eventBus.addHandler(DiagramObjectsFlaggedEvent.TYPE, this);
 		eventBus.addHandler(DiagramObjectsFlagResetEvent.TYPE, this);
 		eventBus.addHandler(SetFIFlagDataDescsEvent.TYPE, this);
-		this.addMouseOverHandler(e -> {
-			this.removeStyleName(RESOURCES.getCSS().increaseTransparency());
-		});
-		this.addMouseOutHandler(e -> {
-			this.addStyleName(RESOURCES.getCSS().increaseTransparency());
-		});
+//		this.addMouseOverHandler(e -> {
+//			this.removeStyleName(RESOURCES.getCSS().increaseTransparency());
+//		});
+//		this.addMouseOutHandler(e -> {
+//			this.addStyleName(RESOURCES.getCSS().increaseTransparency());
+//		});
 	}
 	
 	@Override
