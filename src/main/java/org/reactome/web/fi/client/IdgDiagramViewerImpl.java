@@ -46,7 +46,6 @@ import org.reactome.web.fi.handlers.PairwiseOverlayButtonClickedHandler;
 import org.reactome.web.fi.tools.popup.IDGPopupFactory;
 import org.reactome.web.fi.tools.popup.PopupTypes;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.History;
 
 /**
