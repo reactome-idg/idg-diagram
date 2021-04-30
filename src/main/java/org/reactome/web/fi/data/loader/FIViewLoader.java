@@ -2,7 +2,6 @@ package org.reactome.web.fi.data.loader;
 
 import java.util.Map;
 
-import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.manager.StateTokenHelper;
 
 import com.google.gwt.http.client.*;

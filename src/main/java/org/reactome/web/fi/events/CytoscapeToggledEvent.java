@@ -1,7 +1,6 @@
 package org.reactome.web.fi.events;
 
 import org.reactome.web.diagram.data.Context;
-import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.handlers.CytoscapeToggledHandler;
 
 import com.google.gwt.event.shared.GwtEvent;

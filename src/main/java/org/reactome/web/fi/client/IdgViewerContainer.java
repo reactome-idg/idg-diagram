@@ -32,7 +32,6 @@ import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.DrugT
 import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.PairwiseInteractorRenderer;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualizer;
 import org.reactome.web.fi.client.visualisers.fiview.panels.SearchPanel;
-import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.common.IDGIconButton;
 import org.reactome.web.fi.data.loader.PairwiseInfoService;
 import org.reactome.web.fi.data.manager.StateTokenHelper;
