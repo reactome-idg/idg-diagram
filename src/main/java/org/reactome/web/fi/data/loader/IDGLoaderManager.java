@@ -15,6 +15,7 @@ import org.reactome.web.diagram.events.DiagramInternalErrorEvent;
 import org.reactome.web.diagram.events.InteractorsLoadedEvent;
 import org.reactome.web.fi.common.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
+import org.reactome.web.fi.data.manager.StateTokenHelper;
 import org.reactome.web.fi.data.model.drug.Drug;
 import org.reactome.web.fi.data.model.interactors.RawInteractorsImpl;
 import org.reactome.web.fi.data.overlay.model.DataOverlayProperties;
@@ -31,6 +32,7 @@ import org.reactome.web.gwtCytoscapeJs.util.Console;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -89,9 +91,11 @@ TCRDDataLoader.Handler{
 	}
 	
 	private boolean isFIViewNeeded(String identifier) {
+		StateTokenHelper helper = new StateTokenHelper();
+		
 		if(SVGLoader.isSVGAvailable(identifier))
 			return false;
-		if(!CytoscapeViewFlag.isCytoscapeViewFlag())
+		if(!helper.buildTokenMap(History.getToken()).containsKey("FIVIZ"))
 			return false;
 		return true;
 	}
@@ -102,7 +106,15 @@ TCRDDataLoader.Handler{
 		//ensure json string recieved from corews server is not null
 		//if null, set CytoscapeViewFlag to false and load the normal diagram view
 		if(fIJsonPathway == "null" || fIJsonPathway == null){
-			CytoscapeViewFlag.ensureCytoscapeViewFlagFalse();
+//			CytoscapeViewFlag.ensureCytoscapeViewFlagFalse();
+			
+			//remove FI viz from URL
+			StateTokenHelper helper = new StateTokenHelper();
+			Map<String, String> tokenMap = helper.buildTokenMap(History.getToken());
+			tokenMap.remove("FIVIZ");
+			History.newItem(helper.buildToken(tokenMap));
+			
+			
 			eventBus.fireEventFromSource(new FIViewMessageEvent(false), this);
 			eventBus.fireEventFromSource(new NoFIsAvailableEvent(), this);
 			load(stId);
@@ -118,13 +130,14 @@ TCRDDataLoader.Handler{
 		eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
 	}
 
+	/**
+	 * Defaulting back to diagram view if FI service is down for some reason.
+	 */
 	@Override
 	public void onFIViewLoadedError(String stId, Throwable exception) {
 		eventBus.fireEventFromSource(new FIViewMessageEvent(false), this);
-		eventBus.fireEventFromSource(
-                new DiagramInternalErrorEvent("There was a problem while loading the Functional Interactions",
-                        "Layout content error: " + exception.getMessage()
-                ), this);
+		eventBus.fireEventFromSource(new NoFIsAvailableEvent(), this);
+		load(stId);
 	}
 	
 	@Override 

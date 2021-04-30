@@ -276,8 +276,17 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		DrugInteraction interaction = this.edgeIdToDrugInteraction.get(Integer.parseInt(id));
 		String description = "Action Type: " + interaction.getActionType() + "\n" +
 					  "Activity Type: " + interaction.getActivityType() + "\n" +
-					  "Activity Value: " + (interaction.getActivityValue() != null ? NumberFormat.getFormat("#.##E0").format(interaction.getActivityValue()):"N/A");
+					  "Activity Value: " + getFormattedActivityValue(interaction.getActivityValue());
 		infoPopup.setEdgeLabel(description, x, y);
+	}
+	
+	private String getFormattedActivityValue(Float activityValue) {
+		if(activityValue == null) return "N/A";
+		if(((""+activityValue).length()-(""+activityValue).indexOf(".")-1) < 3 )
+			return activityValue+"";
+		if(activityValue < 0.01f || activityValue > 999) return NumberFormat.getFormat("#.##E0").format(activityValue);
+		return NumberFormat.getFormat("#.##").format(activityValue);
+		
 	}
 
 	@Override
@@ -320,10 +329,13 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	
 	@Override
 	public void onNodeContextSelectEvent(String id, String name, int x, int y) {
+		if(IDGPopupFactory.get().getUniprotToGeneMap().containsKey(id)) {
+			openProteinContextMenue(id, name, x, y);
+			return;
+		}
 		if(this.availableDrugs.containsKey(Integer.parseInt(id.substring(1))))
 			openDrugNodeContext(id, x, y);
-		else
-			openProteinContextMenue(id, name, x, y);
+
 	}
 
 	private void openProteinContextMenue(String id, String name, int x, int y) {

@@ -48,6 +48,8 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 		
 		super.selector.removeFromParent();		
 		this.getElement().getStyle().setHeight(56, Unit.PX);
+//        super.getElement().getStyle().setWidth(386, Unit.PX);
+
 		
 		//Remove default style and make the msgLabel wider
 		//Required because the default width is tagged with !important

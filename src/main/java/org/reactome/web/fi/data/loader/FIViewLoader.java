@@ -1,8 +1,12 @@
 package org.reactome.web.fi.data.loader;
 
+import java.util.Map;
+
 import org.reactome.web.fi.common.CytoscapeViewFlag;
+import org.reactome.web.fi.data.manager.StateTokenHelper;
 
 import com.google.gwt.http.client.*;
+import com.google.gwt.user.client.History;
 
 /**
  * 
@@ -56,7 +60,14 @@ public class FIViewLoader implements RequestCallback{
 			this.handler.onFIViewLoaded(this.stId, this.dbId, response.getText());
 			break;
 		default:
-			CytoscapeViewFlag.ensureCytoscapeViewFlagFalse();
+//			CytoscapeViewFlag.ensureCytoscapeViewFlagFalse();
+			
+			//remove FIVIZ from url if service is down
+			StateTokenHelper helper = new StateTokenHelper();
+			Map<String, String> tokenMap = helper.buildTokenMap(History.getToken());
+			tokenMap.remove("FIVIZ");
+			History.newItem(helper.buildToken(tokenMap));
+			
 			this.handler.onFIViewLoadedError(this.stId, new Exception(response.getStatusText()));
 		}
 		

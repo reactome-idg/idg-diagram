@@ -36,7 +36,7 @@ public class CytoscapeToggledEvent extends GwtEvent<CytoscapeToggledHandler>{
 	
 	@Override
 	public String toString() {
-		return "Cytoscape toggled to: " + CytoscapeViewFlag.isCytoscapeViewFlag();
+		return "Cytoscape toggled";
 	}
 	
 }
