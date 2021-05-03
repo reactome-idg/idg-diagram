@@ -68,14 +68,14 @@ public class IDGFlaggingPanel extends AbsolutePanel implements HasMouseOverHandl
 		this.add(legend);
 		this.add(control);
 		
-		this.addMouseOverHandler(e -> {
-			if(interactorsIncluded)legend.setVisible(true);
-			control.setVisible(true);
-		});
-		this.addMouseOutHandler(e -> {
-			legend.setVisible(false);
-			control.setVisible(false);
-		});
+//		this.addMouseOverHandler(e -> {
+//			if(interactorsIncluded)legend.setVisible(true);
+//			control.setVisible(true);
+//		});
+//		this.addMouseOutHandler(e -> {
+//			legend.setVisible(false);
+//			control.setVisible(false);
+//		});
 	}
 	
 	@Override
@@ -90,15 +90,15 @@ public class IDGFlaggingPanel extends AbsolutePanel implements HasMouseOverHandl
 	
 	@Override
 	public void onDiagramObjectsFlagged(DiagramObjectsFlaggedEvent event) {
-		Timer timer = new Timer() {
-			@Override
-			public void run() {
-				for(AbsolutePanel panel : panels) {
-					panel.setVisible(false);
-				}
-			}
-		};
-		timer.schedule(3000);
+//		Timer timer = new Timer() {
+//			@Override
+//			public void run() {
+//				for(AbsolutePanel panel : panels) {
+//					panel.setVisible(false);
+//				}
+//			}
+//		};
+//		timer.schedule(3000);
 	}
 
 	@Override

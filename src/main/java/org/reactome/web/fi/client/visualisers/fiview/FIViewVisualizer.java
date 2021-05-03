@@ -111,7 +111,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		
 		availableDrugs = new HashMap<>();
 		edgeIdToDrugInteraction = new HashMap<>();
-		
+				
 		initHandlers();
 		
 		//default this value to false
@@ -128,6 +128,8 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 			
 			//created once and reused every time a new context is loaded
 			cy = new CytoscapeEntity(FIVIEWPORTRESOURCES.fiviewStyle().getText(), this);
+			settingsMenu = new FISettingsPanel(cy.getLayout(),this);
+
 			
 			cyView.getElement().setId("cy");
 			
@@ -203,6 +205,7 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		}
 		cy.clearCytoscapeGraph();
 		showingDrugs = false;
+		settingsMenu.resetShowingDrugs();
 		availableDrugs.clear();
 		edgeIdToDrugInteraction.clear();
 		cy.addCytoscapeNodes("cy", ((FIViewContent)content).getProteinArray());
@@ -213,8 +216,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	}
 
 	public void openSettingsPopup(int x, int y) {
-		if(settingsMenu == null)
-			settingsMenu = new FISettingsPanel(cy.getLayout(),this);
 		settingsMenu.show();
 		settingsMenu.setPopupPosition(x, y);
 	}

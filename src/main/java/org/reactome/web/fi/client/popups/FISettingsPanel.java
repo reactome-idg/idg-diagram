@@ -39,6 +39,7 @@ public class FISettingsPanel extends DialogBox implements ChangeHandler {
 	private ListBox layoutSelector;
 	private String currentLayout;
 	private CommonButton overlayDrugs;
+	private CommonButton rerunCoseLayout;
 	private boolean showingDrugs = false;
 	
 	public FISettingsPanel(String currentLayout, LayoutChangeHandler handler) {
@@ -53,6 +54,7 @@ public class FISettingsPanel extends DialogBox implements ChangeHandler {
 		
 		main.add(getTitlePanel());
 		main.add(getLayoutSelector());		
+		main.add(this.getrerunCoseLayout());
 		main.add(getShowDrugsButton());
 		
 		setSelections();
@@ -99,6 +101,11 @@ public class FISettingsPanel extends DialogBox implements ChangeHandler {
 		
 		return result;
 	}
+	
+	private CommonButton getrerunCoseLayout() {
+		rerunCoseLayout = new CommonButton("re-run Layout", FICONTEXTRESOURCES.getCSS().button(), e -> onrerunCoseLayout());
+		return rerunCoseLayout;
+	}
 
 	private void onShowDrugTargetsClicked() {
 		if(showingDrugs)handler.hideDrugs();
@@ -106,6 +113,10 @@ public class FISettingsPanel extends DialogBox implements ChangeHandler {
 		
 		showingDrugs = !showingDrugs;
 		updateButtonText();
+	}
+
+	private void onrerunCoseLayout(){
+    	handler.onLayoutChange(FILayoutType.getType(currentLayout));
 	}
 
 	private void updateButtonText() {
@@ -121,13 +132,23 @@ public class FISettingsPanel extends DialogBox implements ChangeHandler {
 				layoutSelector.setSelectedIndex(i);
 		}
 	}
+	
+	public void resetShowingDrugs() {
+		this.showingDrugs = false;
+		updateButtonText();
+	}
 
 	@Override
 	public void onChange(ChangeEvent event) {
 		if(event.getSource()!=layoutSelector) return;
 		ListBox lb = (ListBox) event.getSource();
         String aux = lb.getSelectedValue();
+        this.currentLayout = aux;
     	handler.onLayoutChange(FILayoutType.getType(aux));
+    	
+    	if(FILayoutType.getType(currentLayout) == FILayoutType.COSE)
+    		rerunCoseLayout.setVisible(true);
+    	else rerunCoseLayout.setVisible(false);
 	}
 	
 	private void initHandlers() {

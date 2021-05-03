@@ -81,48 +81,56 @@ public class FIViewContent extends GenericContent{
     	JSONObject fiInteraction = value.isObject();
     	JSONValue fiInnerValue = fiInteraction.get("interaction");
     	JSONArray fiInnerArray = fiInnerValue.isArray();
-		
-    	//for loop to iterate over fiInteractionArray
-    	if(fiInnerArray != null) {
-	    	for(int i=0; i <fiInnerArray.size(); i++) {
-	    		//get objects internal to interaction in fiInteractionArray.get(i)
-	    		JSONValue interaction = fiInnerArray.get(i);
-	    		JSONObject interactionOb = interaction.isObject();
-	    		JSONObject firstProtein = interactionOb.get("firstProtein").isObject();
-	    		JSONObject secondProtein = interactionOb.get("secondProtein").isObject();
-	    		JSONObject annotation = interactionOb.get("annotation").isObject();
-	    		JSONValue reactomeSources = interactionOb.get("reactomeSources");
-	    		
-	    		//Get info for protein node and Fi edge
-	    		if(firstProtein != null && secondProtein !=null && annotation !=null && reactomeSources != null) {
-	    			//get info for protein node
-		    		String shortNameOne = firstProtein.get("shortName").isString().stringValue();
-		    		String accessionOne = firstProtein.get("primaryAccession").isString().stringValue();
-		    		String shortNameTwo = secondProtein.get("shortName").isString().stringValue();
-	    			String accessionTwo = secondProtein.get("primaryAccession").isString().stringValue();
-	    			
-	    			//get info for FI edge
-	    			String annotationDirection = "";
-	    			if(annotation.get("direction") != null) {
-	    				annotationDirection = annotation.get("direction").isString().stringValue();
-	    			}
-	    			else if(annotation.get("direction") == null)
-	    				annotationDirection = "none";
-	    			
-	    			//send interaction to be added to cytoscape.js network
-	    			makeFI(shortNameOne, accessionOne, shortNameTwo, accessionTwo, annotationDirection, reactomeSources);
-	    			
-	    			//create graph object from reactomeSources and add to cache
-	    			convertSourcesToGraphObjects(reactomeSources);
-
-	    		}
-	    	}
-	    	//Takes all existing proteins after FIs are made,
-	    	//converts them to graphObjects and places them on identifierMap.
-	    	
-	    	makeIdentifiersMap();
+    	
+    	if(fiInnerArray == null) {
+    		generateNodesAndEdge(fiInnerValue);
+    		makeIdentifiersMap();
+    		return;
     	}
     	
+    	//for loop to iterate over fiInteractionArray
+    	for(int i=0; i <fiInnerArray.size(); i++) {
+    		//get objects internal to interaction in fiInteractionArray.get(i)
+    		JSONValue interaction = fiInnerArray.get(i);
+    		generateNodesAndEdge(interaction);
+    	}
+    	
+    	//Takes all existing proteins after FIs are made,
+    	//converts them to graphObjects and places them on identifierMap.
+    	if(existingProteins.size() > 0) makeIdentifiersMap();
+    	
+	}
+
+	private void generateNodesAndEdge(JSONValue interaction) {
+		JSONObject interactionOb = interaction.isObject();
+		JSONObject firstProtein = interactionOb.get("firstProtein").isObject();
+		JSONObject secondProtein = interactionOb.get("secondProtein").isObject();
+		JSONObject annotation = interactionOb.get("annotation").isObject();
+		JSONValue reactomeSources = interactionOb.get("reactomeSources");
+		
+		//Get info for protein node and Fi edge
+		if(firstProtein != null && secondProtein !=null && annotation !=null && reactomeSources != null) {
+			//get info for protein node
+			String shortNameOne = firstProtein.get("shortName").isString().stringValue();
+			String accessionOne = firstProtein.get("primaryAccession").isString().stringValue();
+			String shortNameTwo = secondProtein.get("shortName").isString().stringValue();
+			String accessionTwo = secondProtein.get("primaryAccession").isString().stringValue();
+			
+			//get info for FI edge
+			String annotationDirection = "";
+			if(annotation.get("direction") != null) {
+				annotationDirection = annotation.get("direction").isString().stringValue();
+			}
+			else if(annotation.get("direction") == null)
+				annotationDirection = "none";
+			
+			//send interaction to be added to cytoscape.js network
+			makeFI(shortNameOne, accessionOne, shortNameTwo, accessionTwo, annotationDirection, reactomeSources);
+			
+			//create graph object from reactomeSources and add to cache
+			convertSourcesToGraphObjects(reactomeSources);
+
+		}
 	}
 	
 	/**
