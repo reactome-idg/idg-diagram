@@ -203,14 +203,21 @@ public class IdgViewerContainer extends ViewerContainer implements RenderOtherDa
 				vis.asWidget().setVisible(false);
 			}
 			fIViewVisualizer.asWidget().setVisible(true);
+			showHideTopRightLauncherPanel(false);
 			showFIVizualizerButtons();
 			activeVisualiser = fIViewVisualizer;
 			return;
 		} else if (context.getContent().getType() == Content.Type.DIAGRAM && !isCytoscapeView) {
 			showDiagramButtons();
 			super.setActiveVisualiser(context);
+			showHideTopRightLauncherPanel(true);
 		}
 		super.setActiveVisualiser(context);
+		showHideTopRightLauncherPanel(true);
+	}
+	
+	private void showHideTopRightLauncherPanel(boolean visible) {
+		super.rightTopLauncherPanel.setVisible(visible);
 	}
 
 	private void hideContextMenus() {
