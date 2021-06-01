@@ -275,10 +275,11 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 
 	private void openDrugEdgeHoverPopup(String id, int x, int y) {
 		DrugInteraction interaction = this.edgeIdToDrugInteraction.get(Integer.parseInt(id));
-		String description = "Action Type: " + interaction.getActionType() + "\n" +
-					  "Activity Type: " + interaction.getActivityType() + "\n" +
-					  "Activity Value: " + getFormattedActivityValue(interaction.getActivityValue());
-		infoPopup.setEdgeLabel(description, x, y);
+		StringBuilder desc = new StringBuilder();
+		if(interaction.getActionType() != null) desc.append("Action Type: " + interaction.getActionType() + "\n");
+		if(interaction.getActivityType() != null) desc.append("Activity Type: " + interaction.getActivityType() + "\n");
+		if(interaction.getActivityValue() != null) desc.append("Activity Value: " + getFormattedActivityValue(interaction.getActivityValue()));
+		infoPopup.setEdgeLabel(desc.toString(), x, y);
 	}
 	
 	private String getFormattedActivityValue(Float activityValue) {
