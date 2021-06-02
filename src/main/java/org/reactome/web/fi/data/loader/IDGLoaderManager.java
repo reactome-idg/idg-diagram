@@ -13,6 +13,7 @@ import org.reactome.web.diagram.data.loader.SVGLoader;
 import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.diagram.events.DiagramInternalErrorEvent;
 import org.reactome.web.diagram.events.InteractorsLoadedEvent;
+import org.reactome.web.diagram.events.InteractorsResourceChangedEvent;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.data.manager.StateTokenHelper;
 import org.reactome.web.fi.data.model.drug.Drug;
@@ -170,6 +171,13 @@ TCRDDataLoader.Handler{
 		});
 	}
 	
+	
+	
+	@Override
+	public void onInteractorsResourceChanged(InteractorsResourceChangedEvent event) {
+		super.onInteractorsRequestCanceled(null);
+	}
+
 	@Override
 	public void interactorsLoaded(RawInteractors interactors, long time) {
 		if(IDGPopupFactory.get().getRawInteractors() !=null && 
