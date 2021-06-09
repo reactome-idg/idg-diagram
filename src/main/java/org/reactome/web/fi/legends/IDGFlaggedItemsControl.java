@@ -10,6 +10,8 @@ import org.reactome.web.diagram.legends.FlaggedItemsControl;
 import org.reactome.web.fi.data.manager.StateTokenHelper;
 import org.reactome.web.fi.events.FIDiagramObjectsFlaggedEvent;
 import org.reactome.web.fi.events.SetFIFlagDataDescsEvent;
+import org.reactome.web.fi.events.UpdateIDGFlagFDREvent;
+import org.reactome.web.fi.events.UpdateIDGFlagPRDEvent;
 import org.reactome.web.fi.handlers.SetFIFlagDataDescsHandler;
 
 import com.google.gwt.core.client.GWT;
@@ -129,20 +131,15 @@ public class IDGFlaggedItemsControl  extends FlaggedItemsControl implements SetF
 	 * 
 	 */
 	private void updatePRD() {
-		StateTokenHelper helper = new StateTokenHelper();
-		Map<String, String> tokenMap = helper.buildTokenMap(History.getToken());
-		tokenMap.put("SIGCUTOFF", prdInput.getValue()+"");
-		History.newItem(helper.buildToken(tokenMap));
+		eventBus.fireEventFromSource(new UpdateIDGFlagPRDEvent(Double.parseDouble(prdInput.getValue())), this);
+	
 	}
 	
 	/**
 	 * Update FLGFDR token and set new history token
 	 */
 	private void updateFDR() {
-		StateTokenHelper helper = new StateTokenHelper();
-		Map<String, String> tokenMap = helper.buildTokenMap(History.getToken());
-		tokenMap.put("FLGFDR", fdrInput.getValue()+"");
-		History.newItem(helper.buildToken(tokenMap));
+		eventBus.fireEventFromSource(new UpdateIDGFlagFDREvent(Double.parseDouble(fdrInput.getValue())), this);
 	}
 
 	@Override
