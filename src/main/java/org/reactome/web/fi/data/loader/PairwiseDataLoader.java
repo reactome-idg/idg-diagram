@@ -173,16 +173,4 @@ public class PairwiseDataLoader {
 				
 		return tableEntities;
 	}
-	
-	private String getPostData(PairwiseOverlayProperties properties) {		
-		String result = "";
-		List<String> ids = new ArrayList<>();
-		for(PairwiseOverlayObject obj : properties.getPairwiseOverlayObjects()) {
-			ids.add(obj.getId());
-		}
-		result = String.join(",",ids) + 
-				 "\n" + properties.getGeneNames();
-		
-		return result;
-	}
 }
