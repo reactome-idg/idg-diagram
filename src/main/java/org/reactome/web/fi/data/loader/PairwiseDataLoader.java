@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.reactome.web.diagram.client.DiagramFactory;
 import org.reactome.web.diagram.data.interactors.raw.RawInteractorEntity;
 import org.reactome.web.diagram.data.interactors.raw.RawInteractors;
 import org.reactome.web.fi.data.model.interactors.RawInteractorEntityImpl;
@@ -43,7 +44,7 @@ public class PairwiseDataLoader {
 		void onPairwiseLoaderError(Throwable exception);
 	}
 	
-	private static final String BASE_URL = "/idgpairwise/";
+	private static final String BASE_URL = DiagramFactory.SERVER + "/idgpairwise/";
 	
 	private Map<String, String> uniprotToGeneMap;
 	

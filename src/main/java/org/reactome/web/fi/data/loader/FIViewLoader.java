@@ -2,6 +2,7 @@ package org.reactome.web.fi.data.loader;
 
 import java.util.Map;
 
+import org.reactome.web.diagram.client.DiagramFactory;
 import org.reactome.web.fi.data.manager.StateTokenHelper;
 
 import com.google.gwt.http.client.*;
@@ -20,7 +21,7 @@ public class FIViewLoader implements RequestCallback{
 	}
 	
 	
-	private final static String BASE_URL = "/corews/FIService/network/convertPathwayToFIs/";  //use this on servers for production
+	private final static String BASE_URL = DiagramFactory.SERVER + "/corews/FIService/network/convertPathwayToFIs/";  //use this on servers for production
 	
 	private Handler handler;
 	private Request request;

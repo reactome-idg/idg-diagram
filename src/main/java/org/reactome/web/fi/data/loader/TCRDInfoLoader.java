@@ -2,6 +2,7 @@ package org.reactome.web.fi.data.loader;
 
 import java.util.*;
 
+import org.reactome.web.diagram.client.DiagramFactory;
 import org.reactome.web.fi.data.model.TDarkProteinSet;
 import org.reactome.web.fi.data.model.TDarkProteinSetFactory;
 import org.reactome.web.fi.data.overlay.model.ExpressionTypeEntities;
@@ -38,7 +39,7 @@ public class TCRDInfoLoader{
 		void onTDarkLoadedError(Throwable exception);
 	}
 	
-	private static final String BASE_URL = "/tcrdws/";
+	private static final String BASE_URL = DiagramFactory.SERVER + "/tcrdws/";
 	
 	public static void loadExpressionTypes(ETypeHandler handler) {
 		String url = BASE_URL + "expressionTypes";

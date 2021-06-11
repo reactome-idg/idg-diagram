@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.reactome.web.diagram.client.DiagramFactory;
 import org.reactome.web.fi.data.mediators.DataOverlayEntityMediator;
 import org.reactome.web.fi.data.model.drug.Drug;
 import org.reactome.web.fi.data.model.drug.DrugInteraction;
@@ -34,7 +35,7 @@ public class TCRDDataLoader implements RequestCallback{
 		void onOverlayLoadedError(Throwable exception);
 	}
 	
-	private final static String TCRD_BASE_URL = "/tcrdws/";
+	private final static String TCRD_BASE_URL = DiagramFactory.SERVER + "/tcrdws/";
 	
 	private Handler handler;
 	private Request request;

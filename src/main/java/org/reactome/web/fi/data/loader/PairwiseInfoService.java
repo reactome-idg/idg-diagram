@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.reactome.web.diagram.client.DiagramFactory;
 import org.reactome.web.fi.data.model.EnrichedPathwaysPostData;
 import org.reactome.web.fi.data.model.FlagPEsPostData;
 import org.reactome.web.fi.data.model.PathwayEnrichmentResult;
@@ -45,7 +46,7 @@ public class PairwiseInfoService {
 		void onPathwaysToFlagError();
 	}
 	
-	private static final String BASE_URL = "/idgpairwise/";
+	private static final String BASE_URL = DiagramFactory.SERVER + "/idgpairwise/";
 	private static Request request;
 	
 	private static Map<String, String> uniprotToGeneMap;
