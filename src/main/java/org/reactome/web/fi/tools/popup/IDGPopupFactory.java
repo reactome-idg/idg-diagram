@@ -35,7 +35,7 @@ public class IDGPopupFactory{
 	
 	private RawInteractors rawInteractors;
 	
-	private int zIndexCounter = 1;
+	private int zIndexCounter = 3;
 	private final int MAXIMUM_Z_INDEX = 1998;
 	
 	private DataOverlayProperties dataOverlayProperties;

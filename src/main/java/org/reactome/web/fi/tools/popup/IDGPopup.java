@@ -32,6 +32,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.TextResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DeckLayoutPanel;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -114,9 +115,9 @@ public class IDGPopup extends DialogBox implements PairwiseTableHandler, Cytosca
 		
 		//set initial position of popup
 		int popupNumber = IDGPopupFactory.get().getNumberOfPopups();
-		this.setPopupPosition(popupNumber*20, popupNumber*20);
+//		this.setPopupPosition(popupNumber*20, popupNumber*20);
 		
-		show();
+		this.center();
 	}
 
 	private FlowPanel getMainPanel() {
