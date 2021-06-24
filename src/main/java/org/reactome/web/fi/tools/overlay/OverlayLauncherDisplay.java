@@ -100,6 +100,7 @@ public class OverlayLauncherDisplay extends PopupPanel implements ResizeHandler,
         panel.add(innerPanel);
         this.addCloseHandler(this);
         this.add(panel);
+        this.setVisible(false);
 	}
 
 	private Button getButton(String text, ImageResource imageResource) {

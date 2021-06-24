@@ -401,6 +401,7 @@ public class FIViewContent extends GenericContent{
 	@SuppressWarnings("unused")
 	@Override
 	public GraphObject getDatabaseObject(String identifier) {
+		if(identifier == null) return null;
 		Long dbId = Long.parseLong(identifier.substring(identifier.lastIndexOf("-")+1));
 		if(dbId != null)
 			return getDatabaseObject(dbId);

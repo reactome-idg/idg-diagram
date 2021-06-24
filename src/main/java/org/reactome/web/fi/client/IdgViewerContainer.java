@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.reactome.web.diagram.client.DiagramFactory;
 import org.reactome.web.diagram.client.ViewerContainer;
 import org.reactome.web.diagram.client.visualisers.Visualiser;
 import org.reactome.web.diagram.client.visualisers.diagram.DiagramVisualiser;
@@ -30,6 +31,7 @@ import org.reactome.web.fi.client.visualisers.diagram.renderers.ContinuousDataOv
 import org.reactome.web.fi.client.visualisers.diagram.renderers.DiscreteDataOverlayRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.DrugTargetRenderer;
 import org.reactome.web.fi.client.visualisers.diagram.renderers.decorators.PairwiseInteractorRenderer;
+import org.reactome.web.fi.client.visualisers.fiview.CytoscapeViewFlag;
 import org.reactome.web.fi.client.visualisers.fiview.FIViewVisualizer;
 import org.reactome.web.fi.client.visualisers.fiview.panels.SearchPanel;
 import org.reactome.web.fi.common.IDGIconButton;
@@ -196,8 +198,14 @@ public class IdgViewerContainer extends ViewerContainer implements RenderOtherDa
 	protected void setActiveVisualiser(Context context) {
 		hideContextMenus();
 		hideButtons();
+		
 		StateTokenHelper helper = new StateTokenHelper();
-		boolean isCytoscapeView = helper.buildTokenMap(History.getToken()).containsKey("FIVIZ");
+		boolean isCytoscapeView;
+		if(!DiagramFactory.WIDGET_JS) {
+			isCytoscapeView = helper.buildTokenMap(History.getToken()).containsKey("FIVIZ");
+		}
+		else isCytoscapeView = CytoscapeViewFlag.isShowFIView();
+		
 		if (context.getContent().getType() == Content.Type.DIAGRAM && isCytoscapeView) {
 			for (Visualiser vis : visualisers.values()) {
 				vis.asWidget().setVisible(false);
@@ -407,7 +415,11 @@ public class IdgViewerContainer extends ViewerContainer implements RenderOtherDa
 	}
 
 	private void cytoscapeButtonPressed() {
-//		CytoscapeViewFlag.toggleCytoscapeViewFlag();
+		if(DiagramFactory.WIDGET_JS) {
+			CytoscapeViewFlag.toggleShowFIView();
+			eventBus.fireEventFromSource(new CytoscapeToggledEvent(getContext()), this);
+			return;
+		}
 
 		// decide if adding or removing FIVIZ from url bar
 		StateTokenHelper helper = new StateTokenHelper();

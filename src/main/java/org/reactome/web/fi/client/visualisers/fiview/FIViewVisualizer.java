@@ -80,7 +80,6 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 	private FISettingsPanel settingsMenu;
 	
 	private GraphObject selected;
-	
 	private AnalysisStatus analysisStatus;
     private int selectedExpCol = 0;
 	
@@ -178,9 +177,9 @@ public class FIViewVisualizer extends AbsolutePanel implements Visualiser, Analy
 		else if(dX == -10)
 			cy.panRight(dX);
 		else if (dY == 10)
-			cy.panUp(dY);
-		else if(dY == -10)
 			cy.panDown(dY);
+		else if(dY == -10)
+			cy.panUp(dY);
 	}
 
 	@Override

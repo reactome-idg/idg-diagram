@@ -3,6 +3,7 @@ package org.reactome.web.fi.data.loader;
 import java.util.Collection;
 import java.util.Map;
 
+import org.reactome.web.diagram.client.DiagramFactory;
 import org.reactome.web.diagram.data.ContentFactory;
 import org.reactome.web.diagram.data.Context;
 import org.reactome.web.diagram.data.GraphObjectFactory;
@@ -14,6 +15,7 @@ import org.reactome.web.diagram.events.ContentLoadedEvent;
 import org.reactome.web.diagram.events.DiagramInternalErrorEvent;
 import org.reactome.web.diagram.events.InteractorsLoadedEvent;
 import org.reactome.web.diagram.events.InteractorsResourceChangedEvent;
+import org.reactome.web.fi.client.visualisers.fiview.CytoscapeViewFlag;
 import org.reactome.web.fi.data.content.FIViewContent;
 import org.reactome.web.fi.data.manager.StateTokenHelper;
 import org.reactome.web.fi.data.model.drug.Drug;
@@ -67,19 +69,23 @@ TCRDDataLoader.Handler{
 	
 	@Override
 	public void load(String identifier) {
-		if (isFIViewNeeded(identifier)) {
-			context = contextMap.get(identifier + ".fi");
-			eventBus.fireEventFromSource(new FIViewMessageEvent(true), this);
-			if(context != null) {
-				GraphObjectFactory.content = context.getContent();
-				eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
-			}
-			else {
-				fIViewLoader.load(identifier, identifier.substring(identifier.lastIndexOf("-")+1));
-			}
-		}
-		else
+		//if not fiview needed, run super method and return
+		if(!isFIViewNeeded(identifier)) {
 			super.load(identifier);
+			return;
+		}
+		
+		//load fiview
+		context = contextMap.get(identifier + ".fi");
+		eventBus.fireEventFromSource(new FIViewMessageEvent(true), this);
+		if(context != null) {
+			GraphObjectFactory.content = context.getContent();
+			eventBus.fireEventFromSource(new ContentLoadedEvent(context), this);
+		}
+		else {
+			fIViewLoader.load(identifier, identifier.substring(identifier.lastIndexOf("-")+1));
+		}
+	
 	}
 	
 	/**
@@ -91,10 +97,16 @@ TCRDDataLoader.Handler{
 	}
 	
 	private boolean isFIViewNeeded(String identifier) {
-		StateTokenHelper helper = new StateTokenHelper();
 		
+		//load svg first if available and dont allow FIView to load
 		if(SVGLoader.isSVGAvailable(identifier))
 			return false;
+		
+		if(DiagramFactory.WIDGET_JS) {
+			return CytoscapeViewFlag.isShowFIView();
+		}
+		
+		StateTokenHelper helper = new StateTokenHelper();
 		if(!helper.buildTokenMap(History.getToken()).containsKey("FIVIZ"))
 			return false;
 		return true;
@@ -106,14 +118,16 @@ TCRDDataLoader.Handler{
 		//ensure json string recieved from corews server is not null
 		//if null, set CytoscapeViewFlag to false and load the normal diagram view
 		if(fIJsonPathway == "null" || fIJsonPathway == null){
-//			CytoscapeViewFlag.ensureCytoscapeViewFlagFalse();
-			
-			//remove FI viz from URL
-			StateTokenHelper helper = new StateTokenHelper();
-			Map<String, String> tokenMap = helper.buildTokenMap(History.getToken());
-			tokenMap.remove("FIVIZ");
-			History.newItem(helper.buildToken(tokenMap));
-			
+			if(DiagramFactory.WIDGET_JS) {
+				CytoscapeViewFlag.setShowFIView(false);
+			}
+			else {
+				//remove FI viz from URL
+				StateTokenHelper helper = new StateTokenHelper();
+				Map<String, String> tokenMap = helper.buildTokenMap(History.getToken());
+				tokenMap.remove("FIVIZ");
+				History.newItem(helper.buildToken(tokenMap));
+			}
 			
 			eventBus.fireEventFromSource(new FIViewMessageEvent(false), this);
 			eventBus.fireEventFromSource(new NoFIsAvailableEvent(), this);

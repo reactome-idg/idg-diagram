@@ -120,7 +120,7 @@ public class TCRDDataLoader implements RequestCallback{
 	 * @param callback
 	 */
 	public void loadMultipleTargetLevelProtein(String uniprots, AsyncCallback<Map<String,String>> callback) {
-		String url = "/tcrdws/targetlevel/uniprots";
+		String url = TCRD_BASE_URL + "targetlevel/uniprots";
 		
 		RequestBuilder request = new RequestBuilder(RequestBuilder.POST, url);
 		request.setHeader("Accept", "application/json");
@@ -146,7 +146,7 @@ public class TCRDDataLoader implements RequestCallback{
 	}
 	
 	public void loadDrugTargetsForUniprots(String uniprots, AsyncCallback<Collection<Drug>> callback) {
-		String url = "/tcrdws/drug/uniprots";
+		String url = TCRD_BASE_URL + "drug/uniprots";
 		
 		RequestBuilder request = new RequestBuilder(RequestBuilder.POST, url);
 		request.setHeader("Accept", "application/json");

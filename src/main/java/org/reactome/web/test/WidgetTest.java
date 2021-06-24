@@ -54,6 +54,7 @@ public class WidgetTest implements EntryPoint{
 //        DiagramFactory.SERVER = "fakeserver.com";
         DiagramFactory.CONSOLE_VERBOSE = true;
         DiagramFactory.EVENT_BUS_VERBOSE = true;
+        DiagramFactory.WATERMARK_BASE_URL = "https://idg.reactome.org/PathwayBrowser/";
 //      DiagramFactory.SHOW_INFO = true;
         diagram = new IdgDiagramViewerImpl();
     }
