@@ -161,7 +161,7 @@ public class OverlayControlLegend extends LegendPanel implements OverlayDataLoad
 		this.setVisible(false);
 		innerPanel.clear();
 		this.dataOverlay = event.getDataOverlay();
-		if(event.getDataOverlay().getUniprotToEntitiesMap() == null) {
+		if(event.getDataOverlay().getUniprotToEntitiesMap() == null && !event.getDataOverlay().getEType().equals("Target Development Level")) {
 			showNoResultsPanel();
 			this.setVisible(true);
 			return;
